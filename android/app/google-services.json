@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "441828524688",
+    "project_id": "haruviet-809ef",
+    "storage_bucket": "haruviet-809ef.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:441828524688:android:bff5d7e904875a21ae4e15",
+        "android_client_info": {
+          "package_name": "vn.eco_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "441828524688-7uji4ar0islsihrv6uj8v88cp8l1huce.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "vn.eco_app",
+            "certificate_hash": "4b12ab652f0bb2db5d6c6508bcf12404fe35fb20"
+          }
+        },
+        {
+          "client_id": "441828524688-vlfm6jigvp8g1dc2oohpt0pgpa6bl40h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwi1bfBuJGGBST5aO1_GhvZTbmNk1aTgY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "441828524688-vlfm6jigvp8g1dc2oohpt0pgpa6bl40h.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "441828524688-bpafmc4kogdec12fge37ukc10rrp8d11.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.ecoApp.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

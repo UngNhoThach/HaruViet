@@ -256,15 +256,6 @@ class _CartPageState extends State<CartPage> {
         },
         child: BlocBuilder<CartBloc, CartState>(builder: (context, state) {
           return Scaffold(
-              appBar: AppBar(
-                centerTitle: true,
-                title: Text(
-                  'Giỏ hàng',
-                  style: textTheme.titleMedium?.copyWith(
-                      color: colorWhite, fontWeight: FontWeight.bold),
-                ),
-                backgroundColor: colorMain,
-              ),
               resizeToAvoidBottomInset: false,
               backgroundColor: Colors.grey.shade100,
               body: LoadingScaffold(

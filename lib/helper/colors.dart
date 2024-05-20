@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+// TEXT
+const Color colorText = Color.fromARGB(255, 36, 48, 86);
 const Color colorWhite = Color(0xFFFFFFFF);
 const Color colorBackgroundWhite = Color(0xFFECECEE);
 const Color colorBlack = Color(0xFF000000);

@@ -12,7 +12,6 @@ import 'package:eco_app/page/profile/widgets/order_item.dart';
 import 'package:eco_app/page/account/signin/widgets/signin_params.dart';
 import 'package:eco_app/resources/routes.dart';
 import 'package:eco_app/service/clearedStoredData.dart';
-import 'package:eco_app/theme/typography.dart';
 import 'package:eco_app/utils/commons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -213,15 +212,6 @@ class _ProfilePageState extends State<ProfilePage> {
         child: BlocBuilder<ProfileBloc, ProfileState>(
           builder: (context, state) {
             return Scaffold(
-              appBar: AppBar(
-                centerTitle: true,
-                title: Text(
-                  'Quản lý tài khoản',
-                  style: textTheme.titleMedium?.copyWith(
-                      color: colorWhite, fontWeight: FontWeight.bold),
-                ),
-                backgroundColor: colorMain,
-              ),
               backgroundColor: Colors.grey.shade200,
               resizeToAvoidBottomInset: true,
               body: LoadingScaffold(

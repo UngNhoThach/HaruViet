@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:eco_app/component/select_address/models/select_address_params.dart';
 import 'package:eco_app/component/select_address/select_address_page.dart';
-import 'package:eco_app/config.dart';
 import 'package:eco_app/firebase_options.dart';
+import 'package:eco_app/helper/theme.dart';
 import 'package:eco_app/page/about_us/about_us_page.dart';
 import 'package:eco_app/page/account/update_profile/widgets/update_profile_params.dart';
 import 'package:eco_app/page/add_address/address_page.dart';
@@ -125,26 +125,28 @@ class _HomePageState extends State<HomePage> {
           onGenerateRoute: (settings) => _getRoutes(settings),
           navigatorKey: NavigationService.navigatorKey,
           debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            useMaterial3: false,
-            fontFamily: "SF PRO",
-            colorScheme: myColorScheme,
-            textTheme: TextTheme(
-              titleLarge: TextStyle(fontSize: 18.r),
-              displayLarge: const TextStyle(
-                color: Color.fromARGB(255, 36, 48, 86),
-              ),
-              displayMedium: const TextStyle(
-                color: Color.fromARGB(255, 36, 48, 86),
-              ),
-              bodyMedium: const TextStyle(
-                color: Color.fromARGB(255, 36, 48, 86),
-              ),
-              titleMedium: const TextStyle(
-                color: Color.fromARGB(255, 36, 48, 86),
-              ),
-            ),
-          ),
+          theme: myThemeData,
+          //  ThemeData(
+          //   useMaterial3: false,
+          //   fontFamily: "SF PRO",
+          //   colorScheme: myColorScheme,
+          //   textTheme: ,
+          //  TextTheme(
+          //   titleLarge: TextStyle(fontSize: 18.r),
+          //   displayLarge: const TextStyle(
+          //     color: Color.fromARGB(255, 36, 48, 86),
+          //   ),
+          //   displayMedium: const TextStyle(
+          //     color: Color.fromARGB(255, 36, 48, 86),
+          //   ),
+          //   bodyMedium: const TextStyle(
+          //     color: Color.fromARGB(255, 36, 48, 86),
+          //   ),
+          //   titleMedium: const TextStyle(
+          //     color: Color.fromARGB(255, 36, 48, 86),
+          //   ),
+          // ),
+          // ),
           home: _getRootScreen(context),
         );
       },

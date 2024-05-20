@@ -11,7 +11,9 @@ import 'package:eco_app/qr/qr_page.dart';
 import 'package:eco_app/resources/routes.dart';
 import 'package:eco_app/theme/typography.dart';
 import 'package:eco_app/utils/commons.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class HomePage extends StatefulWidget {
@@ -27,25 +29,24 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: _buildSearchField(),
-        backgroundColor: colorMain,
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {
-              routeService.pushNamed(Routes.cartPage,
-                  arguments: CartPageParams(isAppBar: true));
-            },
-            icon: Icon(
-              Icons.shopping_cart_outlined,
-              color: colorWhite,
-              weight: 2.5.sp,
-            ),
-          ),
-        ],
-      ),
-      drawer: const DrawerListPage(),
+      // appBar: AppBar(
+      //   centerTitle: true,
+      //   title: _buildSearchField(),
+      //   backgroundColor: colorMain,
+      //   actions: <Widget>[
+      //     IconButton(
+      //       onPressed: () {
+      //         routeService.pushNamed(Routes.cartPage,
+      //             arguments: CartPageParams(isAppBar: true));
+      //       },
+      //       icon: Icon(
+      //         Icons.shopping_cart_outlined,
+      //         color: colorWhite,
+      //         weight: 2.5.sp,
+      //       ),
+      //     ),
+      //   ],
+      // ),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Padding(
@@ -423,25 +424,38 @@ Widget _flashDealsProductGridView(BuildContext context) {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       spaceH6,
-                      Row(
-                        children: [
-                          Text(
-                            '900.000 đ',
-                            style:
-                                Theme.of(context).textTheme.subtitle1?.copyWith(
+                      Expanded(
+                        child: Row(
+                          children: [
+                            Flexible(
+                              child: Text(
+                                '900.000 đ',
+                                maxLines: null,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium
+                                    ?.copyWith(
                                       color: colorMain,
                                       fontWeight: FontWeight.bold,
                                     ),
-                          ),
-                          Text(
-                            '1.200.000 đ',
-                            style:
-                                Theme.of(context).textTheme.subtitle2?.copyWith(
+                              ),
+                            ),
+                            Flexible(
+                              child: Text(
+                                '1.200.000 đ',
+                                maxLines: null,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleSmall
+                                    ?.copyWith(
+                                      fontSize: 11,
                                       color: colorItemCover,
                                       decoration: TextDecoration.lineThrough,
                                     ),
-                          ),
-                        ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       spaceH4,
                       Text(

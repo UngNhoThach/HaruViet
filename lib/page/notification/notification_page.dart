@@ -1,7 +1,6 @@
 import 'package:eco_app/helper/colors.dart';
 import 'package:eco_app/page/notification/tab/news/discount_page.dart';
 import 'package:eco_app/page/notification/tab/notification/history_page.dart';
-import 'package:eco_app/theme/typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -36,15 +35,16 @@ class _NotificationTabPageState extends State<NotificationTabPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          'Thông báo',
-          style: textTheme.titleMedium
-              ?.copyWith(color: colorWhite, fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: colorMain,
-      ),
+      //  appBar:
+      // AppBar(
+      //   centerTitle: true,
+      //   title: Text(
+      //     'Thông báo',
+      //     style: textTheme.titleMedium
+      //         ?.copyWith(color: colorWhite, fontWeight: FontWeight.bold),
+      //   ),
+      //   backgroundColor: colorMain,
+      // ),
       body: Container(
         padding: EdgeInsets.symmetric(
           horizontal: 16.w,

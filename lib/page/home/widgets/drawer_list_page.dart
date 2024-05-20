@@ -6,6 +6,7 @@ import 'package:eco_app/page/home/widgets/drawer_list_state.dart';
 import 'package:eco_app/resources/routes.dart';
 import 'package:eco_app/theme/typography.dart';
 import 'package:eco_app/utils/commons.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -52,45 +53,6 @@ class _DrawListState extends State<DrawerListPage>
             child: ListView(
               padding: const EdgeInsets.symmetric(vertical: 16),
               children: <Widget>[
-                // Align(
-                //                       alignment: Alignment.topCenter,
-                //                       child: CircleAvatar(
-                //                         radius: 56.r,
-                //                         backgroundColor: colorBlueGray02,
-                //                         child: CircleAvatar(
-                //                             radius: 40.r,
-                //                             backgroundColor: colorBlueGray02,
-                //                             child: AspectRatio(
-                //                               aspectRatio: 1,
-                //                               child: Container(),
-                //                             )),
-                //                       ))
-                //                   : Align(
-                //                       alignment: Alignment.topCenter,
-                //                       child: CircleAvatar(
-                //                         radius: 56.r,
-                //                         backgroundColor: Colors.white70,
-                //                         child: CircleAvatar(
-                //                             radius: 40.r,
-                //                             child: AspectRatio(
-                //                               aspectRatio: 1,
-                //                               child: Container(
-                //                                 decoration: BoxDecoration(
-                //                                     border: Border.all(
-                //                                         color: Colors
-                //                                             .grey.shade400,
-                //                                         width: 2.w),
-                //                                     shape: BoxShape.circle,
-                //                                     image: DecorationImage(
-                //                                         image: NetworkImage(
-                //                                             state.userInfoLogin
-                //                                                     ?.avatar ??
-                //                                                 ''),
-                //                                         fit: BoxFit.contain)),
-                //                               ),
-                //                             )),
-                //                       ),
-                //                     ),
                 Row(
                   children: [
                     CircleAvatar(
@@ -156,104 +118,110 @@ class _DrawListState extends State<DrawerListPage>
                     )
                   ],
                 ),
-                spaceH16,
-                InkWell(
-                    onTap: () {
-                      routeService.pushNamed(Routes.cartPage,
-                          arguments: CartPageParams(isAppBar: true));
-                    },
-                    child: ListTile(
-                      title: Text(
-                        'Giỏ hàng',
-                        style: textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      leading: const Icon(Icons.shopping_basket),
-                    )),
-                InkWell(
-                    onTap: () {
-                      routeService.pushNamed(Routes.categoryPage);
-                    },
-                    child: ListTile(
-                      title: Text(
-                        'Lịch sử mua hàng',
-                        style: textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      leading: const Icon(Icons.dashboard),
-                    )),
-                InkWell(
-                    onTap: () {
-                      // routeService.pushNamed(Routes.categoryPage);
-                    },
-                    child: ListTile(
-                      title: Text(
-                        'Chính sách đổi trả',
-                        style: textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      leading: const Icon(Icons.repeat_rounded),
-                    )),
-                InkWell(
-                    onTap: () {
-                      // routeService.pushNamed(Routes.categoryPage);
-                    },
-                    child: ListTile(
-                      title: Text(
-                        'Hỏi đáp',
-                        style: textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      leading: const Icon(Icons.question_mark),
-                    )),
-                InkWell(
-                    onTap: () {
-                      routeService.pushNamed(Routes.supportPage);
-                    },
-                    child: ListTile(
-                      title: Text(
-                        'Hỗ trợ',
-                        style: textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      leading: const Icon(Icons.support_agent_rounded),
-                    )),
+                spaceH26,
+                _itemDrawer(
+                  context,
+                  title: 'Giỏ hàng',
+                  icon: Icons.shopping_basket,
+                  onTap: () {
+                    routeService.pushNamed(Routes.cartPage,
+                        arguments: CartPageParams(isAppBar: true));
+                  },
+                ),
                 const Divider(),
-                InkWell(
-                    onTap: () {},
-                    child: ListTile(
-                      title: Text(
-                        'Cài đăt',
-                        style: textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      leading: const Icon(Icons.settings),
-                    )),
-                InkWell(
-                    onTap: () {
-                      routeService.pushNamed(
-                        Routes.aboutPage,
-                      );
-                    },
-                    child: ListTile(
-                      title: Text(
-                        'Về chúng tôi',
-                        style: textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      leading: const Icon(Icons.help, color: Colors.blue),
-                    )),
+                _itemDrawer(
+                  context,
+                  title: 'Lịch sử mua hàng',
+                  icon: Icons.dashboard,
+                  onTap: () {
+                    routeService.pushNamed(Routes.categoryPage);
+                  },
+                ),
+                const Divider(),
+                _itemDrawer(
+                  context,
+                  title: 'Chính sách đổi trả',
+                  icon: Icons.repeat_rounded,
+                  onTap: () {
+                    routeService.pushNamed(Routes.categoryPage);
+                  },
+                ),
+                const Divider(),
+                _itemDrawer(
+                  context,
+                  title: 'Hỏi đáp',
+                  icon: Icons.question_mark,
+                  onTap: () {
+                    routeService.pushNamed(Routes.categoryPage);
+                  },
+                ),
+                const Divider(),
+                _itemDrawer(
+                  context,
+                  title: 'Lịch sử mua hàng',
+                  icon: Icons.history,
+                  onTap: () {
+                    routeService.pushNamed(Routes.historyPaymentPage);
+                  },
+                ),
+                const Divider(),
+                _itemDrawer(
+                  context,
+                  title: 'Hỗ trợ',
+                  icon: Icons.support_agent_rounded,
+                  onTap: () {
+                    routeService.pushNamed(Routes.supportPage);
+                  },
+                ),
+                const Divider(),
+                _itemDrawer(
+                  context,
+                  title: 'Cài đăt',
+                  icon: Icons.settings,
+                  onTap: () {
+                    routeService.pushNamed(Routes.supportPage);
+                  },
+                ),
+                const Divider(),
+                _itemDrawer(
+                  context,
+                  title: 'Về chúng tôi',
+                  icon: Icons.help,
+                  onTap: () {
+                    routeService.pushNamed(Routes.aboutPage);
+                  },
+                ),
               ],
             ),
           ));
         },
+      ),
+    );
+  }
+
+  // ITEM DRAWER
+  Widget _itemDrawer(BuildContext context,
+      {required String title,
+      required IconData icon,
+      required void Function() onTap}) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              color: colorPrimary,
+            ),
+            spaceW16,
+            Flexible(
+                child: Text(
+              title,
+              style: textTheme.bodyMedium?.copyWith(),
+            ))
+          ],
+        ),
       ),
     );
   }

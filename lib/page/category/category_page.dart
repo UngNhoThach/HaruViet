@@ -1,14 +1,12 @@
 import 'package:eco_app/component/input/search_bar.dart';
 import 'package:eco_app/data/reponsitory/category/item_category_response.dart';
 import 'package:eco_app/helper/colors.dart';
-import 'package:eco_app/page/cart/models/cart_page_params.dart';
 import 'package:eco_app/page/category/models/category_paga_params.dart';
 import 'package:eco_app/resources/routes.dart';
 import 'package:eco_app/theme/typography.dart';
 import 'package:eco_app/utils/commons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:badges/badges.dart' as badges;
 
 class CategoryPage extends StatefulWidget {
   const CategoryPage({super.key, required this.params});
@@ -59,24 +57,24 @@ class _CategoryPageState extends State<CategoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: _buildSearchField(),
-        backgroundColor: colorMain,
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {
-              routeService.pushNamed(Routes.cartPage,
-                  arguments: CartPageParams(isAppBar: true));
-            },
-            icon: Icon(
-              Icons.shopping_cart_outlined,
-              color: colorWhite,
-              weight: 2.5.sp,
-            ),
-          ),
-        ],
-      ),
+      // appBar: AppBar(
+      //   centerTitle: true,
+      //   title: _buildSearchField(),
+      //   backgroundColor: colorMain,
+      //   actions: <Widget>[
+      //     IconButton(
+      //       onPressed: () {
+      //         routeService.pushNamed(Routes.cartPage,
+      //             arguments: CartPageParams(isAppBar: true));
+      //       },
+      //       icon: Icon(
+      //         Icons.shopping_cart_outlined,
+      //         color: colorWhite,
+      //         weight: 2.5.sp,
+      //       ),
+      //     ),
+      //   ],
+      // ),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Column(

@@ -64,6 +64,7 @@ class _RowContentOneColumnState extends State<RowContentOneColumn>
   late final Animation<double> animation;
   var isSeeMore = false;
   bool isExpanded = false;
+  List<bool> checkItemExpanded = [];
 
   @override
   void initState() {
@@ -236,6 +237,9 @@ class _RowContentOneColumnState extends State<RowContentOneColumn>
                         itemCount: widget.data!.length,
                         itemBuilder: (context, index) {
                           final entry = widget.data!.entries.elementAt(index);
+                          for (var i = 0; i < widget.data!.length; i++) {
+                            checkItemExpanded.add(false);
+                          }
                           return Column(
                             children: [
                               Row(
@@ -251,10 +255,10 @@ class _RowContentOneColumnState extends State<RowContentOneColumn>
                                             .colorExtendedTextBodySmall,
                                         height: 1.4,
                                       ),
-                                      maxLines: isSeeMore
+                                      maxLines: checkItemExpanded[index]
                                           ? null
                                           : (showSeeMoreButton ? 5 : null),
-                                      overflow: isSeeMore
+                                      overflow: checkItemExpanded[index]
                                           ? null
                                           : (showSeeMoreButton
                                               ? TextOverflow.ellipsis
@@ -263,10 +267,10 @@ class _RowContentOneColumnState extends State<RowContentOneColumn>
                                   ),
                                 ],
                               ),
-                              isSeeMore
+                              checkItemExpanded[index]
                                   ? spaceH12
                                   : (showSeeMoreButton ? spaceH12 : space0),
-                              isSeeMore
+                              checkItemExpanded[index]
                                   ? Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
@@ -274,7 +278,7 @@ class _RowContentOneColumnState extends State<RowContentOneColumn>
                                         InkWell(
                                           onTap: () {
                                             setState(() {
-                                              isSeeMore = false;
+                                              checkItemExpanded[index] = false;
                                             });
                                           },
                                           child: const Text(
@@ -296,7 +300,8 @@ class _RowContentOneColumnState extends State<RowContentOneColumn>
                                             InkWell(
                                               onTap: () {
                                                 setState(() {
-                                                  isSeeMore = true;
+                                                  checkItemExpanded[index] =
+                                                      true;
                                                 });
                                               },
                                               child: const Text(

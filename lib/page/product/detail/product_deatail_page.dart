@@ -23,7 +23,6 @@ import 'package:eco_app/resources/routes.dart';
 import 'package:eco_app/theme/typography.dart';
 import 'package:eco_app/utils/commons.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -136,6 +135,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
   final Map<String, dynamic>? dataDetail = {
     'Linh hoạt':
+        'Với 4 chế độ làm lạnh linh hoạt giúp bạn dễ dàng chuyển đổi theo từng nhu cầu bảo quản: Chế độ "Làm mát" (phù hợp thực phẩm dùng hằng ngày như sữa, thịt nguội…); Chế độ "Thịt & Cá"; Chế độ "Đông mềm" (phù hợp lưu trữ thực phẩm dài ngày hơn chế độ Thịt & Cá), Chế độ "Làm lạnh nhanh" cho đồ uống. Với 4 chế độ làm lạnh linh hoạt giúp bạn dễ dàng chuyển đổi theo từng nhu cầu bảo quản: Chế độ "Làm mát" (phù hợp thực phẩm dùng hằng ngày như sữa, thịt nguội…); Chế độ "Thịt & Cá"; Chế độ "Đông mềm" (phù hợp lưu trữ thực phẩm dài ngày hơn chế độ Thịt & Cá), Chế độ "Làm lạnh nhanh" cho đồ uống.',
+    'Linh kinh':
         'Với 4 chế độ làm lạnh linh hoạt giúp bạn dễ dàng chuyển đổi theo từng nhu cầu bảo quản: Chế độ "Làm mát" (phù hợp thực phẩm dùng hằng ngày như sữa, thịt nguội…); Chế độ "Thịt & Cá"; Chế độ "Đông mềm" (phù hợp lưu trữ thực phẩm dài ngày hơn chế độ Thịt & Cá), Chế độ "Làm lạnh nhanh" cho đồ uống. Với 4 chế độ làm lạnh linh hoạt giúp bạn dễ dàng chuyển đổi theo từng nhu cầu bảo quản: Chế độ "Làm mát" (phù hợp thực phẩm dùng hằng ngày như sữa, thịt nguội…); Chế độ "Thịt & Cá"; Chế độ "Đông mềm" (phù hợp lưu trữ thực phẩm dài ngày hơn chế độ Thịt & Cá), Chế độ "Làm lạnh nhanh" cho đồ uống.',
   };
 
@@ -1311,7 +1312,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   IconButton(
                     onPressed: () {
                       routeService.pushNamed(Routes.cartPage,
-                          arguments: CartPageParams(isAppBar: true));
+                          arguments: CartPageParams());
                     },
                     icon: Icon(
                       Icons.shopping_cart_outlined,
@@ -1322,7 +1323,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   IconButton(
                     onPressed: () {
                       routeService.pushNamed(Routes.cartPage,
-                          arguments: CartPageParams(isAppBar: true));
+                          arguments: CartPageParams());
                     },
                     icon: Icon(
                       Icons.more_vert_sharp,

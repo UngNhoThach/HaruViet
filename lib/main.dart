@@ -66,47 +66,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // // variables and fuctions
-  // final Connectivity _connectivity = Connectivity();
-  // late StreamSubscription<ConnectivityResult> _connectivitySubscription;
-  // String _connectionStatus = 'Unknown';
-  // Future<void> _updateConnectionStatus(ConnectivityResult result) async {
-  //   switch (result) {
-  //     case ConnectivityResult.wifi:
-  //     case ConnectivityResult.mobile:
-  //     case ConnectivityResult.none:
-  //       setState(() => _connectionStatus = result.toString());
-  //       break;
-  //     default:
-  //       setState(() => _connectionStatus = 'Failed to get connectivity.');
-  //       break;
-  //   }
-  // }
-
-  // Future<void> initConnectivity() async {
-  //   ConnectivityResult result = ConnectivityResult.none;
-  //   try {
-  //     result = await _connectivity.checkConnectivity();
-  //   } on PlatformException catch (e) {
-  //     print(e.toString());
-  //   }
-  //   if (!mounted) {
-  //     return Future.value(null);
-  //   }
-  //   return _updateConnectionStatus(result);
-  // }
-
   @override
   void initState() {
     super.initState();
-    // initConnectivity();
-    // _connectivitySubscription =
-    //     _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
   }
 
   @override
   void dispose() {
-    // _connectivitySubscription.cancel();
     super.dispose();
   }
 

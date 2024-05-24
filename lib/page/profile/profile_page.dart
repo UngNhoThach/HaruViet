@@ -329,16 +329,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                             icon: const Icon(Icons.settings),
                                             iconSize: 24.r,
                                             color: colorGray04,
-                                            onPressed: () {
-                                              // routeService.pushNamed(
-                                              //     Routes.phoneAuthPage,
-                                              //     arguments: PhoneAuthParams(
-                                              //         timeout: 10,
-                                              //         firstName: '',
-                                              //         password: '',
-                                              //         passwordConfirmation: '',
-                                              //         username: '0967611550'));
-                                            },
+                                            onPressed: () {},
                                           ),
                                           state.userInfoLogin?.isLogin ==
                                                       false ||

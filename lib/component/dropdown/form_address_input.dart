@@ -9,7 +9,6 @@ import 'package:eco_app/helper/spaces.dart';
 import 'package:eco_app/resources/routes.dart';
 import 'package:eco_app/theme/typography.dart';
 import 'package:eco_app/utils/commons.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -28,6 +27,9 @@ class FormAddressInput extends StatelessWidget {
     this.isRequired = false,
     this.isRequiredAddress = true,
     this.isNotAddress = false,
+    this.isBorder = true,
+    this.widget,
+    this.contentPadding,
   });
 
   final String? hintText;
@@ -42,7 +44,9 @@ class FormAddressInput extends StatelessWidget {
   final bool isRequired;
   final bool isRequiredAddress;
   final bool isNotAddress;
-
+  final bool isBorder;
+  final Widget? widget;
+  final EdgeInsetsGeometry? contentPadding;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -59,14 +63,17 @@ class FormAddressInput extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                       ),
                 )
-              : Text(
-                  title,
-                  style: styleTitle ??
-                      textTheme.titleMedium?.copyWith(
-                        color:
-                            context.appColorScheme.colorExtendedTextTitleMedium,
-                        fontWeight: FontWeight.w600,
-                      ),
+              : Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    title,
+                    style: styleTitle ??
+                        textTheme.titleMedium?.copyWith(
+                          color: context
+                              .appColorScheme.colorExtendedTextTitleMedium,
+                          fontWeight: FontWeight.w600,
+                        ),
+                  ),
                 ),
           spaceH8,
         ],
@@ -99,6 +106,9 @@ class FormAddressInput extends StatelessWidget {
                   color: context.appColorScheme.colorExtendedTextTitleMedium,
                 ),
                 decoration: InputDecoration(
+                  //errorBorder: null,
+                  icon: widget ?? space0,
+                  contentPadding: contentPadding,
                   counterText: '',
                   label: isDisplayTitle
                       ? null
@@ -108,26 +118,38 @@ class FormAddressInput extends StatelessWidget {
                   labelStyle: textTheme.bodySmall,
                   isDense: true,
                   hintText: hintText,
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: context.appColor.colorGrey.withOpacity(0.5)),
-                    borderRadius: BorderRadius.all(Radius.circular(8.r)),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: context.appColor.colorGrey.withOpacity(0.5)),
-                    borderRadius: BorderRadius.all(Radius.circular(8.r)),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: context.appColor.colorGrey.withOpacity(0.5)),
-                    borderRadius: BorderRadius.all(Radius.circular(8.r)),
-                  ),
-                  disabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: context.appColor.colorGrey.withOpacity(0.5)),
-                    borderRadius: BorderRadius.all(Radius.circular(8.r)),
-                  ),
+                  border: isBorder
+                      ? OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color:
+                                  context.appColor.colorGrey.withOpacity(0.5)),
+                          borderRadius: BorderRadius.all(Radius.circular(8.r)),
+                        )
+                      : InputBorder.none,
+                  enabledBorder: isBorder
+                      ? OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color:
+                                  context.appColor.colorGrey.withOpacity(0.5)),
+                          borderRadius: BorderRadius.all(Radius.circular(8.r)),
+                        )
+                      : null,
+                  focusedBorder: isBorder
+                      ? OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color:
+                                  context.appColor.colorGrey.withOpacity(0.5)),
+                          borderRadius: BorderRadius.all(Radius.circular(8.r)),
+                        )
+                      : null,
+                  disabledBorder: isBorder
+                      ? OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color:
+                                  context.appColor.colorGrey.withOpacity(0.5)),
+                          borderRadius: BorderRadius.all(Radius.circular(8.r)),
+                        )
+                      : null,
                   suffixIcon: space0,
                 ),
                 validator: _validationText,
@@ -153,17 +175,7 @@ class FormAddressInput extends StatelessWidget {
                                 .colorBlack, // Sử dụng Theme để truy cập context
                             size: 20,
                           ),
-                        )
-
-                  //  Icon(
-                  //     CupertinoIcons.battery_full,
-                  //     //Icons.chevron_left_rounded,
-
-                  //     color: context.appColor.colorBlack,
-                  //     size: 20,
-                  //   )
-
-                  ),
+                        )),
             ],
           ),
         ),

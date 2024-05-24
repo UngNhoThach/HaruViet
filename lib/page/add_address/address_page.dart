@@ -1,5 +1,6 @@
 import 'package:eco_app/component/button/bottom_bar_button.dart';
 import 'package:eco_app/component/button/solid_button.dart';
+import 'package:eco_app/component/dropdown/form_address_input.dart';
 import 'package:eco_app/component/input/text_filed_icon.dart';
 import 'package:eco_app/component/loading/loading.dart';
 import 'package:eco_app/helper/colors.dart';
@@ -8,9 +9,7 @@ import 'package:eco_app/helper/spaces.dart';
 import 'package:eco_app/page/add_address/address_bloc.dart';
 import 'package:eco_app/page/add_address/address_state.dart';
 import 'package:eco_app/theme/typography.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -34,12 +33,8 @@ class _AddressPageState extends State<AddressPage> {
   // variables and functions
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _addressController = TextEditingController();
-  final TextEditingController _addressgHomeController = TextEditingController();
   final FocusNode _focusNodeName = FocusNode();
   final FocusNode _focusNodeSDT = FocusNode();
-  final FocusNode _focusNodeDC = FocusNode();
-  final FocusNode _focusNodeDCDetail = FocusNode();
 
   @override
   void initState() {
@@ -153,44 +148,70 @@ class _AddressPageState extends State<AddressPage> {
                               const Divider(
                                 color: colorGray03,
                               ),
-                              CustomTextInput(
-                                focusNode: _focusNodeDC,
-                                isNotLabelText: true,
-                                isCheckPadding: true,
-                                padding: const EdgeInsets.all(0),
-                                textEditController: _addressController,
-                                hintTextString: 'Địa chỉ',
-                                inputType: InputType.Default,
-                                enableBorder: false,
-                                cornerRadius: 0,
-                                maxLength: 24,
-                                prefixIcon: const Icon(Icons.location_on,
-                                    color: colorGray03),
-                                textColor: Colors.black,
-                                errorMessage:
-                                    'Tỉnh/Thành phố, quận/Huyện, phường/Xã',
-                                labelText: 'Nhập địa chỉ',
+                              FormAddressInput(
+                                contentPadding: const EdgeInsets.only(
+                                    bottom: 8, top: 8, right: 0, left: 0),
+                                widget: Padding(
+                                  padding: EdgeInsets.only(
+                                      left: (state.address ?? '').isNotEmpty
+                                          ? 0
+                                          : 12),
+                                  child: (state.address ?? '').isNotEmpty
+                                      ? null
+                                      : const Icon(
+                                          Icons.location_on,
+                                          color: colorGray03,
+                                          size: 24,
+                                        ),
+                                ),
+                                isBorder: false,
+                                key: ObjectKey(state.address),
+                                isDisplayTitle: false,
+                                title: 'Địa chỉ',
+                                initialText: state.address,
+                                onChanged: (value) {
+                                  bloc.onChangeTemporaryResidenceAddressUser(
+                                      temporaryResidenceAddress: value);
+                                },
                               ),
-                              const Divider(
-                                color: colorGray03,
-                              ),
-                              CustomTextInput(
-                                focusNode: _focusNodeDCDetail,
-                                isCheckPadding: true,
-                                padding: const EdgeInsets.all(0),
-                                textEditController: _addressgHomeController,
-                                hintTextString: 'Địa chỉ cụ thể',
-                                inputType: InputType.Default,
-                                isNotLabelText: true,
-                                enableBorder: false,
-                                cornerRadius: 0,
-                                maxLength: 24,
-                                prefixIcon:
-                                    const Icon(Icons.home, color: colorGray03),
-                                textColor: Colors.black,
-                                errorMessage: 'Số nhà/Tên đường',
-                                labelText: 'Nhập địa chỉ cụ thể',
-                              ),
+                              // CustomTextInput(
+                              //   focusNode: _focusNodeDC,
+                              //   isNotLabelText: true,
+                              //   isCheckPadding: true,
+                              //   padding: const EdgeInsets.all(0),
+                              //   textEditController: _addressController,
+                              //   hintTextString: 'Địa chỉ',
+                              //   inputType: InputType.Default,
+                              //   enableBorder: false,
+                              //   cornerRadius: 0,
+                              //   maxLength: 24,
+                              //   prefixIcon: const Icon(Icons.location_on,
+                              //       color: colorGray03),
+                              //   textColor: Colors.black,
+                              //   errorMessage:
+                              //       'Tỉnh/Thành phố, quận/Huyện, phường/Xã',
+                              //   labelText: 'Nhập địa chỉ',
+                              // ),
+                              // const Divider(
+                              //   color: colorGray03,
+                              // ),
+                              // CustomTextInput(
+                              //   focusNode: _focusNodeDCDetail,
+                              //   isCheckPadding: true,
+                              //   padding: const EdgeInsets.all(0),
+                              //   textEditController: _addressgHomeController,
+                              //   hintTextString: 'Địa chỉ cụ thể',
+                              //   inputType: InputType.Default,
+                              //   isNotLabelText: true,
+                              //   enableBorder: false,
+                              //   cornerRadius: 0,
+                              //   maxLength: 24,
+                              //   prefixIcon:
+                              //       const Icon(Icons.home, color: colorGray03),
+                              //   textColor: Colors.black,
+                              //   errorMessage: 'Số nhà/Tên đường',
+                              //   labelText: 'Nhập địa chỉ cụ thể',
+                              // ),
                               const Divider(
                                 color: colorGray03,
                               ),
@@ -212,7 +233,10 @@ class _AddressPageState extends State<AddressPage> {
                                 color: colorGray03,
                               ),
                               Column(
+                                // mainAxisAlignment: MainAxisAlignment.start,
+                                // crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  spaceH8,
                                   Row(
                                     children: [
                                       spaceW16,
@@ -244,7 +268,7 @@ class _AddressPageState extends State<AddressPage> {
                                                     color:
                                                         state.isLocationDefault ==
                                                                 1
-                                                            ? colorSuccess02
+                                                            ? colorPrimary
                                                             : null,
                                                     border: Border.all(
                                                         color: colorGray02),
@@ -254,13 +278,22 @@ class _AddressPageState extends State<AddressPage> {
                                                         MainAxisAlignment
                                                             .center,
                                                     children: [
-                                                      const Icon(Icons
-                                                          .home_repair_service_sharp),
+                                                      Icon(
+                                                        Icons
+                                                            .home_repair_service_sharp,
+                                                        color:
+                                                            state.isLocationDefault ==
+                                                                    1
+                                                                ? colorWhite
+                                                                : colorBlack,
+                                                      ),
                                                       spaceW16,
-                                                      const Text('Công ty',
+                                                      Text('Công ty',
                                                           style: TextStyle(
-                                                              color:
-                                                                  colorBlack)),
+                                                              color: state.isLocationDefault ==
+                                                                      1
+                                                                  ? colorWhite
+                                                                  : colorBlack)),
                                                     ],
                                                   ),
                                                 ),
@@ -279,7 +312,7 @@ class _AddressPageState extends State<AddressPage> {
                                                     color:
                                                         state.isLocationDefault ==
                                                                 2
-                                                            ? colorSuccess02
+                                                            ? colorPrimary
                                                             : null,
                                                     border: Border.all(
                                                         color: colorGray02),
@@ -289,12 +322,21 @@ class _AddressPageState extends State<AddressPage> {
                                                         MainAxisAlignment
                                                             .center,
                                                     children: [
-                                                      const Icon(Icons.home),
+                                                      Icon(
+                                                        Icons.home,
+                                                        color:
+                                                            state.isLocationDefault ==
+                                                                    2
+                                                                ? colorWhite
+                                                                : colorBlack,
+                                                      ),
                                                       spaceW16,
-                                                      const Text('Nhà',
+                                                      Text('Nhà',
                                                           style: TextStyle(
-                                                              color:
-                                                                  colorBlack)),
+                                                              color: state.isLocationDefault ==
+                                                                      2
+                                                                  ? colorWhite
+                                                                  : colorBlack)),
                                                     ],
                                                   ),
                                                 ),
@@ -306,56 +348,39 @@ class _AddressPageState extends State<AddressPage> {
                                       spaceW16,
                                     ],
                                   ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      spaceW8,
-                                      TextButton(
-                                        onPressed: state.textBtnswitchState
-                                            ? () {}
-                                            : null,
-                                        style: ButtonStyle(
-                                          foregroundColor:
-                                              MaterialStateProperty.resolveWith(
-                                            (states) {
-                                              if (states.contains(
-                                                  MaterialState.disabled)) {
-                                                return Colors.grey;
-                                              } else {
-                                                return colorPrimary;
-                                              }
-                                            },
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        TextButton(
+                                          onPressed: state.textBtnswitchState
+                                              ? () {}
+                                              : null,
+                                          child: Text(
+                                            overflow: TextOverflow.clip,
+                                            maxLines: null,
+                                            'Đặt làm địa chỉ mặc định',
+                                            style:
+                                                textTheme.bodyMedium?.copyWith(
+                                              color: state.textBtnswitchState
+                                                  ? colorPrimary
+                                                  : context.appColorScheme
+                                                      .colorExtendedTextBodyMedium,
+                                              height: 1.4,
+                                              wordSpacing: 1.2,
+                                            ),
                                           ),
                                         ),
-                                        child: Text(
-                                          overflow: TextOverflow.clip,
-                                          maxLines: null,
-                                          'Đặt làm địa chỉ mặc định',
-                                          style: textTheme.bodyMedium?.copyWith(
-                                            color: state.textBtnswitchState
-                                                ? colorPrimary
-                                                : context.appColorScheme
-                                                    .colorExtendedTextBodyMedium,
-                                            height: 1.4,
-                                            wordSpacing: 1.2,
-                                          ),
+                                        Switch(
+                                          value: state.textBtnswitchState,
+                                          onChanged: (newState) => bloc
+                                              .onChangeBtnswitchState(newState),
                                         ),
-                                      ),
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          Switch(
-                                            value: state.textBtnswitchState,
-                                            onChanged: (newState) =>
-                                                bloc.onChangeBtnswitchState(
-                                                    newState),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  )
+                                      ],
+                                    ),
+                                  ),
                                 ],
                               ),
                               const Divider(

@@ -1,5 +1,3 @@
-import 'package:eco_app/component/button/bottom_bar_button.dart';
-import 'package:eco_app/component/button/solid_button.dart';
 import 'package:eco_app/component/input/text_filed_icon.dart';
 import 'package:eco_app/helper/colors.dart';
 import 'package:eco_app/helper/spaces.dart';
@@ -7,7 +5,6 @@ import 'package:eco_app/resources/routes.dart';
 import 'package:eco_app/theme/typography.dart';
 import 'package:eco_app/utils/commons.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 //
@@ -52,6 +49,7 @@ class _BillInfoPageState extends State<BillInfoPage> {
             children: [
               spaceH8,
               CustomTextInput(
+                onChanged: (p0) {},
                 focusNode: _focusNodeMail,
                 isCheckPadding: true,
                 padding: const EdgeInsets.all(0),
@@ -71,6 +69,7 @@ class _BillInfoPageState extends State<BillInfoPage> {
                 color: colorGray03,
               ),
               CustomTextInput(
+                  onChanged: (p0) {},
                   focusNode: _focusNodeNameCompany,
                   isCheckPadding: true,
                   padding: const EdgeInsets.all(0),
@@ -88,6 +87,7 @@ class _BillInfoPageState extends State<BillInfoPage> {
                 color: colorGray03,
               ),
               CustomTextInput(
+                onChanged: (p0) {},
                 focusNode: _focusNodeName,
                 isNotLabelText: true,
                 isCheckPadding: true,
@@ -105,6 +105,7 @@ class _BillInfoPageState extends State<BillInfoPage> {
                 color: colorGray03,
               ),
               CustomTextInput(
+                onChanged: (p0) {},
                 focusNode: _focusNodeTax,
                 isNotLabelText: true,
                 isCheckPadding: true,
@@ -122,6 +123,7 @@ class _BillInfoPageState extends State<BillInfoPage> {
                 color: colorGray03,
               ),
               CustomTextInput(
+                onChanged: (p0) {},
                 focusNode: _focusNodeLocation,
                 isNotLabelText: true,
                 isCheckPadding: true,

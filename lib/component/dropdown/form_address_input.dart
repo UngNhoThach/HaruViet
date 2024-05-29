@@ -107,7 +107,7 @@ class FormAddressInput extends StatelessWidget {
                 ),
                 decoration: InputDecoration(
                   //errorBorder: null,
-                  icon: widget ?? space0,
+                  icon: widget,
                   contentPadding: contentPadding,
                   counterText: '',
                   label: isDisplayTitle
@@ -133,7 +133,7 @@ class FormAddressInput extends StatelessWidget {
                                   context.appColor.colorGrey.withOpacity(0.5)),
                           borderRadius: BorderRadius.all(Radius.circular(8.r)),
                         )
-                      : null,
+                      : InputBorder.none,
                   focusedBorder: isBorder
                       ? OutlineInputBorder(
                           borderSide: BorderSide(
@@ -141,7 +141,7 @@ class FormAddressInput extends StatelessWidget {
                                   context.appColor.colorGrey.withOpacity(0.5)),
                           borderRadius: BorderRadius.all(Radius.circular(8.r)),
                         )
-                      : null,
+                      : InputBorder.none,
                   disabledBorder: isBorder
                       ? OutlineInputBorder(
                           borderSide: BorderSide(
@@ -149,7 +149,7 @@ class FormAddressInput extends StatelessWidget {
                                   context.appColor.colorGrey.withOpacity(0.5)),
                           borderRadius: BorderRadius.all(Radius.circular(8.r)),
                         )
-                      : null,
+                      : InputBorder.none,
                   suffixIcon: space0,
                 ),
                 validator: _validationText,
@@ -171,8 +171,7 @@ class FormAddressInput extends StatelessWidget {
                           angle: pi / 2, // Góc quay 90 độ
                           child: Icon(
                             Icons.chevron_right,
-                            color: context.appColor
-                                .colorBlack, // Sử dụng Theme để truy cập context
+                            color: context.appColor.colorBlack,
                             size: 20,
                           ),
                         )),

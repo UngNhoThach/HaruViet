@@ -6,6 +6,7 @@ import 'package:eco_app/firebase_options.dart';
 import 'package:eco_app/helper/theme.dart';
 import 'package:eco_app/page/about_us/about_us_page.dart';
 import 'package:eco_app/page/account/update_profile/widgets/update_profile_params.dart';
+import 'package:eco_app/page/add_address/add_address/add_address_page.dart';
 import 'package:eco_app/page/add_address/address_page.dart';
 import 'package:eco_app/page/cart/cart_page.dart';
 import 'package:eco_app/page/cart/models/cart_page_params.dart';
@@ -14,7 +15,6 @@ import 'package:eco_app/page/category/category_page.dart';
 import 'package:eco_app/page/category/models/category_paga_params.dart';
 import 'package:eco_app/page/chat/chat_page.dart';
 import 'package:eco_app/page/cart/checkout/checkout_page.dart';
-import 'package:eco_app/page/cart/address_%20receive/address_receive_page.dart';
 import 'package:eco_app/page/cart/bill/bill_info_page.dart';
 import 'package:eco_app/page/cart/payment_method/payment_method_page.dart';
 import 'package:eco_app/page/cart/voucher/voucher_page.dart';
@@ -43,6 +43,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'page/account/reset_password/reset_password_page.dart';
 import 'page/account/reset_password/widgets/reset_password_params.dart';
+import 'page/add_address/add_address/widgets/add_address_params.dart';
 import 'page/cart/checkout/widgets/checkout_params.dart';
 
 Future<void> main() async {
@@ -251,16 +252,22 @@ class _HomePageState extends State<HomePage> {
         );
 
       // AddressPage
+      case Routes.addnewaddressPage:
+        assert(
+          settings.arguments != null &&
+              settings.arguments is AddNewAddressParams,
+        );
+        return MaterialPageRoute(
+          settings: const RouteSettings(name: Routes.addnewaddressPage),
+          builder: (_) => AddNewAddressPage(
+            params: settings.arguments! as AddNewAddressParams,
+          ),
+        );
+      // AddressReceivePage
       case Routes.addressPage:
         return MaterialPageRoute(
           settings: const RouteSettings(name: Routes.addressPage),
           builder: (_) => const AddressPage(),
-        );
-      // AddressReceivePage
-      case Routes.addressReceivePage:
-        return MaterialPageRoute(
-          settings: const RouteSettings(name: Routes.addressReceivePage),
-          builder: (_) => const AddressReceivePage(),
         );
       // VoucherPage
       case Routes.voucherPage:
@@ -293,7 +300,7 @@ class _HomePageState extends State<HomePage> {
       case Routes.profilePage:
         return MaterialPageRoute(
           settings: const RouteSettings(name: Routes.profilePage),
-          builder: (_) => ProfilePage(
+          builder: (_) => const ProfilePage(
               // params: settings.arguments! as ProfileParams,
               ),
         );

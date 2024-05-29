@@ -1,5 +1,5 @@
 import 'package:eco_app/base/base_bloc.dart';
-import 'package:eco_app/data/reponsitory/product/product_response.dart';
+import 'package:eco_app/data/reponsitory/product/models/product_response.dart';
 import 'package:eco_app/page/cart/cart_sate.dart';
 import 'package:eco_app/page/cart/models/cart_item_request.dart';
 import 'package:collection/collection.dart';

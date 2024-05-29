@@ -86,4 +86,10 @@ class CustomersService extends BaseService {
     );
     return response;
   }
+
+  Future<Response> getInfoUserSV({required String authorization}) async {
+    final response = await get(CustomersApi.getInfoUser,
+        headers: ApiHeaders(authorization).appMobileHeaders);
+    return response;
+  }
 }

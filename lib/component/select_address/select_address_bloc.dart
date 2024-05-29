@@ -21,14 +21,14 @@ class SelectAddressBloc extends Cubit<SelectAddressState> {
         params?.dataAddress != null &&
         params?.dataAddress?.city != null) {
       dataList = await _settingRepository.getDistrictListRP(
-          countryId: params?.dataAddress?.city?.id ?? 1);
+          idProvince: params?.dataAddress?.city?.id ?? 1);
     } else if (params?.step == SelectAddressStep.ward &&
         params?.dataAddress != null &&
         params?.dataAddress?.district != null) {
       dataList = await _settingRepository.getWardListRP(
-          districtId: params?.dataAddress?.district?.id ?? 1);
+          idDistrict: params?.dataAddress?.district?.id ?? 1);
     } else {
-      dataList = await _settingRepository.getCountryListRP();
+      dataList = await _settingRepository.getCountryListRP(idCountry: 12);
     }
 
     emit(state.copyWith(

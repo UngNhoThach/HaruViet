@@ -94,16 +94,16 @@ extension $ItemBaseResponseCopyWith on ItemBaseResponse {
 
 ItemBaseResponse _$ItemBaseResponseFromJson(Map<String, dynamic> json) =>
     ItemBaseResponse(
-      id: json['Id'] as int?,
+      id: json['id'] as int?,
       type: json['Type'] as int?,
-      code: json['Code'] as String?,
-      name: json['Name'] as String?,
+      code: json['code'] as String?,
+      name: json['name'] as String?,
     );
 
 Map<String, dynamic> _$ItemBaseResponseToJson(ItemBaseResponse instance) =>
     <String, dynamic>{
-      'Id': instance.id,
+      'id': instance.id,
       'Type': instance.type,
-      'Code': instance.code,
-      'Name': instance.name,
+      'code': instance.code,
+      'name': instance.name,
     };

@@ -34,8 +34,9 @@ class Routes {
   static const paymentMethodPage = "/paymentMethodPage";
 
   // ADDRESS
+  static const addnewaddressPage = "/addnewaddressPage";
+
   static const addressPage = "/addressPage";
-  static const addressReceivePage = "/addressReceivePage";
 
   // VOUCHER
   static const voucherPage = "/voucherPage";

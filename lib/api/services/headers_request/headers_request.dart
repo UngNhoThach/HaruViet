@@ -1,11 +1,3 @@
-// class ApiHeaders {
-//   static const Map<String, String> appMobileHeaders = {
-//     "apiconnection": "appmobile",
-//     "apikey": "9bb24a85-5556-4902-ada3-4c355b70d19d"
-//     "authorization" :
-//   };
-// }
-
 class ApiHeaders {
   final String? authorization;
 
@@ -14,7 +6,7 @@ class ApiHeaders {
   Map<String, String> get appMobileHeaders {
     return {
       "apiconnection": "appmobile",
-      "apikey": "9c143e83-8f62-4742-baaf-92fba6ae51c8",
+      "apikey": "9c22991b-e99c-4c4e-9b82-f6b28d4309d5",
       "authorization": "Bearer $authorization",
     };
   }

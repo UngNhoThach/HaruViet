@@ -9,7 +9,17 @@ part of 'user_state.dart';
 abstract class _$UserInfoLoginCWProxy {
   UserInfoLogin isLogin(bool isLogin);
 
+  UserInfoLogin provider(String? provider);
+
+  UserInfoLogin userName(String? userName);
+
+  UserInfoLogin providerId(String? providerId);
+
   UserInfoLogin id(String? id);
+
+  UserInfoLogin pathologicaldetail(dynamic pathologicaldetail);
+
+  UserInfoLogin agencyId(int? agencyId);
 
   UserInfoLogin accessToken(String? accessToken);
 
@@ -29,13 +39,11 @@ abstract class _$UserInfoLoginCWProxy {
 
   UserInfoLogin lastNameKana(String? lastNameKana);
 
-  UserInfoLogin sex(String? sex);
+  UserInfoLogin sex(int? sex);
 
   UserInfoLogin birthDay(String? birthDay);
 
   UserInfoLogin addressId(String? addressId);
-
-  UserInfoLogin address(String? address);
 
   UserInfoLogin address1(String? address1);
 
@@ -77,7 +85,12 @@ abstract class _$UserInfoLoginCWProxy {
   /// ````
   UserInfoLogin call({
     bool? isLogin,
+    String? provider,
+    String? userName,
+    String? providerId,
     String? id,
+    dynamic pathologicaldetail,
+    int? agencyId,
     String? accessToken,
     String? tokenType,
     String? email,
@@ -87,10 +100,9 @@ abstract class _$UserInfoLoginCWProxy {
     String? lastName,
     String? firstNameKana,
     String? lastNameKana,
-    String? sex,
+    int? sex,
     String? birthDay,
     String? addressId,
-    String? address,
     String? address1,
     String? address1ID,
     String? postCode,
@@ -120,7 +132,23 @@ class _$UserInfoLoginCWProxyImpl implements _$UserInfoLoginCWProxy {
   UserInfoLogin isLogin(bool isLogin) => this(isLogin: isLogin);
 
   @override
+  UserInfoLogin provider(String? provider) => this(provider: provider);
+
+  @override
+  UserInfoLogin userName(String? userName) => this(userName: userName);
+
+  @override
+  UserInfoLogin providerId(String? providerId) => this(providerId: providerId);
+
+  @override
   UserInfoLogin id(String? id) => this(id: id);
+
+  @override
+  UserInfoLogin pathologicaldetail(dynamic pathologicaldetail) =>
+      this(pathologicaldetail: pathologicaldetail);
+
+  @override
+  UserInfoLogin agencyId(int? agencyId) => this(agencyId: agencyId);
 
   @override
   UserInfoLogin accessToken(String? accessToken) =>
@@ -154,16 +182,13 @@ class _$UserInfoLoginCWProxyImpl implements _$UserInfoLoginCWProxy {
       this(lastNameKana: lastNameKana);
 
   @override
-  UserInfoLogin sex(String? sex) => this(sex: sex);
+  UserInfoLogin sex(int? sex) => this(sex: sex);
 
   @override
   UserInfoLogin birthDay(String? birthDay) => this(birthDay: birthDay);
 
   @override
   UserInfoLogin addressId(String? addressId) => this(addressId: addressId);
-
-  @override
-  UserInfoLogin address(String? address) => this(address: address);
 
   @override
   UserInfoLogin address1(String? address1) => this(address1: address1);
@@ -223,7 +248,12 @@ class _$UserInfoLoginCWProxyImpl implements _$UserInfoLoginCWProxy {
   /// ````
   UserInfoLogin call({
     Object? isLogin = const $CopyWithPlaceholder(),
+    Object? provider = const $CopyWithPlaceholder(),
+    Object? userName = const $CopyWithPlaceholder(),
+    Object? providerId = const $CopyWithPlaceholder(),
     Object? id = const $CopyWithPlaceholder(),
+    Object? pathologicaldetail = const $CopyWithPlaceholder(),
+    Object? agencyId = const $CopyWithPlaceholder(),
     Object? accessToken = const $CopyWithPlaceholder(),
     Object? tokenType = const $CopyWithPlaceholder(),
     Object? email = const $CopyWithPlaceholder(),
@@ -236,7 +266,6 @@ class _$UserInfoLoginCWProxyImpl implements _$UserInfoLoginCWProxy {
     Object? sex = const $CopyWithPlaceholder(),
     Object? birthDay = const $CopyWithPlaceholder(),
     Object? addressId = const $CopyWithPlaceholder(),
-    Object? address = const $CopyWithPlaceholder(),
     Object? address1 = const $CopyWithPlaceholder(),
     Object? address1ID = const $CopyWithPlaceholder(),
     Object? postCode = const $CopyWithPlaceholder(),
@@ -259,10 +288,31 @@ class _$UserInfoLoginCWProxyImpl implements _$UserInfoLoginCWProxy {
           ? _value.isLogin
           // ignore: cast_nullable_to_non_nullable
           : isLogin as bool,
+      provider: provider == const $CopyWithPlaceholder()
+          ? _value.provider
+          // ignore: cast_nullable_to_non_nullable
+          : provider as String?,
+      userName: userName == const $CopyWithPlaceholder()
+          ? _value.userName
+          // ignore: cast_nullable_to_non_nullable
+          : userName as String?,
+      providerId: providerId == const $CopyWithPlaceholder()
+          ? _value.providerId
+          // ignore: cast_nullable_to_non_nullable
+          : providerId as String?,
       id: id == const $CopyWithPlaceholder()
           ? _value.id
           // ignore: cast_nullable_to_non_nullable
           : id as String?,
+      pathologicaldetail: pathologicaldetail == const $CopyWithPlaceholder() ||
+              pathologicaldetail == null
+          ? _value.pathologicaldetail
+          // ignore: cast_nullable_to_non_nullable
+          : pathologicaldetail as dynamic,
+      agencyId: agencyId == const $CopyWithPlaceholder()
+          ? _value.agencyId
+          // ignore: cast_nullable_to_non_nullable
+          : agencyId as int?,
       accessToken: accessToken == const $CopyWithPlaceholder()
           ? _value.accessToken
           // ignore: cast_nullable_to_non_nullable
@@ -302,7 +352,7 @@ class _$UserInfoLoginCWProxyImpl implements _$UserInfoLoginCWProxy {
       sex: sex == const $CopyWithPlaceholder()
           ? _value.sex
           // ignore: cast_nullable_to_non_nullable
-          : sex as String?,
+          : sex as int?,
       birthDay: birthDay == const $CopyWithPlaceholder()
           ? _value.birthDay
           // ignore: cast_nullable_to_non_nullable
@@ -311,10 +361,6 @@ class _$UserInfoLoginCWProxyImpl implements _$UserInfoLoginCWProxy {
           ? _value.addressId
           // ignore: cast_nullable_to_non_nullable
           : addressId as String?,
-      address: address == const $CopyWithPlaceholder()
-          ? _value.address
-          // ignore: cast_nullable_to_non_nullable
-          : address as String?,
       address1: address1 == const $CopyWithPlaceholder()
           ? _value.address1
           // ignore: cast_nullable_to_non_nullable
@@ -396,7 +442,12 @@ extension $UserInfoLoginCopyWith on UserInfoLogin {
 UserInfoLogin _$UserInfoLoginFromJson(Map<String, dynamic> json) =>
     UserInfoLogin(
       isLogin: json['isLogin'] as bool? ?? false,
+      provider: json['provider'] as String?,
+      userName: json['user_name'] as String?,
+      providerId: json['provider_id'] as String?,
       id: json['id'] as String?,
+      pathologicaldetail: json['pathologicaldetail'],
+      agencyId: json['agency_id'] as int?,
       accessToken: json['access_token'] as String?,
       tokenType: json['token_type'] as String?,
       email: json['emai'] as String?,
@@ -406,10 +457,9 @@ UserInfoLogin _$UserInfoLoginFromJson(Map<String, dynamic> json) =>
       lastName: json['last_name'] as String?,
       firstNameKana: json['first_name_kana'] as String?,
       lastNameKana: json['last_name_kana'] as String?,
-      sex: json['sex'] as String?,
+      sex: json['sex'] as int?,
       birthDay: json['birthday'] as String?,
       addressId: json['address_id'] as String?,
-      address: json['address'] as String?,
       address1: json['address1'] as String?,
       address1ID: json['address1ID'] as String?,
       postCode: json['postcode'] as String?,
@@ -431,6 +481,8 @@ UserInfoLogin _$UserInfoLoginFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$UserInfoLoginToJson(UserInfoLogin instance) =>
     <String, dynamic>{
       'isLogin': instance.isLogin,
+      'user_name': instance.userName,
+      'pathologicaldetail': instance.pathologicaldetail,
       'id': instance.id,
       'access_token': instance.accessToken,
       'token_type': instance.tokenType,
@@ -445,7 +497,6 @@ Map<String, dynamic> _$UserInfoLoginToJson(UserInfoLogin instance) =>
       'birthday': instance.birthDay,
       'address_id': instance.addressId,
       'postcode': instance.postCode,
-      'address': instance.address,
       'address1': instance.address1,
       'address1ID': instance.address1ID,
       'address2': instance.address2,
@@ -458,7 +509,10 @@ Map<String, dynamic> _$UserInfoLoginToJson(UserInfoLogin instance) =>
       'store_id': instance.storeId,
       'status': instance.status,
       'group': instance.group,
+      'agency_id': instance.agencyId,
       'user_id': instance.userId,
       'agency_name': instance.agencyName,
       'avatar': instance.avatar,
+      'provider': instance.provider,
+      'provider_id': instance.providerId,
     };

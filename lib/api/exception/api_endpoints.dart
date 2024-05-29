@@ -1,11 +1,11 @@
 class SettingApi {
   static const rootDomain = "https://dev.sni.vn";
-  static const rootDomainIsoft = "https://apihrm.issvn.net";
-  static const getCountryList = "$rootDomainIsoft/apimobile/countryList";
+  static const getCountryList =
+      "$rootDomain/api/v1/shop/province?id_country={id_country}";
   static const getDistrictList =
-      "$rootDomainIsoft/apimobile/districtList?countryId={countryId}";
+      "$rootDomain/api/v1/shop/district?id_province={id_province}";
   static const getWardList =
-      "$rootDomainIsoft/apimobile/wardList?districtId={districtId}";
+      "$rootDomain/api/v1/shop/ward/?id_district={id_district}";
 }
 
 // CUSTOMERS API
@@ -22,9 +22,23 @@ class CustomersApi {
       "${SettingApi.rootDomain}/api/v1/customer/google/login";
 
   static const updateInfo = "${SettingApi.rootDomain}/api/v1/customer/upinfo";
-
-  /// upinfo
 }
 
 // PRODUCT API
-class ProductApi {}
+class ProductApi {
+  static const getListProducts =
+      "${SettingApi.rootDomain}/api/v1/shop/product?page[size]={size}&page[number]={totalproduct}";
+}
+
+class AddressApi {
+  static const addAddress =
+      "${SettingApi.rootDomain}/api/v1/customer/address_create";
+  static const postEditAddress =
+      "${SettingApi.rootDomain}/api/v1/customer/address_edit/{idAddress}";
+  static const getListAddress =
+      "${SettingApi.rootDomain}/api/v1/customer/address";
+  static const deleteAddress =
+      "${SettingApi.rootDomain}/api/v1/customer/address_delete/{idAddress}";
+  static const getAddressId =
+      "${SettingApi.rootDomain}/api/v1/customer/address_edit/{idAddress}";
+}

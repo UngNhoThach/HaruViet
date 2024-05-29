@@ -114,6 +114,7 @@ class TextFiledInputText extends StatefulWidget {
     this.hintext,
     this.initialText,
     this.keyboardType,
+    this.isBorder = true,
     this.validator,
     this.readOnly = false,
   }) : super(key: key);
@@ -127,6 +128,7 @@ class TextFiledInputText extends StatefulWidget {
   final String? initialText;
   final bool readOnly;
   final TextInputType? keyboardType;
+  final bool isBorder;
 
   @override
   State<TextFiledInputText> createState() => _TextFiledInputTextState();
@@ -164,24 +166,56 @@ class _TextFiledInputTextState extends State<TextFiledInputText> {
       keyboardType: widget.keyboardType,
       decoration: InputDecoration(
         prefixIcon: Padding(
-          padding: EdgeInsets.only(right: 8.w),
+          padding: EdgeInsets.only(right: 8.w, left: 16),
           child: widget.icon,
         ),
         prefixIconConstraints: const BoxConstraints(
           minWidth: 0,
         ),
         hintText: widget.hintext,
-        focusedBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.blueAccent,
-            width: 2,
-          ),
-        ),
+
+        border: widget.isBorder
+            ? OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: context.appColor.colorGrey.withOpacity(0.5)),
+                borderRadius: BorderRadius.all(Radius.circular(8.r)),
+              )
+            : InputBorder.none,
+        enabledBorder: widget.isBorder
+            ? OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: context.appColor.colorGrey.withOpacity(0.5)),
+                borderRadius: BorderRadius.all(Radius.circular(8.r)),
+              )
+            : null,
+        focusedBorder: widget.isBorder
+            ? OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: context.appColor.colorGrey.withOpacity(0.5)),
+                borderRadius: BorderRadius.all(Radius.circular(8.r)),
+              )
+            : null,
+        disabledBorder: widget.isBorder
+            ? OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: context.appColor.colorGrey.withOpacity(0.5)),
+                borderRadius: BorderRadius.all(Radius.circular(8.r)),
+              )
+            : null,
+        // focusedBorder: const UnderlineInputBorder(
+        //   borderSide: BorderSide(
+        //     color: Colors.blueAccent,
+        //     width: 2,
+        //   ),
+        // ),
         suffixIcon: _inputController.text.isNotEmpty
             ? GestureDetector(
-                child: Icon(
-                  Icons.clear,
-                  color: context.appColor.colorBlack,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 16),
+                  child: Icon(
+                    Icons.clear,
+                    color: context.appColor.colorBlack,
+                  ),
                 ),
                 onTap: () {
                   _inputController.clear();

@@ -229,7 +229,7 @@ class _MainScreenPageState extends State<MainScreenPage> {
               popAllScreensOnTapOfSelectedTab: true,
               popActionScreens: PopActionScreensType.all,
               itemAnimationProperties: const ItemAnimationProperties(
-                duration: Duration(milliseconds: 100),
+                duration: Duration(milliseconds: 50),
                 curve: Curves.bounceInOut,
               ),
               navBarStyle: NavBarStyle.style6,

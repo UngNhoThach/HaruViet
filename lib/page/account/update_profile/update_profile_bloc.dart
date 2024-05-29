@@ -4,8 +4,6 @@ import 'package:eco_app/data/enum.dart';
 import 'package:eco_app/data/local/user_preferences.dart';
 import 'package:eco_app/data/reponsitory/customers/customers_repository.dart';
 import 'package:eco_app/data/reponsitory/customers/models/address_response.dart';
-import 'package:eco_app/data/reponsitory/customers/models/address_user_response.dart';
-import 'package:eco_app/data/reponsitory/setting/item_base_response.dart';
 import 'package:eco_app/data/user/user_state.dart';
 import 'package:eco_app/helper/base_status_response.dart';
 import 'package:eco_app/helper/date_time.dart';
@@ -22,40 +20,45 @@ class UpdateProfileBloc extends BaseBloc<UpdateProfileState> {
     emit(state.copyWith(
       isLoading: true,
     ));
+// v1/customer/upinfo
     try {
       final userInfoLogin = await Preference.getUserInfo();
-      if (userInfoLogin?.address == null || userInfoLogin?.address == '') {
-      } else {
-        final AddressUser addressUserData = AddressUser(
-            temporaryResidenceAddress: AddressResponse(
-          address: userInfoLogin?.address,
-          fullAddress: userInfoLogin?.address,
-          city: ItemBaseResponse(
-              id: int.parse(userInfoLogin!.address1ID.toString()),
-              name: userInfoLogin.address1),
-          district: ItemBaseResponse(
-              id: int.parse(userInfoLogin.address2ID.toString()),
-              name: userInfoLogin.address2),
-          ward: ItemBaseResponse(
-              id: int.parse(userInfoLogin.address3ID.toString()),
-              name: userInfoLogin.address3),
-        ));
-        emit(state.copyWith(
-          addressUserData: addressUserData,
-          address: addressUserData.temporaryResidenceAddress?.fullAddress,
-          address1: addressUserData.temporaryResidenceAddress?.city?.name,
-          address2: addressUserData.temporaryResidenceAddress?.district?.name,
-          address3: addressUserData.temporaryResidenceAddress?.ward?.name,
-          address1ID:
-              addressUserData.temporaryResidenceAddress?.city?.id.toString(),
-          address2ID: addressUserData.temporaryResidenceAddress?.district?.id
-              .toString(),
-          address3ID:
-              addressUserData.temporaryResidenceAddress?.ward?.id.toString(),
-        ));
-      }
+      final dataInfo = await _customersRepository.getInfoUserRP(
+          authorization: userInfoLogin?.accessToken ?? '');
 
+      // if (userInfoLogin?.address == null || userInfoLogin?.address == '') {
+      // } else {
+      //   final AddressUser addressUserData = AddressUser(
+      //       temporaryResidenceAddress: AddressResponse(
+      //     address: userInfoLogin?.address,
+      //     fullAddress: userInfoLogin?.address,
+      //     city: ItemBaseResponse(
+      //         id: int.parse(userInfoLogin!.address1ID.toString()),
+      //         name: userInfoLogin.address1),
+      //     district: ItemBaseResponse(
+      //         id: int.parse(userInfoLogin.address2ID.toString()),
+      //         name: userInfoLogin.address2),
+      //     ward: ItemBaseResponse(
+      //         id: int.parse(userInfoLogin.address3ID.toString()),
+      //         name: userInfoLogin.address3),
+      //   ));
+      //   emit(state.copyWith(
+      //     addressUserData: addressUserData,
+      //     address: addressUserData.temporaryResidenceAddress?.fullAddress,
+      //     address1: addressUserData.temporaryResidenceAddress?.city?.name,
+      //     address2: addressUserData.temporaryResidenceAddress?.district?.name,
+      //     address3: addressUserData.temporaryResidenceAddress?.ward?.name,
+      //     address1ID:
+      //         addressUserData.temporaryResidenceAddress?.city?.id.toString(),
+      //     address2ID: addressUserData.temporaryResidenceAddress?.district?.id
+      //         .toString(),
+      //     address3ID:
+      //         addressUserData.temporaryResidenceAddress?.ward?.id.toString(),
+      //   ));
+      // }
+      if (userInfoLogin?.address3 == null && userInfoLogin?.address2 == null) {}
       emit(state.copyWith(
+          userInfo: dataInfo.data,
           userInfoLogin: userInfoLogin,
           firstName: userInfoLogin?.firstName ?? '',
           lastName: userInfoLogin?.lastName ?? '',
@@ -147,11 +150,11 @@ class UpdateProfileBloc extends BaseBloc<UpdateProfileState> {
     try {
       var updateInfoResponse = await _customersRepository.updateInfoRP(
           request: UpdateUserInfoRequest(
-              address: state.address,
               address1: state.address1,
-              address2: state.address2,
-              address3: state.address3,
+              address2: '${state.address3},  ${state.address2}',
+              address3: state.address,
               phone: state.phone.toString(),
+              country: 'VN',
               firstName: state.firstName,
               lastName: state.lastName,
               sex: state.typeSex.toString(),
@@ -178,7 +181,7 @@ class UpdateProfileBloc extends BaseBloc<UpdateProfileState> {
           lastName: state.lastName ?? "",
           firstNameKana: state.userInfoLogin?.firstNameKana ?? "",
           lastNameKana: state.userInfoLogin?.lastNameKana ?? "",
-          sex: state.typeSex != null ? state.typeSex.toString() : "",
+          sex: state.typeSex != null ? state.typeSex?.toInt() : 0,
           birthDay: state.birthDay?.format(pattern: dd_mm_yyyy) ?? "",
           addressId: state.userInfoLogin?.addressId ?? "",
           postCode: state.userInfoLogin?.postCode ?? "",
@@ -194,23 +197,18 @@ class UpdateProfileBloc extends BaseBloc<UpdateProfileState> {
           userId: state.userInfoLogin?.userId ?? "",
           agencyName: state.userInfoLogin?.agencyName ?? "",
           //
-          address: state.address,
+          // address: state.address,
           address1: state.address1,
           address2: state.address2,
           address3: state.address3,
           address1ID: state.address1ID,
           address2ID: state.address2ID,
-
           address3ID: state.address3ID,
-          // avatar: state.dataUpdate?.avatar ?? "",
-          //      id: state.dataUpdate?.id ?? "",
-          //tokenType: state.dataUpdate?.tokenType ?? ""a,
-
           isLogin: true,
         );
         SharedPreferences prefs = await SharedPreferences.getInstance();
         // avatar
-        await prefs.setString('address', dataUser.address ?? '');
+        //   await prefs.setString('address', dataUser.address ?? '');
         await prefs.setString('address1', dataUser.address1 ?? '');
         await prefs.setString('address2', dataUser.address2 ?? '');
         await prefs.setString('address3', dataUser.address3 ?? '');
@@ -229,7 +227,8 @@ class UpdateProfileBloc extends BaseBloc<UpdateProfileState> {
         await prefs.setString('last_name', dataUser.lastName ?? '');
         await prefs.setString('first_name_kana', dataUser.firstNameKana ?? '');
         await prefs.setString('last_name_kana', dataUser.lastNameKana ?? '');
-        await prefs.setString('sex', dataUser.sex ?? '');
+        await prefs.setString(
+            'sex', (dataUser.sex != null) ? dataUser.sex.toString() : '');
         await prefs.setString('birthday', dataUser.birthDay ?? '');
         await prefs.setString('address_id', dataUser.addressId ?? '');
         await prefs.setString('postcode', dataUser.postCode ?? '');

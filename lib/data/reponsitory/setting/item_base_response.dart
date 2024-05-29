@@ -6,13 +6,13 @@ part 'item_base_response.g.dart';
 @JsonSerializable(explicitToJson: true)
 @CopyWith()
 class ItemBaseResponse {
-  @JsonKey(name: 'Id')
+  @JsonKey(name: 'id')
   int? id;
   @JsonKey(name: 'Type')
   int? type;
-  @JsonKey(name: 'Code')
+  @JsonKey(name: 'code')
   String? code;
-  @JsonKey(name: 'Name')
+  @JsonKey(name: 'name')
   String? name;
 
   ItemBaseResponse({

@@ -269,7 +269,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
           InkWell(
             onTap: () {
               routeService.pushNamed(
-                Routes.addressReceivePage,
+                Routes.addressPage,
               );
             },
             child: const Icon(
@@ -460,6 +460,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
           child: Container(
             decoration: const BoxDecoration(color: colorWhite),
             child: CustomTextInput(
+              onChanged: (p0) {},
               focusNode: _focusNodeVoucher,
               isNotLabelText: true,
               isNotValidate: true,
@@ -501,6 +502,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
     return Container(
       decoration: const BoxDecoration(color: colorWhite),
       child: CustomTextInput(
+        onChanged: (p0) {},
         maxLines: 3,
         focusNode: _focusNodeNote,
         isNotLabelText: true,

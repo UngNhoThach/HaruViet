@@ -11,37 +11,13 @@ abstract class _$AddressStateCWProxy {
 
   AddressState errorMsg(String errorMsg);
 
-  AddressState address(String? address);
-
-  AddressState address1(String? address1);
-
-  AddressState address2(String? address2);
-
-  AddressState address3(String? address3);
-
-  AddressState address1ID(String? address1ID);
-
-  AddressState address2ID(String? address2ID);
-
-  AddressState address3ID(String? address3ID);
-
-  AddressState firstName(String? firstName);
-
-  AddressState lastName(String? lastName);
-
-  AddressState userName(String? userName);
-
-  AddressState email(String? email);
-
-  AddressState name(String? name);
-
-  AddressState phone(String? phone);
+  AddressState addressDefaultId(String? addressDefaultId);
 
   AddressState isLoading(bool isLoading);
 
-  AddressState isLocationDefault(int? isLocationDefault);
+  AddressState listAddresses(List<DataListAddress> listAddresses);
 
-  AddressState textBtnswitchState(bool textBtnswitchState);
+  AddressState isSubmitSuccess(bool isSubmitSuccess);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `AddressState(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -52,22 +28,10 @@ abstract class _$AddressStateCWProxy {
   AddressState call({
     ViewState? viewState,
     String? errorMsg,
-    String? address,
-    String? address1,
-    String? address2,
-    String? address3,
-    String? address1ID,
-    String? address2ID,
-    String? address3ID,
-    String? firstName,
-    String? lastName,
-    String? userName,
-    String? email,
-    String? name,
-    String? phone,
+    String? addressDefaultId,
     bool? isLoading,
-    int? isLocationDefault,
-    bool? textBtnswitchState,
+    List<DataListAddress>? listAddresses,
+    bool? isSubmitSuccess,
   });
 }
 
@@ -84,54 +48,19 @@ class _$AddressStateCWProxyImpl implements _$AddressStateCWProxy {
   AddressState errorMsg(String errorMsg) => this(errorMsg: errorMsg);
 
   @override
-  AddressState address(String? address) => this(address: address);
-
-  @override
-  AddressState address1(String? address1) => this(address1: address1);
-
-  @override
-  AddressState address2(String? address2) => this(address2: address2);
-
-  @override
-  AddressState address3(String? address3) => this(address3: address3);
-
-  @override
-  AddressState address1ID(String? address1ID) => this(address1ID: address1ID);
-
-  @override
-  AddressState address2ID(String? address2ID) => this(address2ID: address2ID);
-
-  @override
-  AddressState address3ID(String? address3ID) => this(address3ID: address3ID);
-
-  @override
-  AddressState firstName(String? firstName) => this(firstName: firstName);
-
-  @override
-  AddressState lastName(String? lastName) => this(lastName: lastName);
-
-  @override
-  AddressState userName(String? userName) => this(userName: userName);
-
-  @override
-  AddressState email(String? email) => this(email: email);
-
-  @override
-  AddressState name(String? name) => this(name: name);
-
-  @override
-  AddressState phone(String? phone) => this(phone: phone);
+  AddressState addressDefaultId(String? addressDefaultId) =>
+      this(addressDefaultId: addressDefaultId);
 
   @override
   AddressState isLoading(bool isLoading) => this(isLoading: isLoading);
 
   @override
-  AddressState isLocationDefault(int? isLocationDefault) =>
-      this(isLocationDefault: isLocationDefault);
+  AddressState listAddresses(List<DataListAddress> listAddresses) =>
+      this(listAddresses: listAddresses);
 
   @override
-  AddressState textBtnswitchState(bool textBtnswitchState) =>
-      this(textBtnswitchState: textBtnswitchState);
+  AddressState isSubmitSuccess(bool isSubmitSuccess) =>
+      this(isSubmitSuccess: isSubmitSuccess);
 
   @override
 
@@ -144,22 +73,10 @@ class _$AddressStateCWProxyImpl implements _$AddressStateCWProxy {
   AddressState call({
     Object? viewState = const $CopyWithPlaceholder(),
     Object? errorMsg = const $CopyWithPlaceholder(),
-    Object? address = const $CopyWithPlaceholder(),
-    Object? address1 = const $CopyWithPlaceholder(),
-    Object? address2 = const $CopyWithPlaceholder(),
-    Object? address3 = const $CopyWithPlaceholder(),
-    Object? address1ID = const $CopyWithPlaceholder(),
-    Object? address2ID = const $CopyWithPlaceholder(),
-    Object? address3ID = const $CopyWithPlaceholder(),
-    Object? firstName = const $CopyWithPlaceholder(),
-    Object? lastName = const $CopyWithPlaceholder(),
-    Object? userName = const $CopyWithPlaceholder(),
-    Object? email = const $CopyWithPlaceholder(),
-    Object? name = const $CopyWithPlaceholder(),
-    Object? phone = const $CopyWithPlaceholder(),
+    Object? addressDefaultId = const $CopyWithPlaceholder(),
     Object? isLoading = const $CopyWithPlaceholder(),
-    Object? isLocationDefault = const $CopyWithPlaceholder(),
-    Object? textBtnswitchState = const $CopyWithPlaceholder(),
+    Object? listAddresses = const $CopyWithPlaceholder(),
+    Object? isSubmitSuccess = const $CopyWithPlaceholder(),
   }) {
     return AddressState(
       viewState: viewState == const $CopyWithPlaceholder() || viewState == null
@@ -170,71 +87,24 @@ class _$AddressStateCWProxyImpl implements _$AddressStateCWProxy {
           ? _value.errorMsg
           // ignore: cast_nullable_to_non_nullable
           : errorMsg as String,
-      address: address == const $CopyWithPlaceholder()
-          ? _value.address
+      addressDefaultId: addressDefaultId == const $CopyWithPlaceholder()
+          ? _value.addressDefaultId
           // ignore: cast_nullable_to_non_nullable
-          : address as String?,
-      address1: address1 == const $CopyWithPlaceholder()
-          ? _value.address1
-          // ignore: cast_nullable_to_non_nullable
-          : address1 as String?,
-      address2: address2 == const $CopyWithPlaceholder()
-          ? _value.address2
-          // ignore: cast_nullable_to_non_nullable
-          : address2 as String?,
-      address3: address3 == const $CopyWithPlaceholder()
-          ? _value.address3
-          // ignore: cast_nullable_to_non_nullable
-          : address3 as String?,
-      address1ID: address1ID == const $CopyWithPlaceholder()
-          ? _value.address1ID
-          // ignore: cast_nullable_to_non_nullable
-          : address1ID as String?,
-      address2ID: address2ID == const $CopyWithPlaceholder()
-          ? _value.address2ID
-          // ignore: cast_nullable_to_non_nullable
-          : address2ID as String?,
-      address3ID: address3ID == const $CopyWithPlaceholder()
-          ? _value.address3ID
-          // ignore: cast_nullable_to_non_nullable
-          : address3ID as String?,
-      firstName: firstName == const $CopyWithPlaceholder()
-          ? _value.firstName
-          // ignore: cast_nullable_to_non_nullable
-          : firstName as String?,
-      lastName: lastName == const $CopyWithPlaceholder()
-          ? _value.lastName
-          // ignore: cast_nullable_to_non_nullable
-          : lastName as String?,
-      userName: userName == const $CopyWithPlaceholder()
-          ? _value.userName
-          // ignore: cast_nullable_to_non_nullable
-          : userName as String?,
-      email: email == const $CopyWithPlaceholder()
-          ? _value.email
-          // ignore: cast_nullable_to_non_nullable
-          : email as String?,
-      name: name == const $CopyWithPlaceholder()
-          ? _value.name
-          // ignore: cast_nullable_to_non_nullable
-          : name as String?,
-      phone: phone == const $CopyWithPlaceholder()
-          ? _value.phone
-          // ignore: cast_nullable_to_non_nullable
-          : phone as String?,
+          : addressDefaultId as String?,
       isLoading: isLoading == const $CopyWithPlaceholder() || isLoading == null
           ? _value.isLoading
           // ignore: cast_nullable_to_non_nullable
           : isLoading as bool,
-      isLocationDefault: isLocationDefault == const $CopyWithPlaceholder()
-          ? _value.isLocationDefault
+      listAddresses:
+          listAddresses == const $CopyWithPlaceholder() || listAddresses == null
+              ? _value.listAddresses
+              // ignore: cast_nullable_to_non_nullable
+              : listAddresses as List<DataListAddress>,
+      isSubmitSuccess: isSubmitSuccess == const $CopyWithPlaceholder() ||
+              isSubmitSuccess == null
+          ? _value.isSubmitSuccess
           // ignore: cast_nullable_to_non_nullable
-          : isLocationDefault as int?,
-      textBtnswitchState: textBtnswitchState == const $CopyWithPlaceholder() ||
-              textBtnswitchState == null
-          ? _value.textBtnswitchState
-          // ignore: cast_nullable_to_non_nullable
-          : textBtnswitchState as bool,
+          : isSubmitSuccess as bool,
     );
   }
 }

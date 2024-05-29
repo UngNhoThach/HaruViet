@@ -90,7 +90,7 @@ class _ProfilePageState extends State<ProfilePage> {
     ));
 
     listSection.add(createSection(
-      "Thêm địa chỉ",
+      "Địa chỉ của tôi",
       const Icon(
         Icons.location_on_rounded,
         color: colorGray03,
@@ -205,9 +205,7 @@ class _ProfilePageState extends State<ProfilePage> {
         listener: (context, state) {
           if (state.isLoading) {
             showPopupLoading(context, text: 'Đang tải...');
-          } else if (state.isSubmitSuccess) {
-            // Navigator.of(context).pop();
-          }
+          } else if (state.isSubmitSuccess) {}
         },
         child: BlocBuilder<ProfileBloc, ProfileState>(
           builder: (context, state) {

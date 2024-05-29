@@ -48,12 +48,4 @@ class SignupState extends BaseState {
     this.isLoading = false,
     this.dataUser,
   }) : super(viewState, errorMsg);
-
-  bool get isValidPassWord {
-    return rePasswordChange == passwordChange;
-  }
-
-  bool get isValidPassWordFormat {
-    return passwordChange != null && passwordChange!.length > 5;
-  }
 }

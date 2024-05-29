@@ -115,7 +115,8 @@ class SignInBloc extends BaseBloc<SignInState> {
         await prefs.setString('last_name', dataUser.lastName ?? '');
         await prefs.setString('first_name_kana', dataUser.firstNameKana ?? '');
         await prefs.setString('last_name_kana', dataUser.lastNameKana ?? '');
-        await prefs.setString('sex', dataUser.sex ?? '');
+        await prefs.setString(
+            'sex', (dataUser.sex != null) ? dataUser.sex.toString() : '');
         await prefs.setString('birthday', dataUser.birthDay ?? '');
         await prefs.setString('address_id', dataUser.addressId ?? '');
         await prefs.setString('postcode', dataUser.postCode ?? '');
@@ -246,7 +247,8 @@ class SignInBloc extends BaseBloc<SignInState> {
                 'first_name_kana', dataUser.firstNameKana ?? '');
             await prefs.setString(
                 'last_name_kana', dataUser.lastNameKana ?? '');
-            await prefs.setString('sex', dataUser.sex ?? '');
+            await prefs.setString(
+                'sex', (dataUser.sex != null) ? dataUser.sex.toString() : '');
             await prefs.setString('birthday', dataUser.birthDay ?? '');
             await prefs.setString('address_id', dataUser.addressId ?? '');
             await prefs.setString('postcode', dataUser.postCode ?? '');

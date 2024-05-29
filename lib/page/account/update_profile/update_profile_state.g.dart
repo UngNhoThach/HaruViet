@@ -11,6 +11,8 @@ abstract class _$UpdateProfileStateCWProxy {
 
   UpdateProfileState errorMsg(String errorMsg);
 
+  UpdateProfileState userInfo(DataUserUpdateInfo? userInfo);
+
   UpdateProfileState email(String? email);
 
   UpdateProfileState baseStatusResponse(BaseStatusResponse baseStatusResponse);
@@ -66,6 +68,7 @@ abstract class _$UpdateProfileStateCWProxy {
   UpdateProfileState call({
     ViewState? viewState,
     String? errorMsg,
+    DataUserUpdateInfo? userInfo,
     String? email,
     BaseStatusResponse? baseStatusResponse,
     DataUserUpdateInfo? dataUpdate,
@@ -104,6 +107,10 @@ class _$UpdateProfileStateCWProxyImpl implements _$UpdateProfileStateCWProxy {
 
   @override
   UpdateProfileState errorMsg(String errorMsg) => this(errorMsg: errorMsg);
+
+  @override
+  UpdateProfileState userInfo(DataUserUpdateInfo? userInfo) =>
+      this(userInfo: userInfo);
 
   @override
   UpdateProfileState email(String? email) => this(email: email);
@@ -194,6 +201,7 @@ class _$UpdateProfileStateCWProxyImpl implements _$UpdateProfileStateCWProxy {
   UpdateProfileState call({
     Object? viewState = const $CopyWithPlaceholder(),
     Object? errorMsg = const $CopyWithPlaceholder(),
+    Object? userInfo = const $CopyWithPlaceholder(),
     Object? email = const $CopyWithPlaceholder(),
     Object? baseStatusResponse = const $CopyWithPlaceholder(),
     Object? dataUpdate = const $CopyWithPlaceholder(),
@@ -227,6 +235,10 @@ class _$UpdateProfileStateCWProxyImpl implements _$UpdateProfileStateCWProxy {
           ? _value.errorMsg
           // ignore: cast_nullable_to_non_nullable
           : errorMsg as String,
+      userInfo: userInfo == const $CopyWithPlaceholder()
+          ? _value.userInfo
+          // ignore: cast_nullable_to_non_nullable
+          : userInfo as DataUserUpdateInfo?,
       email: email == const $CopyWithPlaceholder()
           ? _value.email
           // ignore: cast_nullable_to_non_nullable

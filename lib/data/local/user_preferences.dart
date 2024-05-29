@@ -22,6 +22,28 @@ class Preference {
     return null;
   }
 
+  // Hàm cập nhật thông tin người dùng
+  static Future<void> updateUserInfo(Map<String, dynamic> updates) async {
+    // Lấy thông tin người dùng hiện tại
+    UserInfoLogin? currentUser = await getUserInfo();
+
+    // Kiểm tra nếu người dùng tồn tại
+    if (currentUser != null) {
+      // Tạo một bản sao của thông tin người dùng hiện tại dưới dạng Map
+      Map<String, dynamic> currentUserMap = currentUser.toJson();
+
+      // Cập nhật các trường với dữ liệu mới
+      updates.forEach((key, value) {
+        currentUserMap[key] = value;
+      });
+      // Chuyển lại Map thành đối tượng UserInfoLogin
+      UserInfoLogin updatedUser = UserInfoLogin.fromJson(currentUserMap);
+
+      // Lưu thông tin người dùng đã cập nhật vào bộ nhớ cục bộ
+      await setUserInfo(updatedUser);
+    }
+  }
+
 //
   // static setCallData(FirebaseCallDataResponse user) async {
   //   SharedPreferences prefs = await SharedPreferences.getInstance();

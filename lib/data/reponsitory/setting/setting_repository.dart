@@ -5,9 +5,12 @@ import 'package:flutter/foundation.dart';
 class SettingRepository {
   final _settingService = SettingService();
 
-  Future<List<ItemBaseResponse>> getCountryListRP() async {
+  Future<List<ItemBaseResponse>> getCountryListRP({
+    required int idCountry,
+  }) async {
     try {
-      final response = await _settingService.getCountryListSV();
+      final response = await _settingService.getCountryListSV(
+          idCountry: idCountry.toString());
       final result = ItemBaseResponse.fromJsonArray(response.data);
       return result;
     } catch (error, statckTrace) {
@@ -19,11 +22,12 @@ class SettingRepository {
   }
 
   Future<List<ItemBaseResponse>> getDistrictListRP({
-    required int countryId,
+    required int idProvince,
   }) async {
     try {
       final response = await _settingService.getDistrictListSV(
-          countryId: countryId.toString());
+        idProvince: idProvince.toString(),
+      );
       final result = ItemBaseResponse.fromJsonArray(response.data);
       return result;
     } catch (error, statckTrace) {
@@ -35,11 +39,12 @@ class SettingRepository {
   }
 
   Future<List<ItemBaseResponse>> getWardListRP({
-    required int districtId,
+    required int idDistrict,
   }) async {
     try {
       final response = await _settingService.getWardListSV(
-          districtId: districtId.toString());
+        idDistrict: idDistrict.toString(),
+      );
       final result = ItemBaseResponse.fromJsonArray(response.data);
       return result;
     } catch (error, statckTrace) {

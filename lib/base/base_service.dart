@@ -26,12 +26,6 @@ abstract class BaseService {
     }
   }
 
-  // Future<dynamic> get(String path, {Map<String, dynamic>? params}) async {
-  //   final response = await RestClient.dio.get(path, queryParameters: params);
-  //   _logger.i('path: $path \nparams: $params\nresponse: $response');
-  //   return _handleResponse(response);
-  // }
-
   Future<dynamic> post(String path,
       {Map<String, dynamic>? data,
       Map<String, dynamic>? headers,

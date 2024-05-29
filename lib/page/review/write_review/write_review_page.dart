@@ -223,6 +223,7 @@ class _WriteReviewPageState extends State<WriteReviewPage> {
                         color: colorGray03,
                       ),
                       CustomTextInput(
+                        onChanged: (p0) {},
                         focusNode: _focusNode,
                         isNotLabelText: true,
                         isNotValidate: true,

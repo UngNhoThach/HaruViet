@@ -10,12 +10,13 @@ UpdateUserInfoRequest _$UpdateUserInfoRequestFromJson(
         Map<String, dynamic> json) =>
     UpdateUserInfoRequest(
       birthday: json['birthday'] as String?,
+      idAddress: json['id_address'] as String?,
       addressId: json['address_id'] as String?,
       name: json['name'] as String?,
       avatar: json['avatar'] as String?,
       pathologicaldetail: json['pathologicaldetail'] as String?,
       agencyId: json['agency_id'] as int?,
-      userId: json['user_id'] as int?,
+      userId: json['user_id'] as String?,
       agencyName: json['agency_name'] as String?,
       userName: json['user_name'] as String?,
       firstName: json['first_name'] as String?,
@@ -24,7 +25,6 @@ UpdateUserInfoRequest _$UpdateUserInfoRequestFromJson(
       lastNameKana: json['last_name_kana'] as String?,
       sex: json['sex'] as String?,
       postcode: json['postcode'] as String?,
-      address: json['address'] as String?,
       address1: json['address1'] as String?,
       address2: json['address2'] as String?,
       address3: json['address3'] as String?,
@@ -53,7 +53,6 @@ Map<String, dynamic> _$UpdateUserInfoRequestToJson(
       'last_name_kana': instance.lastNameKana,
       'sex': instance.sex,
       'postcode': instance.postcode,
-      'address': instance.address,
       'address1': instance.address1,
       'address2': instance.address2,
       'address3': instance.address3,
@@ -62,4 +61,5 @@ Map<String, dynamic> _$UpdateUserInfoRequestToJson(
       'phone': instance.phone,
       'provider': instance.provider,
       'provider_id': instance.providerId,
+      'id_address': instance.idAddress,
     };

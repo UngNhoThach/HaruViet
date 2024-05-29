@@ -10,6 +10,7 @@ part 'update_profile_state.g.dart';
 
 @CopyWith()
 class UpdateProfileState extends BaseState {
+  final DataUserUpdateInfo? userInfo;
   final bool isLoading;
   final bool isSubmitSuccess;
   final String? address;
@@ -38,6 +39,7 @@ class UpdateProfileState extends BaseState {
   const UpdateProfileState({
     ViewState viewState = ViewState.loaded,
     String errorMsg = '',
+    this.userInfo,
     this.email,
     this.baseStatusResponse = BaseStatusResponse.initial,
     this.dataUpdate,

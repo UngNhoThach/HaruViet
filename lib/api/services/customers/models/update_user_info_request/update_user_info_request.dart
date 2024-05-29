@@ -13,7 +13,7 @@ class UpdateUserInfoRequest {
   @JsonKey(name: 'agency_id')
   int? agencyId;
   @JsonKey(name: 'user_id')
-  int? userId;
+  String? userId;
   @JsonKey(name: 'agency_name')
   String? agencyName;
   @JsonKey(name: 'user_name')
@@ -28,8 +28,6 @@ class UpdateUserInfoRequest {
   String? lastNameKana;
   String? sex;
   String? postcode;
-  String? address;
-
   String? address1;
   String? address2;
   String? address3;
@@ -40,9 +38,12 @@ class UpdateUserInfoRequest {
   String? provider;
   @JsonKey(name: 'provider_id')
   String? providerId;
-
+  @JsonKey(name: 'id_address')
+  String? idAddress;
+  //
   UpdateUserInfoRequest({
     this.birthday,
+    this.idAddress,
     this.addressId,
     this.name,
     this.avatar,
@@ -57,7 +58,6 @@ class UpdateUserInfoRequest {
     this.lastNameKana,
     this.sex,
     this.postcode,
-    this.address,
     this.address1,
     this.address2,
     this.address3,

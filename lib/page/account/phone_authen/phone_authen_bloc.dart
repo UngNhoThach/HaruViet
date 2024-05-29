@@ -1,5 +1,4 @@
 import 'package:eco_app/api/services/customers/models/register_request.dart';
-import 'package:eco_app/api/services/customers/models/update_password_phone_number_request/update_password_phone_number_request.dart';
 import 'package:eco_app/base/base_bloc.dart';
 import 'package:eco_app/data/enum.dart';
 import 'package:eco_app/data/local/user_preferences.dart';
@@ -118,7 +117,8 @@ class PhoneAuthBloc extends BaseBloc<PhoneAuthState> {
         await prefs.setString('last_name', dataUser.lastName ?? '');
         await prefs.setString('first_name_kana', dataUser.firstNameKana ?? '');
         await prefs.setString('last_name_kana', dataUser.lastNameKana ?? '');
-        await prefs.setString('sex', dataUser.sex ?? '');
+        await prefs.setString(
+            'sex', (dataUser.sex != null) ? dataUser.sex.toString() : '');
         await prefs.setString('birthday', dataUser.birthDay ?? '');
         await prefs.setString('address_id', dataUser.addressId ?? '');
         await prefs.setString('postcode', dataUser.postCode ?? '');

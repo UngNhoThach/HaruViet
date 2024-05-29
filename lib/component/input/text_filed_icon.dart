@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class CustomTextInput extends StatefulWidget {
-  const CustomTextInput(
-      {required this.hintTextString,
+  CustomTextInput(
+      {super.key,
+      required this.hintTextString,
       this.textEditController,
       required this.inputType,
       this.enableBorder = true,
@@ -20,15 +21,20 @@ class CustomTextInput extends StatefulWidget {
       this.padding,
       this.prefixIcon,
       this.textColor,
+      this.isAutofocus = false,
       this.errorMessage,
       this.maxLines,
       this.focusNode,
+      required this.onChanged,
       this.labelText});
 
   // ignore: prefer_typing_uninitialized_variables
   final hintTextString;
+  final bool isAutofocus;
+
   final TextEditingController? textEditController;
   final InputType inputType;
+  void Function(String) onChanged;
   final bool enableBorder;
   final Color? themeColor;
   final double? cornerRadius;
@@ -67,9 +73,8 @@ class _CustomTextInputState extends State<CustomTextInput> {
       child: TextField(
         textAlignVertical: TextAlignVertical.top,
         maxLines: widget.maxLines,
-        // autofocus: true,
+        autofocus: widget.isAutofocus,
         textAlign: TextAlign.start,
-        focusNode: widget.focusNode,
         controller: _inputController,
         decoration: InputDecoration(
           hintStyle: const TextStyle(
@@ -95,7 +100,7 @@ class _CustomTextInputState extends State<CustomTextInput> {
               : widget.prefixIcon ?? getPrefixIcon(),
           suffixIcon: widget.suffixIcon ?? getSuffixIcon(),
         ),
-        onChanged: checkValidation,
+        onChanged: widget.onChanged,
         keyboardType: getInputType(),
         obscureText: widget.inputType == InputType.Password && !visibility,
         maxLength: widget.inputType == InputType.PaymentCard
@@ -122,13 +127,14 @@ class _CustomTextInputState extends State<CustomTextInput> {
 
   // formatter on basis of textinput type
   TextInputFormatter getFormatter() {
-    if (widget.inputType == InputType.PaymentCard)
+    if (widget.inputType == InputType.PaymentCard) {
       return MaskedTextInputFormatter(
         mask: 'xxxx xxxx xxxx xxxx',
         separator: ' ',
       );
-    else
+    } else {
       return TextInputFormatter.withFunction((oldValue, newValue) => newValue);
+    }
   }
 
   // text style for textinput

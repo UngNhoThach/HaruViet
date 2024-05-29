@@ -1,9 +1,7 @@
 import 'package:eco_app/component/input/search_bar.dart';
 import 'package:eco_app/helper/colors.dart';
 import 'package:eco_app/helper/spaces.dart';
-import 'package:eco_app/page/cart/models/cart_page_params.dart';
 import 'package:eco_app/page/core/product_data.dart';
-import 'package:eco_app/page/home/widgets/drawer_list_page.dart';
 import 'package:eco_app/page/home/widgets/flash_deals.dart';
 import 'package:eco_app/page/home/widgets/home_icon.dart';
 import 'package:eco_app/page/product_list/product_list_page.dart';
@@ -11,9 +9,7 @@ import 'package:eco_app/qr/qr_page.dart';
 import 'package:eco_app/resources/routes.dart';
 import 'package:eco_app/theme/typography.dart';
 import 'package:eco_app/utils/commons.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class HomePage extends StatefulWidget {

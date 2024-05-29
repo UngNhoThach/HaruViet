@@ -6,6 +6,11 @@ part 'user_state.g.dart';
 @CopyWith()
 class UserInfoLogin {
   bool isLogin;
+
+  @JsonKey(name: "user_name")
+  String? userName;
+  @JsonKey(name: "pathologicaldetail")
+  dynamic pathologicaldetail;
   @JsonKey(name: "id")
   String? id;
   @JsonKey(name: "access_token")
@@ -27,15 +32,14 @@ class UserInfoLogin {
   @JsonKey(name: "last_name_kana")
   String? lastNameKana;
   @JsonKey(name: "sex")
-  String? sex;
+  int? sex;
   @JsonKey(name: "birthday")
   String? birthDay;
   @JsonKey(name: "address_id")
   String? addressId;
   @JsonKey(name: "postcode")
   String? postCode;
-  @JsonKey(name: "address")
-  String? address;
+
   @JsonKey(name: "address1")
   String? address1;
   @JsonKey(name: "address1ID")
@@ -45,12 +49,10 @@ class UserInfoLogin {
   String? address2;
   @JsonKey(name: "address2ID")
   String? address2ID;
-
   @JsonKey(name: "address3")
   String? address3;
   @JsonKey(name: "address3ID")
   String? address3ID;
-
   @JsonKey(name: "company")
   String? company;
   @JsonKey(name: "country")
@@ -63,16 +65,27 @@ class UserInfoLogin {
   int? status;
   @JsonKey(name: "group")
   int? group;
+  @JsonKey(name: "agency_id")
+  int? agencyId;
   @JsonKey(name: "user_id")
   String? userId;
   @JsonKey(name: "agency_name")
   String? agencyName;
   @JsonKey(name: "avatar")
   String? avatar;
+  @JsonKey(name: "provider")
+  String? provider;
+  @JsonKey(name: "provider_id")
+  String? providerId;
 
   UserInfoLogin(
       {this.isLogin = false,
+      this.provider,
+      this.userName,
+      this.providerId,
       this.id,
+      this.pathologicaldetail,
+      this.agencyId,
       this.accessToken,
       this.tokenType,
       this.email,
@@ -85,7 +98,6 @@ class UserInfoLogin {
       this.sex,
       this.birthDay,
       this.addressId,
-      this.address,
       this.address1,
       this.address1ID,
       this.postCode,

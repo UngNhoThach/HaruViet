@@ -11,7 +11,7 @@ class UpdateUserInfoRequest {
   String? avatar;
   String? pathologicaldetail;
   @JsonKey(name: 'agency_id')
-  int? agencyId;
+  String? agencyId;
   @JsonKey(name: 'user_id')
   String? userId;
   @JsonKey(name: 'agency_name')
@@ -26,7 +26,7 @@ class UpdateUserInfoRequest {
   String? firstNameKana;
   @JsonKey(name: 'last_name_kana')
   String? lastNameKana;
-  String? sex;
+  int? sex;
   String? postcode;
   String? address1;
   String? address2;

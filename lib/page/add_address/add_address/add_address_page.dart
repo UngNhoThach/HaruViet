@@ -30,10 +30,28 @@ class AddNewAddressPage extends StatefulWidget {
 class _AddNewAddressPageState extends State<AddNewAddressPage> {
   // variables and functions
   late AddNewAddressBloc bloc;
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
-  final FocusNode _focusNodeVoucher = FocusNode();
-  final FocusNode _focusNodeNote = FocusNode();
-  // variables and functions
+  AutovalidateMode? autovalidateMode;
+  final _formkey = GlobalKey<FormState>();
+
+  String? _validator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'không hợp lệ';
+    }
+    return null;
+  }
+
+  String? _validatorPhone(String? value) {
+    if (value == null || value.isEmpty || !isValidPhone(value)) {
+      return 'không hợp lệ';
+    }
+    return null;
+  }
+
+  bool isValidPhone(String phone) {
+    RegExp regex = RegExp(r'((\+84|84|0)+([3|5|7|8|9])+([0-9]{8})\b)');
+    return regex.hasMatch(phone);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -46,41 +64,38 @@ class _AddNewAddressPageState extends State<AddNewAddressPage> {
       create: (context) => bloc,
       child: BlocListener<AddNewAddressBloc, AddNewAddressState>(
         listener: (context, state) {},
-        child: GestureDetector(
-          onTap: () {
-            _focusNodeVoucher.unfocus();
-            _focusNodeNote.unfocus();
+        child: BlocListener<AddNewAddressBloc, AddNewAddressState>(
+          listenWhen: (previous, current) =>
+              (previous.isSubmitSuccess != current.isSubmitSuccess &&
+                  current.isSubmitSuccess == true),
+          listener: (context, state) {
+            CustomSnackBar.showTop(context, state.message ?? '');
+            widget.params.onReload.call();
+            context.justBack();
           },
-          child: BlocListener<AddNewAddressBloc, AddNewAddressState>(
-            listenWhen: (previous, current) =>
-                (previous.isSubmitSuccess != current.isSubmitSuccess &&
-                    current.isSubmitSuccess == true),
-            listener: (context, state) {
-              CustomSnackBar.showTop(context, state.message ?? '');
-              widget.params.onReload.call();
-              context.justBack();
-            },
-            child: BlocBuilder<AddNewAddressBloc, AddNewAddressState>(
-              builder: (context, state) {
-                return Scaffold(
-                  key: _scaffoldKey,
-                  resizeToAvoidBottomInset: false,
-                  appBar: AppBar(
-                    backgroundColor: colorMain,
-                    title: Text(
-                      widget.params.isUpdate
-                          ? "Cập nhật địa chỉ"
-                          : "Thêm địa chỉ",
-                      style: const TextStyle(
-                          color: colorWhite,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold),
-                    ),
+          child: BlocBuilder<AddNewAddressBloc, AddNewAddressState>(
+            builder: (context, state) {
+              return Scaffold(
+                resizeToAvoidBottomInset: false,
+                appBar: AppBar(
+                  backgroundColor: colorMain,
+                  title: Text(
+                    widget.params.isUpdate
+                        ? "Cập nhật địa chỉ"
+                        : "Thêm địa chỉ",
+                    style: const TextStyle(
+                        color: colorWhite,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
                   ),
-                  body: Builder(builder: (context) {
-                    return state.isLoading
-                        ? const LoadingLogo()
-                        : SingleChildScrollView(
+                ),
+                body: Builder(builder: (context) {
+                  return state.isLoading
+                      ? const LoadingLogo()
+                      : SingleChildScrollView(
+                          child: Form(
+                            autovalidateMode: autovalidateMode,
+                            key: _formkey,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,7 +120,7 @@ class _AddNewAddressPageState extends State<AddNewAddressPage> {
                                 TextFiledInputText(
                                   isBorder: false,
                                   initialText: state.name,
-                                  //     validator: _validationName,
+                                  validator: _validator,
                                   keyboardType: TextInputType.name,
                                   icon: const Icon(
                                     Icons.person,
@@ -114,37 +129,14 @@ class _AddNewAddressPageState extends State<AddNewAddressPage> {
                                   onChanged: (name) {
                                     bloc.onChangeName(name);
                                   },
-                                  isClear: true,
                                 ),
-                                // CustomTextInput(
-                                //   onChanged: (name) {
-                                //     bloc.onChangeName(name);
-                                //   },
-                                //   //onChangeName
-                                //   focusNode: _focusNodeName,
-                                //   isCheckPadding: true,
-
-                                //   padding: const EdgeInsets.all(0),
-                                //   textEditController: _nameController,
-                                //   hintTextString: 'Họ tên người nhận',
-                                //   inputType: InputType.Default,
-                                //   enableBorder: false,
-                                //   isNotLabelText: true,
-                                //   cornerRadius: 0,
-                                //   maxLength: 24,
-                                //   prefixIcon: const Icon(Icons.person,
-                                //       color: colorGray03),
-                                //   textColor: Colors.black,
-                                //   errorMessage: 'Vui lòng nhập đúng định dạng',
-                                //   labelText: 'Nhập họ tên người nhận',
-                                // ),
                                 const Divider(
                                   color: colorGray03,
                                 ),
                                 TextFiledInputText(
                                   isBorder: false,
                                   initialText: state.phone,
-                                  //     validator: _validationName,
+                                  validator: _validatorPhone,
                                   keyboardType: TextInputType.name,
                                   icon: const Icon(
                                     Icons.phone,
@@ -153,7 +145,9 @@ class _AddNewAddressPageState extends State<AddNewAddressPage> {
                                   onChanged: (phoneNumber) {
                                     bloc.onChangePhoneNumber(phoneNumber);
                                   },
-                                  isClear: true,
+                                ),
+                                const Divider(
+                                  color: colorGray03,
                                 ),
                                 Container(
                                   color: colorGray01,
@@ -200,44 +194,6 @@ class _AddNewAddressPageState extends State<AddNewAddressPage> {
                                         temporaryResidenceAddress: value);
                                   },
                                 ),
-                                // CustomTextInput(
-                                //   focusNode: _focusNodeDC,
-                                //   isNotLabelText: true,
-                                //   isCheckPadding: true,
-                                //   padding: const EdgeInsets.all(0),
-                                //   textEditController: _addressController,
-                                //   hintTextString: 'Địa chỉ',
-                                //   inputType: InputType.Default,
-                                //   enableBorder: false,
-                                //   cornerRadius: 0,
-                                //   maxLength: 24,
-                                //   prefixIcon: const Icon(Icons.location_on,
-                                //       color: colorGray03),
-                                //   textColor: Colors.black,
-                                //   errorMessage:
-                                //       'Tỉnh/Thành phố, quận/Huyện, phường/Xã',
-                                //   labelText: 'Nhập địa chỉ',
-                                // ),
-                                // const Divider(
-                                //   color: colorGray03,
-                                // ),
-                                // CustomTextInput(
-                                //   focusNode: _focusNodeDCDetail,
-                                //   isCheckPadding: true,
-                                //   padding: const EdgeInsets.all(0),
-                                //   textEditController: _addressgHomeController,
-                                //   hintTextString: 'Địa chỉ cụ thể',
-                                //   inputType: InputType.Default,
-                                //   isNotLabelText: true,
-                                //   enableBorder: false,
-                                //   cornerRadius: 0,
-                                //   maxLength: 24,
-                                //   prefixIcon:
-                                //       const Icon(Icons.home, color: colorGray03),
-                                //   textColor: Colors.black,
-                                //   errorMessage: 'Số nhà/Tên đường',
-                                //   labelText: 'Nhập địa chỉ cụ thể',
-                                // ),
                                 const Divider(
                                   color: colorGray03,
                                 ),
@@ -415,43 +371,45 @@ class _AddNewAddressPageState extends State<AddNewAddressPage> {
                                 ),
                               ],
                             ),
-                          );
-                  }),
-                  bottomNavigationBar: BottomBarButton(
-                    button1: AppSolidButton.medium(
-                      widget.params.isUpdate ? 'Cập nhật' : 'Thêm',
-                      textStyle: textTheme.bodyLarge,
-                      color: widget.params.isUpdate ? colorPrimary : colorMain,
-                      onPressed: () {
-                        bloc.state.isValid
-                            ? widget.params.isUpdate
-                                ? bloc.onSubmit(true)
-                                : bloc.onSubmit(false)
-                            : CustomSnackBar.showTop(
-                                context, 'Vui lòng điền đầy đủ thông tin');
-                      },
-                    ),
-                    button2: widget.params.isUpdate
-                        ? AppSolidButton.medium(
-                            'Xoá',
-                            textStyle: textTheme.bodyLarge,
-                            color: colorMain,
-                            onPressed: () {
-                              showConfirmActionSheet(
-                                context,
-                                message: 'Anh/chị có chắc muốn xoá?',
-                                confirmButtonLabel: 'Đồng ý',
-                                onConfirm: () {
-                                  bloc.onDelete();
-                                },
-                              );
-                            },
-                          )
-                        : null,
+                          ),
+                        );
+                }),
+                bottomNavigationBar: BottomBarButton(
+                  button1: AppSolidButton.medium(
+                    widget.params.isUpdate ? 'Cập nhật' : 'Thêm',
+                    textStyle: textTheme.bodyLarge,
+                    color: widget.params.isUpdate ? colorPrimary : colorMain,
+                    onPressed: () {
+                      final isValidForm = _formkey.currentState?.validate();
+                      if (isValidForm == true) {
+                        widget.params.isUpdate
+                            ? bloc.onSubmit(true)
+                            : bloc.onSubmit(false);
+                      } else {
+                        autovalidateMode = AutovalidateMode.onUserInteraction;
+                      }
+                    },
                   ),
-                );
-              },
-            ),
+                  button2: widget.params.isUpdate
+                      ? AppSolidButton.medium(
+                          'Xoá',
+                          textStyle: textTheme.bodyLarge,
+                          color: colorMain,
+                          onPressed: () {
+                            showConfirmActionSheet(
+                              context,
+                              message: 'Anh/chị có chắc muốn xoá?',
+                              confirmButtonLabel: 'Đồng ý',
+                              onConfirm: () {
+                                bloc.onDelete();
+                              },
+                            );
+                          },
+                        )
+                      : null,
+                ),
+              );
+            },
           ),
         ),
       ),

@@ -5,6 +5,7 @@ import 'package:eco_app/helper/colors.dart';
 import 'package:eco_app/helper/spaces.dart';
 import 'package:eco_app/page/cart/models/cart_page_params.dart';
 import 'package:eco_app/page/product/detail/product_deatail_page.dart';
+import 'package:eco_app/page/product/detail/widgets/product_detail_params.dart';
 import 'package:eco_app/resources/routes.dart';
 import 'package:eco_app/theme/typography.dart';
 import 'package:eco_app/utils/commons.dart';
@@ -115,8 +116,10 @@ class _CategoryChildPageState extends State<CategoryChildPage> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (builder) =>
-                                            const ProductDetailPage()));
+                                        builder: (builder) => ProductDetailPage(
+                                              params: ProductDetailParams(
+                                                  idProduct: ''),
+                                            )));
                               },
                               child: SizedBox(
                                   height:
@@ -514,7 +517,9 @@ class _CategoryChildPageState extends State<CategoryChildPage> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (builder) => const ProductDetailPage()));
+                      builder: (builder) => ProductDetailPage(
+                            params: ProductDetailParams(idProduct: ''),
+                          )));
               //ProductDetailPage
             },
             child: Container(

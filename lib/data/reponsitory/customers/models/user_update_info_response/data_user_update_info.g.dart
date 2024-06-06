@@ -9,7 +9,7 @@ part of 'data_user_update_info.dart';
 DataUserUpdateInfo _$DataUserUpdateInfoFromJson(Map<String, dynamic> json) =>
     DataUserUpdateInfo(
       id: json['id'] as String?,
-      avatar: json['avatar'],
+      avatar: json['avatar'] as String?,
       sku: json['sku'],
       pathologicaldetail: json['pathologicaldetail'],
       agencyId: json['agency_id'] as String?,
@@ -21,8 +21,8 @@ DataUserUpdateInfo _$DataUserUpdateInfoFromJson(Map<String, dynamic> json) =>
       firstNameKana: json['first_name_kana'],
       lastNameKana: json['last_name_kana'],
       email: json['email'] as String?,
-      sex: json['sex'],
-      birthday: json['birthday'],
+      sex: json['sex'] as int?,
+      birthday: json['birthday'] as String?,
       addressId: json['address_id'] as String?,
       postcode: json['postcode'],
       address1: json['address1'] as String?,
@@ -30,7 +30,7 @@ DataUserUpdateInfo _$DataUserUpdateInfoFromJson(Map<String, dynamic> json) =>
       address3: json['address3'],
       company: json['company'],
       country: json['country'] as String?,
-      phone: json['phone'],
+      phone: json['phone'] as String?,
       storeId: json['store_id'] as String?,
       status: json['status'] as int?,
       group: json['group'] as int?,

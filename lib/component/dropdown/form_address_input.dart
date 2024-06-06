@@ -29,6 +29,7 @@ class FormAddressInput extends StatelessWidget {
     this.isNotAddress = false,
     this.isBorder = true,
     this.widget,
+    this.validator,
     this.contentPadding,
   });
 
@@ -46,6 +47,8 @@ class FormAddressInput extends StatelessWidget {
   final bool isNotAddress;
   final bool isBorder;
   final Widget? widget;
+  final String? Function(String?)? validator;
+
   final EdgeInsetsGeometry? contentPadding;
   @override
   Widget build(BuildContext context) {
@@ -152,7 +155,7 @@ class FormAddressInput extends StatelessWidget {
                       : InputBorder.none,
                   suffixIcon: space0,
                 ),
-                validator: _validationText,
+                validator: validator,
               ),
               Positioned(
                   right: 8.w,

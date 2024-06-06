@@ -10,7 +10,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:screenshot/screenshot.dart';
-import 'package:share_plus/share_plus.dart';
 
 class QrCodePage extends StatefulWidget {
   const QrCodePage({
@@ -145,7 +144,6 @@ class _QrCodePagePageState extends State<QrCodePage> {
                             await imagePath.writeAsBytes(image!);
 
                             /// Share Plugin
-                            await Share.shareFiles([imagePath.path]);
                           });
                           print('share...');
                         } catch (e) {

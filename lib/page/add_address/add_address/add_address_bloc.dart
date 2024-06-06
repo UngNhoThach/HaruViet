@@ -130,7 +130,7 @@ class AddNewAddressBloc extends BaseBloc<AddNewAddressState> {
               ));
       if (verifyResponse.status == 200 && verifyResponse.isStatus == true) {
         if (state.textBtnswitchState) {
-          updateAddressDefault(id: verifyResponse.data?.id ?? '');
+          await updateAddressDefault(id: verifyResponse.data?.id ?? '');
         }
         emit(state.copyWith(
             message: verifyResponse.message, isSubmitSuccess: true));
@@ -159,7 +159,7 @@ class AddNewAddressBloc extends BaseBloc<AddNewAddressState> {
             address2: state.address2,
             address3: state.address3,
             addressId: id,
-            agencyId: state.userInfoLogin?.agencyId ?? 0,
+            agencyId: state.userInfoLogin?.agencyId ?? '',
             agencyName: state.userInfoLogin?.agencyName ?? '',
             avatar: state.userInfoLogin?.avatar ?? '',
             idAddress:
@@ -177,12 +177,12 @@ class AddNewAddressBloc extends BaseBloc<AddNewAddressState> {
             postcode: state.userInfoLogin?.postCode ?? '',
             provider: state.userInfoLogin?.provider ?? '',
             providerId: state.userInfoLogin?.providerId ?? '',
-            sex: state.userInfoLogin?.sex.toString() ?? '',
+            sex: state.userInfoLogin?.sex ?? 0,
             userId: state.userInfoLogin?.userId ?? '',
             userName: state.userInfoLogin?.userName ?? ''),
         authorization: state.accessToken ?? '');
 
-    await Preference.updateUserInfo({
+    Preference.updateUserInfo({
       'address_id': updateAddressDefaultResponse.data?.addressId ?? '',
       'phone': updateAddressDefaultResponse.data?.phone ?? '',
       'first_name': updateAddressDefaultResponse.data?.firstName ?? '',

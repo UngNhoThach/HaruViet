@@ -16,6 +16,7 @@ import 'package:eco_app/resources/routes.dart';
 import 'package:eco_app/theme/typography.dart';
 import 'package:eco_app/utils/commons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -358,18 +359,23 @@ class _SignUpPageState
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Container(
-                            decoration: BoxDecoration(
-                                border: Border.all(color: colorMain),
-                                borderRadius: BorderRadius.circular(12.r)),
-                            padding: const EdgeInsets.all(8.0),
-                            child: Image.asset('assets/images/facebook.png',
-                                height: 30.r, width: 30.r, fit: BoxFit.cover),
+                          GestureDetector(
+                            onTap: () {
+                              bloc.signSocial(2);
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  border: Border.all(color: colorMain),
+                                  borderRadius: BorderRadius.circular(12.r)),
+                              padding: const EdgeInsets.all(8.0),
+                              child: Image.asset('assets/images/facebook.png',
+                                  height: 30.r, width: 30.r, fit: BoxFit.cover),
+                            ),
                           ),
                           spaceW30,
                           GestureDetector(
                             onTap: () {
-                              bloc.signInWithGoogle();
+                              bloc.signSocial(1);
                             },
                             child: Container(
                               decoration: BoxDecoration(

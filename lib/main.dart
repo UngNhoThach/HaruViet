@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:eco_app/component/select_address/models/select_address_params.dart';
 import 'package:eco_app/component/select_address/select_address_page.dart';
-import 'package:eco_app/firebase_options.dart';
+import 'package:eco_app/data/data_local/user_bloc.dart';
 import 'package:eco_app/helper/theme.dart';
 import 'package:eco_app/page/about_us/about_us_page.dart';
 import 'package:eco_app/page/account/update_profile/widgets/update_profile_params.dart';
@@ -14,7 +14,7 @@ import 'package:eco_app/page/category/category_child/category_child_page.dart';
 import 'package:eco_app/page/category/category_page.dart';
 import 'package:eco_app/page/category/models/category_paga_params.dart';
 import 'package:eco_app/page/chat/chat_page.dart';
-import 'package:eco_app/page/cart/checkout/checkout_page.dart';
+import 'package:eco_app/page/home/checkout_page.dart';
 import 'package:eco_app/page/cart/bill/bill_info_page.dart';
 import 'package:eco_app/page/cart/payment_method/payment_method_page.dart';
 import 'package:eco_app/page/cart/voucher/voucher_page.dart';
@@ -24,6 +24,8 @@ import 'package:eco_app/page/account/phone_authen/phone_authen_page.dart';
 import 'package:eco_app/page/account/phone_authen/widgets/phone_authen_params.dart';
 import 'package:eco_app/page/notification/tab/news/widgets/new_detail_page.dart';
 import 'package:eco_app/page/product/detail/product_deatail_page.dart';
+import 'package:eco_app/page/product/detail/widgets/product_detail_params.dart';
+import 'package:eco_app/page/product/product_list/product_list_page.dart';
 import 'package:eco_app/page/profile/profile_page.dart';
 import 'package:eco_app/page/review/ask_quesition_page/ask_quesition_page.dart';
 import 'package:eco_app/page/review/review_page.dart';
@@ -36,9 +38,9 @@ import 'package:eco_app/page/account/update_profile/update_profile_page.dart';
 import 'package:eco_app/resources/routes.dart';
 import 'package:eco_app/service/navigation_service.dart';
 import 'package:eco_app/utils/commons.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'page/account/reset_password/reset_password_page.dart';
@@ -46,17 +48,35 @@ import 'page/account/reset_password/widgets/reset_password_params.dart';
 import 'page/add_address/add_address/widgets/add_address_params.dart';
 import 'page/cart/checkout/widgets/checkout_params.dart';
 
+// Future<void> main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+
+// // initialize Firebase
+//   // await Firebase.initializeApp(
+//   //   options: DefaultFirebaseOptions.currentPlatform,
+//   // );
+//   runApp(const MaterialApp(
+//     home: HomePage(),
+//     debugShowCheckedModeBanner: false,
+//   ));
+// }
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-// initialize Firebase
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  runApp(const MaterialApp(
-    home: HomePage(),
-    debugShowCheckedModeBanner: false,
-  ));
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      home: HomePage(),
+      debugShowCheckedModeBanner: false,
+    );
+  }
 }
 
 class HomePage extends StatefulWidget {
@@ -80,44 +100,30 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     //Set the fit size (Find your UI design, look at the dimensions of the device screen and fill it in,unit in dp)
-    return ScreenUtilInit(
-      designSize: const Size(360, 690),
-      minTextAdapt: true,
-      splitScreenMode: true,
-      // Use builder only if you need to use library outside ScreenUtilInit context
-      builder: (_, child) {
-        return MaterialApp(
-          // builder: EasyLoading.init(),
-          title: 'HaruViet',
-          onGenerateRoute: (settings) => _getRoutes(settings),
-          navigatorKey: NavigationService.navigatorKey,
-          debugShowCheckedModeBanner: false,
-          theme: myThemeData,
-          //  ThemeData(
-          //   useMaterial3: false,
-          //   fontFamily: "SF PRO",
-          //   colorScheme: myColorScheme,
-          //   textTheme: ,
-          //  TextTheme(
-          //   titleLarge: TextStyle(fontSize: 18.r),
-          //   displayLarge: const TextStyle(
-          //     color: Color.fromARGB(255, 36, 48, 86),
-          //   ),
-          //   displayMedium: const TextStyle(
-          //     color: Color.fromARGB(255, 36, 48, 86),
-          //   ),
-          //   bodyMedium: const TextStyle(
-          //     color: Color.fromARGB(255, 36, 48, 86),
-          //   ),
-          //   titleMedium: const TextStyle(
-          //     color: Color.fromARGB(255, 36, 48, 86),
-          //   ),
-          // ),
-          // ),
-          home: _getRootScreen(context),
-        );
+    return BlocProvider<UserBloc>(
+      create: (BuildContext context) {
+        final bloc = UserBloc();
+        bloc.loadData();
+        return bloc;
       },
-      // child: const HomePage(title: 'First Method'),
+      child: ScreenUtilInit(
+        designSize: const Size(360, 690),
+        minTextAdapt: true,
+        splitScreenMode: true,
+        builder: (_, child) {
+          return MaterialApp(
+            //   builder: EasyLoading.init(),
+            title: 'HaruViet',
+            onGenerateRoute: (settings) => _getRoutes(settings),
+            navigatorKey: NavigationService.navigatorKey,
+            debugShowCheckedModeBanner: false,
+            theme: myThemeData,
+
+            home: _getRootScreen(context),
+          );
+        },
+        // child: const HomePage(title: 'First Method'),
+      ),
     );
   }
 
@@ -319,11 +325,18 @@ class _HomePageState extends State<HomePage> {
           builder: (_) => const ForgetPassWordPage(),
         );
 
-      // ProductDetailPage
+      // PRODUCT
       case Routes.productDetailPage:
         return MaterialPageRoute(
           settings: const RouteSettings(name: Routes.productDetailPage),
-          builder: (_) => const ProductDetailPage(),
+          builder: (_) => ProductDetailPage(
+            params: settings.arguments as ProductDetailParams,
+          ),
+        );
+      case Routes.productListPage:
+        return MaterialPageRoute(
+          settings: const RouteSettings(name: Routes.productListPage),
+          builder: (_) => const ProductListPage(),
         );
 
       // forgot password

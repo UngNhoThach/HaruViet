@@ -9,6 +9,8 @@ part of 'user_state.dart';
 abstract class _$UserInfoLoginCWProxy {
   UserInfoLogin isLogin(bool isLogin);
 
+  UserInfoLogin subDomain(String? subDomain);
+
   UserInfoLogin provider(String? provider);
 
   UserInfoLogin userName(String? userName);
@@ -19,7 +21,7 @@ abstract class _$UserInfoLoginCWProxy {
 
   UserInfoLogin pathologicaldetail(dynamic pathologicaldetail);
 
-  UserInfoLogin agencyId(int? agencyId);
+  UserInfoLogin agencyId(String? agencyId);
 
   UserInfoLogin accessToken(String? accessToken);
 
@@ -85,12 +87,13 @@ abstract class _$UserInfoLoginCWProxy {
   /// ````
   UserInfoLogin call({
     bool? isLogin,
+    String? subDomain,
     String? provider,
     String? userName,
     String? providerId,
     String? id,
     dynamic pathologicaldetail,
-    int? agencyId,
+    String? agencyId,
     String? accessToken,
     String? tokenType,
     String? email,
@@ -132,6 +135,9 @@ class _$UserInfoLoginCWProxyImpl implements _$UserInfoLoginCWProxy {
   UserInfoLogin isLogin(bool isLogin) => this(isLogin: isLogin);
 
   @override
+  UserInfoLogin subDomain(String? subDomain) => this(subDomain: subDomain);
+
+  @override
   UserInfoLogin provider(String? provider) => this(provider: provider);
 
   @override
@@ -148,7 +154,7 @@ class _$UserInfoLoginCWProxyImpl implements _$UserInfoLoginCWProxy {
       this(pathologicaldetail: pathologicaldetail);
 
   @override
-  UserInfoLogin agencyId(int? agencyId) => this(agencyId: agencyId);
+  UserInfoLogin agencyId(String? agencyId) => this(agencyId: agencyId);
 
   @override
   UserInfoLogin accessToken(String? accessToken) =>
@@ -248,6 +254,7 @@ class _$UserInfoLoginCWProxyImpl implements _$UserInfoLoginCWProxy {
   /// ````
   UserInfoLogin call({
     Object? isLogin = const $CopyWithPlaceholder(),
+    Object? subDomain = const $CopyWithPlaceholder(),
     Object? provider = const $CopyWithPlaceholder(),
     Object? userName = const $CopyWithPlaceholder(),
     Object? providerId = const $CopyWithPlaceholder(),
@@ -288,6 +295,10 @@ class _$UserInfoLoginCWProxyImpl implements _$UserInfoLoginCWProxy {
           ? _value.isLogin
           // ignore: cast_nullable_to_non_nullable
           : isLogin as bool,
+      subDomain: subDomain == const $CopyWithPlaceholder()
+          ? _value.subDomain
+          // ignore: cast_nullable_to_non_nullable
+          : subDomain as String?,
       provider: provider == const $CopyWithPlaceholder()
           ? _value.provider
           // ignore: cast_nullable_to_non_nullable
@@ -312,7 +323,7 @@ class _$UserInfoLoginCWProxyImpl implements _$UserInfoLoginCWProxy {
       agencyId: agencyId == const $CopyWithPlaceholder()
           ? _value.agencyId
           // ignore: cast_nullable_to_non_nullable
-          : agencyId as int?,
+          : agencyId as String?,
       accessToken: accessToken == const $CopyWithPlaceholder()
           ? _value.accessToken
           // ignore: cast_nullable_to_non_nullable
@@ -442,12 +453,13 @@ extension $UserInfoLoginCopyWith on UserInfoLogin {
 UserInfoLogin _$UserInfoLoginFromJson(Map<String, dynamic> json) =>
     UserInfoLogin(
       isLogin: json['isLogin'] as bool? ?? false,
+      subDomain: json['subDomain'] as String? ?? 'https://dev.sni.vn',
       provider: json['provider'] as String?,
       userName: json['user_name'] as String?,
       providerId: json['provider_id'] as String?,
       id: json['id'] as String?,
       pathologicaldetail: json['pathologicaldetail'],
-      agencyId: json['agency_id'] as int?,
+      agencyId: json['agency_id'] as String?,
       accessToken: json['access_token'] as String?,
       tokenType: json['token_type'] as String?,
       email: json['emai'] as String?,
@@ -481,6 +493,7 @@ UserInfoLogin _$UserInfoLoginFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$UserInfoLoginToJson(UserInfoLogin instance) =>
     <String, dynamic>{
       'isLogin': instance.isLogin,
+      'subDomain': instance.subDomain,
       'user_name': instance.userName,
       'pathologicaldetail': instance.pathologicaldetail,
       'id': instance.id,

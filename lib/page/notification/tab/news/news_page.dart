@@ -37,7 +37,8 @@ class _NewsPageState extends State<NewsPage> {
 
   createSection(String title, Widget icon, Color color,
       {required void Function() onTap}) {
-    return ListProfileSection(title, icon, color, onTap);
+    return ListProfileSection(
+        title: title, icon: icon, color: color, onTap: onTap);
   }
 
   @override

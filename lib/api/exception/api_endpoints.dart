@@ -28,6 +28,8 @@ class CustomersApi {
 class ProductApi {
   static const getListProducts =
       "${SettingApi.rootDomain}/api/v1/shop/product?page[size]={size}&page[number]={totalproduct}";
+  static const getProductDetails =
+      "${SettingApi.rootDomain}/api/v1/shop/product/{idProduct}";
 }
 
 class AddressApi {

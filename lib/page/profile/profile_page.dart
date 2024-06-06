@@ -46,19 +46,6 @@ class _ProfilePageState extends State<ProfilePage> {
       // ProfileState state
       ) {
     listSection.add(createSection(
-      "Lịch sử mua hàng",
-      const Icon(
-        Icons.history,
-        color: colorGray03,
-      ),
-      colorGray03,
-      onTap: () {
-        routeService.pushNamed(
-          Routes.paymentMethodPage,
-        );
-      },
-    ));
-    listSection.add(createSection(
       "Thông báo",
       const Image(
         image: AssetImage('assets/icons/ic_notification.png'),
@@ -85,20 +72,6 @@ class _ProfilePageState extends State<ProfilePage> {
       onTap: () {
         routeService.pushNamed(
           Routes.paymentMethodPage,
-        );
-      },
-    ));
-
-    listSection.add(createSection(
-      "Địa chỉ của tôi",
-      const Icon(
-        Icons.location_on_rounded,
-        color: colorGray03,
-      ),
-      colorMain.withOpacity(0.7),
-      onTap: () {
-        routeService.pushNamed(
-          Routes.addressPage,
         );
       },
     ));
@@ -156,6 +129,33 @@ class _ProfilePageState extends State<ProfilePage> {
     ));
 
     listSection.add(createSection(
+      "Địa chỉ của tôi",
+      const Icon(
+        Icons.location_on_rounded,
+        color: colorGray03,
+      ),
+      colorMain.withOpacity(0.7),
+      onTap: () {
+        routeService.pushNamed(
+          Routes.addressPage,
+        );
+      },
+    ));
+    listSection.add(createSection(
+      "Lịch sử mua hàng",
+      const Icon(
+        Icons.history,
+        color: colorGray03,
+      ),
+      colorGray03,
+      onTap: () {
+        routeService.pushNamed(
+          Routes.paymentMethodPage,
+        );
+      },
+    ));
+
+    listSection.add(createSection(
       "Đổi mật khẩu",
       const Icon(
         Icons.change_circle_outlined,
@@ -191,7 +191,12 @@ class _ProfilePageState extends State<ProfilePage> {
 
   createSection(String title, Widget icon, Color color,
       {required void Function() onTap}) {
-    return ListProfileSection(title, icon, color, onTap);
+    return ListProfileSection(
+      title: title,
+      icon: icon,
+      color: color,
+      onTap: onTap,
+    );
   }
 
   @override
@@ -400,7 +405,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       width: double.infinity,
                                       color: Colors.grey.shade300,
                                     ),
-                                    buildListView(state),
+                                    _buildListView(state),
                                   ],
                                 ),
                               ),
@@ -498,7 +503,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  ListView buildListView(ProfileState state) {
+  ListView _buildListView(ProfileState state) {
     return ListView.builder(
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
@@ -510,7 +515,7 @@ class _ProfilePageState extends State<ProfilePage> {
       },
       itemCount:
           (state.userInfoLogin?.isLogin == false || state.userInfoLogin == null)
-              ? listSection.length - 2
+              ? listSection.length - 4
               : listSection.length,
     );
   }

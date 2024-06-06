@@ -1,20 +1,23 @@
-import 'package:eco_app/helper/context.dart';
+import 'package:eco_app/helper/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:eco_app/helper/context.dart';
 
 class TextFiledInput extends StatefulWidget {
-  const TextFiledInput(
-      {super.key,
-      required this.onChanged,
-      this.isTextFieldFocused,
-      this.isClear,
-      this.icon,
-      this.hintext,
-      this.keyboardType,
-      this.validator,
-      this.isValidator = true,
-      this.enabled = true,
-      this.autovalidateMode});
+  const TextFiledInput({
+    super.key,
+    required this.onChanged,
+    this.isTextFieldFocused,
+    this.isClear,
+    this.icon,
+    this.hintext,
+    this.keyboardType,
+    this.validator,
+    this.isValidator = true,
+    this.enabled = true,
+    this.autovalidateMode,
+  });
+
   final String? Function(String?)? validator;
   final bool isValidator;
   final void Function(String) onChanged;
@@ -23,22 +26,19 @@ class TextFiledInput extends StatefulWidget {
   final bool? isTextFieldFocused;
   final String? hintext;
   final bool enabled;
-
   final Icon? icon;
   final TextInputType? keyboardType;
+
   @override
   State<TextFiledInput> createState() => _TextFiledInputState();
 }
 
 class _TextFiledInputState extends State<TextFiledInput> {
-  final _inputController = TextEditingController();
-
-  String inputText = '';
+  final TextEditingController _inputController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-
     if (widget.isClear == true) {
       _inputController.clear();
     }
@@ -48,31 +48,17 @@ class _TextFiledInputState extends State<TextFiledInput> {
   Widget build(BuildContext context) {
     return TextFormField(
       autovalidateMode: widget.autovalidateMode,
-
-      // key: ,
       enabled: widget.enabled,
-      onEditingComplete: () {
-        // Khi hoàn thành chỉnh sửa trong TextField, hủy focus.
-        setState(() {
-          widget.isTextFieldFocused == false;
-        });
-        // Ẩn bàn phím.
-        FocusScope.of(context).unfocus();
-      },
       controller: _inputController,
-      onChanged: (value) {
-        widget.onChanged(value);
-        setState(() {
-          inputText = value;
-        });
-      },
+      onChanged: widget.onChanged,
       keyboardType: widget.keyboardType,
       decoration: InputDecoration(
-        prefixIcon:
-            Padding(padding: EdgeInsets.only(right: 8.w), child: widget.icon),
-        prefixIconConstraints: const BoxConstraints(
-          minWidth: 0,
-        ),
+        prefixIcon: widget.icon != null
+            ? Padding(
+                padding: EdgeInsets.only(right: 8.w),
+                child: widget.icon,
+              )
+            : null,
         hintText: widget.hintext,
         focusedBorder: const UnderlineInputBorder(
           borderSide: BorderSide(
@@ -80,7 +66,7 @@ class _TextFiledInputState extends State<TextFiledInput> {
             width: 2,
           ),
         ),
-        suffixIcon: inputText.isNotEmpty
+        suffixIcon: _inputController.text.isNotEmpty
             ? GestureDetector(
                 child: Icon(
                   Icons.clear,
@@ -88,18 +74,20 @@ class _TextFiledInputState extends State<TextFiledInput> {
                 ),
                 onTap: () {
                   _inputController.clear();
-                  setState(() {
-                    inputText = '';
-                  });
+                  setState(() {});
                 },
               )
             : null,
-        suffixIconConstraints: BoxConstraints(
-          minWidth: 0,
-          maxHeight: 16.h,
-        ),
       ),
       validator: widget.isValidator ? widget.validator : null,
+      onEditingComplete: () {
+        if (widget.isTextFieldFocused != null) {
+          setState(() {
+            widget.isTextFieldFocused == false;
+          });
+        }
+        FocusScope.of(context).unfocus();
+      },
     );
   }
 }
@@ -116,9 +104,11 @@ class TextFiledInputText extends StatefulWidget {
     this.keyboardType,
     this.isBorder = true,
     this.validator,
+    this.contentPadding,
+    this.isErrorBorder = true,
     this.readOnly = false,
   }) : super(key: key);
-
+  final bool isErrorBorder;
   final String? Function(String?)? validator;
   final void Function(String) onChanged;
   final bool? isClear;
@@ -129,85 +119,82 @@ class TextFiledInputText extends StatefulWidget {
   final bool readOnly;
   final TextInputType? keyboardType;
   final bool isBorder;
-
+  final EdgeInsetsGeometry? contentPadding;
   @override
   State<TextFiledInputText> createState() => _TextFiledInputTextState();
 }
 
 class _TextFiledInputTextState extends State<TextFiledInputText> {
   late TextEditingController _inputController;
+  late String? Function(String?) combinedValidator;
 
   @override
   void initState() {
     super.initState();
-
     _inputController = TextEditingController(text: widget.initialText);
     if (widget.isClear == true) {
       _inputController.clear();
     }
-    // Set initialText as the initial value of the controller
-    _inputController.text = widget.initialText ?? '';
+
+    combinedValidator = (value) {
+      if (widget.validator != null) {
+        String? validationResult = widget.validator!(value);
+        if (validationResult != null && validationResult.isNotEmpty) {
+          return '${widget.hintext ?? ''} $validationResult';
+        }
+      }
+      return null;
+    };
   }
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       readOnly: widget.readOnly,
-      onEditingComplete: () {
-        setState(() {
-          widget.isTextFieldFocused == false;
-        });
-        FocusScope.of(context).unfocus();
-      },
       controller: _inputController,
-      onChanged: (value) {
-        widget.onChanged(value);
-      },
+      onChanged: widget.onChanged,
       keyboardType: widget.keyboardType,
       decoration: InputDecoration(
-        prefixIcon: Padding(
-          padding: EdgeInsets.only(right: 8.w, left: 16),
-          child: widget.icon,
-        ),
-        prefixIconConstraints: const BoxConstraints(
-          minWidth: 0,
-        ),
+        errorBorder: widget.isErrorBorder
+            ? const UnderlineInputBorder(
+                borderSide: BorderSide(color: colorGray02))
+            : null,
+        contentPadding: widget.contentPadding ??
+            const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 16.0,
+            ),
+        prefixIcon: widget.icon != null
+            ? Padding(
+                padding: EdgeInsets.only(right: 8.w, left: 16),
+                child: widget.icon,
+              )
+            : null,
         hintText: widget.hintext,
-
         border: widget.isBorder
             ? OutlineInputBorder(
                 borderSide: BorderSide(
-                    color: context.appColor.colorGrey.withOpacity(0.5)),
+                  color: context.appColor.colorGrey.withOpacity(0.5),
+                ),
                 borderRadius: BorderRadius.all(Radius.circular(8.r)),
               )
             : InputBorder.none,
         enabledBorder: widget.isBorder
             ? OutlineInputBorder(
                 borderSide: BorderSide(
-                    color: context.appColor.colorGrey.withOpacity(0.5)),
+                  color: context.appColor.colorGrey.withOpacity(0.5),
+                ),
                 borderRadius: BorderRadius.all(Radius.circular(8.r)),
               )
             : null,
         focusedBorder: widget.isBorder
             ? OutlineInputBorder(
                 borderSide: BorderSide(
-                    color: context.appColor.colorGrey.withOpacity(0.5)),
+                  color: context.appColor.colorGrey.withOpacity(0.5),
+                ),
                 borderRadius: BorderRadius.all(Radius.circular(8.r)),
               )
             : null,
-        disabledBorder: widget.isBorder
-            ? OutlineInputBorder(
-                borderSide: BorderSide(
-                    color: context.appColor.colorGrey.withOpacity(0.5)),
-                borderRadius: BorderRadius.all(Radius.circular(8.r)),
-              )
-            : null,
-        // focusedBorder: const UnderlineInputBorder(
-        //   borderSide: BorderSide(
-        //     color: Colors.blueAccent,
-        //     width: 2,
-        //   ),
-        // ),
         suffixIcon: _inputController.text.isNotEmpty
             ? GestureDetector(
                 child: Padding(
@@ -219,15 +206,20 @@ class _TextFiledInputTextState extends State<TextFiledInputText> {
                 ),
                 onTap: () {
                   _inputController.clear();
+                  setState(() {});
                 },
               )
             : null,
-        suffixIconConstraints: BoxConstraints(
-          minWidth: 0,
-          maxHeight: 16.h,
-        ),
       ),
-      validator: widget.validator,
+      validator: combinedValidator,
+      onEditingComplete: () {
+        if (widget.isTextFieldFocused != null) {
+          setState(() {
+            widget.isTextFieldFocused == false;
+          });
+        }
+        FocusScope.of(context).unfocus();
+      },
     );
   }
 }

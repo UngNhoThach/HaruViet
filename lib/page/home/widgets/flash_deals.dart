@@ -2,6 +2,8 @@ import 'package:eco_app/helper/colors.dart';
 import 'package:flutter/material.dart';
 
 class FlashDealsTimer extends StatelessWidget {
+  const FlashDealsTimer({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -14,8 +16,8 @@ class FlashDealsTimer extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           TweenAnimationBuilder<Duration>(
-              duration: Duration(hours: 2),
-              tween: Tween(begin: Duration(hours: 2), end: Duration.zero),
+              duration: const Duration(hours: 2),
+              tween: Tween(begin: const Duration(hours: 2), end: Duration.zero),
               onEnd: () {
                 // bloc.onChangeTimeUp(true);
               },

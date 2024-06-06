@@ -15,4 +15,12 @@ class ProductService extends BaseService {
         headers: apiHeaders.appMobileHeaders);
     return response;
   }
+
+  Future<Response> getProductDetailsSV({required String idProduct}) async {
+    final response = await get(
+        ProductApi.getProductDetails
+            .replaceAll(RegExp('{idProduct}'), idProduct),
+        headers: apiHeaders.appMobileHeaders);
+    return response;
+  }
 }

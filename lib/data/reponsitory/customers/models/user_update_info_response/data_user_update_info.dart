@@ -5,7 +5,7 @@ part 'data_user_update_info.g.dart';
 @JsonSerializable()
 class DataUserUpdateInfo {
   String? id;
-  dynamic avatar;
+  String? avatar;
   dynamic sku;
   dynamic pathologicaldetail;
   @JsonKey(name: 'agency_id')
@@ -25,8 +25,10 @@ class DataUserUpdateInfo {
   @JsonKey(name: 'last_name_kana')
   dynamic lastNameKana;
   String? email;
-  dynamic sex;
-  dynamic birthday;
+  int? sex;
+
+  @JsonKey(name: 'birthday')
+  String? birthday;
   @JsonKey(name: 'address_id')
   String? addressId;
   dynamic postcode;
@@ -35,7 +37,9 @@ class DataUserUpdateInfo {
   dynamic address3;
   dynamic company;
   String? country;
-  dynamic phone;
+
+  @JsonKey(name: 'phone')
+  String? phone;
   @JsonKey(name: 'store_id')
   String? storeId;
   int? status;

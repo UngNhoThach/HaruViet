@@ -6,6 +6,7 @@ part 'user_state.g.dart';
 @CopyWith()
 class UserInfoLogin {
   bool isLogin;
+  String? subDomain;
 
   @JsonKey(name: "user_name")
   String? userName;
@@ -39,7 +40,6 @@ class UserInfoLogin {
   String? addressId;
   @JsonKey(name: "postcode")
   String? postCode;
-
   @JsonKey(name: "address1")
   String? address1;
   @JsonKey(name: "address1ID")
@@ -66,7 +66,7 @@ class UserInfoLogin {
   @JsonKey(name: "group")
   int? group;
   @JsonKey(name: "agency_id")
-  int? agencyId;
+  String? agencyId;
   @JsonKey(name: "user_id")
   String? userId;
   @JsonKey(name: "agency_name")
@@ -80,6 +80,7 @@ class UserInfoLogin {
 
   UserInfoLogin(
       {this.isLogin = false,
+      this.subDomain = 'https://dev.sni.vn',
       this.provider,
       this.userName,
       this.providerId,

@@ -4,7 +4,7 @@ import 'package:eco_app/data/enum.dart';
 import 'package:eco_app/data/reponsitory/customers/models/login_response/data_login.dart';
 import 'package:eco_app/data/reponsitory/customers/models/login_response/login_response.dart';
 import 'package:eco_app/data/reponsitory/normal_response/normal_error.dart';
-import 'package:eco_app/data/user/user_state.dart';
+import 'package:eco_app/data/data_local/user_state.dart';
 import 'package:eco_app/page/account/signup/widgets/sigup_type.dart';
 
 import 'widgets/verify_status.dart';

@@ -1,7 +1,7 @@
 import 'package:eco_app/component/date_picker/form_date_picker.dart';
 import 'package:eco_app/component/dropdown/form_address_input.dart';
 import 'package:eco_app/component/input/textfiled_input.dart';
-import 'package:eco_app/component/loading_scaffold.dart';
+import 'package:eco_app/component/loading/loading.dart';
 import 'package:eco_app/component/radio_button/radio_button.dart';
 import 'package:eco_app/component/snackbar/snackbar_bottom.dart';
 import 'package:eco_app/helper/base_status_response.dart';
@@ -30,18 +30,29 @@ class UpdateProfilePage extends StatefulWidget {
 }
 
 class _UpdateProfilePageState extends State<UpdateProfilePage> {
+  // variables and functions
   late UpdateProfileBloc bloc;
-
+  final _formkey = GlobalKey<FormState>();
   AutovalidateMode? autovalidateMode;
 
-  // Widget currentPage = const UpdateProfilePage(
-  //   params: ,
-  //   key: GlobalObjectKey(true),
-  // );
+  // validation
+  String? _validatorPhone(String? value) {
+    if (value == null || value.isEmpty || !isValidPhone(value)) {
+      return 'không hợp lệ';
+    }
+    return null;
+  }
+
+  bool isValidPhone(String phone) {
+    RegExp regex = RegExp(r'((\+84|84|0)+([3|5|7|8|9])+([0-9]{8})\b)');
+    return regex.hasMatch(phone);
+  }
+
   @override
   void initState() {
-    super.initState();
     bloc = UpdateProfileBloc()..getData();
+
+    super.initState();
   }
 
   String? _validationEmail(String? email) {
@@ -57,10 +68,10 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
     return null;
   }
 
-  String? _validationName(String? name) {
+  String? _validation(String? name) {
     if (name != null) {
       if (name.isEmpty) {
-        return 'Họ và tên không được trống';
+        return 'Không được bỏ trống';
       }
     }
     return null;
@@ -78,7 +89,6 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         listener: (context, state) {
           if (state.baseStatusResponse == BaseStatusResponse.susccess ||
               state.isSubmitSuccess) {
-            print('thach...success');
             CustomSnackBar.showTop(context, '${state.message}');
             widget.params.onReload.call();
             context.justBack();
@@ -105,233 +115,241 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                 ),
               ),
               //LoadingScaffold
-              body: LoadingScaffold(
-                isLoading: state.isLoading,
-                child: Center(
-                  key: ObjectKey(state.isLoading),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 16.w,
-                      vertical: 16.h,
-                    ),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          Row(
+              body: state.isLoading
+                  ? const LoadingLogo()
+                  : Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16.w,
+                        vertical: 16.h,
+                      ),
+                      child: SingleChildScrollView(
+                        child: Form(
+                          key: _formkey,
+                          child: Column(
                             children: [
-                              state.userInfoLogin?.avatar == null ||
-                                      state.userInfoLogin?.avatar == ''
-                                  ? CircleAvatar(
-                                      radius: 38.r,
-                                      backgroundColor: colorBlueGray02,
-                                      child: CircleAvatar(
-                                          radius: 40.r,
-                                          backgroundColor: colorBlueGray02,
-                                          child: AspectRatio(
-                                            aspectRatio: 1,
-                                            child: Container(),
-                                          )),
-                                    )
-                                  : CircleAvatar(
-                                      radius: 38.r,
-                                      backgroundColor: Colors.white70,
-                                      child: CircleAvatar(
-                                          radius: 40.r,
-                                          child: AspectRatio(
-                                            aspectRatio: 1,
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                      color:
-                                                          Colors.grey.shade400,
-                                                      width: 2.w),
-                                                  shape: BoxShape.circle,
-                                                  image: DecorationImage(
-                                                      image: NetworkImage(state
-                                                              .userInfoLogin
-                                                              ?.avatar ??
-                                                          ''),
-                                                      fit: BoxFit.contain)),
-                                            ),
-                                          )),
-                                    ),
-                              spaceW16,
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Text(
-                                          state.userInfoLogin?.name ?? '',
-                                          // textTheme.bodyMedium
-                                          style: textTheme.bodyMedium?.copyWith(
-                                            color: colorBlack,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    spaceH6,
-                                    Row(
-                                      children: [
-                                        Flexible(
-                                          child: Text(
-                                            state.userInfoLogin?.email ?? '',
-                                            style: const TextStyle(
-                                              fontSize: 16,
-                                              color: colorGray04,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              spaceH20,
-                              TextFiledInputText(
-                                initialText: state.firstName,
-                                validator: _validationName,
-                                keyboardType: TextInputType.name,
-                                icon: const Icon(
-                                  Icons.person,
-                                ),
-                                hintext: 'Tên',
-                                //     'first name',
-                                onChanged: (firstName) {
-                                  bloc.onChangeFirstName(firstName);
-                                },
-                                isClear: true,
-                              ),
-                              spaceH16,
-                              TextFiledInputText(
-                                initialText: state.lastName,
-                                validator: _validationName,
-                                icon: const Icon(
-                                  Icons.person,
-                                ),
-                                hintext: 'Họ',
-                                //     'last name',
-                                onChanged: (lastName) {
-                                  bloc.onChangeLastName(lastName);
-                                },
-                                isClear: true,
-                              ),
-                              state.userInfoLogin?.email == null ||
-                                      state.userInfoLogin?.email == ''
-                                  ? spaceH12
-                                  : space0,
-                              state.userInfoLogin?.email == null ||
-                                      state.userInfoLogin?.email == ''
-                                  ? TextFiledInputText(
-                                      validator: _validationEmail,
-                                      icon: const Icon(
-                                        Icons.email_outlined,
-                                      ),
-                                      hintext: 'Nhập email',
-                                      onChanged: (email) {
-                                        bloc.onChangeEmail(email);
-                                      },
-                                      isClear: true,
-                                    )
-                                  : space0,
-                              spaceH16,
-                              TextFiledInputText(
-                                initialText: state.phone,
-                                keyboardType: TextInputType.number,
-                                validator: _validationName,
-                                icon: const Icon(
-                                  Icons.phone,
-                                ),
-                                hintext: 'Số điện thoại',
-                                //     'last name',
-                                onChanged: (phone) {
-                                  bloc.onChangePhone(phone);
-                                },
-                                isClear: true,
-                              ),
-                              spaceH16,
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              Row(
                                 children: [
-                                  Container(
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(12),
-                                        border: Border.all(color: colorGray02)),
-                                    child: RadioListSelect(
-                                      isVertical: true,
-                                      items: const [
-                                        'Nam',
-                                        'Nữ',
+                                  state.userInfo?.avatar == null ||
+                                          state.userInfo?.avatar == ''
+                                      ? CircleAvatar(
+                                          radius: 38.r,
+                                          backgroundColor: colorBlueGray02,
+                                          child: CircleAvatar(
+                                              radius: 40.r,
+                                              backgroundColor: colorBlueGray02,
+                                              child: AspectRatio(
+                                                aspectRatio: 1,
+                                                child: Container(),
+                                              )),
+                                        )
+                                      : CircleAvatar(
+                                          radius: 38.r,
+                                          backgroundColor: Colors.white70,
+                                          child: CircleAvatar(
+                                              radius: 40.r,
+                                              child: AspectRatio(
+                                                aspectRatio: 1,
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                      border: Border.all(
+                                                          color: Colors
+                                                              .grey.shade400,
+                                                          width: 2.w),
+                                                      shape: BoxShape.circle,
+                                                      image: DecorationImage(
+                                                          image: NetworkImage(
+                                                              state.userInfo
+                                                                      ?.avatar ??
+                                                                  ''),
+                                                          fit: BoxFit.contain)),
+                                                ),
+                                              )),
+                                        ),
+                                  spaceW16,
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text(
+                                              state.name ?? '',
+                                              // textTheme.bodyMedium
+                                              style: textTheme.bodyMedium
+                                                  ?.copyWith(
+                                                color: colorBlack,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        spaceH6,
+                                        Row(
+                                          children: [
+                                            Flexible(
+                                              child: Text(
+                                                state.userInfo?.email ?? '',
+                                                style: const TextStyle(
+                                                  fontSize: 16,
+                                                  color: colorGray04,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        )
                                       ],
-                                      currentIndex: state.typeSex,
-                                      onSelectedIndex: (index) {
-                                        if (index != null) {
-                                          bloc.onChangSex(index);
-                                        }
-                                      },
                                     ),
-                                  ),
+                                  )
                                 ],
                               ),
-                              spaceH16,
                               Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  FormAddressInput(
-                                    key: ObjectKey(state.addressUserData
-                                        .temporaryResidenceAddress),
-                                    isDisplayTitle: false,
-                                    title: 'Địa chỉ',
-                                    initialText: state.addressUserData
-                                        .temporaryResidenceAddress?.fullAddress,
-                                    onChanged: (value) {
-                                      bloc.onChangeTemporaryResidenceAddressUser(
-                                          temporaryResidenceAddress: value);
+                                  spaceH20,
+                                  TextFiledInputText(
+                                    isErrorBorder: false,
+                                    initialText: state.firstName,
+                                    validator: _validation,
+                                    keyboardType: TextInputType.name,
+                                    icon: const Icon(
+                                      Icons.person,
+                                    ),
+                                    hintext: 'Tên',
+                                    //     'first name',
+                                    onChanged: (firstName) {
+                                      bloc.onChangeFirstName(firstName);
                                     },
                                   ),
+                                  spaceH16,
+                                  TextFiledInputText(
+                                    isErrorBorder: false,
+
+                                    initialText: state.lastName ?? '',
+                                    validator: _validation,
+                                    icon: const Icon(
+                                      Icons.person,
+                                    ),
+                                    hintext: 'Họ',
+                                    //     'last name',
+                                    onChanged: (lastName) {
+                                      bloc.onChangeLastName(lastName);
+                                    },
+                                  ),
+                                  state.email == null || state.email == ''
+                                      ? spaceH12
+                                      : space0,
+                                  state.email == null || state.email == ''
+                                      ? TextFiledInputText(
+                                          isErrorBorder: false,
+                                          initialText:
+                                              state.userInfo?.email ?? '',
+                                          validator: _validationEmail,
+                                          icon: const Icon(
+                                            Icons.email_outlined,
+                                          ),
+                                          hintext: 'Nhập email',
+                                          onChanged: (email) {
+                                            bloc.onChangeEmail(email);
+                                          },
+                                        )
+                                      : space0,
+                                  spaceH16,
+                                  TextFiledInputText(
+                                    isErrorBorder: false,
+                                    initialText: state.phone ?? '',
+                                    keyboardType: TextInputType.number,
+                                    validator: _validation,
+                                    icon: const Icon(
+                                      Icons.phone,
+                                    ),
+                                    hintext: 'Số điện thoại',
+                                    onChanged: (phone) {
+                                      bloc.onChangePhone(phone);
+                                    },
+                                  ),
+                                  spaceH16,
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            border:
+                                                Border.all(color: colorGray02)),
+                                        child: RadioListSelect(
+                                          isVertical: true,
+                                          items: const [
+                                            'Nam',
+                                            'Nữ',
+                                          ],
+                                          currentIndex: state.typeSex,
+                                          onSelectedIndex: (index) {
+                                            if (index != null) {
+                                              bloc.onChangSex(index);
+                                            }
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  spaceH16,
+                                  Column(
+                                    children: [
+                                      FormAddressInput(
+                                        key: ObjectKey(state.address1),
+                                        isDisplayTitle: false,
+                                        title: 'Địa chỉ',
+                                        initialText: state.address1 == null
+                                            ? null
+                                            : '${state.address3 ?? ''}, ${state.address2 ?? ''}, ${state.address1 ?? ''}',
+                                        onChanged: (value) {
+                                          bloc.onChangeTemporaryResidenceAddressUser(
+                                              temporaryResidenceAddress: value);
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                  spaceH16,
+                                  FormDatePicker(
+                                    key: ObjectKey(state.birthDay),
+                                    labelText: 'Ngày sinh',
+                                    isRequired: false,
+                                    max: DateTime.now(),
+                                    initialDate: state.birthDay,
+                                    onChanged: (date) {
+                                      bloc.onChangeBirthDay(date);
+                                    },
+                                  ),
+                                  spaceH20,
+                                  _button(context, color: colorMain, onTap: () {
+                                    final isValidForm =
+                                        _formkey.currentState?.validate();
+                                    if (isValidForm == true) {
+                                      bloc.onSubmit();
+                                    } else {
+                                      autovalidateMode =
+                                          AutovalidateMode.onUserInteraction;
+                                    }
+                                  }, title: 'CẬP NHẬP'),
+                                  spaceH12,
+                                  _button(context,
+                                      color: colorWhite,
+                                      onTap: () {},
+                                      title: 'XOÁ TÀI KHOẢN',
+                                      colorText: colorMain,
+                                      border: Border.all(color: colorGray04)),
+                                  spaceH72,
                                 ],
                               ),
-                              spaceH16,
-                              FormDatePicker(
-                                key: ObjectKey(state.birthDay),
-                                labelText: 'Ngày sinh',
-                                isRequired: false,
-                                max: DateTime.now(),
-                                initialDate: state.birthDay,
-                                onChanged: (date) {
-                                  bloc.onChangeBirthDay(date);
-                                },
-                              ),
-                              spaceH20,
-                              _button(context, color: colorMain, onTap: () {
-                                bloc.state.isValid
-                                    ? bloc.onSubmit()
-                                    : CustomSnackBar.showTop(context,
-                                        'Vui lòng điền đầy đủ thông tin!');
-                              }, title: 'CẬP NHẬP'),
-                              spaceH12,
-                              _button(context,
-                                  color: colorWhite,
-                                  onTap: () {},
-                                  title: 'XOÁ TÀI KHOẢN',
-                                  colorText: colorMain,
-                                  border: Border.all(color: colorGray04)),
-                              spaceH72,
                             ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              ),
             );
           },
         ),
@@ -374,7 +392,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
       String imagePath, String buttonName, double size, Function() onTap) {
     return InkWell(
       onTap: onTap,
-      child: Container(
+      child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.4,
         height: 56,
         child: Card(
@@ -412,7 +430,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
   }
 
   Widget textItem(String name, bool obsecureText) {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width - 64,
       height: 55,
       child: TextFormField(
@@ -460,11 +478,6 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         decoration: BoxDecoration(
           color: colorMain,
           borderRadius: BorderRadius.circular(20),
-          // gradient: const LinearGradient(colors: [
-          //   Color(0xFFFD746C),
-          //   Color(0xFFFF9068),
-          //   Color(0xFFFD746C),
-          // ]),
         ),
         child: Center(
           child: Text(name,

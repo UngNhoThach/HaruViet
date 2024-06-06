@@ -2,7 +2,7 @@ import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:eco_app/base/base_bloc.dart';
 import 'package:eco_app/data/enum.dart';
 import 'package:eco_app/data/reponsitory/customers/models/login_response/data_login.dart';
-import 'package:eco_app/data/user/user_state.dart';
+import 'package:eco_app/data/data_local/user_state.dart';
 import 'package:eco_app/page/account/signup/widgets/sigup_status.dart';
 import 'package:eco_app/page/account/signup/widgets/verify_status.dart';
 

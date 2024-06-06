@@ -5,7 +5,6 @@ import 'package:eco_app/resources/routes.dart';
 import 'package:eco_app/theme/typography.dart';
 import 'package:eco_app/utils/commons.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';

@@ -2,6 +2,7 @@ import 'package:currency_text_input_formatter/currency_text_input_formatter.dart
 
 const startPage = 1;
 const perPage = 10;
+const perPageHome = 4;
 
 const unknown = 'Không xác định';
 const noData = ' ';

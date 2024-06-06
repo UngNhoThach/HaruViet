@@ -4,9 +4,12 @@ import 'package:comment_tree/widgets/tree_theme_data.dart';
 import 'package:eco_app/component/button/bottom_bar_button.dart';
 import 'package:eco_app/component/button/solid_button.dart';
 import 'package:eco_app/component/input/text_filed.dart';
+import 'package:badges/badges.dart' as badges;
 import 'package:eco_app/component/rowcontent/rowcontent_one_column.dart';
 import 'package:eco_app/component/rowcontent/rowcontent_v1.dart';
+import 'package:eco_app/component/shimer/shimer.dart';
 import 'package:eco_app/data/reponsitory/comment/comment_response.dart';
+import 'package:eco_app/data/data_local/user_bloc.dart';
 import 'package:eco_app/helper/click_behavior/transparent_pointer.dart';
 import 'package:eco_app/helper/colors.dart';
 import 'package:eco_app/helper/context.dart';
@@ -14,34 +17,35 @@ import 'package:eco_app/helper/spaces.dart';
 import 'package:eco_app/page/cart/models/cart_page_params.dart';
 import 'package:eco_app/page/core/product_data.dart';
 import 'package:eco_app/page/home/widgets/flash_deals.dart';
+import 'package:eco_app/page/product/detail/product_detail_bloc.dart';
+import 'package:eco_app/page/product/detail/product_detail_state.dart';
 import 'package:eco_app/page/product/detail/widgets/popup_show_option_product.dart';
-import 'package:eco_app/page/product/detail/widgets/widgets/reaction_comment.dart';
+import 'package:eco_app/page/product/detail/widgets/product_detail_params.dart';
 import 'package:eco_app/page/product/detail/widgets/widgets/review_file.dart';
 import 'package:eco_app/page/product/detail/widgets/widgets/scoll_to_hide_bottom_bar.dart';
-import 'package:eco_app/page/product_list/product_list_page.dart';
+import 'package:eco_app/page/product/product_list/product_list_page.dart';
 import 'package:eco_app/resources/routes.dart';
 import 'package:eco_app/theme/typography.dart';
 import 'package:eco_app/utils/commons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ProductDetailPage extends StatefulWidget {
-  const ProductDetailPage({super.key});
+  final ProductDetailParams params;
+
+  const ProductDetailPage({super.key, required this.params});
 
   @override
-  _ProductDetailPageState createState() => _ProductDetailPageState();
-
-  // @override
-  // _ProductDetailPageState createState() => _ProductDetailPageState();
+  State<ProductDetailPage> createState() => _ProductDetailPageState();
 }
 
 class _ProductDetailPageState extends State<ProductDetailPage> {
-  final List<String> imageUrls = [
-    'https://bizweb.dktcdn.net/thumb/large/100/465/278/products/samsung-inverter-488-lit-rf48a4010b4-sv-2-1-1667208459141.jpg?v=1700295265767',
-    'https://images.samsung.com/is/image/samsung/p6pim/vn/rt38cb6784c3sv/gallery/vn-top-mount-freezer-bespoke-design-rt38cb6784c3sv-536447096?1300_1038_PNG',
-    'https://cdn.tgdd.vn/Products/Images/1943/202857/toshiba-gr-b22vu-ukg-1-2-org-1.jpg',
-  ];
+  // variables and functions
+  late ProductDetailBloc bloc;
+  late String domain;
+
   String _hintText = 'Thêm bình luận';
   int? replyId;
   final FocusNode _focusNode = FocusNode();
@@ -113,7 +117,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
   @override
   void initState() {
+    bloc = ProductDetailBloc()..getData(widget.params.idProduct);
     super.initState();
+    domain = context.read<UserBloc>().state.subDomain ?? '';
+
     _hideBottomAppBarController = ScrollController();
   }
 
@@ -146,1210 +153,1474 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   };
   bool showAllComments = false;
 
+  Widget _shimmer(BuildContext context) {
+    return Expanded(
+      child: ListView.separated(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        padding: const EdgeInsets.all(16),
+        itemBuilder: (context, index) => ShimmerEffect(
+          child: Container(
+            height: 100.h,
+            decoration: BoxDecoration(
+              color: context.appColor.colorWhite,
+              borderRadius: BorderRadius.circular(16.0),
+            ),
+          ),
+        ),
+        separatorBuilder: (context, index) => spaceH12,
+        itemCount: 10,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     length = commentList.length;
     final int visibleCommentsCount = showAllComments ? commentList.length : 3;
-
-    return GestureDetector(
-      onTap: () {
-        _focusNode.unfocus();
-      },
-      child: Scaffold(
-        body: Stack(
-          children: [
-            Column(
-              children: [
-                spaceH36,
-                Expanded(
-                  child: SingleChildScrollView(
-                    controller: _hideBottomAppBarController,
-                    child: Column(
+    return BlocProvider(
+      create: (context) => bloc,
+      child: BlocListener<ProductDetailBloc, ProductDetailState>(
+        listener: (context, state) {},
+        child: BlocBuilder<ProductDetailBloc, ProductDetailState>(
+          builder: (context, state) {
+            return GestureDetector(
+              onTap: () {
+                _focusNode.unfocus();
+              },
+              child: Scaffold(
+                body: Stack(
+                  children: [
+                    Column(
                       children: [
-                        spaceH16,
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.35,
-                          child: PageView.builder(
-                            itemCount: imageUrls.length,
-                            onPageChanged: (index) {
-                              setState(() {
-                                currentIndex = index;
-                              });
-                            },
-                            itemBuilder: (context, index) {
-                              return InkWell(
-                                onTap: () {
-                                  ReviewFiles.show(
-                                    imageScripts: [
-                                      'Tủ lạnh 01 hai ngăn màu đen xám với chất lượng tuyệt vời đến từ Toshiba',
-                                      'Tủ lạnh 02 hai ngăn màu đen xám với chất lượng tuyệt vời đến từ Toshiba',
-                                      'Tủ lạnh 03 hai ngăn màu đen xám với chất lượng tuyệt vời đến từ Toshiba',
-                                    ],
-                                    context,
-                                    filesUrl: imageUrls,
-                                    initIndex: index,
-                                    onDelete: (index) {
-                                      // uploader.removeFileAtValue(
-                                      //     imageFiles[index], state.domainApi);
-                                    },
-                                  );
-                                },
-                                child: Image.network(
-                                  imageUrls[index],
-                                  fit: BoxFit.cover,
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-
-                        spaceH6,
-                        Container(
-                          color: colorGray02,
-                          padding: EdgeInsets.all(8.r),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
+                        spaceH36,
+                        state.isLoading
+                            ? _shimmer(context)
+                            : Expanded(
+                                child: SingleChildScrollView(
+                                  controller: _hideBottomAppBarController,
+                                  child: Column(
                                     children: [
-                                      Text(
-                                        '13.300.000 đ',
-                                        style: textTheme.titleLarge?.copyWith(
-                                            color: colorMain,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ],
-                                  ),
-                                  spaceH6,
-                                  Row(
-                                    children: [
-                                      Text(
-                                        '15.300.000',
-                                        style: textTheme.bodyMedium?.copyWith(
-                                          color: colorGray05,
-                                          fontWeight: FontWeight.w500,
-                                          decoration:
-                                              TextDecoration.lineThrough,
-                                        ),
-                                      ),
-                                      spaceW4,
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(2.r),
-                                          color:
-                                              colorMainCover1.withOpacity(0.8),
-                                        ),
-                                        padding: const EdgeInsets.all(4),
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              '-35%',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyMedium
-                                                  ?.copyWith(
-                                                    color: colorBackgroundWhite,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'Kết thúc',
-                                        style: textTheme.bodyMedium?.copyWith(
-                                          color: colorGray05,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                      spaceW16,
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(2.r),
-                                          color:
-                                              colorMainCover1.withOpacity(0.8),
-                                        ),
-                                        padding: const EdgeInsets.all(4),
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              '02:20:21',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyMedium
-                                                  ?.copyWith(
-                                                    color: colorBackgroundWhite,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  spaceH6,
-                                  Row(
-                                    children: [
-                                      Text(
-                                        '95% deal đã mua',
-                                        style: textTheme.bodyMedium?.copyWith(
-                                          color: colorGray05,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        Container(
-                          color: colorWhite,
-                          padding: EdgeInsets.all(8.r),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    spaceH4,
-                                    Text(
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      'Tủ lạnh Samsung Inverter 599 lít Tủ lạnh Sam sung Inverter 599 lít Tủ lạnh Samsung Inverter 599 lít Tủ lạnh Samsung Inverter 599 lít',
-                                      style: textTheme.titleMedium?.copyWith(
-                                        color: colorMain,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    spaceH4,
-                                    Text(
-                                      'SKU: MMTGDD123',
-                                      style: textTheme.bodyMedium?.copyWith(
-                                        color: colorGray03,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    spaceH6,
-                                    Row(
-                                      children: [
-                                        Text(
-                                          'Toshiba',
-                                          style: textTheme.bodyMedium?.copyWith(
-                                            color: colorGray05,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    spaceH6,
-                                    Row(
-                                      children: [
-                                        Container(
-                                          width: 46.w,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(4.r),
-                                            color: colorMainCover,
-                                          ),
-                                          padding: const EdgeInsets.all(2),
-                                          child: Row(
-                                            children: [
-                                              Text(
-                                                '4.8',
-                                                style: textTheme.bodyMedium
-                                                    ?.copyWith(
-                                                  color: colorBackgroundWhite,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                              spaceW2,
-                                              Icon(
-                                                Icons.star,
-                                                size: 16.sp,
-                                                color: colorBackgroundWhite,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        spaceW6,
-                                        Text(
-                                          '(120)',
-                                          style: textTheme.bodyMedium?.copyWith(
-                                            color: colorSuccess03,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                        spaceW6,
-                                        Text(
-                                          'Đánh giá',
-                                          style: textTheme.bodyMedium?.copyWith(
-                                            color: colorSuccess03,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                        spaceW6,
-                                        Text(
-                                          '|',
-                                          style: textTheme.bodyMedium?.copyWith(
-                                            color: colorSuccess03,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                        spaceW6,
-                                        spaceW2,
-                                        Text(
-                                          '119 hỏi đáp',
-                                          style: textTheme.bodyMedium?.copyWith(
-                                            color: colorSuccess03,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    spaceW4,
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const Divider(
-                          color: colorGray03,
-                        ),
-                        Container(
-                            color: colorGray01,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 8),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  flex: 5,
-                                  child: Container(
-                                    height: 36.h,
-                                    decoration: BoxDecoration(
-                                      color: colorMain,
-                                      border: Border.all(color: colorGray02),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        const Icon(
-                                          Icons.call,
-                                          color: colorWhite,
-                                        ),
-                                        spaceW16,
-                                        const Text('Gọi điện',
-                                            style: TextStyle(
-                                                color: colorWhite,
-                                                fontWeight: FontWeight.bold)),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 5,
-                                  child: Container(
-                                    height: 36.h,
-                                    decoration: BoxDecoration(
-                                      color: colorPrimary,
-                                      border: Border.all(color: colorGray02),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        const Icon(
-                                          Icons.shopping_cart_checkout_sharp,
-                                          color: colorWhite,
-                                        ),
-                                        spaceW16,
-                                        const Text('Mua hàng',
-                                            style: TextStyle(
-                                                color: colorWhite,
-                                                fontWeight: FontWeight.bold)),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            )),
-                        const Divider(
-                          color: colorGray03,
-                        ),
-
-                        Container(
-                          color: colorWhite,
-                          padding: EdgeInsets.all(8.r),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.card_giftcard_sharp,
-                                          color: colorMain,
-                                          size: 30,
-                                        ),
-                                        spaceW10,
-                                        Expanded(
-                                          child: Text(
-                                            'Tặng 2: Bông phần quà ngẫu nhiên từ nhà sản xuất tosiba',
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 2,
-                                            style:
-                                                textTheme.titleMedium?.copyWith(
-                                              color: colorGray05,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const Divider(
-                          color: colorGray03,
-                        ),
-                        Container(
-                          color: colorWhite,
-                          padding: EdgeInsets.all(8.r),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Giao nhanh miễn phí ship tại 24 tỉnh thành toàn quốc',
-                                      style: textTheme.titleMedium?.copyWith(
-                                        color: colorGray05,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    spaceH4,
-                                    Container(
-                                      child: Row(
-                                        children: <Widget>[
-                                          Icon(
-                                            Icons.history,
-                                            color: Colors.grey.shade500,
-                                          ),
-                                          spaceW12,
-                                          const Expanded(
-                                            child: Text(
-                                              'Bạn muốn giao hàng trước 2h ngày mai. Đặt hàng trước 6h và chọn giao hàng 2h ở dưới phần thanh toán',
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 2,
-                                            ),
-                                          ),
-                                          Icon(
-                                            Icons.navigate_next,
-                                            color: Colors.grey.shade500,
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    spaceW4,
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const Divider(
-                          color: colorGray03,
-                        ),
-                        Container(
-                          color: colorWhite,
-                          padding: EdgeInsets.all(8.r),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: <Widget>[
-                                        Text(
-                                          'Dung tích:',
-                                          style: textTheme.bodySmall?.copyWith(
-                                            color: colorGray05,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                        spaceW12,
-                                        Text(
-                                          '100l',
-                                          style: textTheme.bodyMedium?.copyWith(
-                                            color: colorGray05,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        const Spacer(
-                                          flex: 1,
-                                        ),
-                                        IconButton(
-                                          onPressed: () {
-                                            PopupCreateTerminationResignation
-                                                .show(
-                                              colorSelected: '#ec555c',
-                                              context,
-                                              onReload: () {
-                                                // bloc.onReset();
-                                              },
-                                            );
+                                      spaceH16,
+                                      SizedBox(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.35,
+                                        child: PageView.builder(
+                                          itemCount: state.imageUrls.length,
+                                          onPageChanged: (index) {
+                                            setState(() {
+                                              currentIndex = index;
+                                            });
                                           },
-                                          icon: Icon(
-                                            Icons.navigate_next,
-                                            color: Colors.grey.shade500,
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                    spaceH8,
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          'Số lượng:',
-                                          style: textTheme.bodySmall?.copyWith(
-                                            color: colorGray05,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                        Row(
-                                          children: [
-                                            GestureDetector(
-                                                onTap: () {
-                                                  _decrementCounter();
-                                                },
-                                                child: const Icon(
-                                                  Icons.remove,
-                                                  color: colorGray05,
-                                                )),
-                                            spaceW16,
-                                            SizedBox(
-                                              width: 60,
-                                              height: 30,
-                                              child: TextField(
-                                                textAlign: TextAlign.center,
-                                                decoration:
-                                                    const InputDecoration(
-                                                  border: OutlineInputBorder(),
-                                                ),
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                onChanged: (newValue) {
-                                                  if (int.tryParse(newValue) !=
-                                                      null) {
-                                                    setState(() {
-                                                      _counter =
-                                                          int.parse(newValue);
-                                                    });
-                                                  }
-                                                },
-                                                controller:
-                                                    TextEditingController(
-                                                        text: '$_counter'),
-                                              ),
-                                            ),
-                                            spaceW16,
-                                            GestureDetector(
+                                          itemBuilder: (context, index) {
+                                            return InkWell(
                                               onTap: () {
-                                                _incrementCounter();
+                                                ReviewFiles.show(
+                                                  imageScripts: [
+                                                    'Tủ lạnh 01 hai ngăn màu đen xám với chất lượng tuyệt vời đến từ Toshiba',
+                                                    'Tủ lạnh 02 hai ngăn màu đen xám với chất lượng tuyệt vời đến từ Toshiba',
+                                                    'Tủ lạnh 03 hai ngăn màu đen xám với chất lượng tuyệt vời đến từ Toshiba',
+                                                  ],
+                                                  context,
+                                                  filesUrl: state.imageUrls,
+                                                  initIndex: index,
+                                                  onDelete: (index) {
+                                                    // uploader.removeFileAtValue(
+                                                    //     imageFiles[index], state.domainApi);
+                                                  },
+                                                );
                                               },
-                                              child: const Icon(
-                                                Icons.add,
-                                                color: colorGray05,
+                                              child: Image.network(
+                                                '$domain${state.imageUrls[index]}',
+                                                fit: BoxFit.cover,
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+
+                                      spaceH6,
+                                      Container(
+                                        color: colorGray02,
+                                        padding: EdgeInsets.all(8.r),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                      '13.300.000 đ',
+                                                      style: textTheme
+                                                          .titleLarge
+                                                          ?.copyWith(
+                                                              color: colorMain,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                    ),
+                                                  ],
+                                                ),
+                                                spaceH6,
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                      '15.300.000',
+                                                      style: textTheme
+                                                          .bodyMedium
+                                                          ?.copyWith(
+                                                        color: colorGray05,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        decoration:
+                                                            TextDecoration
+                                                                .lineThrough,
+                                                      ),
+                                                    ),
+                                                    spaceW4,
+                                                    Container(
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(2.r),
+                                                        color: colorMainCover1
+                                                            .withOpacity(0.8),
+                                                      ),
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              4),
+                                                      child: Row(
+                                                        children: [
+                                                          Text(
+                                                            '-35%',
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .bodyMedium
+                                                                ?.copyWith(
+                                                                  color:
+                                                                      colorBackgroundWhite,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      'Kết thúc',
+                                                      style: textTheme
+                                                          .bodyMedium
+                                                          ?.copyWith(
+                                                        color: colorGray05,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                    spaceW16,
+                                                    Container(
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(2.r),
+                                                        color: colorMainCover1
+                                                            .withOpacity(0.8),
+                                                      ),
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              4),
+                                                      child: Row(
+                                                        children: [
+                                                          Text(
+                                                            '02:20:21',
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .bodyMedium
+                                                                ?.copyWith(
+                                                                  color:
+                                                                      colorBackgroundWhite,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                spaceH6,
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                      '95% deal đã mua',
+                                                      style: textTheme
+                                                          .bodyMedium
+                                                          ?.copyWith(
+                                                        color: colorGray05,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+
+                                      Container(
+                                        color: colorWhite,
+                                        padding: EdgeInsets.all(8.r),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  spaceH4,
+                                                  Text(
+                                                    maxLines: 2,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    state
+                                                            .dataProduct
+                                                            ?.descriptions?[0]
+                                                            .name ??
+                                                        '',
+                                                    //   'Tủ lạnh Samsung Inverter 599 lít Tủ lạnh Sam sung Inverter 599 lít Tủ lạnh Samsung Inverter 599 lít Tủ lạnh Samsung Inverter 599 lít',
+                                                    style: textTheme.titleMedium
+                                                        ?.copyWith(
+                                                      color: colorMain,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                  spaceH4,
+                                                  Text(
+                                                    'SKU: MMTGDD123',
+                                                    style: textTheme.bodyMedium
+                                                        ?.copyWith(
+                                                      color: colorGray03,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                  spaceH6,
+                                                  Row(
+                                                    children: [
+                                                      Text(
+                                                        'Toshiba',
+                                                        style: textTheme
+                                                            .bodyMedium
+                                                            ?.copyWith(
+                                                          color: colorGray05,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  spaceH6,
+                                                  Row(
+                                                    children: [
+                                                      Container(
+                                                        width: 46.w,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      4.r),
+                                                          color: colorMainCover,
+                                                        ),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(2),
+                                                        child: Row(
+                                                          children: [
+                                                            Text(
+                                                              '4.8',
+                                                              style: textTheme
+                                                                  .bodyMedium
+                                                                  ?.copyWith(
+                                                                color:
+                                                                    colorBackgroundWhite,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                              ),
+                                                            ),
+                                                            spaceW2,
+                                                            Icon(
+                                                              Icons.star,
+                                                              size: 16.sp,
+                                                              color:
+                                                                  colorBackgroundWhite,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      spaceW6,
+                                                      Text(
+                                                        '(120)',
+                                                        style: textTheme
+                                                            .bodyMedium
+                                                            ?.copyWith(
+                                                          color: colorSuccess03,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                      ),
+                                                      spaceW6,
+                                                      Text(
+                                                        'Đánh giá',
+                                                        style: textTheme
+                                                            .bodyMedium
+                                                            ?.copyWith(
+                                                          color: colorSuccess03,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                      ),
+                                                      spaceW6,
+                                                      Text(
+                                                        '|',
+                                                        style: textTheme
+                                                            .bodyMedium
+                                                            ?.copyWith(
+                                                          color: colorSuccess03,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                      ),
+                                                      spaceW6,
+                                                      spaceW2,
+                                                      Text(
+                                                        '119 hỏi đáp',
+                                                        style: textTheme
+                                                            .bodyMedium
+                                                            ?.copyWith(
+                                                          color: colorSuccess03,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  spaceW4,
+                                                ],
                                               ),
                                             ),
                                           ],
                                         ),
-                                        spaceH12,
-                                      ],
-                                    ),
-                                    spaceW4,
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const Divider(
-                          color: colorGray03,
-                        ),
-                        spaceH6,
-                        RowContent(
-                          title: 'Thông tin sản phẩm',
-                          styleTitle: textTheme.bodyMedium?.copyWith(
-                            color: context
-                                .appColorScheme.colorExtendedTextBodyMedium,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          padding: EdgeInsets.zero,
-                          data: data,
-                        ),
-                        const Divider(
-                          color: colorGray03,
-                        ),
-                        spaceH6,
-                        RowContentOneColumn(
-                          // maxLines: 5,
-                          // isPaddingTop: true,
-                          title: 'Mô tả',
-                          styleTitle: textTheme.bodyMedium?.copyWith(
-                            color: context
-                                .appColorScheme.colorExtendedTextBodyMedium,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          padding: EdgeInsets.zero,
-                          data: dataDetail,
-                        ),
-                        const Divider(
-                          color: colorGray03,
-                        ),
-                        spaceH6,
-                        RowContentOneColumn(
-                          // maxLines: 4,
-                          // isPaddingTop: true,
-                          title: 'Hướng dẫn sử dụng',
-                          styleTitle: textTheme.bodyMedium?.copyWith(
-                            color: context
-                                .appColorScheme.colorExtendedTextBodyMedium,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          padding: EdgeInsets.zero,
-                          data: dataSupport,
-                        ),
-
-                        RowContentOneColumn(
-                          checkIspaddingTile: true,
-                          // maxLines: 10,
-                          title: 'Hỏi đáp',
-                          isRowTitle: true,
-                          widgetTile: Row(
-                            children: [
-                              spaceW12,
-                              Text(
-                                'Hỏi đáp (119)',
-                                style: textTheme.bodyMedium?.copyWith(
-                                  color: context.appColorScheme
-                                      .colorExtendedTextBodyMedium,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                          isPaddingTop: true,
-                          widget: Column(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(color: colorGray02)),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    const SizedBox(
-                                      width: 16,
-                                    ),
-                                    Expanded(
-                                      child: TextField(
-                                        focusNode: _focusNode,
-                                        autofocus: false,
-                                        keyboardType: TextInputType.multiline,
-                                        maxLines: null,
-                                        decoration: const InputDecoration(
-                                            hintText: "Để lại câu hỏi ...",
-                                            hintStyle: TextStyle(
-                                                color: Colors.black54,
-                                                fontSize: 14),
-                                            border: InputBorder.none),
                                       ),
-                                    ),
-                                    const SizedBox(
-                                      width: 15,
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {},
-                                      child: Container(
-                                        height: 30,
-                                        width: 30,
-                                        decoration: BoxDecoration(
-                                          color: Colors.lightBlue,
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                        ),
-                                        child: const Icon(
-                                          Icons.send,
-                                          color: Colors.white,
-                                          size: 20,
-                                        ),
+                                      const Divider(
+                                        color: colorGray03,
                                       ),
-                                    ),
-                                    const SizedBox(
-                                      width: 16,
-                                    )
-                                  ],
-                                ),
-                              ),
-                              spaceH6,
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 8,
-                                ),
-                                child: CommentTreeWidget<Comment, Comment>(
-                                  Comment(
-                                      time: '30 phút trước',
-                                      avatar: 'null',
-                                      userName: 'null',
-                                      content: 'Rất đẹp và chất lượng '),
-                                  commentList.sublist(0, visibleCommentsCount),
-                                  treeThemeData: const TreeThemeData(
-                                      lineColor: colorGray03, lineWidth: 0.5),
-                                  avatarRoot: (context, data) =>
-                                      const PreferredSize(
-                                    preferredSize: Size.fromRadius(18),
-                                    child: CircleAvatar(
-                                      radius: 18,
-                                      backgroundColor: Colors.grey,
-                                      backgroundImage: AssetImage(
-                                          'assets/images/education.png'),
-                                    ),
-                                  ),
-                                  avatarChild: (context, data) =>
-                                      const PreferredSize(
-                                    preferredSize: Size.fromRadius(12),
-                                    child: CircleAvatar(
-                                      radius: 18,
-                                      backgroundColor: Colors.grey,
-                                      backgroundImage: AssetImage(
-                                          'assets/images/education.png'),
-                                    ),
-                                  ),
-                                  contentChild: (context, data) {
-                                    return Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Container(
+                                      Container(
+                                          color: colorGray01,
                                           padding: const EdgeInsets.symmetric(
-                                              vertical: 8, horizontal: 8),
-                                          decoration: BoxDecoration(
-                                              color: Colors.grey[100],
-                                              borderRadius:
-                                                  BorderRadius.circular(12)),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                'NGÔ THỊ THẮM',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .caption
-                                                    ?.copyWith(
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        color: Colors.black),
-                                              ),
-                                              spaceH4,
-                                              Text(
-                                                '${data.content}',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .caption
-                                                    ?.copyWith(
-                                                        fontWeight:
-                                                            FontWeight.w300,
-                                                        color: Colors.black),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        DefaultTextStyle(
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .caption!
-                                              .copyWith(
-                                                  color: Colors.grey[700],
-                                                  fontWeight: FontWeight.bold),
-                                          child: const Padding(
-                                            padding: EdgeInsets.only(top: 4),
-                                            child: Row(
-                                              children: [
-                                                SizedBox(
-                                                  width: 8,
-                                                ),
-                                                Text('Thích'),
-                                                SizedBox(
-                                                  width: 24,
-                                                ),
-                                                Text('Phản hồi'),
-                                              ],
-                                            ),
-                                          ),
-                                        )
-                                      ],
-                                    );
-                                  },
-                                  contentRoot: (context, data) {
-                                    return Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 8, horizontal: 8),
-                                          decoration: BoxDecoration(
-                                              color: Colors.grey[100],
-                                              borderRadius:
-                                                  BorderRadius.circular(12)),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                'dangngocduc',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .caption!
-                                                    .copyWith(
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        color: Colors.black),
-                                              ),
-                                              spaceH4,
-                                              Text(
-                                                '${data.content}',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .caption!
-                                                    .copyWith(
-                                                        fontWeight:
-                                                            FontWeight.w300,
-                                                        color: Colors.black),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        DefaultTextStyle(
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .caption!
-                                              .copyWith(
-                                                  color: Colors.grey[700],
-                                                  fontWeight: FontWeight.bold),
-                                          child: const Padding(
-                                            padding: EdgeInsets.only(top: 4),
-                                            child: Row(
-                                              children: [
-                                                SizedBox(
-                                                  width: 8,
-                                                ),
-                                                Text('Thích'),
-                                                SizedBox(
-                                                  width: 24,
-                                                ),
-                                                Text('Phản hồi'),
-                                              ],
-                                            ),
-                                          ),
-                                        )
-                                      ],
-                                    );
-                                  },
-                                ),
-                              ),
-                              const Divider(
-                                color: colorGray03,
-                              ),
-                              (commentList.length > 3 && !showAllComments)
-                                  ? spaceH4
-                                  : space0,
-                              (commentList.length > 3 && !showAllComments)
-                                  ? Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        InkWell(
-                                          onTap: () {
-                                            routeService.pushNamed(
-                                              Routes.askQuesitionPage,
-                                            );
-                                          },
+                                              horizontal: 16, vertical: 8),
                                           child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
-                                              const Text(
-                                                'Xem tất cả (119)',
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.w500,
-                                                  color: colorMain,
-                                                  fontSize: 14,
+                                              Expanded(
+                                                flex: 5,
+                                                child: Container(
+                                                  height: 36.h,
+                                                  decoration: BoxDecoration(
+                                                    color: colorMain,
+                                                    border: Border.all(
+                                                        color: colorGray02),
+                                                  ),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      const Icon(
+                                                        Icons.call,
+                                                        color: colorWhite,
+                                                      ),
+                                                      spaceW16,
+                                                      const Text('Gọi điện',
+                                                          style: TextStyle(
+                                                              color: colorWhite,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold)),
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
-                                              spaceW6,
-                                              const Icon(
-                                                Icons.chevron_right_rounded,
-                                                color: colorMain,
-                                              )
+                                              Expanded(
+                                                flex: 5,
+                                                child: Container(
+                                                  height: 36.h,
+                                                  decoration: BoxDecoration(
+                                                    color: colorPrimary,
+                                                    border: Border.all(
+                                                        color: colorGray02),
+                                                  ),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      const Icon(
+                                                        Icons
+                                                            .shopping_cart_checkout_sharp,
+                                                        color: colorWhite,
+                                                      ),
+                                                      spaceW16,
+                                                      const Text('Mua hàng',
+                                                          style: TextStyle(
+                                                              color: colorWhite,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold)),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
                                             ],
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  : space0,
-                            ],
-                          ),
-                        ),
+                                          )),
+                                      const Divider(
+                                        color: colorGray03,
+                                      ),
 
-                        // const Divider(
-                        //   color: colorGray03,
-                        // ),
-                        RowContentOneColumn(
-                          checkIspaddingTile: true,
-                          title: 'Đánh giá',
-                          isRowTitle: true,
-                          widgetTile: Row(
-                            children: [
-                              spaceW12,
-                              Text(
-                                'Đánh giá',
-                                style: textTheme.bodyMedium?.copyWith(
-                                  color: context.appColorScheme
-                                      .colorExtendedTextBodyMedium,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              spaceW10,
-                              Container(
-                                width: 46.w,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(4.r),
-                                  color: colorMainCover,
-                                ),
-                                padding: const EdgeInsets.all(2),
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      '4.8',
-                                      style: textTheme.bodyMedium?.copyWith(
-                                        color: colorBackgroundWhite,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    spaceW2,
-                                    Icon(
-                                      Icons.star,
-                                      size: 16.sp,
-                                      color: colorBackgroundWhite,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              spaceW10,
-                              Text(
-                                '(123) lượt đánh giá',
-                                style: textTheme.bodySmall?.copyWith(
-                                  color: colorGray04,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ),
-                          isPaddingTop: true,
-                          widget: Column(
-                            children: [
-                              Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      RatingBar.builder(
-                                        itemSize: 16,
-                                        initialRating: 3,
-                                        minRating: 1,
-                                        direction: Axis.horizontal,
-                                        allowHalfRating: true,
-                                        itemCount: 5,
-                                        // itemPadding: const EdgeInsets.symmetric(
-                                        //     horizontal: 4.0),
-                                        itemBuilder: (context, _) => const Icon(
-                                          Icons.star,
-                                          color: colorMainCover,
+                                      Container(
+                                        color: colorWhite,
+                                        padding: EdgeInsets.all(8.r),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      const Icon(
+                                                        Icons
+                                                            .card_giftcard_sharp,
+                                                        color: colorMain,
+                                                        size: 30,
+                                                      ),
+                                                      spaceW10,
+                                                      Expanded(
+                                                        child: Text(
+                                                          'Tặng 2: Bông phần quà ngẫu nhiên từ nhà sản xuất tosiba',
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          maxLines: 2,
+                                                          style: textTheme
+                                                              .titleMedium
+                                                              ?.copyWith(
+                                                            color: colorGray05,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        onRatingUpdate: (rating) {
-                                          print(rating);
-                                        },
                                       ),
-                                      spaceW6,
-                                      Text(
-                                        'Phan van thanh mach',
-                                        style: textTheme.bodySmall
-                                            ?.copyWith(color: colorSuccess03),
+                                      const Divider(
+                                        color: colorGray03,
                                       ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 6,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Text('01-12-2023',
-                                          style: textTheme.bodySmall),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 6,
-                                  ),
-                                  Text(
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      'Kem dưỡng ẩm hàng ngày với khả năng làm mờ vết nhờn cung cấp bảo vệ chống nắng SPF 30, ẩm hàng ngày với khả năng làm mờ vết nhờn cung cấp bảo vệ chống nắng SPF 30,',
-                                      style: textTheme.bodySmall),
-                                  const SizedBox(
-                                    height: 6,
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                          'Sản phẩm tốt đáng để sử dụng',
-                                          style: textTheme.bodyMedium),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              spaceH10,
-                              const Divider(
-                                color: colorGray03,
-                              ),
-                              spaceH10,
-                              Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      RatingBar.builder(
-                                        itemSize: 16,
-                                        initialRating: 4,
-                                        minRating: 1,
-                                        direction: Axis.horizontal,
-                                        allowHalfRating: true,
-                                        itemCount: 5,
-                                        // itemPadding: const EdgeInsets.symmetric(
-                                        //     horizontal: 4.0),
-                                        itemBuilder: (context, _) => const Icon(
-                                          Icons.star,
-                                          color: colorMainCover,
+                                      Container(
+                                        color: colorWhite,
+                                        padding: EdgeInsets.all(8.r),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    'Giao nhanh miễn phí ship tại 24 tỉnh thành toàn quốc',
+                                                    style: textTheme.titleMedium
+                                                        ?.copyWith(
+                                                      color: colorGray05,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                  spaceH4,
+                                                  Container(
+                                                    child: Row(
+                                                      children: <Widget>[
+                                                        Icon(
+                                                          Icons.history,
+                                                          color: Colors
+                                                              .grey.shade500,
+                                                        ),
+                                                        spaceW12,
+                                                        const Expanded(
+                                                          child: Text(
+                                                            'Bạn muốn giao hàng trước 2h ngày mai. Đặt hàng trước 6h và chọn giao hàng 2h ở dưới phần thanh toán',
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            maxLines: 2,
+                                                          ),
+                                                        ),
+                                                        Icon(
+                                                          Icons.navigate_next,
+                                                          color: Colors
+                                                              .grey.shade500,
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  spaceW4,
+                                                ],
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        onRatingUpdate: (rating) {
-                                          print(rating);
-                                        },
                                       ),
-                                      spaceW6,
-                                      Text(
-                                        'Nguyen van thanh dat',
-                                        style: textTheme.bodySmall
-                                            ?.copyWith(color: colorSuccess03),
+                                      const Divider(
+                                        color: colorGray03,
                                       ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 6,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Text('01-12-2023',
-                                          style: textTheme.bodySmall),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 6,
-                                  ),
-                                  Text(
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      'Kem dưỡng ẩm hàng ngày với khả năng làm mờ vết nhờn cung cấp bảo vệ chống nắng SPF 30, ẩm hàng ngày với khả năng làm mờ vết nhờn cung cấp bảo vệ chống nắng SPF 30,',
-                                      style: textTheme.bodySmall),
-                                  const SizedBox(
-                                    height: 6,
-                                  ),
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
-                                            'Sản phẩm tốt đáng để sử dụng, Sản phẩm tốt đáng để sử dụng, Sản phẩm tốt đáng để sử dụng',
-                                            style: textTheme.bodyMedium),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 6,
-                              ),
-                              const Divider(
-                                color: colorGray03,
-                              ),
-                              const SizedBox(
-                                height: 6,
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        routeService.pushNamed(
-                                          Routes.reviewPage,
-                                        );
-                                      });
-                                    },
-                                    child: Row(
-                                      children: [
-                                        const Text(
-                                          'Xem tất cả (123)',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            color: colorMain,
-                                            fontSize: 14,
-                                          ),
+                                      Container(
+                                        color: colorWhite,
+                                        padding: EdgeInsets.all(8.r),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    children: <Widget>[
+                                                      Text(
+                                                        'Dung tích:',
+                                                        style: textTheme
+                                                            .bodySmall
+                                                            ?.copyWith(
+                                                          color: colorGray05,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                      ),
+                                                      spaceW12,
+                                                      Text(
+                                                        '100l',
+                                                        style: textTheme
+                                                            .bodyMedium
+                                                            ?.copyWith(
+                                                          color: colorGray05,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      const Spacer(
+                                                        flex: 1,
+                                                      ),
+                                                      IconButton(
+                                                        onPressed: () {
+                                                          PopupCreateTerminationResignation
+                                                              .show(
+                                                            colorSelected:
+                                                                '#ec555c',
+                                                            context,
+                                                            onReload: () {
+                                                              // bloc.onReset();
+                                                            },
+                                                          );
+                                                        },
+                                                        icon: Icon(
+                                                          Icons.navigate_next,
+                                                          color: Colors
+                                                              .grey.shade500,
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                  spaceH8,
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        'Số lượng:',
+                                                        style: textTheme
+                                                            .bodySmall
+                                                            ?.copyWith(
+                                                          color: colorGray05,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          GestureDetector(
+                                                              onTap: () {
+                                                                _decrementCounter();
+                                                              },
+                                                              child: const Icon(
+                                                                Icons.remove,
+                                                                color:
+                                                                    colorGray05,
+                                                              )),
+                                                          spaceW16,
+                                                          SizedBox(
+                                                            width: 60,
+                                                            height: 30,
+                                                            child: TextField(
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
+                                                              decoration:
+                                                                  const InputDecoration(
+                                                                border:
+                                                                    OutlineInputBorder(),
+                                                              ),
+                                                              keyboardType:
+                                                                  TextInputType
+                                                                      .number,
+                                                              onChanged:
+                                                                  (newValue) {
+                                                                if (int.tryParse(
+                                                                        newValue) !=
+                                                                    null) {
+                                                                  setState(() {
+                                                                    _counter =
+                                                                        int.parse(
+                                                                            newValue);
+                                                                  });
+                                                                }
+                                                              },
+                                                              controller:
+                                                                  TextEditingController(
+                                                                      text:
+                                                                          '$_counter'),
+                                                            ),
+                                                          ),
+                                                          spaceW16,
+                                                          GestureDetector(
+                                                            onTap: () {
+                                                              _incrementCounter();
+                                                            },
+                                                            child: const Icon(
+                                                              Icons.add,
+                                                              color:
+                                                                  colorGray05,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      spaceH12,
+                                                    ],
+                                                  ),
+                                                  spaceW4,
+                                                ],
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        spaceW6,
-                                        const Icon(
-                                          Icons.chevron_right_rounded,
-                                          color: colorMain,
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
+                                      ),
+                                      const Divider(
+                                        color: colorGray03,
+                                      ),
+                                      spaceH6,
+                                      RowContent(
+                                        title: 'Thông tin sản phẩm',
+                                        styleTitle:
+                                            textTheme.bodyMedium?.copyWith(
+                                          color: context.appColorScheme
+                                              .colorExtendedTextBodyMedium,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        padding: EdgeInsets.zero,
+                                        data: data,
+                                      ),
+                                      const Divider(
+                                        color: colorGray03,
+                                      ),
+                                      spaceH6,
+                                      RowContentOneColumn(
+                                        // maxLines: 5,
+                                        // isPaddingTop: true,
+                                        title: 'Mô tả',
+                                        styleTitle:
+                                            textTheme.bodyMedium?.copyWith(
+                                          color: context.appColorScheme
+                                              .colorExtendedTextBodyMedium,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        padding: EdgeInsets.zero,
+                                        data: dataDetail,
+                                      ),
+                                      const Divider(
+                                        color: colorGray03,
+                                      ),
+                                      spaceH6,
+                                      RowContentOneColumn(
+                                        // maxLines: 4,
+                                        // isPaddingTop: true,
+                                        title: 'Hướng dẫn sử dụng',
+                                        styleTitle:
+                                            textTheme.bodyMedium?.copyWith(
+                                          color: context.appColorScheme
+                                              .colorExtendedTextBodyMedium,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                        padding: EdgeInsets.zero,
+                                        data: dataSupport,
+                                      ),
 
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Column(
-                            children: [
-                              _topCategoriesHeader(context,
-                                  title: "Sản phẩm xem gần đây",
-                                  isTimer: false),
-                              _flashDealsProductListView(context),
-                              _topCategoriesHeader(context,
-                                  title: "Sản phẩm bán chạy", isTimer: false),
-                              _flashDealsProductListView(context),
-                            ],
-                          ),
-                        ),
+                                      RowContentOneColumn(
+                                        checkIspaddingTile: true,
+                                        // maxLines: 10,
+                                        title: 'Hỏi đáp',
+                                        isRowTitle: true,
+                                        widgetTile: Row(
+                                          children: [
+                                            spaceW12,
+                                            Text(
+                                              'Hỏi đáp (119)',
+                                              style: textTheme.bodyMedium
+                                                  ?.copyWith(
+                                                color: context.appColorScheme
+                                                    .colorExtendedTextBodyMedium,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        isPaddingTop: true,
+                                        widget: Column(
+                                          children: [
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                  border: Border.all(
+                                                      color: colorGray02)),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: <Widget>[
+                                                  const SizedBox(
+                                                    width: 16,
+                                                  ),
+                                                  Expanded(
+                                                    child: TextField(
+                                                      focusNode: _focusNode,
+                                                      autofocus: false,
+                                                      keyboardType:
+                                                          TextInputType
+                                                              .multiline,
+                                                      maxLines: null,
+                                                      decoration:
+                                                          const InputDecoration(
+                                                              hintText:
+                                                                  "Để lại câu hỏi ...",
+                                                              hintStyle: TextStyle(
+                                                                  color: Colors
+                                                                      .black54,
+                                                                  fontSize: 14),
+                                                              border:
+                                                                  InputBorder
+                                                                      .none),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 15,
+                                                  ),
+                                                  GestureDetector(
+                                                    onTap: () {},
+                                                    child: Container(
+                                                      height: 30,
+                                                      width: 30,
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.lightBlue,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(20),
+                                                      ),
+                                                      child: const Icon(
+                                                        Icons.send,
+                                                        color: Colors.white,
+                                                        size: 20,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 16,
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                            spaceH6,
+                                            Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                vertical: 8,
+                                              ),
+                                              child: CommentTreeWidget<Comment,
+                                                  Comment>(
+                                                Comment(
+                                                    time: '30 phút trước',
+                                                    avatar: 'null',
+                                                    userName: 'null',
+                                                    content:
+                                                        'Rất đẹp và chất lượng '),
+                                                commentList.sublist(
+                                                    0, visibleCommentsCount),
+                                                treeThemeData:
+                                                    const TreeThemeData(
+                                                        lineColor: colorGray03,
+                                                        lineWidth: 0.5),
+                                                avatarRoot: (context, data) =>
+                                                    const PreferredSize(
+                                                  preferredSize:
+                                                      Size.fromRadius(18),
+                                                  child: CircleAvatar(
+                                                    radius: 18,
+                                                    backgroundColor:
+                                                        Colors.grey,
+                                                    backgroundImage: AssetImage(
+                                                        'assets/images/education.png'),
+                                                  ),
+                                                ),
+                                                avatarChild: (context, data) =>
+                                                    const PreferredSize(
+                                                  preferredSize:
+                                                      Size.fromRadius(12),
+                                                  child: CircleAvatar(
+                                                    radius: 18,
+                                                    backgroundColor:
+                                                        Colors.grey,
+                                                    backgroundImage: AssetImage(
+                                                        'assets/images/education.png'),
+                                                  ),
+                                                ),
+                                                contentChild: (context, data) {
+                                                  return Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Container(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                vertical: 8,
+                                                                horizontal: 8),
+                                                        decoration: BoxDecoration(
+                                                            color: Colors
+                                                                .grey[100],
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        12)),
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                              'NGÔ THỊ THẮM',
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .caption
+                                                                  ?.copyWith(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w600,
+                                                                      color: Colors
+                                                                          .black),
+                                                            ),
+                                                            spaceH4,
+                                                            Text(
+                                                              '${data.content}',
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .caption
+                                                                  ?.copyWith(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w300,
+                                                                      color: Colors
+                                                                          .black),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      DefaultTextStyle(
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .caption!
+                                                            .copyWith(
+                                                                color: Colors
+                                                                    .grey[700],
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                        child: const Padding(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  top: 4),
+                                                          child: Row(
+                                                            children: [
+                                                              SizedBox(
+                                                                width: 8,
+                                                              ),
+                                                              Text('Thích'),
+                                                              SizedBox(
+                                                                width: 24,
+                                                              ),
+                                                              Text('Phản hồi'),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  );
+                                                },
+                                                contentRoot: (context, data) {
+                                                  return Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Container(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                vertical: 8,
+                                                                horizontal: 8),
+                                                        decoration: BoxDecoration(
+                                                            color: Colors
+                                                                .grey[100],
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        12)),
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                              'dangngocduc',
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .caption!
+                                                                  .copyWith(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w600,
+                                                                      color: Colors
+                                                                          .black),
+                                                            ),
+                                                            spaceH4,
+                                                            Text(
+                                                              '${data.content}',
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .caption!
+                                                                  .copyWith(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w300,
+                                                                      color: Colors
+                                                                          .black),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      DefaultTextStyle(
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .caption!
+                                                            .copyWith(
+                                                                color: Colors
+                                                                    .grey[700],
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                        child: const Padding(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  top: 4),
+                                                          child: Row(
+                                                            children: [
+                                                              SizedBox(
+                                                                width: 8,
+                                                              ),
+                                                              Text('Thích'),
+                                                              SizedBox(
+                                                                width: 24,
+                                                              ),
+                                                              Text('Phản hồi'),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                            const Divider(
+                                              color: colorGray03,
+                                            ),
+                                            (commentList.length > 3 &&
+                                                    !showAllComments)
+                                                ? spaceH4
+                                                : space0,
+                                            (commentList.length > 3 &&
+                                                    !showAllComments)
+                                                ? Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      InkWell(
+                                                        onTap: () {
+                                                          routeService
+                                                              .pushNamed(
+                                                            Routes
+                                                                .askQuesitionPage,
+                                                          );
+                                                        },
+                                                        child: Row(
+                                                          children: [
+                                                            const Text(
+                                                              'Xem tất cả (119)',
+                                                              style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color:
+                                                                    colorMain,
+                                                                fontSize: 14,
+                                                              ),
+                                                            ),
+                                                            spaceW6,
+                                                            const Icon(
+                                                              Icons
+                                                                  .chevron_right_rounded,
+                                                              color: colorMain,
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  )
+                                                : space0,
+                                          ],
+                                        ),
+                                      ),
 
-                        spaceH72,
+                                      // const Divider(
+                                      //   color: colorGray03,
+                                      // ),
+                                      RowContentOneColumn(
+                                        checkIspaddingTile: true,
+                                        title: 'Đánh giá',
+                                        isRowTitle: true,
+                                        widgetTile: Row(
+                                          children: [
+                                            spaceW12,
+                                            Text(
+                                              'Đánh giá',
+                                              style: textTheme.bodyMedium
+                                                  ?.copyWith(
+                                                color: context.appColorScheme
+                                                    .colorExtendedTextBodyMedium,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                            spaceW10,
+                                            Container(
+                                              width: 46.w,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(4.r),
+                                                color: colorMainCover,
+                                              ),
+                                              padding: const EdgeInsets.all(2),
+                                              child: Row(
+                                                children: [
+                                                  Text(
+                                                    '4.8',
+                                                    style: textTheme.bodyMedium
+                                                        ?.copyWith(
+                                                      color:
+                                                          colorBackgroundWhite,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                  spaceW2,
+                                                  Icon(
+                                                    Icons.star,
+                                                    size: 16.sp,
+                                                    color: colorBackgroundWhite,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            spaceW10,
+                                            Text(
+                                              '(123) lượt đánh giá',
+                                              style:
+                                                  textTheme.bodySmall?.copyWith(
+                                                color: colorGray04,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        isPaddingTop: true,
+                                        widget: Column(
+                                          children: [
+                                            Column(
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    RatingBar.builder(
+                                                      itemSize: 16,
+                                                      initialRating: 3,
+                                                      minRating: 1,
+                                                      direction:
+                                                          Axis.horizontal,
+                                                      allowHalfRating: true,
+                                                      itemCount: 5,
+                                                      // itemPadding: const EdgeInsets.symmetric(
+                                                      //     horizontal: 4.0),
+                                                      itemBuilder:
+                                                          (context, _) =>
+                                                              const Icon(
+                                                        Icons.star,
+                                                        color: colorMainCover,
+                                                      ),
+                                                      onRatingUpdate: (rating) {
+                                                        print(rating);
+                                                      },
+                                                    ),
+                                                    spaceW6,
+                                                    Text(
+                                                      'Phan van thanh mach',
+                                                      style: textTheme.bodySmall
+                                                          ?.copyWith(
+                                                              color:
+                                                                  colorSuccess03),
+                                                    ),
+                                                  ],
+                                                ),
+                                                const SizedBox(
+                                                  height: 6,
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    Text('01-12-2023',
+                                                        style: textTheme
+                                                            .bodySmall),
+                                                  ],
+                                                ),
+                                                const SizedBox(
+                                                  height: 6,
+                                                ),
+                                                Text(
+                                                    maxLines: 2,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    'Kem dưỡng ẩm hàng ngày với khả năng làm mờ vết nhờn cung cấp bảo vệ chống nắng SPF 30, ẩm hàng ngày với khả năng làm mờ vết nhờn cung cấp bảo vệ chống nắng SPF 30,',
+                                                    style: textTheme.bodySmall),
+                                                const SizedBox(
+                                                  height: 6,
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                        maxLines: 2,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        'Sản phẩm tốt đáng để sử dụng',
+                                                        style: textTheme
+                                                            .bodyMedium),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                            spaceH10,
+                                            const Divider(
+                                              color: colorGray03,
+                                            ),
+                                            spaceH10,
+                                            Column(
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    RatingBar.builder(
+                                                      itemSize: 16,
+                                                      initialRating: 4,
+                                                      minRating: 1,
+                                                      direction:
+                                                          Axis.horizontal,
+                                                      allowHalfRating: true,
+                                                      itemCount: 5,
+                                                      // itemPadding: const EdgeInsets.symmetric(
+                                                      //     horizontal: 4.0),
+                                                      itemBuilder:
+                                                          (context, _) =>
+                                                              const Icon(
+                                                        Icons.star,
+                                                        color: colorMainCover,
+                                                      ),
+                                                      onRatingUpdate: (rating) {
+                                                        print(rating);
+                                                      },
+                                                    ),
+                                                    spaceW6,
+                                                    Text(
+                                                      'Nguyen van thanh dat',
+                                                      style: textTheme.bodySmall
+                                                          ?.copyWith(
+                                                              color:
+                                                                  colorSuccess03),
+                                                    ),
+                                                  ],
+                                                ),
+                                                const SizedBox(
+                                                  height: 6,
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    Text('01-12-2023',
+                                                        style: textTheme
+                                                            .bodySmall),
+                                                  ],
+                                                ),
+                                                const SizedBox(
+                                                  height: 6,
+                                                ),
+                                                Text(
+                                                    maxLines: 2,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    'Kem dưỡng ẩm hàng ngày với khả năng làm mờ vết nhờn cung cấp bảo vệ chống nắng SPF 30, ẩm hàng ngày với khả năng làm mờ vết nhờn cung cấp bảo vệ chống nắng SPF 30,',
+                                                    style: textTheme.bodySmall),
+                                                const SizedBox(
+                                                  height: 6,
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: Text(
+                                                          maxLines: 2,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          'Sản phẩm tốt đáng để sử dụng, Sản phẩm tốt đáng để sử dụng, Sản phẩm tốt đáng để sử dụng',
+                                                          style: textTheme
+                                                              .bodyMedium),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(
+                                              height: 6,
+                                            ),
+                                            const Divider(
+                                              color: colorGray03,
+                                            ),
+                                            const SizedBox(
+                                              height: 6,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                InkWell(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      routeService.pushNamed(
+                                                        Routes.reviewPage,
+                                                      );
+                                                    });
+                                                  },
+                                                  child: Row(
+                                                    children: [
+                                                      const Text(
+                                                        'Xem tất cả (123)',
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color: colorMain,
+                                                          fontSize: 14,
+                                                        ),
+                                                      ),
+                                                      spaceW6,
+                                                      const Icon(
+                                                        Icons
+                                                            .chevron_right_rounded,
+                                                        color: colorMain,
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      ),
+
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 16),
+                                        child: Column(
+                                          children: [
+                                            _topCategoriesHeader(context,
+                                                title: "Sản phẩm xem gần đây",
+                                                isTimer: false),
+                                            _flashDealsProductListView(context),
+                                            _topCategoriesHeader(context,
+                                                title: "Sản phẩm bán chạy",
+                                                isTimer: false),
+                                            _flashDealsProductListView(context),
+                                          ],
+                                        ),
+                                      ),
+
+                                      spaceH72,
+                                    ],
+                                  ),
+                                ),
+                              ),
                       ],
                     ),
-                  ),
+                    Positioned(
+                      top: 10,
+                      left: 0,
+                      right: 0,
+                      child: AppBar(
+                        backgroundColor: Colors.transparent,
+                        elevation: 0.0,
+                        leading: IconButton(
+                          onPressed: () {
+                            context.justBack();
+                          },
+                          icon: const Icon(
+                            Icons.arrow_back,
+                            color: colorBlack,
+                          ),
+                        ),
+                        actions: <Widget>[
+                          // waiting check
+                          badges.Badge(
+                            position:
+                                badges.BadgePosition.topEnd(top: 0, end: -8),
+                            showBadge: true,
+                            ignorePointer: false,
+                            badgeContent: const Text('120'),
+                            child: IconButton(
+                              onPressed: () {
+                                routeService.pushNamed(Routes.cartPage,
+                                    arguments: CartPageParams(isAppBar: true));
+                              },
+                              icon: Icon(
+                                Icons.shopping_cart_outlined,
+                                color: colorBlack,
+                                weight: 2.5.sp,
+                              ),
+                            ),
+                          ),
+
+                          IconButton(
+                            onPressed: () {
+                              routeService.pushNamed(Routes.cartPage,
+                                  arguments: CartPageParams());
+                            },
+                            icon: Icon(
+                              Icons.more_vert_sharp,
+                              color: colorBlack,
+                              weight: 2.5.sp,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: AppBar(
-                backgroundColor: Colors.transparent,
-                elevation: 0.0,
-                leading: IconButton(
-                  onPressed: () {
-                    context.justBack();
-                  },
-                  icon: const Icon(
-                    Icons.arrow_back,
-                    color: colorBlack,
-                  ),
-                ),
-                actions: <Widget>[
-                  IconButton(
-                    onPressed: () {
-                      routeService.pushNamed(Routes.cartPage,
-                          arguments: CartPageParams());
-                    },
-                    icon: Icon(
-                      Icons.shopping_cart_outlined,
-                      color: colorBlack,
-                      weight: 2.5.sp,
+                bottomNavigationBar: ScollToHideBottomBar(
+                  controller: _hideBottomAppBarController,
+                  child: BottomBarButton(
+                    button1: AppSolidButton.medium(
+                      color: colorMain,
+                      'Gọi điện',
+                      onPressed: () {},
+                    ),
+                    button2: AppSolidButton.medium(
+                      color: colorPrimary,
+                      'Mua hàng',
+                      onPressed: () {},
                     ),
                   ),
-                  IconButton(
-                    onPressed: () {
-                      routeService.pushNamed(Routes.cartPage,
-                          arguments: CartPageParams());
-                    },
-                    icon: Icon(
-                      Icons.more_vert_sharp,
-                      color: colorBlack,
-                      weight: 2.5.sp,
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
-          ],
-        ),
-        bottomNavigationBar: ScollToHideBottomBar(
-          controller: _hideBottomAppBarController,
-          child: BottomBarButton(
-            button1: AppSolidButton.medium(
-              color: colorMain,
-              'Gọi điện',
-              onPressed: () {},
-            ),
-            button2: AppSolidButton.medium(
-              color: colorPrimary,
-              'Mua hàng',
-              onPressed: () {},
-            ),
-          ),
+            );
+          },
         ),
       ),
     );
@@ -1404,17 +1675,17 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         itemBuilder: (_, index) {
           return GestureDetector(
             onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (builder) => const ProductDetailPage()));
+              // Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //         builder: (builder) => const ProductDetailPage()));
             },
             child: Container(
               padding: EdgeInsets.symmetric(vertical: 12.h),
               decoration: BoxDecoration(
                 color: Colors.white,
-                boxShadow: [
-                  const BoxShadow(
+                boxShadow: const [
+                  BoxShadow(
                     blurRadius: 4,
                     color: Color(0x3600000F),
                     offset: Offset(0, 2),
@@ -1859,46 +2130,46 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 ],
               ),
             ),
-            Positioned(
-              bottom: 0,
-              child: TransparentPointer(
-                child: ReactionComment(
-                  timeText: '12h:30p',
-                  numReact: data.reactIcons == '0' ? 0 : data.react ?? 0,
-                  reactIcons:
-                      (data.reactIcons ?? '').isEmpty || data.reactIcons == '0'
-                          ? []
-                          : (data.reactIcons ?? '')
-                              .split(", ")
-                              .map((str) => int.parse(str))
-                              .toList(),
-                  listenBox: (value) {
-                    setState(() {
-                      listenBox = value;
-                    });
-                  },
-                  isOpenBox: listenBox,
-                  initReaction: data.liked ?? 0,
-                  onChangeReaction: (value) {
-                    if (data.id != null) {
-                      // bloc.onReactionComment(
-                      //     commentId: data.id!, type: value, data: data);
-                    }
-                  },
-                  onTapReply: () {
-                    setState(() {
-                      // FocusScope.of(context).requestFocus(_focusNode);
-                      // _hintText = 'Trả lời ${data.fullName}';
-                      // replyId = data.id;
-                    });
-                  },
-                  isReply: isReply,
-                  onTapViewReact: () {
-                    // ViewReactPopup.show(context, commentId: data.id);
-                  },
-                ),
-              ),
-            ),
+            // Positioned(
+            //   bottom: 0,
+            //   child: TransparentPointer(
+            //     child: ReactionComment(
+            //       timeText: '12h:30p',
+            //       numReact: data.reactIcons == '0' ? 0 : data.react ?? 0,
+            //       reactIcons:
+            //           (data.reactIcons ?? '').isEmpty || data.reactIcons == '0'
+            //               ? []
+            //               : (data.reactIcons ?? '')
+            //                   .split(", ")
+            //                   .map((str) => int.parse(str))
+            //                   .toList(),
+            //       listenBox: (value) {
+            //         setState(() {
+            //           listenBox = value;
+            //         });
+            //       },
+            //       isOpenBox: listenBox,
+            //       initReaction: data.liked ?? 0,
+            //       onChangeReaction: (value) {
+            //         if (data.id != null) {
+            //           // bloc.onReactionComment(
+            //           //     commentId: data.id!, type: value, data: data);
+            //         }
+            //       },
+            //       onTapReply: () {
+            //         setState(() {
+            //           // FocusScope.of(context).requestFocus(_focusNode);
+            //           // _hintText = 'Trả lời ${data.fullName}';
+            //           // replyId = data.id;
+            //         });
+            //       },
+            //       isReply: isReply,
+            //       onTapViewReact: () {
+            //         // ViewReactPopup.show(context, commentId: data.id);
+            //       },
+            //     ),
+            //   ),
+            // ),
           ],
         ),
         if ((data.childs ?? []).isNotEmpty) ...[

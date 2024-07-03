@@ -25,7 +25,7 @@ class ProductListState extends BaseState {
     String errorMsg = '',
     this.productList,
     this.canLoadMore = false,
-    this.limit = perPageHome,
+    this.limit = 10, // perPage,
     this.currentPage = startPage,
     this.isSubmitSuccess = false,
     this.datatList = const [],

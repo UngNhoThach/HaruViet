@@ -3,6 +3,7 @@ import 'package:eco_app/component/input/textfiled_input.dart';
 import 'package:eco_app/component/input/password_input.dart';
 import 'package:eco_app/component/loading_scaffold.dart';
 import 'package:eco_app/component/snackbar/snackbar_bottom.dart';
+import 'package:eco_app/database_local/product/models/count_model.dart';
 import 'package:eco_app/helper/colors.dart';
 import 'package:eco_app/helper/context.dart';
 import 'package:eco_app/helper/spaces.dart';
@@ -32,6 +33,7 @@ class _SignInPageState
     extends BaseViewState<SignInState, SignInBloc, SignInPage> {
   final _formKey = GlobalKey<FormState>();
   AutovalidateMode? autovalidateMode;
+  final _counterModel = CounterModel();
 
   String? _validationEmail(String? email) {
     bool isEmailValid(String email) {

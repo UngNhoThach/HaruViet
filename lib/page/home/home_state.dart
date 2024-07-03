@@ -25,7 +25,7 @@ class HomeState extends BaseState {
     String errorMsg = '',
     this.productList,
     this.canLoadMore = false,
-    this.limit = perPageHome,
+    this.limit = 8, // perPageHome,
     this.currentPage = startPage,
     this.isSubmitSuccess = false,
     this.datatList = const [],

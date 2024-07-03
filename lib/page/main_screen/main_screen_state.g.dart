@@ -13,6 +13,8 @@ abstract class _$MainScreenStateCWProxy {
 
   MainScreenState accessToken(String? accessToken);
 
+  MainScreenState totalItemInCart(int? totalItemInCart);
+
   MainScreenState errorMsg(String errorMsg);
 
   MainScreenState employeeId(String employeeId);
@@ -47,6 +49,7 @@ abstract class _$MainScreenStateCWProxy {
     ViewState? viewState,
     UserInfoLogin? dataUser,
     String? accessToken,
+    int? totalItemInCart,
     String? errorMsg,
     String? employeeId,
     String? fullName,
@@ -77,6 +80,10 @@ class _$MainScreenStateCWProxyImpl implements _$MainScreenStateCWProxy {
   @override
   MainScreenState accessToken(String? accessToken) =>
       this(accessToken: accessToken);
+
+  @override
+  MainScreenState totalItemInCart(int? totalItemInCart) =>
+      this(totalItemInCart: totalItemInCart);
 
   @override
   MainScreenState errorMsg(String errorMsg) => this(errorMsg: errorMsg);
@@ -132,6 +139,7 @@ class _$MainScreenStateCWProxyImpl implements _$MainScreenStateCWProxy {
     Object? viewState = const $CopyWithPlaceholder(),
     Object? dataUser = const $CopyWithPlaceholder(),
     Object? accessToken = const $CopyWithPlaceholder(),
+    Object? totalItemInCart = const $CopyWithPlaceholder(),
     Object? errorMsg = const $CopyWithPlaceholder(),
     Object? employeeId = const $CopyWithPlaceholder(),
     Object? fullName = const $CopyWithPlaceholder(),
@@ -158,6 +166,10 @@ class _$MainScreenStateCWProxyImpl implements _$MainScreenStateCWProxy {
           ? _value.accessToken
           // ignore: cast_nullable_to_non_nullable
           : accessToken as String?,
+      totalItemInCart: totalItemInCart == const $CopyWithPlaceholder()
+          ? _value.totalItemInCart
+          // ignore: cast_nullable_to_non_nullable
+          : totalItemInCart as int?,
       errorMsg: errorMsg == const $CopyWithPlaceholder() || errorMsg == null
           ? _value.errorMsg
           // ignore: cast_nullable_to_non_nullable

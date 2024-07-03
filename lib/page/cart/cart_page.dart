@@ -1,12 +1,14 @@
 import 'package:eco_app/component/input/custom_count_textfield.dart';
+import 'package:eco_app/component/loading/loading.dart';
 import 'package:eco_app/component/loading_scaffold.dart';
-import 'package:eco_app/component/popup/popup.dart';
+import 'package:eco_app/data/data_local/user_bloc.dart';
+import 'package:eco_app/database_local/product/cart_provider.dart';
+import 'package:eco_app/database_local/product/models/cart_model.dart';
 import 'package:eco_app/helper/colors.dart';
-import 'package:eco_app/helper/const.dart';
 import 'package:eco_app/helper/spaces.dart';
+import 'package:eco_app/helper/theme.dart';
 import 'package:eco_app/page/cart/cart_bloc.dart';
 import 'package:eco_app/page/cart/cart_sate.dart';
-import 'package:eco_app/page/cart/models/cart_item_request.dart';
 import 'package:eco_app/page/cart/models/cart_page_params.dart';
 import 'package:eco_app/resources/routes.dart';
 import 'package:eco_app/theme/typography.dart';
@@ -15,9 +17,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:provider/provider.dart';
 
 class CartPage extends StatefulWidget {
-  const CartPage({super.key, required this.params});
+  const CartPage({Key? key, required this.params}) : super(key: key);
 
   final CartPageParams params;
   @override
@@ -25,12 +28,21 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
+  // variables and functions
   late CartBloc bloc;
+  late String domain;
+
+  int splitCurrency(String currency) {
+    List<String> parts = currency.split('.');
+    int wholePart = int.parse(parts[0]);
+    return wholePart;
+  }
 
   @override
   void initState() {
+    domain = context.read<UserBloc>().state.subDomain ?? '';
+    bloc = CartBloc(context)..getData();
     super.initState();
-    bloc = CartBloc()..getData();
   }
 
   footer(BuildContext context, CartState state) {
@@ -53,10 +65,12 @@ class _CartPageState extends State<CartPage> {
               ),
               Padding(
                 padding: EdgeInsets.only(right: 30.w),
+                // ? "\$${defaultCurrencyFormatter.format((state.finalPriceDefault ?? 0).toStringAsFixed(0))}"
+                //   : "\$${defaultCurrencyFormatter.format((state.finalPrice ?? 0).toStringAsFixed(0))}",
                 child: Text(
                   state.finalPrice == null
-                      ? "\$${defaultCurrencyFormatter.format((state.finalPriceDefault ?? 0).toStringAsFixed(0))}"
-                      : "\$${defaultCurrencyFormatter.format((state.finalPrice ?? 0).toStringAsFixed(0))}",
+                      ? "\$${state.finalPriceDefault ?? 0}"
+                      : "\$${state.finalPrice ?? 0}",
                   style: textTheme.bodyLarge?.copyWith(
                       color: colorSuccess03, fontWeight: FontWeight.bold),
                 ),
@@ -96,7 +110,7 @@ class _CartPageState extends State<CartPage> {
             ?.copyWith(color: colorGray04, fontWeight: FontWeight.w400));
   }
 
-  createCartList(CartState state) {
+  createCartList(CartState state, CartProvider cart) {
     return ListView.separated(
       separatorBuilder: (context, index) => const Divider(
         color: colorGray01,
@@ -111,16 +125,23 @@ class _CartPageState extends State<CartPage> {
             key: ValueKey(state.totalItem),
             endActionPane: ActionPane(
               motion: const ScrollMotion(),
-              dismissible: DismissiblePane(onDismissed: () {
-                bloc.onDeleteItem(index: index);
+              dismissible: DismissiblePane(onDismissed: () async {
+                bloc.onDeletaItems(index: index);
               }),
               children: [
                 SlidableAction(
-                  key: ValueKey(state.totalItem),
-                  onPressed: (context) {
-                    setState(() {
-                      bloc.onDeleteItem(index: index);
-                    });
+                  key: ValueKey(state.productsList),
+                  onPressed: (context) async {
+                    bloc.onDeletaItems(index: index);
+                    cart.removeTotalPrice(
+                        splitCurrency(state.productsList[index].priceProduct)
+                            .toDouble());
+                    //    cart.addTotalPrice(productPrice)
+                    // await CartDatabase.instance
+                    //     .deleteCart(state.productsList[index].idProduct);
+                    //     setState(() {});
+
+                    //   bloc.onDeleteItem(index: index);
                   },
                   backgroundColor: colorMain,
                   foregroundColor: colorWhite,
@@ -148,7 +169,7 @@ class _CartPageState extends State<CartPage> {
                       width: 60.w,
                       height: 60.h,
                       child: Image.network(
-                        state.listCategories[index].image.toString(),
+                        '$domain${state.productsList[index].imageProduct}',
                         width: double.infinity,
                         fit: BoxFit.cover,
                       ),
@@ -163,7 +184,7 @@ class _CartPageState extends State<CartPage> {
                             Container(
                               padding: EdgeInsets.only(right: 8.w, top: 4.h),
                               child: Text(
-                                '${state.listCategories[index].name}',
+                                state.productsList[index].nameProduct,
                                 maxLines: 2,
                                 softWrap: true,
                                 style: const TextStyle(
@@ -174,23 +195,30 @@ class _CartPageState extends State<CartPage> {
                             ),
                             spaceH6,
                             Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  "Mã sp: ${state.listCategories[index].code} | ",
-                                  style: textTheme.labelMedium
-                                      ?.copyWith(color: colorGray03),
+                                Flexible(
+                                  child: Text(
+                                    "Mã sp: ${state.productsList[index].description} | ",
+                                    style: textTheme.labelMedium
+                                        ?.copyWith(color: colorGray03),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.clip,
+                                  ),
                                 ),
+                                spaceW12,
                                 Text(
                                   "Toshiba",
-                                  maxLines: null,
                                   style: textTheme.labelMedium
-                                      ?.copyWith(color: colorGray03),
+                                      ?.copyWith(color: colorError03),
                                 ),
+                                spaceW6,
                               ],
                             ),
-                            BlocSelector<CartBloc, CartState, CartItemRequest>(
+                            spaceH6,
+                            BlocSelector<CartBloc, CartState, Products>(
                               selector: (state) {
-                                return state.cartItemsRequest[index];
+                                return state.productsList[index];
                               },
                               builder: (context, value) {
                                 return Row(
@@ -198,30 +226,38 @@ class _CartPageState extends State<CartPage> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
-                                    Text(
-                                        "\$${defaultCurrencyFormatter.format((value.price ?? 0).toStringAsFixed(0))}",
+                                    Text(value.priceProduct,
+                                        // "\$${defaultCurrencyFormatter.format((int.parse(value.priceProduct)).toStringAsFixed(0))}",
                                         style: textTheme.bodyMedium?.copyWith(
                                             color: colorSuccess03,
                                             fontWeight: FontWeight.w400)),
-                                    SizedBox(
-                                      width: 110.w,
-                                      child: CustomCountTextFormField(
-                                        key: ObjectKey(
-                                          state.checkValue,
-                                        ),
-                                        onChangedLeft: () {
-                                          bloc.onChangeDecrementCounter(index);
-                                        },
-                                        onChangedRight: () {
-                                          bloc.onChangeIncrementCounter(index);
-                                        },
-                                        initialValue: value.quality.toString(),
-                                        onChanged: (value) {
-                                          bloc.onChangeValueDirec(
-                                              index, int.parse(value));
-                                        },
-                                      ),
-                                    )
+                                    Consumer<CartProvider>(
+                                      builder: (context, provider, child) {
+                                        return SizedBox(
+                                          width: 110.w,
+                                          child: CustomCountTextFormField(
+                                            key: ObjectKey(
+                                              state.checkValue,
+                                            ),
+                                            onChangedLeft: () {
+                                              bloc.onChangeDecrementCounter(
+                                                  index);
+                                            },
+                                            onChangedRight: () {
+                                              bloc.onChangeIncrementCounter(
+                                                  index);
+                                            },
+                                            initialValue: value
+                                                .totalQuantity.value
+                                                .toString(),
+                                            onChanged: (value) {
+                                              bloc.onChangeValueDirec(
+                                                  index, int.parse(value));
+                                            },
+                                          ),
+                                        );
+                                      },
+                                    ),
                                   ],
                                 );
                               },
@@ -236,23 +272,25 @@ class _CartPageState extends State<CartPage> {
               )
             ]));
       },
-      itemCount: state.cartItemsRequest.length,
+      itemCount: state.productsList.length,
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final cart = Provider.of<CartProvider>(context);
+
     return BlocProvider(
       create: (context) => bloc,
       child: BlocListener<CartBloc, CartState>(
         listenWhen: (previous, current) =>
             previous.isLoading != current.isLoading,
         listener: (context, state) {
-          if (state.isLoading) {
-            showPopupLoading(context, text: 'Đang tải...');
-          } else if (state.isSubmitSuccess) {
-            // Navigator.of(context).pop();
-          }
+          // if (state.isLoading) {
+          //   showPopupLoading(context, text: 'Đang tải...');
+          // } else if (state.isSubmitSuccess) {
+          //   // Navigator.of(context).pop();
+          // }
         },
         child: BlocBuilder<CartBloc, CartState>(builder: (context, state) {
           return Scaffold(
@@ -269,35 +307,71 @@ class _CartPageState extends State<CartPage> {
                   : null,
               resizeToAvoidBottomInset: false,
               backgroundColor: Colors.grey.shade100,
-              body: LoadingScaffold(
-                isLoading: state.isLoading,
-                child: Builder(builder: (context) {
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 16.w, vertical: 12.h),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            createSubTitle(state),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: SingleChildScrollView(
-                          physics: const BouncingScrollPhysics(),
-                          child: createCartList(state),
-                        ),
-                      ),
-                      footer(context, state)
-                    ],
-                  );
-                }),
-              ));
+              body: state.isLoading
+                  ? const LoadingLogo()
+                  : state.totalItem == 0
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                child: Icon(
+                                  color: colorBlueGray02,
+                                  Icons.add_shopping_cart_rounded,
+                                  size: 160.r,
+                                ),
+                              ),
+                              Text('Giỏ hàng trống',
+                                  style: myThemeData.textTheme.headlineSmall),
+                              spaceH12,
+                              ElevatedButton(
+                                onPressed: () {
+                                  routeService
+                                      .pushNamed(Routes.productListPage);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: colorMain,
+                                ),
+                                child: Text(
+                                  "Mua sắm",
+                                  style: myThemeData.textTheme.titleLarge
+                                      ?.copyWith(color: colorWhite),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : LoadingScaffold(
+                          isLoading: state.isLoading,
+                          child: Builder(builder: (context) {
+                            return Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 16.w, vertical: 12.h),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      createSubTitle(state),
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    physics: const BouncingScrollPhysics(),
+                                    child: createCartList(state, cart),
+                                  ),
+                                ),
+                                footer(context, state)
+                              ],
+                            );
+                          }),
+                        ));
         }),
       ),
     );

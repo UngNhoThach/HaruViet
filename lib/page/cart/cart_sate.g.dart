@@ -13,6 +13,8 @@ abstract class _$CartStateCWProxy {
 
   CartState errorMsg(String errorMsg);
 
+  CartState productsList(List<Products> productsList);
+
   CartState isSubmitSuccess(bool isSubmitSuccess);
 
   CartState totalItem(int? totalItem);
@@ -39,6 +41,7 @@ abstract class _$CartStateCWProxy {
     ViewState? viewState,
     List<CartItemRequest>? cartItemsRequest,
     String? errorMsg,
+    List<Products>? productsList,
     bool? isSubmitSuccess,
     int? totalItem,
     bool? checkValue,
@@ -65,6 +68,10 @@ class _$CartStateCWProxyImpl implements _$CartStateCWProxy {
 
   @override
   CartState errorMsg(String errorMsg) => this(errorMsg: errorMsg);
+
+  @override
+  CartState productsList(List<Products> productsList) =>
+      this(productsList: productsList);
 
   @override
   CartState isSubmitSuccess(bool isSubmitSuccess) =>
@@ -106,6 +113,7 @@ class _$CartStateCWProxyImpl implements _$CartStateCWProxy {
     Object? viewState = const $CopyWithPlaceholder(),
     Object? cartItemsRequest = const $CopyWithPlaceholder(),
     Object? errorMsg = const $CopyWithPlaceholder(),
+    Object? productsList = const $CopyWithPlaceholder(),
     Object? isSubmitSuccess = const $CopyWithPlaceholder(),
     Object? totalItem = const $CopyWithPlaceholder(),
     Object? checkValue = const $CopyWithPlaceholder(),
@@ -129,6 +137,11 @@ class _$CartStateCWProxyImpl implements _$CartStateCWProxy {
           ? _value.errorMsg
           // ignore: cast_nullable_to_non_nullable
           : errorMsg as String,
+      productsList:
+          productsList == const $CopyWithPlaceholder() || productsList == null
+              ? _value.productsList
+              // ignore: cast_nullable_to_non_nullable
+              : productsList as List<Products>,
       isSubmitSuccess: isSubmitSuccess == const $CopyWithPlaceholder() ||
               isSubmitSuccess == null
           ? _value.isSubmitSuccess

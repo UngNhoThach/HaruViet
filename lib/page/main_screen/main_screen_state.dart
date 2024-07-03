@@ -13,7 +13,7 @@ class MainScreenState extends BaseState {
   final String jobPositionId;
   final String jobTitleId;
   final String? accessToken;
-
+  final int? totalItemInCart;
   final String fullName;
   final String? noti;
   final bool isLoading;
@@ -26,6 +26,7 @@ class MainScreenState extends BaseState {
     ViewState viewState = ViewState.loaded,
     this.dataUser,
     this.accessToken,
+    this.totalItemInCart,
     String errorMsg = '',
     this.employeeId = '',
     this.fullName = '',

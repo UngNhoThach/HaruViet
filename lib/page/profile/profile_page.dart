@@ -1,6 +1,5 @@
 import 'package:eco_app/component/loading_scaffold.dart';
 import 'package:eco_app/component/popup/alert/alert_cofirm.dart';
-import 'package:eco_app/component/popup/popup.dart';
 import 'package:eco_app/helper/colors.dart';
 import 'package:eco_app/helper/context.dart';
 import 'package:eco_app/helper/spaces.dart';
@@ -18,10 +17,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ProfilePage extends StatefulWidget {
+  const ProfilePage({Key? key}) : super(key: key);
+
   // final ProfileParams params;
-  const ProfilePage({
-    super.key,
-  });
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -35,9 +33,10 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   void initState() {
+    bloc = ProfileBloc()..getData();
+
     // TODO: implement initState
     super.initState();
-    bloc = ProfileBloc()..getData();
 
     createListItem();
   }
@@ -207,11 +206,7 @@ class _ProfilePageState extends State<ProfilePage> {
         listenWhen: (previous, current) =>
             previous.isSubmitSuccess != current.isSubmitSuccess &&
             current.isSubmitSuccess == true,
-        listener: (context, state) {
-          if (state.isLoading) {
-            showPopupLoading(context, text: 'Đang tải...');
-          } else if (state.isSubmitSuccess) {}
-        },
+        listener: (context, state) {},
         child: BlocBuilder<ProfileBloc, ProfileState>(
           builder: (context, state) {
             return Scaffold(

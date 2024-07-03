@@ -11,11 +11,25 @@ abstract class _$ProductDetailStateCWProxy {
 
   ProductDetailState errorMsg(String errorMsg);
 
+  ProductDetailState cart(CartProvider? cart);
+
+  ProductDetailState sizeSelected(String? sizeSelected);
+
+  ProductDetailState colorSelected(String? colorSelected);
+
+  ProductDetailState checkProductInCart(bool checkProductInCart);
+
+  ProductDetailState checkProductAttributes(bool checkProductAttributes);
+
+  ProductDetailState totalProductInCart(int? totalProductInCart);
+
   ProductDetailState isSubmitSuccess(bool isSubmitSuccess);
 
   ProductDetailState isLoading(bool isLoading);
 
   ProductDetailState imageUrls(List<String> imageUrls);
+
+  ProductDetailState productsList(List<Products> productsList);
 
   ProductDetailState dataProduct(DataProduct? dataProduct);
 
@@ -30,9 +44,16 @@ abstract class _$ProductDetailStateCWProxy {
   ProductDetailState call({
     ViewState? viewState,
     String? errorMsg,
+    CartProvider? cart,
+    String? sizeSelected,
+    String? colorSelected,
+    bool? checkProductInCart,
+    bool? checkProductAttributes,
+    int? totalProductInCart,
     bool? isSubmitSuccess,
     bool? isLoading,
     List<String>? imageUrls,
+    List<Products>? productsList,
     DataProduct? dataProduct,
     UserInfoLogin? userInfoLogin,
   });
@@ -52,6 +73,29 @@ class _$ProductDetailStateCWProxyImpl implements _$ProductDetailStateCWProxy {
   ProductDetailState errorMsg(String errorMsg) => this(errorMsg: errorMsg);
 
   @override
+  ProductDetailState cart(CartProvider? cart) => this(cart: cart);
+
+  @override
+  ProductDetailState sizeSelected(String? sizeSelected) =>
+      this(sizeSelected: sizeSelected);
+
+  @override
+  ProductDetailState colorSelected(String? colorSelected) =>
+      this(colorSelected: colorSelected);
+
+  @override
+  ProductDetailState checkProductInCart(bool checkProductInCart) =>
+      this(checkProductInCart: checkProductInCart);
+
+  @override
+  ProductDetailState checkProductAttributes(bool checkProductAttributes) =>
+      this(checkProductAttributes: checkProductAttributes);
+
+  @override
+  ProductDetailState totalProductInCart(int? totalProductInCart) =>
+      this(totalProductInCart: totalProductInCart);
+
+  @override
   ProductDetailState isSubmitSuccess(bool isSubmitSuccess) =>
       this(isSubmitSuccess: isSubmitSuccess);
 
@@ -61,6 +105,10 @@ class _$ProductDetailStateCWProxyImpl implements _$ProductDetailStateCWProxy {
   @override
   ProductDetailState imageUrls(List<String> imageUrls) =>
       this(imageUrls: imageUrls);
+
+  @override
+  ProductDetailState productsList(List<Products> productsList) =>
+      this(productsList: productsList);
 
   @override
   ProductDetailState dataProduct(DataProduct? dataProduct) =>
@@ -81,9 +129,16 @@ class _$ProductDetailStateCWProxyImpl implements _$ProductDetailStateCWProxy {
   ProductDetailState call({
     Object? viewState = const $CopyWithPlaceholder(),
     Object? errorMsg = const $CopyWithPlaceholder(),
+    Object? cart = const $CopyWithPlaceholder(),
+    Object? sizeSelected = const $CopyWithPlaceholder(),
+    Object? colorSelected = const $CopyWithPlaceholder(),
+    Object? checkProductInCart = const $CopyWithPlaceholder(),
+    Object? checkProductAttributes = const $CopyWithPlaceholder(),
+    Object? totalProductInCart = const $CopyWithPlaceholder(),
     Object? isSubmitSuccess = const $CopyWithPlaceholder(),
     Object? isLoading = const $CopyWithPlaceholder(),
     Object? imageUrls = const $CopyWithPlaceholder(),
+    Object? productsList = const $CopyWithPlaceholder(),
     Object? dataProduct = const $CopyWithPlaceholder(),
     Object? userInfoLogin = const $CopyWithPlaceholder(),
   }) {
@@ -96,6 +151,33 @@ class _$ProductDetailStateCWProxyImpl implements _$ProductDetailStateCWProxy {
           ? _value.errorMsg
           // ignore: cast_nullable_to_non_nullable
           : errorMsg as String,
+      cart: cart == const $CopyWithPlaceholder()
+          ? _value.cart
+          // ignore: cast_nullable_to_non_nullable
+          : cart as CartProvider?,
+      sizeSelected: sizeSelected == const $CopyWithPlaceholder()
+          ? _value.sizeSelected
+          // ignore: cast_nullable_to_non_nullable
+          : sizeSelected as String?,
+      colorSelected: colorSelected == const $CopyWithPlaceholder()
+          ? _value.colorSelected
+          // ignore: cast_nullable_to_non_nullable
+          : colorSelected as String?,
+      checkProductInCart: checkProductInCart == const $CopyWithPlaceholder() ||
+              checkProductInCart == null
+          ? _value.checkProductInCart
+          // ignore: cast_nullable_to_non_nullable
+          : checkProductInCart as bool,
+      checkProductAttributes:
+          checkProductAttributes == const $CopyWithPlaceholder() ||
+                  checkProductAttributes == null
+              ? _value.checkProductAttributes
+              // ignore: cast_nullable_to_non_nullable
+              : checkProductAttributes as bool,
+      totalProductInCart: totalProductInCart == const $CopyWithPlaceholder()
+          ? _value.totalProductInCart
+          // ignore: cast_nullable_to_non_nullable
+          : totalProductInCart as int?,
       isSubmitSuccess: isSubmitSuccess == const $CopyWithPlaceholder() ||
               isSubmitSuccess == null
           ? _value.isSubmitSuccess
@@ -109,6 +191,11 @@ class _$ProductDetailStateCWProxyImpl implements _$ProductDetailStateCWProxy {
           ? _value.imageUrls
           // ignore: cast_nullable_to_non_nullable
           : imageUrls as List<String>,
+      productsList:
+          productsList == const $CopyWithPlaceholder() || productsList == null
+              ? _value.productsList
+              // ignore: cast_nullable_to_non_nullable
+              : productsList as List<Products>,
       dataProduct: dataProduct == const $CopyWithPlaceholder()
           ? _value.dataProduct
           // ignore: cast_nullable_to_non_nullable

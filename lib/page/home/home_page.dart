@@ -1,13 +1,14 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eco_app/component/input/search_bar.dart';
 import 'package:eco_app/component/not_found.dart';
 import 'package:eco_app/component/shimer/shimer.dart';
 import 'package:eco_app/data/reponsitory/product/models/list_product/data_product.dart';
 import 'package:eco_app/data/data_local/user_bloc.dart';
+import 'package:eco_app/database_local/product/models/count_model.dart';
 import 'package:eco_app/helper/colors.dart';
 import 'package:eco_app/helper/const.dart';
 import 'package:eco_app/helper/context.dart';
 import 'package:eco_app/helper/spaces.dart';
-import 'package:eco_app/page/add_task/test_sql.dart';
 import 'package:eco_app/page/core/product_data.dart';
 import 'package:eco_app/page/home/home_bloc.dart';
 import 'package:eco_app/page/home/home_state.dart';
@@ -52,9 +53,10 @@ class _HomePageState extends State<HomePage> {
   @override
   void dispose() {
     _pagingController.dispose();
-
     super.dispose();
   }
+
+  final _counterModel = CounterModel();
 
   @override
   Widget build(BuildContext context) {
@@ -99,10 +101,8 @@ class _HomePageState extends State<HomePage> {
                             Expanded(
                               child: Column(
                                 children: [
-                                  state.newDataList == null
-                                      ? _shimmer(context)
-                                      : _recommendedProductListView(
-                                          context, state),
+                                  _recommendedProductListView(
+                                      context, state, _counterModel),
                                   Column(
                                     children: [
                                       spaceH16,
@@ -157,7 +157,7 @@ class _HomePageState extends State<HomePage> {
     BuildContext context,
   ) {
     return SizedBox(
-      height: 200.h,
+      height: 210.h,
       child: PagedListView.separated(
         scrollDirection: Axis.horizontal,
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
@@ -183,11 +183,11 @@ class _HomePageState extends State<HomePage> {
         PagedSliverGrid(
           shrinkWrapFirstPageIndicators: true,
           pagingController: _pagingController,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2, // Số cột là 2
             mainAxisSpacing: 12.0,
             crossAxisSpacing: 6.0,
-            childAspectRatio: 0.7,
+            childAspectRatio: 0.7.sp,
           ),
           builderDelegate: PagedChildBuilderDelegate<DataProduct>(
             itemBuilder: (context, item, index) =>
@@ -454,10 +454,14 @@ class _HomePageState extends State<HomePage> {
                         topLeft: Radius.circular(8.r),
                         topRight: Radius.circular(8.r),
                       ),
-                      child: Image.network(
-                        '$domain${data.image ?? ''}',
+                      child: CachedNetworkImage(
+                        imageUrl: '$domain${data.image ?? ''}',
                         width: 75.w,
                         height: 75.h,
+                        fadeOutDuration: const Duration(seconds: 2),
+                        placeholder: (context, url) => _shimerItem(context),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
                       ),
                     ),
                   ),
@@ -629,7 +633,8 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-Widget _recommendedProductListView(BuildContext context, HomeState state) {
+Widget _recommendedProductListView(
+    BuildContext context, HomeState state, _counterModel) {
   return SizedBox(
     height: 180.h,
     child: ListView.builder(
@@ -663,7 +668,9 @@ Widget _recommendedProductListView(BuildContext context, HomeState state) {
                         ),
                         spaceH8,
                         ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            _counterModel.increment();
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppData.recommendedProducts[index]
                                 .buttonBackgroundColor,
@@ -702,6 +709,19 @@ Widget _empty(BuildContext context) {
   return const DidntFound();
 }
 
+Widget _shimerItem(BuildContext context) {
+  return ShimmerEffect(
+    child: Container(
+      width: 75.w,
+      height: 75.h,
+      decoration: BoxDecoration(
+        color: context.appColor.colorWhite,
+        borderRadius: BorderRadius.circular(16.0),
+      ),
+    ),
+  );
+}
+
 Widget _shimmer(BuildContext context) {
   return Expanded(
     child: ListView.separated(
@@ -738,7 +758,7 @@ Widget _topCategoriesHeader(
                 .textTheme
                 .titleMedium
                 ?.copyWith(fontWeight: FontWeight.bold)),
-        isTimer ? FlashDealsTimer() : const SizedBox(),
+        isTimer ? const FlashDealsTimer() : const SizedBox(),
         TextButton(
           onPressed: () {
             routeService.pushNamed(Routes.productListPage);
@@ -775,7 +795,7 @@ Widget _homeIcon(BuildContext context) {
             HomePageIcon(
               assetImageString: 'assets/images/recruitment.png',
               itemString: "Hàng mới về",
-              destinationWidget: TestSqlPage(),
+              destinationWidget: QrCodePage(),
               notifyNumber: "0",
             ),
             HomePageIcon(

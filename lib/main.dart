@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eco_app/component/select_address/models/select_address_params.dart';
 import 'package:eco_app/component/select_address/select_address_page.dart';
 import 'package:eco_app/data/data_local/user_bloc.dart';
+import 'package:eco_app/database_local/product/cart_provider.dart';
 import 'package:eco_app/helper/theme.dart';
 import 'package:eco_app/page/about_us/about_us_page.dart';
 import 'package:eco_app/page/account/update_profile/widgets/update_profile_params.dart';
@@ -42,29 +44,24 @@ import 'package:eco_app/utils/commons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 import 'page/account/reset_password/reset_password_page.dart';
 import 'page/account/reset_password/widgets/reset_password_params.dart';
 import 'page/add_address/add_address/widgets/add_address_params.dart';
 import 'page/cart/checkout/widgets/checkout_params.dart';
 
-// Future<void> main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-
-// // initialize Firebase
-//   // await Firebase.initializeApp(
-//   //   options: DefaultFirebaseOptions.currentPlatform,
-//   // );
-//   runApp(const MaterialApp(
-//     home: HomePage(),
-//     debugShowCheckedModeBanner: false,
-//   ));
-// }
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  CachedNetworkImage.logLevel = CacheManagerLogLevel.debug;
 
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider(
+      create: (context) => CartProvider(), child: const MyApp()));
+}
+
+class MyModel with ChangeNotifier {
+  String a = 'Test1';
+  String b = 'Test2';
 }
 
 class MyApp extends StatelessWidget {
@@ -160,7 +157,9 @@ class _HomePageState extends State<HomePage> {
       case Routes.main:
         return MaterialPageRoute(
           settings: const RouteSettings(name: Routes.main),
-          builder: (_) => const MainScreenPage(),
+          builder: (_) => const MainScreenPage(
+              // cartModel: CartModel(),
+              ),
         );
 
       case Routes.login:
@@ -360,6 +359,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _getRootScreen(BuildContext context) {
-    return const MainScreenPage();
+    return const MainScreenPage(
+        //   cartModel: CartModel(),
+        );
   }
 }

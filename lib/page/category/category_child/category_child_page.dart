@@ -118,7 +118,7 @@ class _CategoryChildPageState extends State<CategoryChildPage> {
                                     MaterialPageRoute(
                                         builder: (builder) => ProductDetailPage(
                                               params: ProductDetailParams(
-                                                  idProduct: ''),
+                                                  idProduct: '0'),
                                             )));
                               },
                               child: SizedBox(

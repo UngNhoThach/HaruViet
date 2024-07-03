@@ -1,4 +1,4 @@
-import 'package:eco_app/data_local/models/task.dart';
+import 'package:eco_app/database_local/task/models/task.dart';
 import 'package:flutter/foundation.dart' show immutable;
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';

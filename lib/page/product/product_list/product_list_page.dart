@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eco_app/component/header/header_item.dart';
 import 'package:eco_app/component/input/search_bar.dart';
 import 'package:eco_app/component/not_found.dart';
@@ -48,6 +49,12 @@ class _ProductListPageState extends State<ProductListPage> {
     domain = context.read<UserBloc>().state.subDomain ?? '';
 
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
   }
 
   @override
@@ -122,61 +129,57 @@ class _ProductListPageState extends State<ProductListPage> {
                       statusSelected: 2,
                       onSelect: () {},
                     ),
-                    checkIsChangeListItem
-                        ? state.newDataList == null
-                            ? _shimmer(context)
-                            : Expanded(
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 8),
-                                  child: CustomScrollView(
-                                    slivers: [
-                                      PagedSliverGrid(
-                                        shrinkWrapFirstPageIndicators: true,
-                                        pagingController: _pagingController,
-                                        gridDelegate:
-                                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 2, // Số cột là 2
-                                          mainAxisSpacing: 12.0,
-                                          crossAxisSpacing: 6.0,
-                                          childAspectRatio: 0.7,
-                                        ),
-                                        builderDelegate:
-                                            PagedChildBuilderDelegate<
-                                                DataProduct>(
-                                          itemBuilder: (context, item, index) =>
-                                              _itemGridView(context,
-                                                  index: index, data: item),
-                                        ),
-                                      ),
-                                    ],
+                    // state.newDataList == null
+                    //     ? _shimmer(context)
+                    //     :
+                    Expanded(
+                      child: checkIsChangeListItem
+                          ? Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8),
+                              child: CustomScrollView(
+                                slivers: [
+                                  PagedSliverGrid(
+                                    shrinkWrapFirstPageIndicators: true,
+                                    pagingController: _pagingController,
+                                    gridDelegate:
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2, // Số cột là 2
+                                      mainAxisSpacing: 12.0,
+                                      crossAxisSpacing: 6.0,
+                                      childAspectRatio: 0.7,
+                                    ),
+                                    builderDelegate:
+                                        PagedChildBuilderDelegate<DataProduct>(
+                                      itemBuilder: (context, item, index) =>
+                                          _itemGridView(context,
+                                              index: index, data: item),
+                                    ),
                                   ),
-                                ),
-                              )
-                        : state.newDataList == null
-                            ? _shimmer(context)
-                            : Expanded(
-                                child: PagedListView.separated(
-                                  scrollDirection: Axis.vertical,
-                                  keyboardDismissBehavior:
-                                      ScrollViewKeyboardDismissBehavior.onDrag,
-                                  pagingController: _pagingController,
-                                  shrinkWrap: true,
-                                  physics: const ClampingScrollPhysics(),
-                                  builderDelegate:
-                                      PagedChildBuilderDelegate<DataProduct>(
-                                    noItemsFoundIndicatorBuilder: _empty,
-                                    itemBuilder: (context, item, index) {
-                                      return _item(context,
-                                          index: index, data: item);
-                                    },
-                                  ),
-                                  separatorBuilder: (context, index) =>
-                                      const Divider(
-                                    color: colorBlueGray03,
-                                  ),
-                                ),
+                                ],
                               ),
+                            )
+                          : PagedListView.separated(
+                              scrollDirection: Axis.vertical,
+                              keyboardDismissBehavior:
+                                  ScrollViewKeyboardDismissBehavior.onDrag,
+                              pagingController: _pagingController,
+                              shrinkWrap: true,
+                              physics: const ClampingScrollPhysics(),
+                              builderDelegate:
+                                  PagedChildBuilderDelegate<DataProduct>(
+                                noItemsFoundIndicatorBuilder: _empty,
+                                itemBuilder: (context, item, index) {
+                                  return _item(context,
+                                      index: index, data: item);
+                                },
+                              ),
+                              separatorBuilder: (context, index) =>
+                                  const Divider(
+                                color: colorBlueGray03,
+                              ),
+                            ),
+                    ),
                   ],
                 ),
               ),
@@ -232,11 +235,15 @@ class _ProductListPageState extends State<ProductListPage> {
                   topLeft: Radius.circular(8),
                   topRight: Radius.circular(8),
                 ),
-                child: Image.network(
+                child: CachedNetworkImage(
+                  fadeOutDuration: const Duration(seconds: 3),
+                  //  const Duration(seconds: 3),
+                  imageUrl: '$domain${data.image}',
                   width: 100,
                   height: 90,
-                  '$domain${data.image}',
-                  // 'https://bizweb.dktcdn.net/thumb/large/100/465/278/products/samsung-inverter-488-lit-rf48a4010b4-sv-2-1-1667208459141.jpg?v=1700295265767',
+                  placeholder: (context, url) =>
+                      const CircularProgressIndicator(),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
                 ),
               ),
             ),
@@ -417,7 +424,12 @@ class _ProductListPageState extends State<ProductListPage> {
       {required DataProduct data, required int index}) {
     return GestureDetector(
       onTap: () {
-        routeService.pushNamed(Routes.productDetailPage);
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (builder) => ProductDetailPage(
+                      params: ProductDetailParams(idProduct: data.id ?? ''),
+                    )));
       },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 12.h),
@@ -450,10 +462,15 @@ class _ProductListPageState extends State<ProductListPage> {
                         topLeft: Radius.circular(8.r),
                         topRight: Radius.circular(8.r),
                       ),
-                      child: Image.network(
-                        '$domain${data.image ?? ''}',
+                      child: CachedNetworkImage(
+                        fadeOutDuration: const Duration(seconds: 3),
+                        imageUrl: '$domain${data.image ?? ''}',
                         width: 75.w,
                         height: 75.h,
+                        placeholder: (context, url) =>
+                            const CircularProgressIndicator(),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
                       ),
                     ),
                   ),

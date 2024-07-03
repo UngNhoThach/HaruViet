@@ -1,16 +1,15 @@
 import 'package:comment_tree/data/comment.dart';
 import 'package:comment_tree/widgets/comment_tree_widget.dart';
 import 'package:comment_tree/widgets/tree_theme_data.dart';
+import 'package:eco_app/component/alert/alert_one_button.dart';
 import 'package:eco_app/component/button/bottom_bar_button.dart';
 import 'package:eco_app/component/button/solid_button.dart';
-import 'package:eco_app/component/input/text_filed.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:eco_app/component/rowcontent/rowcontent_one_column.dart';
 import 'package:eco_app/component/rowcontent/rowcontent_v1.dart';
 import 'package:eco_app/component/shimer/shimer.dart';
-import 'package:eco_app/data/reponsitory/comment/comment_response.dart';
 import 'package:eco_app/data/data_local/user_bloc.dart';
-import 'package:eco_app/helper/click_behavior/transparent_pointer.dart';
+import 'package:eco_app/database_local/product/cart_provider.dart';
 import 'package:eco_app/helper/colors.dart';
 import 'package:eco_app/helper/context.dart';
 import 'package:eco_app/helper/spaces.dart';
@@ -21,8 +20,10 @@ import 'package:eco_app/page/product/detail/product_detail_bloc.dart';
 import 'package:eco_app/page/product/detail/product_detail_state.dart';
 import 'package:eco_app/page/product/detail/widgets/popup_show_option_product.dart';
 import 'package:eco_app/page/product/detail/widgets/product_detail_params.dart';
+import 'package:eco_app/page/product/detail/widgets/widgets/color_selector.dart';
 import 'package:eco_app/page/product/detail/widgets/widgets/review_file.dart';
 import 'package:eco_app/page/product/detail/widgets/widgets/scoll_to_hide_bottom_bar.dart';
+import 'package:eco_app/page/product/detail/widgets/widgets/size_selector.dart';
 import 'package:eco_app/page/product/product_list/product_list_page.dart';
 import 'package:eco_app/resources/routes.dart';
 import 'package:eco_app/theme/typography.dart';
@@ -31,6 +32,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 class ProductDetailPage extends StatefulWidget {
   final ProductDetailParams params;
@@ -117,7 +119,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
   @override
   void initState() {
-    bloc = ProductDetailBloc()..getData(widget.params.idProduct);
+    bloc = ProductDetailBloc(context)..getData(widget.params.idProduct);
     super.initState();
     domain = context.read<UserBloc>().state.subDomain ?? '';
 
@@ -174,14 +176,37 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     );
   }
 
+  void _showCustomAlertDialog(BuildContext context, String meess) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => CustomCupertinoAlertOneButton(
+        title: '',
+        content: meess,
+        onPositiveButtonPressed: () {
+          Navigator.of(context).pop();
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     length = commentList.length;
     final int visibleCommentsCount = showAllComments ? commentList.length : 3;
+    final cart = Provider.of<CartProvider>(context);
+
     return BlocProvider(
       create: (context) => bloc,
       child: BlocListener<ProductDetailBloc, ProductDetailState>(
-        listener: (context, state) {},
+        listenWhen: (previous, current) {
+          return previous.checkProductInCart != current.checkProductInCart;
+        },
+        listener: (context, state) {
+          state.checkProductInCart == true
+              ? _showCustomAlertDialog(
+                  context, 'Sản phẩm đã tồn tại trong giỏ hàng')
+              : null;
+        },
         child: BlocBuilder<ProductDetailBloc, ProductDetailState>(
           builder: (context, state) {
             return GestureDetector(
@@ -583,31 +608,172 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                               ),
                                               Expanded(
                                                 flex: 5,
-                                                child: Container(
-                                                  height: 36.h,
-                                                  decoration: BoxDecoration(
-                                                    color: colorPrimary,
-                                                    border: Border.all(
-                                                        color: colorGray02),
-                                                  ),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      const Icon(
-                                                        Icons
-                                                            .shopping_cart_checkout_sharp,
-                                                        color: colorWhite,
-                                                      ),
-                                                      spaceW16,
-                                                      const Text('Mua hàng',
-                                                          style: TextStyle(
-                                                              color: colorWhite,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold)),
-                                                    ],
+                                                child: GestureDetector(
+                                                  onTap: () async {
+                                                    state.checkProductAttributes
+                                                        ? PopupCreateTerminationResignation
+                                                            .show(
+                                                            widgetButton:
+                                                                AppSolidButton
+                                                                    .medium(
+                                                              disabledColor:
+                                                                  colorGray02,
+                                                              onPressed: state
+                                                                      .isValidBuyProductAttributes
+                                                                  ? () {}
+                                                                  : null,
+                                                              'Mua hàng',
+                                                            ),
+                                                            widgetImage: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .start,
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .end,
+                                                              children: [
+                                                                Column(
+                                                                  children: [
+                                                                    Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        ClipRect(
+                                                                          child:
+                                                                              Transform.translate(
+                                                                            offset:
+                                                                                const Offset(-24, 0), // Dịch sang trái 24px
+                                                                            child:
+                                                                                Align(
+                                                                              alignment: Alignment.centerLeft,
+                                                                              widthFactor: 0.85, // Tỉ lệ chiều rộng của ảnh so với Container (để dịch thêm)
+                                                                              child: Image.network(
+                                                                                '$domain${state.imageUrls[0]}',
+                                                                                height: 100,
+                                                                                fit: BoxFit.cover,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                spaceW10,
+                                                                Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    Text(
+                                                                      '\$ ${state.dataProduct!.price}',
+                                                                      style: textTheme
+                                                                          .titleLarge,
+                                                                    ),
+                                                                    spaceH6,
+                                                                    Text(
+                                                                      'Kho: ${state.dataProduct!.stock}',
+                                                                      style: textTheme
+                                                                          .bodyMedium,
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            widgetColor:
+                                                                ColorSelector(
+                                                              colors: const [
+                                                                Colors.red,
+                                                                Colors.green,
+                                                                Colors.blue,
+                                                                Colors.yellow
+                                                              ],
+                                                              onColorSelected:
+                                                                  (color) {
+                                                                bloc.onSelectColor(
+                                                                    color
+                                                                        .toString());
+                                                                print(
+                                                                    'Màu đã chọn: $color');
+                                                              },
+                                                            ),
+                                                            widgetSize:
+                                                                SizeSelector(
+                                                              sizes: const [
+                                                                'S',
+                                                                'M',
+                                                                'L',
+                                                                'XL'
+                                                              ],
+                                                              onSizeSelected:
+                                                                  (size) {
+                                                                bloc.onSelectSize(
+                                                                    size.toString());
+                                                                print(
+                                                                    'Size đã chọn: $size');
+                                                              },
+                                                            ),
+                                                            colorSelected:
+                                                                '#ec555c',
+                                                            context,
+                                                            onReload: () {
+                                                              // bloc.onReset();
+                                                            },
+                                                          )
+                                                        : bloc.onAddItemToCart(
+                                                            idProduct: state
+                                                                    .dataProduct
+                                                                    ?.id ??
+                                                                '',
+                                                            nameProduct:
+                                                                state.dataProduct?.descriptions?[0].name ??
+                                                                    '',
+                                                            brandProduct: state
+                                                                    .dataProduct
+                                                                    ?.brandId ??
+                                                                '',
+                                                            imageProduct: state
+                                                                    .dataProduct
+                                                                    ?.image ??
+                                                                '',
+                                                            priceProduct: state
+                                                                    .dataProduct
+                                                                    ?.price ??
+                                                                '',
+                                                            description: state
+                                                                    .dataProduct
+                                                                    ?.descriptions?[1]
+                                                                    .description ??
+                                                                '');
+                                                  },
+                                                  child: Container(
+                                                    height: 36.h,
+                                                    decoration: BoxDecoration(
+                                                      color: colorPrimary,
+                                                      border: Border.all(
+                                                          color: colorGray02),
+                                                    ),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        const Icon(
+                                                          Icons
+                                                              .shopping_cart_checkout_sharp,
+                                                          color: colorWhite,
+                                                        ),
+                                                        spaceW16,
+                                                        const Text('Mua hàng',
+                                                            style: TextStyle(
+                                                                color:
+                                                                    colorWhite,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold)),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                               ),
@@ -761,17 +927,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                         flex: 1,
                                                       ),
                                                       IconButton(
-                                                        onPressed: () {
-                                                          PopupCreateTerminationResignation
-                                                              .show(
-                                                            colorSelected:
-                                                                '#ec555c',
-                                                            context,
-                                                            onReload: () {
-                                                              // bloc.onReset();
-                                                            },
-                                                          );
-                                                        },
+                                                        onPressed: () {},
                                                         icon: Icon(
                                                           Icons.navigate_next,
                                                           color: Colors
@@ -1567,37 +1723,45 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                           ),
                         ),
                         actions: <Widget>[
-                          // waiting check
-                          badges.Badge(
-                            position:
-                                badges.BadgePosition.topEnd(top: 0, end: -8),
-                            showBadge: true,
-                            ignorePointer: false,
-                            badgeContent: const Text('120'),
-                            child: IconButton(
-                              onPressed: () {
-                                routeService.pushNamed(Routes.cartPage,
-                                    arguments: CartPageParams(isAppBar: true));
-                              },
-                              icon: Icon(
-                                Icons.shopping_cart_outlined,
-                                color: colorBlack,
-                                weight: 2.5.sp,
-                              ),
-                            ),
-                          ),
-
-                          IconButton(
-                            onPressed: () {
-                              routeService.pushNamed(Routes.cartPage,
-                                  arguments: CartPageParams());
+                          Consumer<CartProvider>(
+                            builder: (BuildContext context, CartProvider value,
+                                Widget? child) {
+                              return badges.Badge(
+                                position: badges.BadgePosition.topEnd(
+                                    top: 0, end: -8),
+                                showBadge:
+                                    value.getCounter() == 0 ? false : true,
+                                ignorePointer: false,
+                                badgeStyle: const badges.BadgeStyle(
+                                    badgeColor: colorMain),
+                                badgeContent: Text('${value.counter}'),
+                                child: IconButton(
+                                  onPressed: () {
+                                    routeService.pushNamed(Routes.cartPage,
+                                        arguments:
+                                            CartPageParams(isAppBar: true));
+                                  },
+                                  icon: Icon(
+                                    Icons.shopping_cart_outlined,
+                                    color: colorBlack,
+                                    weight: 2.5.sp,
+                                  ),
+                                ),
+                              );
                             },
-                            icon: Icon(
-                              Icons.more_vert_sharp,
-                              color: colorBlack,
-                              weight: 2.5.sp,
-                            ),
                           ),
+                          spaceW16,
+                          // IconButton(
+                          //   onPressed: () {
+                          //     routeService.pushNamed(Routes.cartPage,
+                          //         arguments: CartPageParams());
+                          //   },
+                          //   icon: Icon(
+                          //     Icons.more_vert_sharp,
+                          //     color: colorBlack,
+                          //     weight: 2.5.sp,
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),
@@ -1611,10 +1775,27 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       'Gọi điện',
                       onPressed: () {},
                     ),
-                    button2: AppSolidButton.medium(
-                      color: colorPrimary,
-                      'Mua hàng',
-                      onPressed: () {},
+                    button2: Consumer<CartProvider>(
+                      builder: (context, provider, child) {
+                        return AppSolidButton.medium(
+                          color: colorPrimary,
+                          'Mua hàng',
+                          onPressed: () {
+                            // addCounter
+                            bloc.onAddItemToCart(
+                                idProduct: state.dataProduct?.id ?? '',
+                                nameProduct:
+                                    state.dataProduct?.descriptions?[0].name ??
+                                        '',
+                                brandProduct: state.dataProduct?.brandId ?? '',
+                                imageProduct: state.dataProduct?.image ?? '',
+                                priceProduct: state.dataProduct?.price ?? '',
+                                description: state.dataProduct?.descriptions?[1]
+                                        .description ??
+                                    '');
+                          },
+                        );
+                      },
                     ),
                   ),
                 ),
@@ -1887,324 +2068,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             ),
           );
         },
-      ),
-    );
-  }
-
-  Widget _sendComment(BuildContext context) {
-    return Column(
-      children: [
-        spaceH12,
-        // if (widget.type == NewsType.hpbd) ...[
-        //   ViewStickerNews(
-        //     replyId: replyId,
-        //     onReload: () {
-        //       setState(() {
-        //         _hintText = 'Thêm bình luận';
-        //         replyId = null;
-        //       });
-        //       // smsTextCtrl.clear();
-        //       FocusScope.of(context).unfocus();
-        //     },
-        //   ),
-        //   spaceH12,
-        // ],
-        Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: 20.w,
-          ),
-          child: Row(
-            children: [
-              InkWell(
-                onTap: () {
-                  if (isSetting) {
-                    setState(() {
-                      isSetting = false;
-                    });
-                  } else {
-                    setState(() {
-                      isSetting = true;
-                    });
-                  }
-                },
-                // child: Padding(
-                //   padding: EdgeInsets.only(
-                //     right: 12.w,
-                //   ),
-                //   child: Assets.icons.iconSentImage.image(
-                //     width: 20.r,
-                //     height: 20.r,
-                //   ),
-                // ),
-              ),
-              Expanded(
-                child: AppTextFormField(
-                  // focusNode: _focusNode,
-                  minLines: 1,
-                  maxLines: 3,
-                  // controller: smsTextCtrl,
-                  textAlignVertical: TextAlignVertical.center,
-                  decoration: InputDecoration(
-                    filled: true,
-                    isDense: true,
-                    fillColor: colorWhite,
-                    focusColor: colorWhite,
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: context.appColor.colorGrey,
-                      ),
-                      borderRadius: const BorderRadius.all(Radius.circular(28)),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: context.appColor.colorGrey,
-                      ),
-                      borderRadius: const BorderRadius.all(Radius.circular(28)),
-                    ),
-                    suffixIcon: InkWell(
-                      onTap: () {
-                        // if (uploadFile.listFileInfoMessage.length <
-                        //     uploadFile.listUploadProcess.length) {
-                        //   Fluttertoast.showToast(
-                        //     msg: "Anh/chị vui lòng đợi, file đang được tải",
-                        //     gravity: ToastGravity.TOP,
-                        //     toastLength: Toast.LENGTH_SHORT,
-                        //     webPosition: 'top',
-                        //   );
-                        // } else {
-                        //   if (smsTextCtrl.text.isNotEmpty ||
-                        //       uploadFile.listFileInfoMessage.isNotEmpty) {
-                        //     bloc.onSendComment(
-                        //       comment: smsTextCtrl.text,
-                        //       images: uploadFile.listFileInfoMessage.isNotEmpty
-                        //           ? uploadFile.listFileInfoMessage[0].filePath
-                        //           : null,
-                        //       replyId: replyId,
-                        //     );
-                        //     uploadFile.clearAllFile();
-                        //     setState(() {
-                        //       _hintText = 'Thêm bình luận';
-                        //       replyId = null;
-                        //     });
-                        //     smsTextCtrl.clear();
-                        //     FocusScope.of(context).unfocus();
-                        //   }
-                        // }
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Icon(
-                          Icons.send,
-                          color: colorPrimary,
-                        ),
-                      ),
-                    ),
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
-                    hintText: _hintText,
-                    hintStyle: textTheme.bodySmall?.copyWith(
-                      color: context.appColor.colorGrey,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        // Visibility(
-        //   visible: isSetting,
-        //   child: _displaySetting(context, uploadFile),
-        // )
-      ],
-    );
-  }
-
-  Widget _item(
-    BuildContext context, {
-    required CommentResponse data,
-    required int index,
-    bool isReply = false,
-  }) {
-    // final createdAt = data.createdDate != null
-    //     ? convertDateTimeFromMil(data.createdDate!)
-    //     : null;
-    // final timeText = createdAt?.getDiffFromToday() ?? '';
-
-    return Column(
-      children: [
-        Stack(
-          clipBehavior: Clip.none,
-          children: [
-            InkWell(
-              onLongPress: () {
-                showConfirmActionSheet(
-                  context,
-                  message: 'Anh/chị có chắc xóa bình luận này?',
-                  onConfirm: () async {
-                    // bloc.onDeleteComment(data: data);
-                  },
-                );
-              },
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  isReply ? spaceW40 : space0,
-                  GestureDetector(
-                    onTap: () {
-                      // if (data.createdBy != bloc.state.employeeId) {
-                      //   routeService.pushNamed(Routes.profileUser,
-                      //       arguments: ProfileUserParams(
-                      //         getByEmployeeId: true,
-                      //         isInRoomMessage: false,
-                      //         isRouteProfile: true,
-                      //         // emailCty: data.emailCongTy ?? '',
-                      //         id: data.createdBy ?? '',
-                      //         name: data.fullName,
-                      //         avatar: data.avatar,
-                      //         // jobPositionName: data.jobPositionName,
-                      //         // organizationName: data.organizationName,
-                      //         // phone: data.didong,
-                      //         isMyProfile: false,
-                      //       ));
-                      // }
-                    },
-                    child: _avatar(context, avatar: ''
-                        //  data.avatar != null
-                        //     ? '${bloc.state.domainApi}${data.avatar}'
-                        //     : null,
-                        ),
-                  ),
-                  isReply ? spaceW8 : spaceW12,
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            // if (data.createdBy != bloc.state.employeeId) {
-                            //   routeService.pushNamed(Routes.profileUser,
-                            //       arguments: ProfileUserParams(
-                            //         getByEmployeeId: true,
-                            //         isInRoomMessage: false,
-                            //         isRouteProfile: true,
-                            //         // emailCty: data.emailCongTy ?? '',
-                            //         id: data.createdBy ?? '',
-                            //         name: data.fullName,
-                            //         avatar: data.avatar,
-                            //         // jobPositionName: data.jobPositionName,
-                            //         // organizationName: data.organizationName,
-                            //         // phone: data.didong,
-                            //         isMyProfile: false,
-                            //       ));
-                            // }
-                          },
-                          child: Text(
-                            data.fullName ?? '',
-                            style: textTheme.bodyMedium?.copyWith(
-                              fontSize: isReply ? 13 : 14,
-                              color: context
-                                  .appColorScheme.colorExtendedTextBodyMedium,
-                            ),
-                          ),
-                        ),
-                        spaceH4,
-                        Text(
-                          data.text ?? '',
-                          style: textTheme.bodySmall?.copyWith(
-                            color: context
-                                .appColorScheme.colorExtendedTextBodySmall,
-                          ),
-                          maxLines: 4,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        if ((data.images ?? '').isNotEmpty) ...[
-                          spaceH4,
-                          // _displayImage(
-                          //     context, '${bloc.state.domainApi}${data.images}'),
-                          spaceH4,
-                        ],
-                        spaceH28,
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
-            // Positioned(
-            //   bottom: 0,
-            //   child: TransparentPointer(
-            //     child: ReactionComment(
-            //       timeText: '12h:30p',
-            //       numReact: data.reactIcons == '0' ? 0 : data.react ?? 0,
-            //       reactIcons:
-            //           (data.reactIcons ?? '').isEmpty || data.reactIcons == '0'
-            //               ? []
-            //               : (data.reactIcons ?? '')
-            //                   .split(", ")
-            //                   .map((str) => int.parse(str))
-            //                   .toList(),
-            //       listenBox: (value) {
-            //         setState(() {
-            //           listenBox = value;
-            //         });
-            //       },
-            //       isOpenBox: listenBox,
-            //       initReaction: data.liked ?? 0,
-            //       onChangeReaction: (value) {
-            //         if (data.id != null) {
-            //           // bloc.onReactionComment(
-            //           //     commentId: data.id!, type: value, data: data);
-            //         }
-            //       },
-            //       onTapReply: () {
-            //         setState(() {
-            //           // FocusScope.of(context).requestFocus(_focusNode);
-            //           // _hintText = 'Trả lời ${data.fullName}';
-            //           // replyId = data.id;
-            //         });
-            //       },
-            //       isReply: isReply,
-            //       onTapViewReact: () {
-            //         // ViewReactPopup.show(context, commentId: data.id);
-            //       },
-            //     ),
-            //   ),
-            // ),
-          ],
-        ),
-        if ((data.childs ?? []).isNotEmpty) ...[
-          spaceH8,
-          ListView.separated(
-            physics: listenBox
-                ? const NeverScrollableScrollPhysics()
-                : const ClampingScrollPhysics(),
-            shrinkWrap: true,
-            padding: EdgeInsets.zero,
-            itemBuilder: (context, index) {
-              return _item(
-                context,
-                data: (data.childs ?? [])[index],
-                index: index,
-                isReply: true,
-              );
-            },
-            separatorBuilder: (context, index) => spaceH10,
-            itemCount: (data.childs ?? []).length,
-          ),
-        ],
-      ],
-    );
-  }
-
-  Widget _avatar(BuildContext context, {String? avatar}) {
-    return SizedBox(
-      width: 32.r,
-      height: 32.r,
-      child: CircleAvatar(
-        radius: 12,
-        backgroundColor: context.appColor.colorGrey.withOpacity(0.5),
-        backgroundImage: avatar != null ? NetworkImage(avatar) : null,
-        child: avatar == null ? Text('') : null,
       ),
     );
   }

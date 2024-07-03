@@ -1,126 +1,33 @@
 import 'package:eco_app/base/base_bloc.dart';
 import 'package:eco_app/data/reponsitory/product/models/product_response.dart';
+import 'package:eco_app/database_local/product/cart_provider.dart';
+import 'package:eco_app/database_local/product/models/cart_model.dart';
+import 'package:eco_app/database_local/product/cart_database.dart';
 import 'package:eco_app/page/cart/cart_sate.dart';
 import 'package:eco_app/page/cart/models/cart_item_request.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CartBloc extends BaseBloc<CartState> {
-  CartBloc() : super(const CartState());
+  final BuildContext context;
+
+  CartBloc(this.context) : super(const CartState());
+  List<Products> productsList = [];
+
   getData() async {
+    final cart = Provider.of<CartProvider>(context, listen: false);
+
     emit(state.copyWith(
       isLoading: true,
     ));
-    List<ProductResponse> listCategories() {
-      return [
-        ProductResponse(
-            id: 1,
-            code: '9032451',
-            image:
-                'https://product.hstatic.net/1000367205/product/prevention-_daily_hydrating_moisturizer_spf_30_pdp-r02_6f6414cca7ab4dc9ab03286c48670efe.jpg',
-            amount: '1',
-            price: '900000',
-            name: 'Máy lạnh toshiba inverter 2 hp',
-            isCheck: false),
-        ProductResponse(
-            id: 2,
-            image:
-                'https://product.hstatic.net/1000367205/product/prevention-_daily_hydrating_moisturizer_spf_30_pdp-r02_6f6414cca7ab4dc9ab03286c48670efe.jpg',
-            amount: '1',
-            code: '90324529032452',
-            price: '900000',
-            name: 'Máy lạnh toshiba inverter 2 hp',
-            isCheck: false),
-        ProductResponse(
-            id: 3,
-            image:
-                'https://product.hstatic.net/1000367205/product/prevention-_daily_hydrating_moisturizer_spf_30_pdp-r02_6f6414cca7ab4dc9ab03286c48670efe.jpg',
-            code: '9032453',
-            amount: '1',
-            price: '900000',
-            name: 'Máy lạnh toshiba inverter 2 hp',
-            isCheck: false),
-        ProductResponse(
-            id: 4,
-            image:
-                'https://product.hstatic.net/1000367205/product/prevention-_daily_hydrating_moisturizer_spf_30_pdp-r02_6f6414cca7ab4dc9ab03286c48670efe.jpg',
-            code: '9032454',
-            amount: '1',
-            price: '900000',
-            name: 'Máy lạnh toshiba inverter 2 hp',
-            isCheck: false),
-        ProductResponse(
-            id: 5,
-            amount: '1',
-            image:
-                'https://product.hstatic.net/1000367205/product/prevention-_daily_hydrating_moisturizer_spf_30_pdp-r02_6f6414cca7ab4dc9ab03286c48670efe.jpg',
-            code: '9032455',
-            price: '900000',
-            name: 'Máy lạnh toshiba inverter 2 hp',
-            isCheck: false),
-        ProductResponse(
-            id: 6,
-            code: '9032456',
-            amount: '1',
-            image:
-                'https://product.hstatic.net/1000367205/product/prevention-_daily_hydrating_moisturizer_spf_30_pdp-r02_6f6414cca7ab4dc9ab03286c48670efe.jpg',
-            price: '900000',
-            name: 'Máy lạnh toshiba inverter 2 hp',
-            isCheck: false),
-        ProductResponse(
-            id: 7,
-            code: '90324579032452',
-            price: '900000',
-            image:
-                'https://product.hstatic.net/1000367205/product/prevention-_daily_hydrating_moisturizer_spf_30_pdp-r02_6f6414cca7ab4dc9ab03286c48670efe.jpg',
-            amount: '1',
-            name: 'Máy lạnh toshiba inverter 2 hp-End',
-            isCheck: false),
-        ProductResponse(
-            id: 8,
-            code: '9032458',
-            price: '900000',
-            image:
-                'https://product.hstatic.net/1000367205/product/prevention-_daily_hydrating_moisturizer_spf_30_pdp-r02_6f6414cca7ab4dc9ab03286c48670efe.jpg',
-            amount: '1',
-            name: 'Máy lạnh toshiba inverter 2 hp',
-            isCheck: false),
-        ProductResponse(
-            id: 9,
-            code: '9032459',
-            image:
-                'https://product.hstatic.net/1000367205/product/prevention-_daily_hydrating_moisturizer_spf_30_pdp-r02_6f6414cca7ab4dc9ab03286c48670efe.jpg',
-            amount: '1',
-            price: '900000',
-            name: 'Máy lạnh toshiba inverter 2 hp',
-            isCheck: false),
-        ProductResponse(
-            id: 10,
-            code: '90324510',
-            amount: '1',
-            image:
-                'https://product.hstatic.net/1000367205/product/prevention-_daily_hydrating_moisturizer_spf_30_pdp-r02_6f6414cca7ab4dc9ab03286c48670efe.jpg',
-            price: '900000',
-            name: 'Máy lạnh toshiba inverter 2 hp',
-            isCheck: false),
-        ProductResponse(
-            id: 11,
-            code: '903245119032452',
-            image:
-                'https://product.hstatic.net/1000367205/product/prevention-_daily_hydrating_moisturizer_spf_30_pdp-r02_6f6414cca7ab4dc9ab03286c48670efe.jpg',
-            amount: '1',
-            price: '900000',
-            name: 'Máy lạnh toshiba inverter 2 hp',
-            isCheck: false),
-      ];
-    }
 
-    final totalItem = listCategories().length;
+    productsList = (await CartDatabase.instance.readAllItems());
 
     emit(
       state.copyWith(
-        listCategories: listCategories(),
-        totalItem: totalItem,
-        cartItemsRequest: initializeCartItems(totalItem),
+        productsList: productsList,
+        totalItem: cart.getCounter(),
         isLoading: false,
       ),
     );
@@ -130,16 +37,35 @@ class CartBloc extends BaseBloc<CartState> {
     }
   }
 
-  List<CartItemRequest> initializeCartItems(int totalItem) {
-    List<CartItemRequest> cartItems = [];
-    for (int i = 0; i < totalItem; i++) {
-      cartItems.add(CartItemRequest(
-        quality: 1,
-        price: 900000,
-      ));
-    }
-    return cartItems;
+  int splitCurrency(String currency) {
+    List<String> parts = currency.split('.');
+    int wholePart = int.parse(parts[0]);
+
+    return wholePart;
   }
+
+  onDeletaItems({
+    required int index,
+  }) async {
+    final cart = Provider.of<CartProvider>(context, listen: false);
+
+    await CartDatabase.instance.deleteCart(state.productsList[index].idProduct);
+    cart.removeItem(state.productsList[index].idProduct);
+    cart.removeCounter();
+
+    getData();
+  }
+
+  // List<CartItemRequest> initializeCartItems(int totalItem) {
+  //   List<CartItemRequest> cartItems = [];
+  //   for (int i = 0; i < totalItem; i++) {
+  //     cartItems.add(CartItemRequest(
+  //       quality: 1,
+  //       price: 900000,
+  //     ));
+  //   }
+  //   return cartItems;
+  // }
 
   onChangeValueDirec(
     int index,
@@ -164,97 +90,124 @@ class CartBloc extends BaseBloc<CartState> {
     onChangeFinalPrice();
   }
 
+  getDefaultPrice() {
+    // var productsList = List<Products>.from(state.productsList);
+    final cart = Provider.of<CartProvider>(context, listen: false);
+
+    // int sum;
+    // sum = productsList.fold<int>(
+    //     0,
+    //     (previousValue, element) =>
+    //         previousValue + (splitCurrency(element.priceProduct)));
+
+    emit(state.copyWith(
+        finalPriceDefault: cart.getTotalPrice().toInt() // sum,
+        ,
+        isValueDefault: true));
+  }
+
+  // change final value default of cart
+  onChangeFinalPrice() {
+    final cart = Provider.of<CartProvider>(context, listen: false);
+    var productsList = List<Products>.from(state.productsList);
+    int sum;
+    int sumValue;
+    int total;
+    sum = state.finalPriceDefault!;
+    sumValue = productsList.fold<int>(
+        0,
+        (previousValue, element) =>
+            previousValue + (splitCurrency(element.priceProduct)));
+    total = sumValue + sum;
+    emit(state.copyWith(finalPrice: cart.getTotalPrice().toInt() // total,
+        ));
+  }
+
   onChangeDecrementCounter(int index) {
-    var listItem = List<CartItemRequest>.from(state.cartItemsRequest);
-    listItem = listItem.mapIndexed((i, element) {
+    final cart = Provider.of<CartProvider>(context, listen: false);
+
+    var productsList = List<Products>.from(state.productsList);
+    productsList = productsList.mapIndexed((i, element) {
       if (index == i) {
-        if (element.quality != null && element.quality! > 1) {
-          int count = element.quality!;
+        if (element.totalQuantity.value > 1) {
+          int count = element.totalQuantity.value;
           count = count - 1;
-          return element.copyWith(
-            quality: count,
-            totalPriceItem: (count - 1) * element.price!,
+          cart.removeTotalPrice(splitCurrency(element.priceProduct).toDouble());
+          getDefaultPrice();
+
+          return element.copy(
+            totalQuantity: ValueNotifier<int>(count),
+            //   totalPriceItem: (count - 1) * element.price!,
           );
         }
       }
       return element;
     }).toList();
     emit(state.copyWith(
-      cartItemsRequest: listItem,
+      productsList: productsList,
       checkValue: !state.checkValue,
     ));
-    onChangeFinalPrice();
-  }
+    onUpdate(index, productsList);
 
-  getDefaultPrice() {
-    var listItem = List<CartItemRequest>.from(state.cartItemsRequest);
-    int sum;
-    sum = listItem.fold<int>(
-        0, (previousValue, element) => previousValue + (element.price ?? 0));
-
-    emit(state.copyWith(finalPriceDefault: sum, isValueDefault: true));
-  }
-
-  onChangeFinalPrice() {
-    var listItem = List<CartItemRequest>.from(state.cartItemsRequest);
-    int sum;
-    int sumValue;
-    int total;
-    sum = state.finalPriceDefault!;
-
-    sumValue = listItem.fold<int>(
-        0,
-        (previousValue, element) =>
-            previousValue + (element.totalPriceItem ?? 0));
-    total = sumValue + sum;
-    emit(state.copyWith(
-      finalPrice: total,
-    ));
+    // onChangeFinalPrice();
   }
 
   onChangeIncrementCounter(int index) {
-    var listItem = List<CartItemRequest>.from(state.cartItemsRequest);
-    listItem = listItem.mapIndexed((i, element) {
+    final cart = Provider.of<CartProvider>(context, listen: false);
+
+    var productsList = List<Products>.from(state.productsList);
+    productsList = productsList.mapIndexed((i, element) {
       if (index == i) {
-        int count = element.quality != null ? element.quality! : 1;
+        int count = element.totalQuantity.value;
         count = count + 1;
-        return element.copyWith(
-          quality: count,
-          totalPriceItem: (count - 1) * element.price!,
+        cart.addTotalPrice(splitCurrency(element.priceProduct).toDouble());
+        getDefaultPrice();
+        return element.copy(
+          totalQuantity: ValueNotifier<int>(count),
+
+          // totalPriceItem: (count - 1) * element.price!,
         );
       }
       return element;
     }).toList();
     emit(state.copyWith(
-      cartItemsRequest: listItem,
+      productsList: productsList,
       checkValue: !state.checkValue,
     ));
-    onChangeFinalPrice();
+    onUpdate(index, productsList);
+    //   getDefaultPrice();
+
+    //  onChangeFinalPrice();
   }
 
+  onUpdate(int index, productList) async {
+    final updatedProduct = productList[index].copy(
+        totalQuantity:
+            ValueNotifier<int>(productList[index].totalQuantity.value));
+    await CartDatabase.instance.updateCart(updatedProduct);
+  }
+
+//
   onDeleteItem({
     required int index,
+    required String idProduct,
   }) {
+    final cart = Provider.of<CartProvider>(context, listen: false);
+
     var listCategories = List<ProductResponse>.from(state.listCategories);
     listCategories.removeAt(index);
 
     var listCategoriesCartItem =
         List<CartItemRequest>.from(state.cartItemsRequest);
     listCategoriesCartItem.removeAt(index);
-    final total = state.totalItem;
-    int temp;
-    if (total != null) {
-      temp = total - 1;
-    } else {
-      temp = 0;
-    }
+    cart.removeCounter();
+    cart.removeItem(idProduct);
+
     emit(state.copyWith(
-        totalItem: temp,
         cartItemsRequest: listCategoriesCartItem,
         listCategories: listCategories,
         isValueDefault: false));
     getDefaultPrice();
-
-    onChangeFinalPrice();
+    //  onChangeFinalPrice();
   }
 }

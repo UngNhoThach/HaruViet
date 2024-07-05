@@ -11,7 +11,7 @@ class ColorSelector extends StatefulWidget {
       : super(key: key);
 
   @override
-  _ColorSelectorState createState() => _ColorSelectorState();
+  State<ColorSelector> createState() => _ColorSelectorState();
 }
 
 class _ColorSelectorState extends State<ColorSelector> {

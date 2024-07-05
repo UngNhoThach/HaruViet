@@ -143,19 +143,37 @@ class ProductDetailBloc extends BaseBloc<ProductDetailState> {
     emit(state.copyWith(totalProductInCart: quantity));
   }
 
-  onSelectSize(String sizeSelected) {
+  onSelectSize(String sizeSelected) async {
     emit(state.copyWith(
       sizeSelected: sizeSelected,
     ));
+    await onValidPopSelected();
   }
 
-  onSelectColor(String colorSelected) {
+  onSelectColor(String colorSelected) async {
     emit(state.copyWith(
       colorSelected: colorSelected,
     ));
+    await onValidPopSelected();
   }
 
   onResetSelectAttributes(String colorSelected) {
     emit(state.copyWith(colorSelected: null, sizeSelected: null));
+  }
+
+  onHandleCounterChanged(int newCounter) async {
+    emit(state.copyWith(currentCounter: newCounter));
+    await onValidPopSelected();
+  }
+
+  onValidPopSelected() {
+    bool check = state.sizeSelected != null &&
+        state.colorSelected != null &&
+        state.currentCounter != 0;
+    emit(state.copyWith(validBuyProductAttributes: check));
+  }
+
+  onResetValiPopSelected() {
+    emit(state.copyWith(validBuyProductAttributes: false));
   }
 }

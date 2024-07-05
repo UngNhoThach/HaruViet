@@ -17,7 +17,7 @@ class PopupCreateTerminationResignation extends StatefulWidget {
     this.widgetColor,
     this.widgetSize,
     required this.widgetButton,
-    required this.counter,
+    required this.widgetCountQuality,
   });
   final String colorSelected;
   final VoidCallback onReload;
@@ -25,7 +25,7 @@ class PopupCreateTerminationResignation extends StatefulWidget {
   final Widget? widgetColor;
   final Widget? widgetSize;
   final Widget widgetButton;
-  final int counter;
+  final Widget widgetCountQuality;
 
   static Future<void> show(
     BuildContext context, {
@@ -33,20 +33,20 @@ class PopupCreateTerminationResignation extends StatefulWidget {
     Widget? widgetImage,
     Widget? widgetColor,
     Widget? widgetSize,
+    required Widget widgetCountQuality,
     required Widget widgetButton,
     required VoidCallback onReload,
-    required int counter,
   }) {
     return showAppModalBottomSheetV3<void>(
       context: context,
       child: PopupCreateTerminationResignation._(
         onReload: onReload,
         widgetButton: widgetButton,
-        counter: counter,
         colorSelected: colorSelected,
         widgetColor: widgetColor,
         widgetImage: widgetImage,
         widgetSize: widgetSize,
+        widgetCountQuality: widgetCountQuality,
       ),
     );
   }
@@ -59,19 +59,6 @@ class PopupCreateTerminationResignation extends StatefulWidget {
 class _PopupChangePersonalInformationState
     extends State<PopupCreateTerminationResignation> {
   int indexSelected = 0;
-  int _counter = widget.counter;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  void _decrementCounter() {
-    setState(() {
-      _counter--;
-    });
-  }
 
   @override
   void initState() {
@@ -205,59 +192,7 @@ class _PopupChangePersonalInformationState
             //       ),
             //     ),
             //     spaceH10,
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Số lượng:',
-                  style: textTheme.titleMedium,
-                ),
-                Row(
-                  children: [
-                    GestureDetector(
-                        onTap: () {
-                          _decrementCounter();
-                        },
-                        child: const Icon(
-                          Icons.remove,
-                          color: colorGray05,
-                        )),
-                    spaceW16,
-                    SizedBox(
-                      width: 60,
-                      height: 30,
-                      child: TextField(
-                        textAlign: TextAlign.center,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                        ),
-                        keyboardType: TextInputType.number,
-                        onChanged: (newValue) {
-                          if (int.tryParse(newValue) != null) {
-                            setState(() {
-                              _counter = int.parse(newValue);
-                            });
-                          }
-                        },
-                        controller: TextEditingController(text: '$_counter'),
-                      ),
-                    ),
-                    spaceW16,
-                    GestureDetector(
-                      onTap: () {
-                        _incrementCounter();
-                      },
-                      child: const Icon(
-                        Icons.add,
-                        color: colorGray05,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            //   ],
-            // ),
+            widget.widgetCountQuality,
 
             spaceH16,
             widget.widgetButton,

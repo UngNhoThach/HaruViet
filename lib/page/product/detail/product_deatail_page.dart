@@ -21,6 +21,7 @@ import 'package:eco_app/page/product/detail/product_detail_state.dart';
 import 'package:eco_app/page/product/detail/widgets/popup_show_option_product.dart';
 import 'package:eco_app/page/product/detail/widgets/product_detail_params.dart';
 import 'package:eco_app/page/product/detail/widgets/widgets/color_selector.dart';
+import 'package:eco_app/page/product/detail/widgets/widgets/count_qualition.dart';
 import 'package:eco_app/page/product/detail/widgets/widgets/review_file.dart';
 import 'package:eco_app/page/product/detail/widgets/widgets/scoll_to_hide_bottom_bar.dart';
 import 'package:eco_app/page/product/detail/widgets/widgets/size_selector.dart';
@@ -189,11 +190,113 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     );
   }
 
+  void _showPopupAndReset(BuildContext context, state) async {
+    final result = await PopupCreateTerminationResignation.show(
+      widgetCountQuality: CountQuality(
+        initialCounter: state.currentCounter,
+        onCounterChanged: (newCounter) {
+          bloc.onHandleCounterChanged(newCounter);
+        },
+      ),
+      widgetButton: BlocProvider(
+        create: (context) => bloc,
+        child: BlocSelector<ProductDetailBloc, ProductDetailState, bool>(
+          selector: (state) {
+            return state.validBuyProductAttributes;
+          },
+          builder: (context, validBuyProductAttributes) {
+            return AppSolidButton.medium(
+                disabledColor: colorGray02,
+                onPressed: validBuyProductAttributes
+                    ? () {
+                        // bloc.onHandleCounterChanged(2);
+                      }
+                    : null,
+                'Mua hàng'
+                //  child: const Text('Mua hàng'),
+                );
+          },
+        ),
+      ),
+      widgetImage: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  ClipRect(
+                    child: Transform.translate(
+                      offset: const Offset(-24, 0), // Dịch sang trái 24px
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        widthFactor:
+                            0.85, // Tỉ lệ chiều rộng của ảnh so với Container (để dịch thêm)
+                        child: Image.network(
+                          '$domain${state.imageUrls[0]}',
+                          height: 100,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          spaceW10,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '\$ ${state.dataProduct!.price}',
+                style: textTheme.titleLarge,
+              ),
+              spaceH6,
+              Text(
+                'Kho: ${state.dataProduct!.stock}',
+                style: textTheme.bodyMedium,
+              ),
+            ],
+          ),
+        ],
+      ),
+      widgetColor: ColorSelector(
+        colors: const [
+          Colors.red,
+          Colors.green,
+          Colors.blue,
+          Colors.yellow,
+        ],
+        onColorSelected: (color) {
+          bloc.onSelectColor(color.toString());
+          print('Màu đã chọn: $color');
+        },
+      ),
+      widgetSize: SizeSelector(
+        sizes: const ['S', 'M', 'L', 'XL'],
+        onSizeSelected: (size) {
+          bloc.onSelectSize(size.toString());
+          print('Size đã chọn: $size');
+        },
+      ),
+      colorSelected: '#ec555c',
+      context,
+      onReload: () {
+        // bloc.onReset();
+      },
+    );
+
+    // This is called after the popup is closed
+    bloc.onResetValiPopSelected();
+  }
+
   @override
   Widget build(BuildContext context) {
     length = commentList.length;
     final int visibleCommentsCount = showAllComments ? commentList.length : 3;
-    final cart = Provider.of<CartProvider>(context);
 
     return BlocProvider(
       create: (context) => bloc,
@@ -611,120 +714,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                 child: GestureDetector(
                                                   onTap: () async {
                                                     state.checkProductAttributes
-                                                        ? PopupCreateTerminationResignation
-                                                            .show(
-                                                            widgetButton:
-                                                                AppSolidButton
-                                                                    .medium(
-                                                              disabledColor:
-                                                                  colorGray02,
-                                                              onPressed: state
-                                                                      .isValidBuyProductAttributes
-                                                                  ? () {}
-                                                                  : null,
-                                                              'Mua hàng',
-                                                            ),
-                                                            widgetImage: Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .start,
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .end,
-                                                              children: [
-                                                                Column(
-                                                                  children: [
-                                                                    Row(
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .start,
-                                                                      children: [
-                                                                        ClipRect(
-                                                                          child:
-                                                                              Transform.translate(
-                                                                            offset:
-                                                                                const Offset(-24, 0), // Dịch sang trái 24px
-                                                                            child:
-                                                                                Align(
-                                                                              alignment: Alignment.centerLeft,
-                                                                              widthFactor: 0.85, // Tỉ lệ chiều rộng của ảnh so với Container (để dịch thêm)
-                                                                              child: Image.network(
-                                                                                '$domain${state.imageUrls[0]}',
-                                                                                height: 100,
-                                                                                fit: BoxFit.cover,
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                spaceW10,
-                                                                Column(
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    Text(
-                                                                      '\$ ${state.dataProduct!.price}',
-                                                                      style: textTheme
-                                                                          .titleLarge,
-                                                                    ),
-                                                                    spaceH6,
-                                                                    Text(
-                                                                      'Kho: ${state.dataProduct!.stock}',
-                                                                      style: textTheme
-                                                                          .bodyMedium,
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ],
-                                                            ),
-                                                            widgetColor:
-                                                                ColorSelector(
-                                                              colors: const [
-                                                                Colors.red,
-                                                                Colors.green,
-                                                                Colors.blue,
-                                                                Colors.yellow
-                                                              ],
-                                                              onColorSelected:
-                                                                  (color) {
-                                                                bloc.onSelectColor(
-                                                                    color
-                                                                        .toString());
-                                                                print(
-                                                                    'Màu đã chọn: $color');
-                                                              },
-                                                            ),
-                                                            widgetSize:
-                                                                SizeSelector(
-                                                              sizes: const [
-                                                                'S',
-                                                                'M',
-                                                                'L',
-                                                                'XL'
-                                                              ],
-                                                              onSizeSelected:
-                                                                  (size) {
-                                                                bloc.onSelectSize(
-                                                                    size.toString());
-                                                                print(
-                                                                    'Size đã chọn: $size');
-                                                              },
-                                                            ),
-                                                            colorSelected:
-                                                                '#ec555c',
-                                                            context,
-                                                            onReload: () {
-                                                              // bloc.onReset();
-                                                            },
-                                                          )
+                                                        ? _showPopupAndReset(
+                                                            context, state)
                                                         : bloc.onAddItemToCart(
-                                                            idProduct: state
-                                                                    .dataProduct
-                                                                    ?.id ??
+                                                            idProduct: state.dataProduct?.id ??
                                                                 '',
                                                             nameProduct:
                                                                 state.dataProduct?.descriptions?[0].name ??

@@ -22,6 +22,8 @@ class ProductDetailState extends BaseState {
   final bool checkProductAttributes;
   final String? sizeSelected;
   final String? colorSelected;
+  final int currentCounter;
+  final bool validBuyProductAttributes;
 
   const ProductDetailState({
     ViewState viewState = ViewState.loaded,
@@ -29,9 +31,11 @@ class ProductDetailState extends BaseState {
     this.cart,
     this.sizeSelected,
     this.colorSelected,
+    this.currentCounter = 0,
     this.checkProductInCart = false,
     this.checkProductAttributes = false,
     this.totalProductInCart,
+    this.validBuyProductAttributes = false,
     this.isSubmitSuccess = false,
     this.isLoading = false,
     this.imageUrls = const [],
@@ -39,8 +43,4 @@ class ProductDetailState extends BaseState {
     this.dataProduct,
     this.userInfoLogin,
   }) : super(viewState, errorMsg);
-
-  bool get isValidBuyProductAttributes {
-    return sizeSelected != null && colorSelected != null;
-  }
 }

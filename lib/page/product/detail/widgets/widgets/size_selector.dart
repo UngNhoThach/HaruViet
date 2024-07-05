@@ -11,7 +11,7 @@ class SizeSelector extends StatefulWidget {
       : super(key: key);
 
   @override
-  _SizeSelectorState createState() => _SizeSelectorState();
+  State<SizeSelector> createState() => _SizeSelectorState();
 }
 
 class _SizeSelectorState extends State<SizeSelector> {

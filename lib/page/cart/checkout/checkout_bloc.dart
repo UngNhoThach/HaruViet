@@ -1,5 +1,5 @@
-import 'package:eco_app/base/base_bloc.dart';
-import 'package:eco_app/page/cart/checkout/widgets/checkout_params.dart';
+import 'package:haruviet/base/base_bloc.dart';
+import 'package:haruviet/page/cart/checkout/widgets/checkout_params.dart';
 
 import 'checkout_state.dart';
 

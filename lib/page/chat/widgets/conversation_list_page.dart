@@ -1,4 +1,4 @@
-import 'package:eco_app/page/chat/chat_detail/chat_detail_page.dart';
+import 'package:haruviet/page/chat/chat_detail/chat_detail_page.dart';
 import 'package:flutter/material.dart';
 
 class ConversationList extends StatefulWidget {

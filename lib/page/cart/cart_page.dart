@@ -1,18 +1,20 @@
-import 'package:eco_app/component/input/custom_count_textfield.dart';
-import 'package:eco_app/component/loading/loading.dart';
-import 'package:eco_app/component/loading_scaffold.dart';
-import 'package:eco_app/data/data_local/user_bloc.dart';
-import 'package:eco_app/database_local/product/cart_provider.dart';
-import 'package:eco_app/database_local/product/models/cart_model.dart';
-import 'package:eco_app/helper/colors.dart';
-import 'package:eco_app/helper/spaces.dart';
-import 'package:eco_app/helper/theme.dart';
-import 'package:eco_app/page/cart/cart_bloc.dart';
-import 'package:eco_app/page/cart/cart_sate.dart';
-import 'package:eco_app/page/cart/models/cart_page_params.dart';
-import 'package:eco_app/resources/routes.dart';
-import 'package:eco_app/theme/typography.dart';
-import 'package:eco_app/utils/commons.dart';
+import 'package:haruviet/component/error/error_internet.dart';
+import 'package:haruviet/component/input/custom_count_textfield.dart';
+import 'package:haruviet/component/loading/loading.dart';
+import 'package:haruviet/component/loading_scaffold.dart';
+import 'package:haruviet/data/data_local/user_bloc.dart';
+import 'package:haruviet/database_local/product/cart_provider.dart';
+import 'package:haruviet/database_local/product/models/cart_model.dart';
+import 'package:haruviet/helper/colors.dart';
+import 'package:haruviet/helper/spaces.dart';
+import 'package:haruviet/helper/theme.dart';
+import 'package:haruviet/page/account/signin/widgets/signin_params.dart';
+import 'package:haruviet/page/cart/cart_bloc.dart';
+import 'package:haruviet/page/cart/cart_sate.dart';
+import 'package:haruviet/page/cart/models/cart_page_params.dart';
+import 'package:haruviet/resources/routes.dart';
+import 'package:haruviet/theme/typography.dart';
+import 'package:haruviet/utils/commons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -83,9 +85,17 @@ class _CartPageState extends State<CartPage> {
             children: [
               ElevatedButton(
                 onPressed: () {
-                  routeService.pushNamed(
-                    Routes.addressPage,
-                  );
+                  (state.userInfoLogin?.isLogin == false ||
+                          state.userInfoLogin == null)
+                      ? {
+                          routeService.pushNamed(
+                            Routes.login,
+                            arguments: SignInParams(typeDirec: 1),
+                          )
+                        }
+                      : routeService.pushNamed(
+                          Routes.addressPage,
+                        );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: colorMain,
@@ -124,23 +134,21 @@ class _CartPageState extends State<CartPage> {
         return Slidable(
             key: ValueKey(state.totalItem),
             endActionPane: ActionPane(
+              key: ValueKey(state.productsList[index].idProduct),
               motion: const ScrollMotion(),
-              dismissible: DismissiblePane(onDismissed: () async {
+              dismissible: DismissiblePane(onDismissed: () {
                 bloc.onDeletaItems(index: index);
+                const Duration(milliseconds: 200);
               }),
               children: [
                 SlidableAction(
                   key: ValueKey(state.productsList),
-                  onPressed: (context) async {
+                  onPressed: (context) {
                     bloc.onDeletaItems(index: index);
-                    cart.removeTotalPrice(
-                        splitCurrency(state.productsList[index].priceProduct)
-                            .toDouble());
                     //    cart.addTotalPrice(productPrice)
                     // await CartDatabase.instance
                     //     .deleteCart(state.productsList[index].idProduct);
                     //     setState(() {});
-
                     //   bloc.onDeleteItem(index: index);
                   },
                   backgroundColor: colorMain,
@@ -172,6 +180,15 @@ class _CartPageState extends State<CartPage> {
                         '$domain${state.productsList[index].imageProduct}',
                         width: double.infinity,
                         fit: BoxFit.cover,
+                        errorBuilder: (BuildContext context, Object exception,
+                            StackTrace? stackTrace) {
+                          return const ErrorInternet();
+                          // Image.asset(
+                          //   'assets/images/default_image.png',
+                          //   width: double.infinity,
+                          //   fit: BoxFit.cover,
+                          // );
+                        },
                       ),
                     ),
                     Expanded(
@@ -252,7 +269,9 @@ class _CartPageState extends State<CartPage> {
                                                 .toString(),
                                             onChanged: (value) {
                                               bloc.onChangeValueDirec(
-                                                  index, int.parse(value));
+                                                index: index,
+                                                value: int.parse(value),
+                                              );
                                             },
                                           ),
                                         );

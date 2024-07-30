@@ -1,5 +1,5 @@
-import 'package:eco_app/api/services/setting/setting_services.dart';
-import 'package:eco_app/data/reponsitory/setting/item_base_response.dart';
+import 'package:haruviet/api/services/setting/setting_services.dart';
+import 'package:haruviet/data/reponsitory/setting/item_base_response.dart';
 import 'package:flutter/foundation.dart';
 
 class SettingRepository {

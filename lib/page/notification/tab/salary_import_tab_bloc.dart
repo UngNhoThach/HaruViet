@@ -1,6 +1,6 @@
-// import 'package:eco_app/data/enum.dart';
-// import 'package:eco_app/data/local/user_preferences.dart';
-// import 'package:eco_app/data/reponsitory/news/news_response.dart';
+// import 'package:haruviet/data/enum.dart';
+// import 'package:haruviet/data/local/user_preferences.dart';
+// import 'package:haruviet/data/reponsitory/news/news_response.dart';
 // import 'package:flutter/foundation.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
 

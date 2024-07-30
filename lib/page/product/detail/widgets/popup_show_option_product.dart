@@ -1,11 +1,11 @@
-import 'package:eco_app/component/button/solid_button.dart';
-import 'package:eco_app/component/popup/popup.dart';
-import 'package:eco_app/component/title_btottom/title_bottom_sheet_wrapper.dart';
-import 'package:eco_app/helper/colors.dart';
-import 'package:eco_app/helper/context.dart';
-import 'package:eco_app/helper/spaces.dart';
-import 'package:eco_app/page/product/detail/widgets/widgets/color_option.dart';
-import 'package:eco_app/theme/typography.dart';
+import 'package:haruviet/component/button/solid_button.dart';
+import 'package:haruviet/component/popup/popup.dart';
+import 'package:haruviet/component/title_btottom/title_bottom_sheet_wrapper.dart';
+import 'package:haruviet/helper/colors.dart';
+import 'package:haruviet/helper/context.dart';
+import 'package:haruviet/helper/spaces.dart';
+import 'package:haruviet/page/product/detail/widgets/widgets/color_option.dart';
+import 'package:haruviet/theme/typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

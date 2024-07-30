@@ -57,4 +57,7 @@ class Routes {
   // PRODUCT
   static const productDetailPage = "productDetailPage";
   static const productListPage = "productListPage";
+
+  // orders
+  static const ordersPage = "ordersPage";
 }

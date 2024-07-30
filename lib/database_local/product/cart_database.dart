@@ -1,4 +1,4 @@
-import 'package:eco_app/database_local/product/models/cart_model.dart';
+import 'package:haruviet/database_local/product/models/cart_model.dart';
 import 'package:flutter/foundation.dart' show immutable;
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -40,7 +40,7 @@ class CartDatabase {
         'INTEGER NOT NULL'; // Added this line to define int type for totalQuantity
 
     await db.execute('''
-      CREATE TABLE IF NOT EXISTS $productssTable (
+      CREATE TABLE IF NOT EXISTS $cartTable (
         ${CartModel.id} $idType,
         ${CartModel.nameProduct} $textType,
         ${CartModel.description} $textType,
@@ -59,7 +59,7 @@ class CartDatabase {
   Future<Products> createCart(Products product) async {
     final db = await instance.database;
     final id = await db.insert(
-      productssTable,
+      cartTable,
       product.toMap(),
     );
     // final id = await db.insert(
@@ -74,7 +74,7 @@ class CartDatabase {
     final db = await instance.database;
 
     final productData = await db.query(
-      productssTable,
+      cartTable,
       columns: CartModel.values,
       where: '${CartModel.id} = ?',
       whereArgs: [id],
@@ -92,7 +92,7 @@ class CartDatabase {
     final db = await instance.database;
 
     final result = await db.query(
-      productssTable,
+      cartTable,
       //    orderBy: '${CartModel.idProduct} ASC',
     );
 
@@ -103,7 +103,7 @@ class CartDatabase {
   Future<int> updateCart(Products product) async {
     final db = await instance.database;
     return await db.update(
-      productssTable,
+      cartTable,
       product.toMap(),
       where: '${CartModel.id} = ?',
       whereArgs: [product.id],
@@ -117,7 +117,7 @@ class CartDatabase {
     final db = await instance.database;
 
     return await db.update(
-      productssTable,
+      cartTable,
       {
         CartModel.isCompleted: isCompleted ? 1 : 0,
       },
@@ -131,7 +131,7 @@ class CartDatabase {
     final db = await instance.database;
 
     return await db.delete(
-      productssTable,
+      cartTable,
       where: '${CartModel.idProduct} = ?',
       whereArgs: [idProduct],
     );
@@ -141,7 +141,7 @@ class CartDatabase {
   Future<int> getCount() async {
     final db = await instance.database;
 
-    var x = await db.rawQuery('SELECT COUNT (*) from $productssTable');
+    var x = await db.rawQuery('SELECT COUNT (*) from $cartTable');
     int? count = Sqflite.firstIntValue(x);
     return count ?? 0;
   }

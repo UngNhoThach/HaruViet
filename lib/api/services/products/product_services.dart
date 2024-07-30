@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:eco_app/api/exception/api_endpoints.dart';
-import 'package:eco_app/api/services/headers_request/headers_request.dart';
-import 'package:eco_app/base/base_service.dart';
+import 'package:haruviet/api/exception/api_endpoints.dart';
+import 'package:haruviet/api/services/headers_request/headers_request.dart';
+import 'package:haruviet/base/base_service.dart';
 
 class ProductService extends BaseService {
   ApiHeaders apiHeaders = ApiHeaders('');

@@ -1,11 +1,14 @@
-import 'package:eco_app/base/base_bloc.dart';
-import 'package:eco_app/data/enum.dart';
-import 'package:eco_app/data/local/user_preferences.dart';
-import 'package:eco_app/data/reponsitory/product/product_repository.dart';
-import 'package:eco_app/database_local/product/cart_provider.dart';
-import 'package:eco_app/database_local/product/models/cart_model.dart';
-import 'package:eco_app/database_local/product/cart_database.dart';
-import 'package:eco_app/page/product/detail/product_detail_state.dart';
+import 'package:haruviet/base/base_bloc.dart';
+import 'package:haruviet/data/enum.dart';
+import 'package:haruviet/data/local/user_preferences.dart';
+import 'package:haruviet/data/reponsitory/product/models/list_product/data_product_detail.dart';
+import 'package:haruviet/data/reponsitory/product/models/list_product/data_product/data_product.dart';
+import 'package:haruviet/data/reponsitory/product/product_repository.dart';
+import 'package:haruviet/database_local/product/cart_provider.dart';
+import 'package:haruviet/database_local/product/models/cart_model.dart';
+import 'package:haruviet/database_local/product/cart_database.dart';
+import 'package:haruviet/helper/const.dart';
+import 'package:haruviet/page/product/detail/product_detail_state.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -26,6 +29,7 @@ class ProductDetailBloc extends BaseBloc<ProductDetailState> {
 
   getData(
     final String idProduct,
+    final String domain,
   ) async {
     emit(state.copyWith(
       isLoading: true,
@@ -35,12 +39,21 @@ class ProductDetailBloc extends BaseBloc<ProductDetailState> {
       final productDetail =
           await _productRepository.getProductDetailsRP(idProduct: idProduct);
 
+      // add images to list review
       final imageUrls = [
-        '${productDetail.image}',
+        '$domain${productDetail.image}',
       ];
-
+      if (productDetail.images != null && productDetail.images!.isNotEmpty) {
+        for (var element in productDetail.images!) {
+          imageUrls.add('$domain${element.image ?? ''}');
+        }
+      }
       int totalItemInCart = await CartDatabase.instance.getCount();
       productsList = (await CartDatabase.instance.readAllItems());
+      final checkAttributes = (productDetail.attributes == null) ||
+              (productDetail.attributes!.isEmpty)
+          ? false
+          : true;
 
       emit(state.copyWith(
         userInfoLogin: userInfoLogin,
@@ -48,8 +61,7 @@ class ProductDetailBloc extends BaseBloc<ProductDetailState> {
         totalProductInCart: totalItemInCart,
         productsList: productsList,
         imageUrls: imageUrls,
-        checkProductAttributes:
-            productDetail.attributes!.isEmpty ? false : true,
+        checkProductAttributes: checkAttributes,
       ));
     } catch (error, statckTrace) {
       if (kDebugMode) {
@@ -61,34 +73,56 @@ class ProductDetailBloc extends BaseBloc<ProductDetailState> {
     emit(state.copyWith(
       isLoading: false,
     ));
+    onFetch(page: startPage);
   }
 
-//   getDataAttributes() async {
-//     emit(state.copyWith(
-//       isLoading: true,
-//     ));
-//     try {
-//       List<Color> convertJsonToColorList(List<Map<String, dynamic>> jsonData) {
-//    state.dataProduct!.attributes!.map((e) => e).toList();
+  onReset() {
+    onFetch(page: startPage);
+  }
 
-//   // .toList();
-// }
-//       List<Color> colors = convertJsonToColorList(apiData);
-//       emit(state.copyWith(
+  // product list
+  onFetch({
+    required int page,
+  }) async {
+    try {
+      emit(state.copyWith(
+        isLoading: true,
+      ));
+      if (page == startPage) {
+        emit(
+          state.copyWith(
+            newDataList: null,
+            canLoadMore: false,
+          ),
+        );
+      }
+      final productList = await _productRepository.getListProductsRP(
+          size: state.limit.toString(), totalproduct: page.toString());
 
-//         productsList: productsList,
-//       ));
-//     } catch (error, statckTrace) {
-//       if (kDebugMode) {
-//         print("$error + $statckTrace");
-//       }
-//       emit(state.copyWith(
-//           viewState: ViewState.error, errorMsg: error.toString()));
-//     }
-//     emit(state.copyWith(
-//       isLoading: false,
-//     ));
-//   }
+      final datatList = List<DataProduct>.from(state.datatList)
+        ..addAll(productList.data ?? []);
+
+      final maxLoadMore = ((productList.total ?? 0) / state.limit).floor();
+      final canLoadMore = page <= maxLoadMore;
+
+      emit(state.copyWith(
+        datatList: datatList,
+        newDataList: productList.data,
+        currentPage: page,
+        canLoadMore: canLoadMore,
+      ));
+
+      emit(state.copyWith(
+        isLoading: false,
+      ));
+    } catch (error, statckTrace) {
+      if (kDebugMode) {
+        print("$error + $statckTrace");
+      }
+      emit(state.copyWith(
+          viewState: ViewState.error, errorMsg: error.toString()));
+    }
+  }
 
   int checkIndexProducts(String idProduct) {
     final productList = state.productsList;
@@ -104,6 +138,7 @@ class ProductDetailBloc extends BaseBloc<ProductDetailState> {
     required String imageProduct,
     required String priceProduct,
     required String description,
+    required int quantity,
   }) async {
     var productList = state.productsList;
     final index = checkIndexProducts(idProduct);
@@ -114,7 +149,7 @@ class ProductDetailBloc extends BaseBloc<ProductDetailState> {
           nameProduct: nameProduct,
           description: description,
           isCompleted: false,
-          totalQuantity: ValueNotifier<int>(1),
+          totalQuantity: ValueNotifier<int>(quantity),
           idProduct: idProduct,
           brandProduct: brandProduct,
           imageProduct: imageProduct,
@@ -126,35 +161,35 @@ class ProductDetailBloc extends BaseBloc<ProductDetailState> {
       cart.addTotalPrice(splitCurrency(product.priceProduct).toDouble());
       //  cart.addListener(() { })
     } else {
-      productList[index].totalQuantity.value += 1;
-      final updatedProduct = productList[index].copy(
-          totalQuantity:
-              ValueNotifier<int>(productList[index].totalQuantity.value));
-      await CartDatabase.instance.updateCart(updatedProduct);
-      cart.addTotalPrice(splitCurrency(updatedProduct.priceProduct).toDouble());
+      // sản phẩm đã tồn tại trong giỏ hàng
+      // productList[index].totalQuantity.value += quantity;
+      // final updatedProduct = productList[index].copy(
+      //     totalQuantity:
+      //         ValueNotifier<int>(productList[index].totalQuantity.value));
+      // await CartDatabase.instance.updateCart(updatedProduct);
+      // cart.addTotalPrice(splitCurrency(updatedProduct.priceProduct).toDouble());
       emit(state.copyWith(checkProductInCart: true));
     }
     emit(state.copyWith(productsList: productList));
     emit(state.copyWith(checkProductInCart: false));
   }
 
-  onAddProductToCart() {
-    int quantity = state.totalProductInCart! + 1;
-    emit(state.copyWith(totalProductInCart: quantity));
-  }
-
   onSelectSize(String sizeSelected) async {
-    emit(state.copyWith(
-      sizeSelected: sizeSelected,
-    ));
-    await onValidPopSelected();
+    if (!isClosed) {
+      emit(state.copyWith(
+        sizeSelected: sizeSelected,
+      ));
+      await onValidPopSelected();
+    }
   }
 
   onSelectColor(String colorSelected) async {
-    emit(state.copyWith(
-      colorSelected: colorSelected,
-    ));
-    await onValidPopSelected();
+    if (!isClosed) {
+      emit(state.copyWith(
+        colorSelected: colorSelected,
+      ));
+      await onValidPopSelected();
+    }
   }
 
   onResetSelectAttributes(String colorSelected) {
@@ -162,18 +197,26 @@ class ProductDetailBloc extends BaseBloc<ProductDetailState> {
   }
 
   onHandleCounterChanged(int newCounter) async {
-    emit(state.copyWith(currentCounter: newCounter));
-    await onValidPopSelected();
+    if (!isClosed) {
+      emit(state.copyWith(currentCounter: newCounter));
+      await onValidPopSelected();
+    }
   }
 
   onValidPopSelected() {
     bool check = state.sizeSelected != null &&
         state.colorSelected != null &&
-        state.currentCounter != 0;
+        state.currentCounter != null;
     emit(state.copyWith(validBuyProductAttributes: check));
   }
 
-  onResetValiPopSelected() {
-    emit(state.copyWith(validBuyProductAttributes: false));
+  void onResetValiPopSelected() {
+    if (!isClosed) {
+      emit(state.copyWith(validBuyProductAttributes: false));
+    }
+  }
+
+  onChangePopUp(bool changePopUp) {
+    emit(state.copyWith(changePopUp: changePopUp));
   }
 }

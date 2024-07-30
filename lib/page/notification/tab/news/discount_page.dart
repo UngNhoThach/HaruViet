@@ -1,8 +1,9 @@
-import 'package:eco_app/helper/colors.dart';
-import 'package:eco_app/helper/spaces.dart';
-import 'package:eco_app/resources/routes.dart';
-import 'package:eco_app/theme/typography.dart';
-import 'package:eco_app/utils/commons.dart';
+import 'package:haruviet/component/error/error_internet.dart';
+import 'package:haruviet/helper/colors.dart';
+import 'package:haruviet/helper/spaces.dart';
+import 'package:haruviet/resources/routes.dart';
+import 'package:haruviet/theme/typography.dart';
+import 'package:haruviet/utils/commons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -52,6 +53,9 @@ class _DiscountPageState extends State<DiscountPage> {
                               'https://images2.thanhnien.vn/zoom/328_205/Uploaded/linhntqc/2023_01_21/picture1-7887.jpg',
                               width: double.infinity,
                               fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return const ErrorInternet();
+                              },
                             ),
                           ),
                         ),

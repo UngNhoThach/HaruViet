@@ -1,5 +1,5 @@
-import 'package:eco_app/page/core/product_data.dart';
-import 'package:eco_app/page/product/models/product_size.dart';
+import 'package:haruviet/page/core/product_data.dart';
+import 'package:haruviet/page/product/models/product_size.dart';
 
 enum ProductType { all, watch, mobile, headphone, tablet, tv }
 

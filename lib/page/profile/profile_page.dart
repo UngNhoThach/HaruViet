@@ -1,17 +1,17 @@
-import 'package:eco_app/component/loading_scaffold.dart';
-import 'package:eco_app/component/popup/alert/alert_cofirm.dart';
-import 'package:eco_app/helper/colors.dart';
-import 'package:eco_app/helper/context.dart';
-import 'package:eco_app/helper/spaces.dart';
-import 'package:eco_app/page/account/update_profile/widgets/update_profile_params.dart';
-import 'package:eco_app/page/profile/models/list_profile_selection.dart';
-import 'package:eco_app/page/profile/profile_bloc.dart';
-import 'package:eco_app/page/profile/profile_state.dart';
-import 'package:eco_app/page/profile/widgets/order_item.dart';
-import 'package:eco_app/page/account/signin/widgets/signin_params.dart';
-import 'package:eco_app/resources/routes.dart';
-import 'package:eco_app/service/clearedStoredData.dart';
-import 'package:eco_app/utils/commons.dart';
+import 'package:haruviet/component/loading_scaffold.dart';
+import 'package:haruviet/component/popup/alert/alert_cofirm.dart';
+import 'package:haruviet/helper/colors.dart';
+import 'package:haruviet/helper/context.dart';
+import 'package:haruviet/helper/spaces.dart';
+import 'package:haruviet/page/account/update_profile/widgets/update_profile_params.dart';
+import 'package:haruviet/page/profile/models/list_profile_selection.dart';
+import 'package:haruviet/page/profile/profile_bloc.dart';
+import 'package:haruviet/page/profile/profile_state.dart';
+import 'package:haruviet/page/profile/widgets/order_item.dart';
+import 'package:haruviet/page/account/signin/widgets/signin_params.dart';
+import 'package:haruviet/resources/routes.dart';
+import 'package:haruviet/service/clearedStoredData.dart';
+import 'package:haruviet/utils/commons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -476,11 +476,15 @@ class _ProfilePageState extends State<ProfilePage> {
                 ?.copyWith(color: colorBlack, fontWeight: FontWeight.w500),
           ),
           InkWell(
-            onTap: () {},
+            onTap: () {
+              routeService.pushNamed(
+                Routes.ordersPage,
+              );
+            },
             child: Row(
               children: [
                 Text(
-                  "Xem tất cả đơn hàng",
+                  "Xem lịch sử mua hàng",
                   style: Theme.of(context)
                       .textTheme
                       .titleSmall
@@ -560,7 +564,7 @@ class _ProfilePageState extends State<ProfilePage> {
               OrderItem(
                 isSelected: true,
                 assetImageString: 'assets/images/user_information.png',
-                itemString: "Chờ thanh toán",
+                itemString: "Chờ xác nhận",
                 destinationWidget: null,
                 notifyNumber: "0",
               ),

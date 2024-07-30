@@ -1,4 +1,4 @@
-import 'package:eco_app/helper/shadows.dart';
+import 'package:haruviet/helper/shadows.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
 
@@ -7,6 +7,7 @@ class HomePageIcon extends StatelessWidget {
   final String itemString;
   final dynamic destinationWidget;
   final String notifyNumber;
+  final void Function()? onTap;
 
   const HomePageIcon({
     super.key,
@@ -14,15 +15,17 @@ class HomePageIcon extends StatelessWidget {
     required this.assetImageString,
     required this.itemString,
     required this.notifyNumber,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => destinationWidget));
-      },
+      onTap: onTap ??
+          () {
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => destinationWidget));
+          },
       child: Stack(
         clipBehavior: Clip.none,
         children: [

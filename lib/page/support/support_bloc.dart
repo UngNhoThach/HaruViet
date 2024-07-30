@@ -1,6 +1,6 @@
-import 'package:eco_app/base/base_bloc.dart';
-import 'package:eco_app/data/reponsitory/product/models/product_response.dart';
-import 'package:eco_app/page/support/support_sate.dart';
+import 'package:haruviet/base/base_bloc.dart';
+import 'package:haruviet/data/reponsitory/product/models/product_response.dart';
+import 'package:haruviet/page/support/support_sate.dart';
 
 class SupportBloc extends BaseBloc<SupportState> {
   SupportBloc() : super(const SupportState());

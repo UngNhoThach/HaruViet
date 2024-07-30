@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:eco_app/api/exception/api_exception.dart';
-import 'package:eco_app/api/rest_client.dart';
+import 'package:haruviet/api/exception/api_exception.dart';
+import 'package:haruviet/api/rest_client.dart';
 import 'package:dio/dio.dart' as dio;
 import 'package:logger/web.dart';
 

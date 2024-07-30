@@ -1,4 +1,4 @@
-import 'package:eco_app/helper/colors.dart';
+import 'package:haruviet/helper/colors.dart';
 import 'package:flutter/material.dart';
 
 class FlashDealsTimer extends StatelessWidget {
@@ -11,7 +11,6 @@ class FlashDealsTimer extends StatelessWidget {
         color: Colors.black, // Màu nền là màu đen
         borderRadius: BorderRadius.circular(8.0),
       ),
-      // padding: EdgeInsets.all(8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

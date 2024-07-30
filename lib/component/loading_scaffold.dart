@@ -1,5 +1,5 @@
-import 'package:eco_app/component/loading/over_loading.dart';
-import 'package:eco_app/helper/colors.dart';
+import 'package:haruviet/component/loading/over_loading.dart';
+import 'package:haruviet/helper/colors.dart';
 import 'package:flutter/material.dart';
 
 class LoadingScaffold extends StatelessWidget {

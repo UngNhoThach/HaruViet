@@ -9,57 +9,51 @@ part of 'data_product.dart';
 DataProduct _$DataProductFromJson(Map<String, dynamic> json) => DataProduct(
       id: json['id'] as String?,
       sku: json['sku'] as String?,
-      upc: json['upc'],
-      ean: json['ean'],
-      jan: json['jan'],
-      isbn: json['isbn'],
-      mpn: json['mpn'],
       image: json['image'] as String?,
-      brandId: json['brand_id'] as String?,
-      supplierId: json['supplier_id'] as String?,
-      price: json['price'] as String?,
+      brand: json['brand'] == null
+          ? null
+          : Brand.fromJson(json['brand'] as Map<String, dynamic>),
+      supplier: json['supplier'] == null
+          ? null
+          : Supplier.fromJson(json['supplier'] as Map<String, dynamic>),
+      price: json['price'] == null
+          ? null
+          : Price.fromJson(json['price'] as Map<String, dynamic>),
       cost: json['cost'] as String?,
       stock: json['stock'] as int?,
       sold: json['sold'] as int?,
       minimum: json['minimum'] as int?,
       weightClass: json['weight_class'],
       weight: json['weight'] as String?,
-      lengthClass: json['length_class'],
-      length: json['length'] as String?,
-      width: json['width'] as String?,
-      height: json['height'] as String?,
       kind: json['kind'] as int?,
-      property: json['property'] as String?,
       taxId: json['tax_id'] as String?,
-      status: json['status'] as int?,
       approve: json['approve'] as int?,
       sort: json['sort'] as int?,
       view: json['view'] as int?,
-      alias: json['alias'] as String?,
       dateLastview: json['date_lastview'],
       dateAvailable: json['date_available'],
-      createdAt: json['created_at'],
-      updatedAt: json['updated_at'],
-      images: json['images'] as List<dynamic>?,
       descriptions: (json['descriptions'] as List<dynamic>?)
-          ?.map((e) => ProductDescription.fromJson(e as Map<String, dynamic>))
+          ?.map((e) => Description.fromJson(e as Map<String, dynamic>))
           .toList(),
-      promotionPrice: json['promotion_price'],
-      attributes: json['attributes'] as List<dynamic>?,
+      categories: (json['categories'] as List<dynamic>?)
+          ?.map((e) => Category.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      images: (json['images'] as List<dynamic>?)
+          ?.map((e) => ImagesProduct.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      promotionPrice: json['promotion_price'] == null
+          ? null
+          : PromotionPrice.fromJson(
+              json['promotion_price'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$DataProductToJson(DataProduct instance) =>
     <String, dynamic>{
       'id': instance.id,
       'sku': instance.sku,
-      'upc': instance.upc,
-      'ean': instance.ean,
-      'jan': instance.jan,
-      'isbn': instance.isbn,
-      'mpn': instance.mpn,
       'image': instance.image,
-      'brand_id': instance.brandId,
-      'supplier_id': instance.supplierId,
+      'brand': instance.brand,
+      'supplier': instance.supplier,
       'price': instance.price,
       'cost': instance.cost,
       'stock': instance.stock,
@@ -67,24 +61,15 @@ Map<String, dynamic> _$DataProductToJson(DataProduct instance) =>
       'minimum': instance.minimum,
       'weight_class': instance.weightClass,
       'weight': instance.weight,
-      'length_class': instance.lengthClass,
-      'length': instance.length,
-      'width': instance.width,
-      'height': instance.height,
       'kind': instance.kind,
-      'property': instance.property,
       'tax_id': instance.taxId,
-      'status': instance.status,
       'approve': instance.approve,
       'sort': instance.sort,
       'view': instance.view,
-      'alias': instance.alias,
       'date_lastview': instance.dateLastview,
       'date_available': instance.dateAvailable,
-      'created_at': instance.createdAt,
-      'updated_at': instance.updatedAt,
-      'images': instance.images,
       'descriptions': instance.descriptions,
+      'categories': instance.categories,
+      'images': instance.images,
       'promotion_price': instance.promotionPrice,
-      'attributes': instance.attributes,
     };

@@ -1,10 +1,11 @@
-import 'package:eco_app/component/input/search_bar.dart';
-import 'package:eco_app/data/reponsitory/category/item_category_response.dart';
-import 'package:eco_app/helper/colors.dart';
-import 'package:eco_app/page/category/models/category_paga_params.dart';
-import 'package:eco_app/resources/routes.dart';
-import 'package:eco_app/theme/typography.dart';
-import 'package:eco_app/utils/commons.dart';
+import 'package:haruviet/component/error/error_internet.dart';
+import 'package:haruviet/component/input/search_bar.dart';
+import 'package:haruviet/data/reponsitory/category/item_category_response.dart';
+import 'package:haruviet/helper/colors.dart';
+import 'package:haruviet/page/category/models/category_paga_params.dart';
+import 'package:haruviet/resources/routes.dart';
+import 'package:haruviet/theme/typography.dart';
+import 'package:haruviet/utils/commons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -230,6 +231,9 @@ class _CategoryPageState extends State<CategoryPage> {
                         fit: BoxFit.cover,
                         colorBlendMode:
                             BlendMode.dstATop, // Kích hoạt kết hợp màu sắc
+                        errorBuilder: (context, error, stackTrace) {
+                          return const ErrorInternet();
+                        },
                       ),
                     ),
                     Padding(

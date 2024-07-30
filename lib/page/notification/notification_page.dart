@@ -1,6 +1,6 @@
-import 'package:eco_app/helper/colors.dart';
-import 'package:eco_app/page/notification/tab/news/discount_page.dart';
-import 'package:eco_app/page/notification/tab/notification/history_page.dart';
+import 'package:haruviet/helper/colors.dart';
+import 'package:haruviet/page/notification/tab/news/discount_page.dart';
+import 'package:haruviet/page/notification/tab/notification/history_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

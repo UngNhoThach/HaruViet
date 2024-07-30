@@ -1,4 +1,4 @@
-import 'package:eco_app/theme/typography.dart';
+import 'package:haruviet/theme/typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

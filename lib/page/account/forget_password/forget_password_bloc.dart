@@ -1,9 +1,9 @@
-import 'package:eco_app/base/base_bloc.dart';
-import 'package:eco_app/data/enum.dart';
-import 'package:eco_app/data/reponsitory/customers/customers_repository.dart';
-import 'package:eco_app/page/account/forget_password/forget_password_state.dart';
-import 'package:eco_app/page/account/signup/widgets/sigup_type.dart';
-import 'package:eco_app/page/account/signup/widgets/verify_status.dart';
+import 'package:haruviet/base/base_bloc.dart';
+import 'package:haruviet/data/enum.dart';
+import 'package:haruviet/data/reponsitory/customers/customers_repository.dart';
+import 'package:haruviet/page/account/forget_password/forget_password_state.dart';
+import 'package:haruviet/page/account/signup/widgets/sigup_type.dart';
+import 'package:haruviet/page/account/signup/widgets/verify_status.dart';
 import 'package:flutter/foundation.dart';
 
 // ForgetPassWordBloc

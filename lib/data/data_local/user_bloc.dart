@@ -1,8 +1,8 @@
 import 'dart:developer';
 
-import 'package:eco_app/api/rest_client.dart';
-import 'package:eco_app/data/local/user_preferences.dart';
-import 'package:eco_app/data/data_local/user_state.dart';
+import 'package:haruviet/api/rest_client.dart';
+import 'package:haruviet/data/local/user_preferences.dart';
+import 'package:haruviet/data/data_local/user_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class UserBloc extends Cubit<UserInfoLogin> {

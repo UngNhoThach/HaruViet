@@ -1,5 +1,5 @@
-import 'package:eco_app/database_local/product/cart_database.dart';
-import 'package:eco_app/database_local/product/models/cart_model.dart';
+import 'package:haruviet/database_local/product/cart_database.dart';
+import 'package:haruviet/database_local/product/models/cart_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -75,7 +75,8 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void removeItem(String idProduct) {
+  Future<void> removeItem(String idProduct) async {
+    await getData();
     final index =
         cart.indexWhere((element) => element.idProduct.contains(idProduct));
     cart.removeAt(index);

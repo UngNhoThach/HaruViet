@@ -1,9 +1,9 @@
-import 'package:eco_app/api/services/customers/models/update_password_phone_number_request/update_password_phone_number_request.dart';
-import 'package:eco_app/base/base_bloc.dart';
-import 'package:eco_app/data/enum.dart';
-import 'package:eco_app/data/reponsitory/customers/customers_repository.dart';
-import 'package:eco_app/helper/base_status_response.dart';
-import 'package:eco_app/page/account/signup/widgets/verify_status.dart';
+import 'package:haruviet/api/services/customers/models/update_password_phone_number_request/update_password_phone_number_request.dart';
+import 'package:haruviet/base/base_bloc.dart';
+import 'package:haruviet/data/enum.dart';
+import 'package:haruviet/data/reponsitory/customers/customers_repository.dart';
+import 'package:haruviet/helper/base_status_response.dart';
+import 'package:haruviet/page/account/signup/widgets/verify_status.dart';
 import 'package:flutter/foundation.dart';
 
 import 'reset_password_state.dart';

@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:eco_app/helper/colors.dart';
-import 'package:eco_app/helper/context.dart';
-import 'package:eco_app/theme/typography.dart';
+import 'package:haruviet/helper/colors.dart';
+import 'package:haruviet/helper/context.dart';
+import 'package:haruviet/theme/typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -51,10 +51,10 @@ class _ReviewFilesState extends State<ReviewFiles> {
   late int currentPage;
   late List<String> filesUrl;
   late List<String>? imageScripts;
-
   @override
   void initState() {
     super.initState();
+
     // imageScripts = List.generate(
     //   filesUrl.length,
     //   (index) => "${index + 1}",

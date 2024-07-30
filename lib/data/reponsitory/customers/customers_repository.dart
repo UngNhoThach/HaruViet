@@ -1,9 +1,9 @@
-import 'package:eco_app/api/services/customers/customers_services.dart';
-import 'package:eco_app/api/services/customers/models/register_request.dart';
-import 'package:eco_app/api/services/customers/models/update_password_phone_number_request/update_password_phone_number_request.dart';
-import 'package:eco_app/api/services/customers/models/update_user_info_request/update_user_info_request.dart';
-import 'package:eco_app/data/reponsitory/customers/models/user_update_info_response/user_update_info_response.dart';
-import 'package:eco_app/data/reponsitory/normal_response/normal_response.dart';
+import 'package:haruviet/api/services/customers/customers_services.dart';
+import 'package:haruviet/api/services/customers/models/register_request.dart';
+import 'package:haruviet/api/services/customers/models/update_password_phone_number_request/update_password_phone_number_request.dart';
+import 'package:haruviet/api/services/customers/models/update_user_info_request/update_user_info_request.dart';
+import 'package:haruviet/data/reponsitory/customers/models/user_update_info_response/user_update_info_response.dart';
+import 'package:haruviet/data/reponsitory/normal_response/normal_response.dart';
 import 'package:flutter/foundation.dart';
 
 import 'models/login_response/login_response.dart';

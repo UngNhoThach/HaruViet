@@ -1,14 +1,14 @@
-import 'package:eco_app/component/header/category_header_item.dart';
-import 'package:eco_app/component/header/header_item.dart';
-import 'package:eco_app/component/input/search_bar.dart';
-import 'package:eco_app/helper/colors.dart';
-import 'package:eco_app/helper/spaces.dart';
-import 'package:eco_app/page/cart/models/cart_page_params.dart';
-import 'package:eco_app/page/product/detail/product_deatail_page.dart';
-import 'package:eco_app/page/product/detail/widgets/product_detail_params.dart';
-import 'package:eco_app/resources/routes.dart';
-import 'package:eco_app/theme/typography.dart';
-import 'package:eco_app/utils/commons.dart';
+import 'package:haruviet/component/header/category_header_item.dart';
+import 'package:haruviet/component/header/header_item.dart';
+import 'package:haruviet/component/input/search_bar.dart';
+import 'package:haruviet/helper/colors.dart';
+import 'package:haruviet/helper/spaces.dart';
+import 'package:haruviet/page/cart/models/cart_page_params.dart';
+import 'package:haruviet/page/product/detail/product_deatail_page.dart';
+import 'package:haruviet/page/product/detail/widgets/product_detail_params.dart';
+import 'package:haruviet/resources/routes.dart';
+import 'package:haruviet/theme/typography.dart';
+import 'package:haruviet/utils/commons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

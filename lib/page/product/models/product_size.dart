@@ -1,5 +1,5 @@
-import 'package:eco_app/page/product/models/categorical.dart';
-import 'package:eco_app/page/product/models/numerical.dart';
+import 'package:haruviet/page/product/models/categorical.dart';
+import 'package:haruviet/page/product/models/numerical.dart';
 
 class ProductSizeType {
   List<Numerical>? numerical;

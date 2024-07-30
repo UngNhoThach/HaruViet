@@ -1,5 +1,5 @@
-import 'package:eco_app/component/required_label/string_extension.dart';
-import 'package:eco_app/helper/context.dart';
+import 'package:haruviet/component/required_label/string_extension.dart';
+import 'package:haruviet/helper/context.dart';
 import 'package:flutter/cupertino.dart';
 
 class RequiredLabel extends StatelessWidget {

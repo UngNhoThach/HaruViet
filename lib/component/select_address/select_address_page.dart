@@ -1,8 +1,8 @@
-import 'package:eco_app/component/input/search_bar.dart';
-import 'package:eco_app/component/loading/loading.dart';
-import 'package:eco_app/helper/colors.dart';
-import 'package:eco_app/helper/context.dart';
-import 'package:eco_app/theme/typography.dart';
+import 'package:haruviet/component/input/search_bar.dart';
+import 'package:haruviet/component/loading/loading.dart';
+import 'package:haruviet/helper/colors.dart';
+import 'package:haruviet/helper/context.dart';
+import 'package:haruviet/theme/typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

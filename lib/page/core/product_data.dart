@@ -1,8 +1,8 @@
-import 'package:eco_app/page/main_screen/widget/bottom_nar_item.dart';
-import 'package:eco_app/page/product/models/numerical.dart';
-import 'package:eco_app/page/product/models/product_model.dart';
-import 'package:eco_app/page/product/models/product_size.dart';
-import 'package:eco_app/page/product/models/recomen_product.dart';
+import 'package:haruviet/page/main_screen/widget/bottom_nar_item.dart';
+import 'package:haruviet/page/product/models/numerical.dart';
+import 'package:haruviet/page/product/models/product_model.dart';
+import 'package:haruviet/page/product/models/product_size.dart';
+import 'package:haruviet/page/product/models/recomen_product.dart';
 import 'package:flutter/material.dart';
 
 class AppData {

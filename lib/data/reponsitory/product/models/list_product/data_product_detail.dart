@@ -1,11 +1,13 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import 'images_product.dart';
 import 'product_description.dart';
+import 'product_promotion_price.dart';
 
-part 'data_product.g.dart';
+part 'data_product_detail.g.dart';
 
 @JsonSerializable()
-class DataProduct {
+class DataProductDetail {
   String? id;
   String? sku;
   dynamic upc;
@@ -48,14 +50,15 @@ class DataProduct {
   dynamic createdAt;
   @JsonKey(name: 'updated_at')
   dynamic updatedAt;
-  List<dynamic>? images;
+  List<ImagesProduct>? images;
   List<ProductDescription>? descriptions;
-  @JsonKey(name: 'promotion_price')
-  dynamic promotionPrice;
   List<dynamic>? attributes;
+  @JsonKey(name: 'promotion_price')
+  ProductPromotionPrice? promotionPrice;
 
-  DataProduct({
+  DataProductDetail({
     this.id,
+    this.promotionPrice,
     this.sku,
     this.upc,
     this.ean,
@@ -90,12 +93,11 @@ class DataProduct {
     this.updatedAt,
     this.images,
     this.descriptions,
-    this.promotionPrice,
     this.attributes,
   });
 
-  factory DataProduct.fromJson(Map<String, dynamic> json) =>
-      _$DataProductFromJson(json);
+  factory DataProductDetail.fromJson(Map<String, dynamic> json) =>
+      _$DataProductDetailFromJson(json);
 
-  Map<String, dynamic> toJson() => _$DataProductToJson(this);
+  Map<String, dynamic> toJson() => _$DataProductDetailToJson(this);
 }

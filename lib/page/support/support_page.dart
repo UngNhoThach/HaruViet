@@ -1,12 +1,12 @@
 // ignore_for_file: sort_child_properties_last
 
-import 'package:eco_app/helper/colors.dart';
-import 'package:eco_app/helper/spaces.dart';
-import 'package:eco_app/page/support/support_bloc.dart';
-import 'package:eco_app/page/support/support_sate.dart';
-import 'package:eco_app/resources/routes.dart';
-import 'package:eco_app/theme/typography.dart';
-import 'package:eco_app/utils/commons.dart';
+import 'package:haruviet/helper/colors.dart';
+import 'package:haruviet/helper/spaces.dart';
+import 'package:haruviet/page/support/support_bloc.dart';
+import 'package:haruviet/page/support/support_sate.dart';
+import 'package:haruviet/resources/routes.dart';
+import 'package:haruviet/theme/typography.dart';
+import 'package:haruviet/utils/commons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

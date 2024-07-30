@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart' show ValueNotifier, immutable;
 
-const String productssTable = 'Productss';
+const String cartTable = 'cart';
 
 class CartModel {
   static final List<String> values = [

@@ -1,5 +1,5 @@
-import 'package:eco_app/config.dart';
-import 'package:eco_app/helper/colors.dart';
+import 'package:haruviet/config.dart';
+import 'package:haruviet/helper/colors.dart';
 import 'package:flutter/material.dart';
 
 final ThemeData myThemeData = ThemeData(

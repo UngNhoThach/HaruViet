@@ -1,4 +1,4 @@
-import 'package:eco_app/page/chat/chat_detail/models/chat_detail_model.dart';
+import 'package:haruviet/page/chat/chat_detail/models/chat_detail_model.dart';
 import 'package:flutter/material.dart';
 
 class ChatDetailPage extends StatefulWidget {

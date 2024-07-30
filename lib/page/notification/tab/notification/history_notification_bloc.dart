@@ -1,8 +1,8 @@
-import 'package:eco_app/base/base_bloc.dart';
-import 'package:eco_app/data/enum.dart';
-import 'package:eco_app/data/local/user_preferences.dart';
-import 'package:eco_app/page/notification/tab/notification/history_notification_state.dart';
-import 'package:eco_app/service/clearedStoredData.dart';
+import 'package:haruviet/base/base_bloc.dart';
+import 'package:haruviet/data/enum.dart';
+import 'package:haruviet/data/local/user_preferences.dart';
+import 'package:haruviet/page/notification/tab/notification/history_notification_state.dart';
+import 'package:haruviet/service/clearedStoredData.dart';
 import 'package:flutter/foundation.dart';
 
 // HistoryNotificationBloc

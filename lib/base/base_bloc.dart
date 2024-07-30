@@ -1,4 +1,4 @@
-import 'package:eco_app/data/enum.dart';
+import 'package:haruviet/data/enum.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 abstract class BaseState {

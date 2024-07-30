@@ -1,4 +1,4 @@
-import 'package:eco_app/theme/app_color.dart';
+import 'package:haruviet/theme/app_color.dart';
 import 'package:flutter/material.dart' show Color, Colors;
 
 class RecommendedProduct {

@@ -11,9 +11,9 @@
 	<key>BUNDLE_ID</key>
 	<string>com.example.ecoApp.RunnerTests</string>
 	<key>PROJECT_ID</key>
-	<string>eco_app-809ef</string>
+	<string>haruviet-809ef</string>
 	<key>STORAGE_BUCKET</key>
-	<string>eco_app-809ef.appspot.com</string>
+	<string>haruviet-809ef.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>

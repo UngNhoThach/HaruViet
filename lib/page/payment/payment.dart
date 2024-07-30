@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:eco_app/page/payment/widgets/payment_success.dart';
+import 'package:haruviet/page/payment/widgets/payment_success.dart';
 import 'package:flutter/material.dart';
 
 class PaymentPage extends StatefulWidget {

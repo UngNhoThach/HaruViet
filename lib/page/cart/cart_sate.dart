@@ -1,9 +1,10 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
-import 'package:eco_app/base/base_bloc.dart';
-import 'package:eco_app/data/enum.dart';
-import 'package:eco_app/data/reponsitory/product/models/product_response.dart';
-import 'package:eco_app/database_local/product/models/cart_model.dart';
-import 'package:eco_app/page/cart/models/cart_item_request.dart';
+import 'package:haruviet/base/base_bloc.dart';
+import 'package:haruviet/data/data_local/user_state.dart';
+import 'package:haruviet/data/enum.dart';
+import 'package:haruviet/data/reponsitory/product/models/product_response.dart';
+import 'package:haruviet/database_local/product/models/cart_model.dart';
+import 'package:haruviet/page/cart/models/cart_item_request.dart';
 
 part 'cart_sate.g.dart';
 
@@ -13,7 +14,7 @@ class CartState extends BaseState {
   final bool isValueDefault;
   final bool isSubmitSuccess;
   final List<Products> productsList;
-
+  final UserInfoLogin? userInfoLogin;
   final List<CartItemRequest> cartItemsRequest;
   final int? finalPrice;
   final int? finalPriceDefault;
@@ -23,6 +24,7 @@ class CartState extends BaseState {
   const CartState({
     ViewState viewState = ViewState.loaded,
     this.cartItemsRequest = const [],
+    this.userInfoLogin,
     String errorMsg = '',
     this.productsList = const [],
     this.isSubmitSuccess = false,

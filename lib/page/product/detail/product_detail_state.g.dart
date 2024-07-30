@@ -17,7 +17,11 @@ abstract class _$ProductDetailStateCWProxy {
 
   ProductDetailState colorSelected(String? colorSelected);
 
-  ProductDetailState currentCounter(int currentCounter);
+  ProductDetailState currentCounter(int? currentCounter);
+
+  ProductDetailState currentPage(int currentPage);
+
+  ProductDetailState changePopUp(bool changePopUp);
 
   ProductDetailState checkProductInCart(bool checkProductInCart);
 
@@ -25,17 +29,25 @@ abstract class _$ProductDetailStateCWProxy {
 
   ProductDetailState totalProductInCart(int? totalProductInCart);
 
+  ProductDetailState limit(int limit);
+
   ProductDetailState validBuyProductAttributes(bool validBuyProductAttributes);
 
   ProductDetailState isSubmitSuccess(bool isSubmitSuccess);
 
   ProductDetailState isLoading(bool isLoading);
 
+  ProductDetailState datatList(List<DataProduct> datatList);
+
+  ProductDetailState newDataList(List<DataProduct> newDataList);
+
   ProductDetailState imageUrls(List<String> imageUrls);
 
   ProductDetailState productsList(List<Products> productsList);
 
-  ProductDetailState dataProduct(DataProduct? dataProduct);
+  ProductDetailState canLoadMore(bool canLoadMore);
+
+  ProductDetailState dataProduct(DataProductDetail? dataProduct);
 
   ProductDetailState userInfoLogin(UserInfoLogin? userInfoLogin);
 
@@ -52,15 +64,21 @@ abstract class _$ProductDetailStateCWProxy {
     String? sizeSelected,
     String? colorSelected,
     int? currentCounter,
+    int? currentPage,
+    bool? changePopUp,
     bool? checkProductInCart,
     bool? checkProductAttributes,
     int? totalProductInCart,
+    int? limit,
     bool? validBuyProductAttributes,
     bool? isSubmitSuccess,
     bool? isLoading,
+    List<DataProduct>? datatList,
+    List<DataProduct>? newDataList,
     List<String>? imageUrls,
     List<Products>? productsList,
-    DataProduct? dataProduct,
+    bool? canLoadMore,
+    DataProductDetail? dataProduct,
     UserInfoLogin? userInfoLogin,
   });
 }
@@ -90,8 +108,16 @@ class _$ProductDetailStateCWProxyImpl implements _$ProductDetailStateCWProxy {
       this(colorSelected: colorSelected);
 
   @override
-  ProductDetailState currentCounter(int currentCounter) =>
+  ProductDetailState currentCounter(int? currentCounter) =>
       this(currentCounter: currentCounter);
+
+  @override
+  ProductDetailState currentPage(int currentPage) =>
+      this(currentPage: currentPage);
+
+  @override
+  ProductDetailState changePopUp(bool changePopUp) =>
+      this(changePopUp: changePopUp);
 
   @override
   ProductDetailState checkProductInCart(bool checkProductInCart) =>
@@ -106,6 +132,9 @@ class _$ProductDetailStateCWProxyImpl implements _$ProductDetailStateCWProxy {
       this(totalProductInCart: totalProductInCart);
 
   @override
+  ProductDetailState limit(int limit) => this(limit: limit);
+
+  @override
   ProductDetailState validBuyProductAttributes(
           bool validBuyProductAttributes) =>
       this(validBuyProductAttributes: validBuyProductAttributes);
@@ -118,6 +147,14 @@ class _$ProductDetailStateCWProxyImpl implements _$ProductDetailStateCWProxy {
   ProductDetailState isLoading(bool isLoading) => this(isLoading: isLoading);
 
   @override
+  ProductDetailState datatList(List<DataProduct> datatList) =>
+      this(datatList: datatList);
+
+  @override
+  ProductDetailState newDataList(List<DataProduct> newDataList) =>
+      this(newDataList: newDataList);
+
+  @override
   ProductDetailState imageUrls(List<String> imageUrls) =>
       this(imageUrls: imageUrls);
 
@@ -126,7 +163,11 @@ class _$ProductDetailStateCWProxyImpl implements _$ProductDetailStateCWProxy {
       this(productsList: productsList);
 
   @override
-  ProductDetailState dataProduct(DataProduct? dataProduct) =>
+  ProductDetailState canLoadMore(bool canLoadMore) =>
+      this(canLoadMore: canLoadMore);
+
+  @override
+  ProductDetailState dataProduct(DataProductDetail? dataProduct) =>
       this(dataProduct: dataProduct);
 
   @override
@@ -148,14 +189,20 @@ class _$ProductDetailStateCWProxyImpl implements _$ProductDetailStateCWProxy {
     Object? sizeSelected = const $CopyWithPlaceholder(),
     Object? colorSelected = const $CopyWithPlaceholder(),
     Object? currentCounter = const $CopyWithPlaceholder(),
+    Object? currentPage = const $CopyWithPlaceholder(),
+    Object? changePopUp = const $CopyWithPlaceholder(),
     Object? checkProductInCart = const $CopyWithPlaceholder(),
     Object? checkProductAttributes = const $CopyWithPlaceholder(),
     Object? totalProductInCart = const $CopyWithPlaceholder(),
+    Object? limit = const $CopyWithPlaceholder(),
     Object? validBuyProductAttributes = const $CopyWithPlaceholder(),
     Object? isSubmitSuccess = const $CopyWithPlaceholder(),
     Object? isLoading = const $CopyWithPlaceholder(),
+    Object? datatList = const $CopyWithPlaceholder(),
+    Object? newDataList = const $CopyWithPlaceholder(),
     Object? imageUrls = const $CopyWithPlaceholder(),
     Object? productsList = const $CopyWithPlaceholder(),
+    Object? canLoadMore = const $CopyWithPlaceholder(),
     Object? dataProduct = const $CopyWithPlaceholder(),
     Object? userInfoLogin = const $CopyWithPlaceholder(),
   }) {
@@ -180,11 +227,20 @@ class _$ProductDetailStateCWProxyImpl implements _$ProductDetailStateCWProxy {
           ? _value.colorSelected
           // ignore: cast_nullable_to_non_nullable
           : colorSelected as String?,
-      currentCounter: currentCounter == const $CopyWithPlaceholder() ||
-              currentCounter == null
+      currentCounter: currentCounter == const $CopyWithPlaceholder()
           ? _value.currentCounter
           // ignore: cast_nullable_to_non_nullable
-          : currentCounter as int,
+          : currentCounter as int?,
+      currentPage:
+          currentPage == const $CopyWithPlaceholder() || currentPage == null
+              ? _value.currentPage
+              // ignore: cast_nullable_to_non_nullable
+              : currentPage as int,
+      changePopUp:
+          changePopUp == const $CopyWithPlaceholder() || changePopUp == null
+              ? _value.changePopUp
+              // ignore: cast_nullable_to_non_nullable
+              : changePopUp as bool,
       checkProductInCart: checkProductInCart == const $CopyWithPlaceholder() ||
               checkProductInCart == null
           ? _value.checkProductInCart
@@ -200,6 +256,10 @@ class _$ProductDetailStateCWProxyImpl implements _$ProductDetailStateCWProxy {
           ? _value.totalProductInCart
           // ignore: cast_nullable_to_non_nullable
           : totalProductInCart as int?,
+      limit: limit == const $CopyWithPlaceholder() || limit == null
+          ? _value.limit
+          // ignore: cast_nullable_to_non_nullable
+          : limit as int,
       validBuyProductAttributes:
           validBuyProductAttributes == const $CopyWithPlaceholder() ||
                   validBuyProductAttributes == null
@@ -215,6 +275,15 @@ class _$ProductDetailStateCWProxyImpl implements _$ProductDetailStateCWProxy {
           ? _value.isLoading
           // ignore: cast_nullable_to_non_nullable
           : isLoading as bool,
+      datatList: datatList == const $CopyWithPlaceholder() || datatList == null
+          ? _value.datatList
+          // ignore: cast_nullable_to_non_nullable
+          : datatList as List<DataProduct>,
+      newDataList:
+          newDataList == const $CopyWithPlaceholder() || newDataList == null
+              ? _value.newDataList
+              // ignore: cast_nullable_to_non_nullable
+              : newDataList as List<DataProduct>,
       imageUrls: imageUrls == const $CopyWithPlaceholder() || imageUrls == null
           ? _value.imageUrls
           // ignore: cast_nullable_to_non_nullable
@@ -224,10 +293,15 @@ class _$ProductDetailStateCWProxyImpl implements _$ProductDetailStateCWProxy {
               ? _value.productsList
               // ignore: cast_nullable_to_non_nullable
               : productsList as List<Products>,
+      canLoadMore:
+          canLoadMore == const $CopyWithPlaceholder() || canLoadMore == null
+              ? _value.canLoadMore
+              // ignore: cast_nullable_to_non_nullable
+              : canLoadMore as bool,
       dataProduct: dataProduct == const $CopyWithPlaceholder()
           ? _value.dataProduct
           // ignore: cast_nullable_to_non_nullable
-          : dataProduct as DataProduct?,
+          : dataProduct as DataProductDetail?,
       userInfoLogin: userInfoLogin == const $CopyWithPlaceholder()
           ? _value.userInfoLogin
           // ignore: cast_nullable_to_non_nullable

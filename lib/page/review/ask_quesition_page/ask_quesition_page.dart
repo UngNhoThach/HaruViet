@@ -1,8 +1,8 @@
 import 'package:comment_tree/data/comment.dart';
 import 'package:comment_tree/widgets/comment_tree_widget.dart';
 import 'package:comment_tree/widgets/tree_theme_data.dart';
-import 'package:eco_app/helper/colors.dart';
-import 'package:eco_app/helper/spaces.dart';
+import 'package:haruviet/helper/colors.dart';
+import 'package:haruviet/helper/spaces.dart';
 import 'package:flutter/material.dart';
 
 class AskQuesitonPage extends StatefulWidget {

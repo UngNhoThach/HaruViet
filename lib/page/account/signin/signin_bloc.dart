@@ -1,11 +1,11 @@
-import 'package:eco_app/base/base_bloc.dart';
-import 'package:eco_app/data/enum.dart';
-import 'package:eco_app/data/local/user_preferences.dart';
-import 'package:eco_app/data/reponsitory/customers/customers_repository.dart';
-import 'package:eco_app/data/data_local/user_state.dart';
-import 'package:eco_app/page/account/signin/signin_state.dart';
-import 'package:eco_app/page/account/signup/widgets/sigup_status.dart';
-import 'package:eco_app/page/account/signup/widgets/verify_status.dart';
+import 'package:haruviet/base/base_bloc.dart';
+import 'package:haruviet/data/enum.dart';
+import 'package:haruviet/data/local/user_preferences.dart';
+import 'package:haruviet/data/reponsitory/customers/customers_repository.dart';
+import 'package:haruviet/data/data_local/user_state.dart';
+import 'package:haruviet/page/account/signin/signin_state.dart';
+import 'package:haruviet/page/account/signup/widgets/sigup_status.dart';
+import 'package:haruviet/page/account/signup/widgets/verify_status.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -153,6 +153,26 @@ class SignInBloc extends BaseBloc<SignInState> {
     }
   }
 
+//   class GoogleSignInProvider extends SignInProviders {
+//   ///
+//   @override
+//   Future<UserCredential?> signIn() async {
+//     // Trigger the authentication flow
+//     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+//     // Obtain the auth details from the request
+//     final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+
+//     // Create a new credential
+//     final credential = GoogleAuthProvider.credential(
+//       idToken: googleAuth?.idToken,
+//       accessToken: googleAuth?.accessToken,
+//     );
+
+//     // Once signed in, return the UserCredential
+//     return await FirebaseAuth.instance.signInWithCredential(credential);
+//   }
+// }
   Future<void> signInWithGoogle() async {
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn();

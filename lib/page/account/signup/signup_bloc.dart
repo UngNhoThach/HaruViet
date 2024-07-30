@@ -1,10 +1,10 @@
-import 'package:eco_app/base/base_bloc.dart';
-import 'package:eco_app/data/enum.dart';
-import 'package:eco_app/data/local/user_preferences.dart';
-import 'package:eco_app/data/reponsitory/customers/customers_repository.dart';
-import 'package:eco_app/data/data_local/user_state.dart';
-import 'package:eco_app/page/account/signup/signup_state.dart';
-import 'package:eco_app/page/account/signup/widgets/verify_status.dart';
+import 'package:haruviet/base/base_bloc.dart';
+import 'package:haruviet/data/enum.dart';
+import 'package:haruviet/data/local/user_preferences.dart';
+import 'package:haruviet/data/reponsitory/customers/customers_repository.dart';
+import 'package:haruviet/data/data_local/user_state.dart';
+import 'package:haruviet/page/account/signup/signup_state.dart';
+import 'package:haruviet/page/account/signup/widgets/verify_status.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';

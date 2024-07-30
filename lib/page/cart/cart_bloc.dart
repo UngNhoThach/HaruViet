@@ -1,10 +1,11 @@
-import 'package:eco_app/base/base_bloc.dart';
-import 'package:eco_app/data/reponsitory/product/models/product_response.dart';
-import 'package:eco_app/database_local/product/cart_provider.dart';
-import 'package:eco_app/database_local/product/models/cart_model.dart';
-import 'package:eco_app/database_local/product/cart_database.dart';
-import 'package:eco_app/page/cart/cart_sate.dart';
-import 'package:eco_app/page/cart/models/cart_item_request.dart';
+import 'package:haruviet/base/base_bloc.dart';
+import 'package:haruviet/data/local/user_preferences.dart';
+import 'package:haruviet/data/reponsitory/product/models/product_response.dart';
+import 'package:haruviet/database_local/product/cart_provider.dart';
+import 'package:haruviet/database_local/product/models/cart_model.dart';
+import 'package:haruviet/database_local/product/cart_database.dart';
+import 'package:haruviet/page/cart/cart_sate.dart';
+import 'package:haruviet/page/cart/models/cart_item_request.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,25 +17,22 @@ class CartBloc extends BaseBloc<CartState> {
   List<Products> productsList = [];
 
   getData() async {
-    final cart = Provider.of<CartProvider>(context, listen: false);
-
     emit(state.copyWith(
       isLoading: true,
     ));
+    final cart = Provider.of<CartProvider>(context, listen: false);
+    final userInfoLogin = await Preference.getUserInfo();
 
     productsList = (await CartDatabase.instance.readAllItems());
 
     emit(
       state.copyWith(
-        productsList: productsList,
-        totalItem: cart.getCounter(),
-        isLoading: false,
-      ),
+          productsList: productsList,
+          totalItem: cart.getCounter(),
+          isLoading: false,
+          userInfoLogin: userInfoLogin),
     );
-
-    if (!state.isValueDefault) {
-      getDefaultPrice();
-    }
+    getDefaultPrice();
   }
 
   int splitCurrency(String currency) {
@@ -48,58 +46,62 @@ class CartBloc extends BaseBloc<CartState> {
     required int index,
   }) async {
     final cart = Provider.of<CartProvider>(context, listen: false);
-
-    await CartDatabase.instance.deleteCart(state.productsList[index].idProduct);
-    cart.removeItem(state.productsList[index].idProduct);
+    final product = state.productsList[index];
+    final ValueNotifier<int> countTotalProductInItems = product.totalQuantity;
+    double totalPriceItem = countTotalProductInItems.value *
+        double.parse(splitCurrency(product.priceProduct).toString());
+    cart.removeItem(product.idProduct);
+    cart.removeTotalPrice((totalPriceItem));
     cart.removeCounter();
-
+    await CartDatabase.instance.deleteCart(product.idProduct);
+    emit(state.copyWith(
+      totalItem: cart.getCounter(),
+    ));
     getData();
   }
 
-  // List<CartItemRequest> initializeCartItems(int totalItem) {
-  //   List<CartItemRequest> cartItems = [];
-  //   for (int i = 0; i < totalItem; i++) {
-  //     cartItems.add(CartItemRequest(
-  //       quality: 1,
-  //       price: 900000,
-  //     ));
-  //   }
-  //   return cartItems;
-  // }
-
-  onChangeValueDirec(
-    int index,
-    int? value,
-  ) {
-    var listItem = List<CartItemRequest>.from(state.cartItemsRequest);
-    listItem = listItem.asMap().entries.map((entry) {
-      var i = entry.key;
-      var element = entry.value;
+  onChangeValueDirec({
+    required int index,
+    required int value,
+  }) {
+    final cart = Provider.of<CartProvider>(context, listen: false);
+    var productsList = List<Products>.from(state.productsList);
+    productsList = productsList.mapIndexed((i, element) {
+      double totalPriceItem = 0.0;
       if (index == i) {
-        if (value != null && value > 1) {
-          return element.copyWith(
-              quality: value, totalPriceItem: (value - 1) * element.price!);
+        final valueDefault = element.totalQuantity.value;
+        if (value == valueDefault) {
+          return element;
+        } else if (value < valueDefault) {
+          if (valueDefault >= 1 && value >= 1) {
+            totalPriceItem = (valueDefault - value) *
+                double.parse(splitCurrency(element.priceProduct).toString());
+            cart.removeTotalPrice((totalPriceItem));
+          }
+        } else {
+          if (valueDefault >= 1 && value >= 1) {
+            totalPriceItem = (value - valueDefault) *
+                double.parse(splitCurrency(element.priceProduct).toString());
+            cart.addTotalPrice((totalPriceItem));
+          }
         }
+        getDefaultPrice();
+        return element.copy(
+          totalQuantity: ValueNotifier<int>(value),
+        );
       }
       return element;
     }).toList();
-
     emit(state.copyWith(
-      cartItemsRequest: listItem,
+      productsList: productsList,
+      // checkValue: !state.checkValue,
     ));
-    onChangeFinalPrice();
+    onUpdate(index, productsList);
+    //  onChangeFinalPrice();
   }
 
   getDefaultPrice() {
-    // var productsList = List<Products>.from(state.productsList);
     final cart = Provider.of<CartProvider>(context, listen: false);
-
-    // int sum;
-    // sum = productsList.fold<int>(
-    //     0,
-    //     (previousValue, element) =>
-    //         previousValue + (splitCurrency(element.priceProduct)));
-
     emit(state.copyWith(
         finalPriceDefault: cart.getTotalPrice().toInt() // sum,
         ,
@@ -125,7 +127,6 @@ class CartBloc extends BaseBloc<CartState> {
 
   onChangeDecrementCounter(int index) {
     final cart = Provider.of<CartProvider>(context, listen: false);
-
     var productsList = List<Products>.from(state.productsList);
     productsList = productsList.mapIndexed((i, element) {
       if (index == i) {
@@ -164,8 +165,6 @@ class CartBloc extends BaseBloc<CartState> {
         getDefaultPrice();
         return element.copy(
           totalQuantity: ValueNotifier<int>(count),
-
-          // totalPriceItem: (count - 1) * element.price!,
         );
       }
       return element;
@@ -175,9 +174,6 @@ class CartBloc extends BaseBloc<CartState> {
       checkValue: !state.checkValue,
     ));
     onUpdate(index, productsList);
-    //   getDefaultPrice();
-
-    //  onChangeFinalPrice();
   }
 
   onUpdate(int index, productList) async {

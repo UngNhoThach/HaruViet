@@ -1,4 +1,4 @@
-name: eco_app
+name: haruviet
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -65,10 +65,12 @@ dependencies:
   equatable: ^2.0.5
   sms_autofill: ^2.3.1
   persistent_bottom_nav_bar: ^5.0.2
-  
+  cupertino_icons: ^1.0.2
+
   #package UI 
   shimmer: ^3.0.0
   provider: ^6.1.2
+  firebase_core: ^2.32.0
 
 flutter_icons:
   android: true
@@ -77,7 +79,6 @@ flutter_icons:
   image_path: "assets/images/logo_2.png"
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.8
   #Login 
   
   #package UI 

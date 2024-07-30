@@ -1,5 +1,5 @@
-import 'package:eco_app/helper/colors.dart';
-import 'package:eco_app/theme/typography.dart';
+import 'package:haruviet/helper/colors.dart';
+import 'package:haruviet/theme/typography.dart';
 import 'package:flutter/material.dart';
 
 class SizeSelector extends StatefulWidget {

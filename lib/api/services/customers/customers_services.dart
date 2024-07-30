@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
-import 'package:eco_app/api/exception/api_endpoints.dart';
-import 'package:eco_app/api/services/customers/models/register_request.dart';
-import 'package:eco_app/api/services/customers/models/update_user_info_request/update_user_info_request.dart';
-import 'package:eco_app/api/services/headers_request/headers_request.dart';
-import 'package:eco_app/base/base_service.dart';
+import 'package:haruviet/api/exception/api_endpoints.dart';
+import 'package:haruviet/api/services/customers/models/register_request.dart';
+import 'package:haruviet/api/services/customers/models/update_user_info_request/update_user_info_request.dart';
+import 'package:haruviet/api/services/headers_request/headers_request.dart';
+import 'package:haruviet/base/base_service.dart';
 
 import 'models/update_password_phone_number_request/update_password_phone_number_request.dart';
 

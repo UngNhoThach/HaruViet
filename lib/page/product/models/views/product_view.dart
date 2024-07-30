@@ -1,6 +1,6 @@
-// import 'package:eco_app/component/animation/product_animation.dart';
-// import 'package:eco_app/page/product/models/product_model.dart';
-// import 'package:eco_app/theme/typography.dart';
+// import 'package:haruviet/component/animation/product_animation.dart';
+// import 'package:haruviet/page/product/models/product_model.dart';
+// import 'package:haruviet/theme/typography.dart';
 // import 'package:flutter/material.dart';
 
 // class ProductGridView extends StatelessWidget {

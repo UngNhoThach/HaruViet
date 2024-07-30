@@ -1,45 +1,46 @@
 import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:eco_app/component/select_address/models/select_address_params.dart';
-import 'package:eco_app/component/select_address/select_address_page.dart';
-import 'package:eco_app/data/data_local/user_bloc.dart';
-import 'package:eco_app/database_local/product/cart_provider.dart';
-import 'package:eco_app/helper/theme.dart';
-import 'package:eco_app/page/about_us/about_us_page.dart';
-import 'package:eco_app/page/account/update_profile/widgets/update_profile_params.dart';
-import 'package:eco_app/page/add_address/add_address/add_address_page.dart';
-import 'package:eco_app/page/add_address/address_page.dart';
-import 'package:eco_app/page/cart/cart_page.dart';
-import 'package:eco_app/page/cart/models/cart_page_params.dart';
-import 'package:eco_app/page/category/category_child/category_child_page.dart';
-import 'package:eco_app/page/category/category_page.dart';
-import 'package:eco_app/page/category/models/category_paga_params.dart';
-import 'package:eco_app/page/chat/chat_page.dart';
-import 'package:eco_app/page/home/checkout_page.dart';
-import 'package:eco_app/page/cart/bill/bill_info_page.dart';
-import 'package:eco_app/page/cart/payment_method/payment_method_page.dart';
-import 'package:eco_app/page/cart/voucher/voucher_page.dart';
-import 'package:eco_app/page/account/forget_password/forget_password_page.dart';
-import 'package:eco_app/page/main_screen/main_screen_page.dart';
-import 'package:eco_app/page/account/phone_authen/phone_authen_page.dart';
-import 'package:eco_app/page/account/phone_authen/widgets/phone_authen_params.dart';
-import 'package:eco_app/page/notification/tab/news/widgets/new_detail_page.dart';
-import 'package:eco_app/page/product/detail/product_deatail_page.dart';
-import 'package:eco_app/page/product/detail/widgets/product_detail_params.dart';
-import 'package:eco_app/page/product/product_list/product_list_page.dart';
-import 'package:eco_app/page/profile/profile_page.dart';
-import 'package:eco_app/page/review/ask_quesition_page/ask_quesition_page.dart';
-import 'package:eco_app/page/review/review_page.dart';
-import 'package:eco_app/page/review/write_review/write_review_page.dart';
-import 'package:eco_app/page/account/signin/signin_page.dart';
-import 'package:eco_app/page/account/signin/widgets/signin_params.dart';
-import 'package:eco_app/page/account/signup/signup_page.dart';
-import 'package:eco_app/page/support/support_page.dart';
-import 'package:eco_app/page/account/update_profile/update_profile_page.dart';
-import 'package:eco_app/resources/routes.dart';
-import 'package:eco_app/service/navigation_service.dart';
-import 'package:eco_app/utils/commons.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:haruviet/component/select_address/models/select_address_params.dart';
+import 'package:haruviet/component/select_address/select_address_page.dart';
+import 'package:haruviet/data/data_local/user_bloc.dart';
+import 'package:haruviet/database_local/product/cart_provider.dart';
+import 'package:haruviet/helper/theme.dart';
+import 'package:haruviet/page/about_us/about_us_page.dart';
+import 'package:haruviet/page/account/update_profile/widgets/update_profile_params.dart';
+import 'package:haruviet/page/add_address/add_address/add_address_page.dart';
+import 'package:haruviet/page/add_address/address_page.dart';
+import 'package:haruviet/page/cart/cart_page.dart';
+import 'package:haruviet/page/cart/models/cart_page_params.dart';
+import 'package:haruviet/page/category/category_child/category_child_page.dart';
+import 'package:haruviet/page/category/category_page.dart';
+import 'package:haruviet/page/category/models/category_paga_params.dart';
+import 'package:haruviet/page/chat/chat_page.dart';
+import 'package:haruviet/page/home/checkout_page.dart';
+import 'package:haruviet/page/cart/bill/bill_info_page.dart';
+import 'package:haruviet/page/cart/payment_method/payment_method_page.dart';
+import 'package:haruviet/page/cart/voucher/voucher_page.dart';
+import 'package:haruviet/page/account/forget_password/forget_password_page.dart';
+import 'package:haruviet/page/main_screen/main_screen_page.dart';
+import 'package:haruviet/page/account/phone_authen/phone_authen_page.dart';
+import 'package:haruviet/page/account/phone_authen/widgets/phone_authen_params.dart';
+import 'package:haruviet/page/notification/tab/news/widgets/new_detail_page.dart';
+import 'package:haruviet/page/product/detail/product_deatail_page.dart';
+import 'package:haruviet/page/product/detail/widgets/product_detail_params.dart';
+import 'package:haruviet/page/product/product_list/product_list_page.dart';
+import 'package:haruviet/page/profile/profile_page.dart';
+import 'package:haruviet/page/review/ask_quesition_page/ask_quesition_page.dart';
+import 'package:haruviet/page/review/review_page.dart';
+import 'package:haruviet/page/review/write_review/write_review_page.dart';
+import 'package:haruviet/page/account/signin/signin_page.dart';
+import 'package:haruviet/page/account/signin/widgets/signin_params.dart';
+import 'package:haruviet/page/account/signup/signup_page.dart';
+import 'package:haruviet/page/support/support_page.dart';
+import 'package:haruviet/page/account/update_profile/update_profile_page.dart';
+import 'package:haruviet/resources/routes.dart';
+import 'package:haruviet/service/navigation_service.dart';
+import 'package:haruviet/utils/commons.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -53,15 +54,13 @@ import 'page/cart/checkout/widgets/checkout_params.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+      // options: DefaultFirebaseOptions.currentPlatform,
+      );
   CachedNetworkImage.logLevel = CacheManagerLogLevel.debug;
 
   runApp(ChangeNotifierProvider(
       create: (context) => CartProvider(), child: const MyApp()));
-}
-
-class MyModel with ChangeNotifier {
-  String a = 'Test1';
-  String b = 'Test2';
 }
 
 class MyApp extends StatelessWidget {
@@ -109,13 +108,11 @@ class _HomePageState extends State<HomePage> {
         splitScreenMode: true,
         builder: (_, child) {
           return MaterialApp(
-            //   builder: EasyLoading.init(),
             title: 'HaruViet',
             onGenerateRoute: (settings) => _getRoutes(settings),
             navigatorKey: NavigationService.navigatorKey,
             debugShowCheckedModeBanner: false,
             theme: myThemeData,
-
             home: _getRootScreen(context),
           );
         },
@@ -346,6 +343,13 @@ class _HomePageState extends State<HomePage> {
             params: settings.arguments! as ResetPasswordParams,
           ),
         );
+
+      // OrdersPage
+      // case Routes.ordersPage:
+      //   return MaterialPageRoute(
+      //     settings: const RouteSettings(name: Routes.ordersPage),
+      //     builder: (_) => const OrdersPage(),
+      //   );
 
       //SupportPage
       case Routes.supportPage:

@@ -1,10 +1,10 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
-import 'package:eco_app/base/base_bloc.dart';
-import 'package:eco_app/data/enum.dart';
-import 'package:eco_app/data/reponsitory/customers/models/address_user_response.dart';
-import 'package:eco_app/data/reponsitory/customers/models/user_update_info_response/data_user_update_info.dart';
-import 'package:eco_app/data/data_local/user_state.dart';
-import 'package:eco_app/helper/base_status_response.dart';
+import 'package:haruviet/base/base_bloc.dart';
+import 'package:haruviet/data/enum.dart';
+import 'package:haruviet/data/reponsitory/customers/models/address_user_response.dart';
+import 'package:haruviet/data/reponsitory/customers/models/user_update_info_response/data_user_update_info.dart';
+import 'package:haruviet/data/data_local/user_state.dart';
+import 'package:haruviet/helper/base_status_response.dart';
 
 part 'update_profile_state.g.dart';
 

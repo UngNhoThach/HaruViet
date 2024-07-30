@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'package:eco_app/page/chat/models/chat_user.dart';
-import 'package:eco_app/page/chat/widgets/conversation_list_page.dart';
+import 'package:haruviet/page/chat/models/chat_user.dart';
+import 'package:haruviet/page/chat/widgets/conversation_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

@@ -1,7 +1,7 @@
-import 'package:eco_app/helper/colors.dart';
-import 'package:eco_app/helper/context.dart';
-import 'package:eco_app/helper/spaces.dart';
-import 'package:eco_app/theme/typography.dart';
+import 'package:haruviet/helper/colors.dart';
+import 'package:haruviet/helper/context.dart';
+import 'package:haruviet/helper/spaces.dart';
+import 'package:haruviet/theme/typography.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -177,7 +177,7 @@ class _RowContentOneColumnState extends State<RowContentOneColumn>
                           : null,
                       color: widget.checkIspaddingTile ? colorGray02 : null,
                       child: Row(
-                        // /Users/ungnhothach/Desktop/developer/code/app/flutter/eco/eco_basic/eco_app/build/app/outputs/flutter-apk
+                        // /Users/ungnhothach/Desktop/developer/code/app/flutter/eco/eco_basic/haruviet/build/app/outputs/flutter-apk
                         children: [
                           Expanded(
                             child: widget.isRowTitle
@@ -308,7 +308,7 @@ class _RowContentOneColumnState extends State<RowContentOneColumn>
                                                 'Xem tất cả',
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.w500,
-                                                  color: colorMain,
+                                                  color: colorPrimary,
                                                   fontSize: 14,
                                                 ),
                                               ),

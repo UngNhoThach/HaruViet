@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:eco_app/api/exception/api_endpoints.dart';
-import 'package:eco_app/base/base_service.dart';
+import 'package:haruviet/api/exception/api_endpoints.dart';
+import 'package:haruviet/base/base_service.dart';
 
 class SettingService extends BaseService {
   Future<Response> getCountryListSV({required String idCountry}) async {

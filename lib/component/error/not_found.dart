@@ -1,5 +1,8 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/spaces.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class DidntFound extends StatelessWidget {
   const DidntFound({super.key});
@@ -9,11 +12,15 @@ class DidntFound extends StatelessWidget {
     return Center(
       child: Column(
         children: [
-          spaceH20,
-          // Assets.images.emptyStates.image(
-          //   height: 240.r,
-          //   width: 240.r,
-          // ),
+          spaceH16,
+          const Text(
+            'Đang tải',
+            style: TextStyle(color: colorMainCover),
+          ),
+          LoadingAnimationWidget.horizontalRotatingDots(
+            color: colorMainCover,
+            size: 40.r,
+          ),
         ],
       ),
     );

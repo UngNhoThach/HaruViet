@@ -12,8 +12,8 @@ class FilterProductList extends StatelessWidget {
     required this.onSelect,
   });
 
-  final int statusSelected;
-  final void Function() onSelect;
+  final CurrentTab statusSelected;
+  final void Function(CurrentTab) onSelect;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class FilterProductList extends StatelessWidget {
           horizontal: 12.w,
         ),
         itemBuilder: (context, index) {
-          final e = StatusWork.values[index];
+          final e = CurrentTab.values[index];
           return FilterChip(
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(
@@ -34,16 +34,14 @@ class FilterProductList extends StatelessWidget {
             label: Text(
               e.name,
               style: textTheme.bodyMedium?.copyWith(
-                color: statusSelected == e.index
-                    ? e.color
-                    : const Color(0xFF747474),
+                color: statusSelected == e ? e.color : const Color(0xFF747474),
                 fontWeight: FontWeight.w500,
               ),
             ),
-            selected: statusSelected == e.index,
+            selected: statusSelected == e,
             onSelected: (bool selected) {
               if (selected) {
-                onSelect();
+                onSelect(e);
               }
             },
             selectedColor: e.backgroundColor,
@@ -51,7 +49,7 @@ class FilterProductList extends StatelessWidget {
             showCheckmark: false,
           );
         },
-        itemCount: StatusWork.values.length,
+        itemCount: CurrentTab.values.length,
         separatorBuilder: (context, index) => spaceW16,
       ),
     );

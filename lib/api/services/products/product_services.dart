@@ -23,4 +23,14 @@ class ProductService extends BaseService {
         headers: apiHeaders.appMobileHeaders);
     return response;
   }
+
+  // search
+
+  Future<Response> searchDefaultSV({required String keyword}) async {
+    final response = await get(
+      ProductApi.searchDefault.replaceAll(RegExp('{keyword}'), keyword!),
+    );
+    return response;
+  }
+  //
 }

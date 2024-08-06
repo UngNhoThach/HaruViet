@@ -17,7 +17,6 @@ import 'package:haruviet/page/category/category_child/category_child_page.dart';
 import 'package:haruviet/page/category/category_page.dart';
 import 'package:haruviet/page/category/models/category_paga_params.dart';
 import 'package:haruviet/page/chat/chat_page.dart';
-import 'package:haruviet/page/home/checkout_page.dart';
 import 'package:haruviet/page/cart/bill/bill_info_page.dart';
 import 'package:haruviet/page/cart/payment_method/payment_method_page.dart';
 import 'package:haruviet/page/cart/voucher/voucher_page.dart';
@@ -231,14 +230,7 @@ class _HomePageState extends State<HomePage> {
             params: settings.arguments! as CartPageParams,
           ),
         );
-      // CheckOutPage
-      case Routes.checkOutPage:
-        return MaterialPageRoute(
-          settings: const RouteSettings(name: Routes.checkOutPage),
-          builder: (_) => CheckOutPage(
-            params: settings.arguments! as CheckoutParams,
-          ),
-        );
+
       //billInfoPage
       case Routes.billInfoPage:
         return MaterialPageRoute(

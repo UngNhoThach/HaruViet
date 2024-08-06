@@ -5,13 +5,11 @@ import 'package:haruviet/component/alert/alert_one_button.dart';
 import 'package:haruviet/component/button/bottom_bar_button.dart';
 import 'package:haruviet/component/button/solid_button.dart';
 import 'package:badges/badges.dart' as badges;
-import 'package:haruviet/component/error/not_found.dart';
 import 'package:haruviet/component/rowcontent/rowcontent_one_column.dart';
 import 'package:haruviet/component/rowcontent/rowcontent_v1.dart';
 import 'package:haruviet/component/shimer/shimer.dart';
 import 'package:haruviet/data/data_local/user_bloc.dart';
-import 'package:haruviet/data/reponsitory/product/models/list_product/data_product_detail.dart';
-import 'package:haruviet/data/reponsitory/product/models/list_product/data_product/data_product.dart';
+import 'package:haruviet/data/reponsitory/product/models/data_list_product/data_product_list.dart';
 import 'package:haruviet/database_local/product/cart_provider.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/const.dart';
@@ -205,13 +203,16 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                             quantity: state.currentCounter ?? 0,
                             idProduct: state.dataProduct?.id ?? '',
                             nameProduct:
-                                state.dataProduct?.descriptions?[0].name ?? '',
-                            brandProduct: state.dataProduct?.brandId ?? '',
+                                state.dataProduct?.descriptions?.name ?? '',
+                            brandProduct: state.dataProduct?.brand?.id ?? '',
                             imageProduct: state.dataProduct?.image ?? '',
-                            priceProduct: state.dataProduct?.price ?? '',
-                            description: state.dataProduct?.descriptions?[1]
-                                    .description ??
-                                '');
+                            priceProduct:
+                                state.dataProduct!.price!.price != null
+                                    ? state.dataProduct!.price!.price.toString()
+                                    : '',
+                            description:
+                                state.dataProduct?.descriptions?.description ??
+                                    '');
                       }
                     : null,
                 'Mua hàng');
@@ -358,9 +359,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                     imageScripts: [
                                                       state
                                                               .dataProduct
-                                                              ?.descriptions?[
-                                                                  index]
-                                                              .name ??
+                                                              ?.descriptions
+                                                              ?.name ??
                                                           '',
                                                     ],
                                                     context,
@@ -396,7 +396,11 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                   Row(
                                                     children: [
                                                       Text(
-                                                        '${state.dataProduct?.price} \$',
+                                                        state.dataProduct
+                                                                    ?.promotionPrice ==
+                                                                null
+                                                            ? '${state.dataProduct?.price?.price} \$'
+                                                            : '${state.dataProduct?.promotionPrice?.pricePromotion?.priceStr}',
                                                         style: textTheme
                                                             .titleLarge
                                                             ?.copyWith(
@@ -411,52 +415,64 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                   spaceH6,
                                                   Row(
                                                     children: [
-                                                      Text(
-                                                        '15.300.000',
-                                                        style: textTheme
-                                                            .bodyMedium
-                                                            ?.copyWith(
-                                                          color: colorGray05,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          decoration:
-                                                              TextDecoration
-                                                                  .lineThrough,
-                                                        ),
-                                                      ),
-                                                      spaceW4,
-                                                      Container(
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      2.r),
-                                                          color: colorMainCover1
-                                                              .withOpacity(0.8),
-                                                        ),
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(4),
-                                                        child: Row(
-                                                          children: [
-                                                            Text(
-                                                              '-35%',
-                                                              style: Theme.of(
-                                                                      context)
-                                                                  .textTheme
+                                                      state.dataProduct
+                                                                  ?.promotionPrice !=
+                                                              null
+                                                          ? Text(
+                                                              '${state.dataProduct?.price?.priceStr}',
+                                                              style: textTheme
                                                                   .bodyMedium
                                                                   ?.copyWith(
-                                                                    color:
-                                                                        colorBackgroundWhite,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500,
-                                                                  ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
+                                                                color:
+                                                                    colorGray05,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                decoration:
+                                                                    TextDecoration
+                                                                        .lineThrough,
+                                                              ),
+                                                            )
+                                                          : space0,
+                                                      spaceW4,
+                                                      state
+                                                                  .dataProduct
+                                                                  ?.promotionPrice
+                                                                  ?.percent !=
+                                                              null
+                                                          ? Container(
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            2.r),
+                                                                color: colorMainCover1
+                                                                    .withOpacity(
+                                                                        0.8),
+                                                              ),
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(4),
+                                                              child: Row(
+                                                                children: [
+                                                                  Text(
+                                                                    '-${state.dataProduct?.promotionPrice?.percent}%',
+                                                                    style: Theme.of(
+                                                                            context)
+                                                                        .textTheme
+                                                                        .bodyMedium
+                                                                        ?.copyWith(
+                                                                          color:
+                                                                              colorBackgroundWhite,
+                                                                          fontWeight:
+                                                                              FontWeight.w500,
+                                                                        ),
+                                                                  )
+                                                                ],
+                                                              ),
+                                                            )
+                                                          : space0,
                                                     ],
                                                   ),
                                                 ],
@@ -558,8 +574,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                           TextOverflow.ellipsis,
                                                       state
                                                               .dataProduct
-                                                              ?.descriptions?[0]
-                                                              .name ??
+                                                              ?.descriptions
+                                                              ?.name ??
                                                           '',
                                                       //   'Tủ lạnh Samsung Inverter 599 lít Tủ lạnh Sam sung Inverter 599 lít Tủ lạnh Samsung Inverter 599 lít Tủ lạnh Samsung Inverter 599 lít',
                                                       style: textTheme
@@ -745,30 +761,35 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                           ? _showPopupAndReset(
                                                               context, state)
                                                           : bloc.onAddItemToCart(
-                                                              quantity: 1,
-                                                              idProduct:
-                                                                  state.dataProduct?.id ??
-                                                                      '',
-                                                              nameProduct:
-                                                                  state.dataProduct?.descriptions?[0].name ??
-                                                                      '',
+                                                              quantity: state.currentCounter ??
+                                                                  0,
+                                                              idProduct: state
+                                                                      .dataProduct
+                                                                      ?.id ??
+                                                                  '',
+                                                              nameProduct: state
+                                                                      .dataProduct
+                                                                      ?.descriptions
+                                                                      ?.name ??
+                                                                  '',
                                                               brandProduct: state
                                                                       .dataProduct
-                                                                      ?.brandId ??
+                                                                      ?.brand
+                                                                      ?.id ??
                                                                   '',
                                                               imageProduct: state
                                                                       .dataProduct
                                                                       ?.image ??
                                                                   '',
-                                                              priceProduct: state
-                                                                      .dataProduct
-                                                                      ?.price ??
-                                                                  '',
-                                                              description: state
-                                                                      .dataProduct
-                                                                      ?.descriptions?[1]
-                                                                      .description ??
-                                                                  '');
+                                                              priceProduct:
+                                                                  state.dataProduct!.price!.price != null
+                                                                      ? state
+                                                                          .dataProduct!
+                                                                          .price!
+                                                                          .price
+                                                                          .toString()
+                                                                      : '',
+                                                              description: state.dataProduct?.descriptions?.description ?? '');
                                                     },
                                                     child: Container(
                                                       height: 36.h,
@@ -1859,20 +1880,24 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                             state.checkProductAttributes
                                 ? _showPopupAndReset(context, state)
                                 : bloc.onAddItemToCart(
-                                    quantity: 1,
+                                    quantity: state.currentCounter ?? 0,
                                     idProduct: state.dataProduct?.id ?? '',
-                                    nameProduct: state.dataProduct
-                                            ?.descriptions?[0].name ??
-                                        '',
+                                    nameProduct:
+                                        state.dataProduct?.descriptions?.name ??
+                                            '',
                                     brandProduct:
-                                        state.dataProduct?.brandId ?? '',
+                                        state.dataProduct?.brand?.id ?? '',
                                     imageProduct:
                                         state.dataProduct?.image ?? '',
                                     priceProduct:
-                                        state.dataProduct?.price ?? '',
-                                    description: state.dataProduct
-                                            ?.descriptions?[1].description ??
+                                        state.dataProduct!.price!.price != null
+                                            ? state.dataProduct!.price!.price
+                                                .toString()
+                                            : '',
+                                    description: state.dataProduct?.descriptions
+                                            ?.description ??
                                         '');
+                            ;
                           },
                         );
                       },

@@ -1,8 +1,9 @@
 import 'package:haruviet/api/services/products/product_services.dart';
-import 'package:haruviet/data/reponsitory/product/models/list_product/list_product.dart';
+import 'package:haruviet/data/reponsitory/product/models/data_list_product/list_product.dart';
 import 'package:flutter/foundation.dart';
 
-import 'models/list_product/data_product_detail.dart';
+import 'models/data_product_detail_response/data_product_detail_response.dart';
+import 'models/data_search_default_response/search_default_response.dart';
 
 class ProductRepository {
   final _productService = ProductService();
@@ -24,19 +25,36 @@ class ProductRepository {
     return ListProduct();
   }
 
-  Future<DataProductDetail> getProductDetailsRP(
+  Future<DataProductDetailResponse> getProductDetailsRP(
       {required String idProduct}) async {
     try {
       final response = await _productService.getProductDetailsSV(
         idProduct: idProduct,
       );
-      final result = DataProductDetail.fromJson(response.data);
+      final result = DataProductDetailResponse.fromJson(response.data);
       return result;
     } catch (error, statckTrace) {
       if (kDebugMode) {
         print("$error + $statckTrace");
       }
     }
-    return DataProductDetail();
+    return DataProductDetailResponse();
+  }
+
+  // search
+  Future<SearchDefaultResponse> searchDefaultRP(
+      {required String keyword}) async {
+    try {
+      final response = await _productService.searchDefaultSV(
+        keyword: keyword,
+      );
+      final result = SearchDefaultResponse.fromJson(response.data);
+      return result;
+    } catch (error, statckTrace) {
+      if (kDebugMode) {
+        print("$error + $statckTrace");
+      }
+    }
+    return SearchDefaultResponse();
   }
 }

@@ -1,5 +1,3 @@
-import 'package:haruviet/component/header/category_header_item.dart';
-import 'package:haruviet/component/header/header_item.dart';
 import 'package:haruviet/component/input/search_bar.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/spaces.dart';
@@ -73,15 +71,17 @@ class _CategoryChildPageState extends State<CategoryChildPage> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          FilterCategoryList(
-            statusSelected: 4,
-            onSelect: () {},
-          ),
+          // FilterCategoryList(
+
+          //   statusSelected: 4,
+          //   onSelect: () {},
+          // ),
           // Divider(),
-          FilterProductList(
-            statusSelected: 2,
-            onSelect: () {},
-          ),
+          // wating for check it
+          // FilterProductList(
+          //   statusSelected: 2,
+          //   onSelect: () {},
+          // ),
           checkIsChangeListItem
               ? Expanded(
                   child: SingleChildScrollView(

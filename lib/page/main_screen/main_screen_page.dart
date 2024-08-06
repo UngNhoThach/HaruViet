@@ -37,29 +37,50 @@ class MainScreenPage extends StatefulWidget {
 
 class _MainScreenPageState extends State<MainScreenPage> {
   // variables and functions
+  FocusNode focusNode = FocusNode();
+  TextEditingController searchController = TextEditingController();
+  bool isFocused = false;
+
   late MainScreenBloc bloc;
   late PersistentTabController _controller;
   String keywordText = '';
-  bool _onTapWorkPlan = false;
   int screenIndex = 0;
   TextStyle? styleTitles = textTheme.titleMedium
       ?.copyWith(color: colorWhite, fontWeight: FontWeight.bold);
-  late bool _hideNavBar;
 
-  @override
-  void dispose() {
-    // _controller.removeListener(_onTabChanged);
-
-    _controller.dispose();
-
-    super.dispose();
+  void _onFocusChange() {
+    setState(() {
+      // bloc.onChangeSearch();
+      isFocused = focusNode.hasFocus;
+    });
   }
 
   @override
+  void dispose() {
+    focusNode.removeListener(_onFocusChange);
+    _controller.dispose();
+    super.dispose();
+  }
+
+  final List<Widget> _buildScreens = [
+    const HomePage(
+        // firstTabBarScrollController: _firstTabBarScrollController,
+        // secondTabBarScrollController: _secondTabBarScrollController,
+        ),
+    const NotificationTabPage(),
+    CategoryPage(
+      params: CategoryPageParams(isAppBar: false),
+    ),
+    const ProfilePage()
+  ];
+
+  @override
   void initState() {
-    _hideNavBar = false;
+    focusNode.addListener(_onFocusChange);
+
     _controller = PersistentTabController(initialIndex: screenIndex);
     _controller.addListener(_onTabChanged);
+
     super.initState();
     bloc = MainScreenBloc()..getData();
   }
@@ -69,6 +90,27 @@ class _MainScreenPageState extends State<MainScreenPage> {
       screenIndex = _controller.index;
     });
   }
+
+  // void _onItemTapped(int index) {
+  //   setState(() {
+  //     _selectedIndex = index;
+  //   });
+  //   if (index == 0 && _firstTabBarScrollController.hasClients) {
+  //     _firstTabBarScrollController.animateTo(
+  //       0,
+  //       duration: const Duration(milliseconds: 500),
+  //       curve: Curves.easeOut,
+  //     );
+  //   }
+
+  //   if (index == 0 && _secondTabBarScrollController.hasClients) {
+  //     _secondTabBarScrollController.animateTo(
+  //       0,
+  //       duration: const Duration(milliseconds: 500),
+  //       curve: Curves.easeOut,
+  //     );
+  //   }
+  // }
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
     return [
@@ -95,13 +137,6 @@ class _MainScreenPageState extends State<MainScreenPage> {
         activeColorPrimary: colorMain,
         inactiveColorPrimary: colorBlueGray03,
       ),
-      // PersistentBottomNavBarItem(
-      //   iconSize: 24,
-      //   icon: const Icon(Icons.shopping_cart_outlined),
-      //   title: ("Giỏ hàng"),
-      //   activeColorPrimary: colorMain,
-      //   inactiveColorPrimary: colorBlueGray03,
-      // ),
       PersistentBottomNavBarItem(
         iconSize: 24,
         icon: const Icon(Icons.person),
@@ -111,18 +146,6 @@ class _MainScreenPageState extends State<MainScreenPage> {
       ),
     ];
   }
-
-  final List<Widget> _buildScreens = [
-    const HomePage(),
-    const NotificationTabPage(),
-    CategoryPage(
-      params: CategoryPageParams(isAppBar: false),
-    ),
-    // CartPage(
-    //   params: CartPageParams(isAppBar: false),
-    // ),
-    const ProfilePage()
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -145,6 +168,7 @@ class _MainScreenPageState extends State<MainScreenPage> {
         child: BlocBuilder<MainScreenBloc, MainScreenState>(
             builder: (context, state) {
           return Scaffold(
+            resizeToAvoidBottomInset: false,
             appBar: screenIndex == 0
                 ? AppBar(
                     centerTitle: true,
@@ -250,13 +274,6 @@ class _MainScreenPageState extends State<MainScreenPage> {
                               ),
             drawer: const DrawerListPage(),
             body: PersistentTabView(
-              //  stateManagement: (_controller.index == 3) ? false : true,
-              // onItemSelected: (index) {
-              //   setState(() {
-              //     _controller.index = index;
-              //   });
-              // },
-
               confineInSafeArea: true,
               context,
               controller: _controller,
@@ -265,7 +282,6 @@ class _MainScreenPageState extends State<MainScreenPage> {
               backgroundColor: colorBlueGray01,
               handleAndroidBackButtonPress: true,
               resizeToAvoidBottomInset: true,
-              //   hideNavigationBar: true,
               hideNavigationBarWhenKeyboardShows: true,
               popAllScreensOnTapOfSelectedTab: true,
               popActionScreens: PopActionScreensType.all,
@@ -274,8 +290,7 @@ class _MainScreenPageState extends State<MainScreenPage> {
                 curve: Curves.bounceInOut,
               ),
               navBarStyle: NavBarStyle.style6,
-              hideNavigationBar: _hideNavBar,
-
+              hideNavigationBar: isFocused,
               selectedTabScreenContext: (context) {
                 context = context;
               },
@@ -289,10 +304,11 @@ class _MainScreenPageState extends State<MainScreenPage> {
   Widget _buildSearchField() {
     return AppSearchBar(
       hintText: 'Tìm kiếm theo tên',
+      focusNode: focusNode,
+      controller: searchController,
       onChanged: (keyword) {
         setState(() {
           keywordText = keyword;
-          _onTapWorkPlan = !_onTapWorkPlan;
         });
       },
     );

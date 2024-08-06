@@ -1,14 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/widgets.dart';
 import 'package:haruviet/component/error/not_found.dart';
 import 'package:haruviet/component/shimer/image_product_shimer.dart';
 import 'package:haruviet/data/data_local/user_bloc.dart';
-import 'package:haruviet/data/reponsitory/product/models/list_product/data_product/data_product.dart';
+import 'package:haruviet/data/reponsitory/product/models/data_list_product/data_product_list.dart';
 import 'package:haruviet/database_local/product/models/count_model.dart';
 import 'package:haruviet/database_local/products_recommendation/id_product_recommendation_database.dart';
 import 'package:haruviet/database_local/products_recommendation/models/id_products_recommendation_model.dart';
 import 'package:haruviet/database_local/products_recommendation/models/products_recommendation_model.dart';
-import 'package:haruviet/database_local/products_recommendation/products_recommendation_database.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/const.dart';
 import 'package:haruviet/helper/spaces.dart';
@@ -29,13 +27,20 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  // final ScrollController firstTabBarScrollController;
+  // final ScrollController secondTabBarScrollController;
+
+  const HomePage({
+    super.key,
+    // required this.firstTabBarScrollController,
+    // required this.secondTabBarScrollController,
+  });
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   // variables and functions
   late String domain;
   final IdProductRecommendationDatabase getIdProductRecommendation =
@@ -43,9 +48,13 @@ class _HomePageState extends State<HomePage> {
   late HomeBloc bloc;
   final PagingController<int, DataProduct> _pagingController =
       PagingController(firstPageKey: startPage, invisibleItemsThreshold: 3);
+  late TabController _tabController;
+
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+
     bloc = HomeBloc()..getData();
     _pagingController.addPageRequestListener((pageKey) {
       if (pageKey != startPage) {
@@ -58,6 +67,8 @@ class _HomePageState extends State<HomePage> {
   @override
   void dispose() {
     _pagingController.dispose();
+    _tabController.dispose();
+
     super.dispose();
   }
 
@@ -86,27 +97,11 @@ class _HomePageState extends State<HomePage> {
               }
             },
           ),
-          // BlocListener<HomeBloc, HomeState>(
-          //   listenWhen: (previous, current) =>
-          //       previous.productListLocal != current.productListLocal,
-          //   listener: (context, state) {
-          //     if (state.currentPage == startPage) {
-          //       _pagingController.refresh();
-          //     }
-          //     if (state.canLoadMore) {
-          //       _pagingController.appendPage(
-          //         state.productListLocal ?? [],
-          //         state.currentPage + 1,
-          //       );
-          //     } else {
-          //       _pagingController.appendLastPage(state.newDataList ?? []);
-          //     }
-          //   },
-          // ),
         ],
         child: BlocBuilder<HomeBloc, HomeState>(
           builder: (context, state) {
             return Scaffold(
+              resizeToAvoidBottomInset: false,
               body: RefreshIndicator(
                 onRefresh: () async {
                   _pagingController.refresh();
@@ -145,7 +140,7 @@ class _HomePageState extends State<HomePage> {
                                                 title: "Sản phẩm mới xem",
                                                 isTimer: false),
                                             spaceH4,
-                                            _listdataLocal(context, state)
+                                            //                _listdataLocal(context, state)
                                           ],
                                         )
                                       : space0,
@@ -200,21 +195,21 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _listdataLocal(BuildContext context, HomeState state) {
-    return SizedBox(
-      height: 210.h, // Define a fixed height for the ListView
-      child: ListView.separated(
-        separatorBuilder: (context, index) => spaceW12,
-        shrinkWrap: true,
-        scrollDirection: Axis.horizontal,
-        itemCount: state.productListLocal.length,
-        itemBuilder: (context, index) {
-          return _itemDataLocal(context, data: state.productListLocal[index]);
-        },
-        physics: const BouncingScrollPhysics(),
-      ),
-    );
-  }
+  // Widget _listdataLocal(BuildContext context, HomeState state) {
+  //   return SizedBox(
+  //     height: 210.h, // Define a fixed height for the ListView
+  //     child: ListView.separated(
+  //       separatorBuilder: (context, index) => spaceW12,
+  //       shrinkWrap: true,
+  //       scrollDirection: Axis.horizontal,
+  //       itemCount: state.productListLocal.length,
+  //       itemBuilder: (context, index) {
+  //         return _itemDataLocal(context, data: state.productListLocal[index]);
+  //       },
+  //       physics: const BouncingScrollPhysics(),
+  //     ),
+  //   );
+  // }
 
   Widget _flashDealsProductGridView(BuildContext context) {
     return CustomScrollView(
@@ -228,9 +223,10 @@ class _HomePageState extends State<HomePage> {
             crossAxisCount: 2, // Số cột là 2
             mainAxisSpacing: 12.0,
             crossAxisSpacing: 8.0,
-            childAspectRatio: 0.8,
+            childAspectRatio: 0.78,
           ),
           builderDelegate: PagedChildBuilderDelegate<DataProduct>(
+            noItemsFoundIndicatorBuilder: _empty,
             itemBuilder: (context, item, index) =>
                 _itemFlashSale(context, index: index, data: item),
           ),
@@ -239,306 +235,307 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _itemDataLocal(
-    BuildContext context, {
-    required ProductRecommendationModel data,
-  }) {
-    return Row(
-      children: [
-        GestureDetector(
-          onTap: () async {
-            // final ProductRecommendationDatabase test =
-            //     ProductRecommendationDatabase();
-            getIdProductRecommendation
-                .insertProduct(IdProductRecommendationModel(id: data.id));
-            ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Product inserted successfully')));
-            routeService.pushNamed(Routes.productDetailPage,
-                arguments: ProductDetailParams(idProduct: data.id ?? ''));
-          },
-          child: Stack(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                decoration: BoxDecoration(
-                  color: colorWhite,
-                  boxShadow: const [
-                    BoxShadow(
-                      blurRadius: 4,
-                      color: Color(0x3600000F),
-                      offset: Offset(0, 2),
-                    )
-                  ],
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.46,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(0.r),
-                                bottomRight: Radius.circular(0.r),
-                                topLeft: Radius.circular(8.r),
-                                topRight: Radius.circular(8.r),
-                              ),
-                              child: CachedNetworkImage(
-                                fadeOutDuration: const Duration(seconds: 3),
-                                //  const Duration(seconds: 3),
-                                imageUrl: '$domain${data.image}',
-                                width: 72.w,
-                                height: 72.h,
-                                placeholder: (context, url) =>
-                                    ImageProductShimer(
-                                  width: 72.w,
-                                  height: 72.h,
-                                ), // Use the custom shimmer component
-                                errorWidget: (context, url, error) =>
-                                    const Icon(Icons.error),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Container(
-                        padding:
-                            const EdgeInsets.only(top: 16, left: 4, right: 4),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  data.promotionPrice?.pricePromotion?.price ==
-                                          0
-                                      ? '${data.price.price} \$'
-                                      : '${data.promotionPrice?.pricePromotion?.price} \$',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelLarge
-                                      ?.copyWith(
-                                        color: colorMain,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                ),
-                                data.promotionPrice?.pricePromotion?.price != 0
-                                    ? Text(
-                                        '${data.price.price} \$',
-                                        style: textTheme.bodySmall?.copyWith(
-                                          color: colorItemCover,
-                                          fontWeight: FontWeight.bold,
-                                          decoration:
-                                              TextDecoration.lineThrough,
-                                        ),
-                                      )
-                                    : space0,
-                              ],
-                            ),
-                            spaceH4,
-                            Text(
-                              'Thương hiệu: Samsung',
-                              style: textTheme.labelMedium?.copyWith(
-                                color: colorSecondary04,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            spaceH4,
-                            (data.descriptions.isEmpty)
-                                ? Text(
-                                    '',
-                                    style: textTheme.labelMedium?.copyWith(
-                                      color: colorBlackTileItem,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  )
-                                : Text(
-                                    data.descriptions[0].name ?? '',
-                                    style: textTheme.labelMedium?.copyWith(
-                                      color: colorBlackTileItem,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                            spaceH4,
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      width: 42.w,
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(8.r),
-                                        color: colorMainCover,
-                                      ),
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 4.w, vertical: 2.h),
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            '4.8',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .labelSmall
-                                                ?.copyWith(
-                                                  color: colorBackgroundWhite,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                          ),
-                                          spaceW2,
-                                          Icon(
-                                            Icons.star,
-                                            size: 12.sp,
-                                            color: colorBackgroundWhite,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    spaceW2,
-                                    Text(
-                                      '(120)',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelSmall
-                                          ?.copyWith(
-                                            color: colorBlueGray02,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.shopping_cart_outlined,
-                                      color: colorBlueGray02,
-                                      size: 12.sp,
-                                    ),
-                                    spaceW2,
-                                    Text(
-                                      '${data.sold} mua',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelSmall
-                                          ?.copyWith(
-                                            color: colorBlueGray02,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            spaceH6,
-                            (data.promotionPrice?.dateEnd != null &&
-                                    data.promotionPrice?.dateEnd != '')
-                                ? Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Expanded(
-                                        child: Container(
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(8.r),
-                                                color: colorMainCover),
-                                            //
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 4.w, vertical: 2),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 8),
-                                              child: CountdownTimer(
-                                                  dateStart: data.promotionPrice
-                                                          ?.dateStart ??
-                                                      '',
-                                                  dateEnd: data.promotionPrice
-                                                          ?.dateEnd ??
-                                                      ''),
-                                            )),
-                                      ),
-                                      spaceW4,
-                                    ],
-                                  )
-                                : const SizedBox(
-                                    height: 16,
-                                  ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              (data.promotionPrice?.dateEnd != null &&
-                      data.promotionPrice?.dateEnd != '')
-                  ? Positioned(
-                      top: 0,
-                      left: 0,
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 8.w, vertical: 4.h),
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(8.r),
-                            bottomRight: Radius.circular(8.r),
-                          ),
-                        ),
-                        child: Text(
-                          'Flash Sale',
-                          style:
-                              Theme.of(context).textTheme.labelSmall?.copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                        ),
-                      ),
-                    )
-                  : space0,
-              (data.promotionPrice?.pricePromotion?.price != 0)
-                  ? Positioned(
-                      top: 0,
-                      right: 0,
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 8.w, vertical: 4.h),
-                        decoration: BoxDecoration(
-                          color: Colors.yellow,
-                          borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(8.r),
-                            bottomLeft: Radius.circular(8.r),
-                          ),
-                        ),
-                        child: Text(
-                          'Sale ${(((data.price.price ?? 0) - (data.promotionPrice?.pricePromotion?.price ?? 0)) / (data.price?.price ?? 0) * 100).floor()}%',
-                          style:
-                              Theme.of(context).textTheme.labelSmall?.copyWith(
-                                    color: colorBlack,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                        ),
-                      ),
-                    )
-                  : space0,
-            ],
-          ),
-        ),
-      ],
-    );
-  }
+  // Widget _itemDataLocal(
+  //   BuildContext context, {
+  //   required ProductRecommendationModel data,
+  // }) {
+  //   return Row(
+  //     children: [
+  //       GestureDetector(
+  //         onTap: () async {
+  //           // final ProductRecommendationDatabase test =
+  //           //     ProductRecommendationDatabase();
+  //           getIdProductRecommendation
+  //               .insertProduct(IdProductRecommendationModel(id: data.id));
+  //           ScaffoldMessenger.of(context).showSnackBar(
+  //               SnackBar(content: Text('Product inserted successfully')));
+  //           routeService.pushNamed(Routes.productDetailPage,
+  //               arguments: ProductDetailParams(idProduct: data.id ?? ''));
+  //         },
+  //         child: Stack(
+  //           children: [
+  //             Container(
+  //               padding: const EdgeInsets.symmetric(vertical: 12),
+  //               decoration: BoxDecoration(
+  //                 color: colorWhite,
+  //                 boxShadow: const [
+  //                   BoxShadow(
+  //                     blurRadius: 4,
+  //                     color: Color(0x3600000F),
+  //                     offset: Offset(0, 2),
+  //                   )
+  //                 ],
+  //                 borderRadius: BorderRadius.circular(8),
+  //               ),
+  //               child: SizedBox(
+  //                 width: MediaQuery.of(context).size.width * 0.46,
+  //                 child: Column(
+  //                   mainAxisSize: MainAxisSize.min,
+  //                   crossAxisAlignment: CrossAxisAlignment.start,
+  //                   children: [
+  //                     Row(
+  //                       mainAxisSize: MainAxisSize.max,
+  //                       mainAxisAlignment: MainAxisAlignment.center,
+  //                       children: [
+  //                         Expanded(
+  //                           child: ClipRRect(
+  //                             borderRadius: BorderRadius.only(
+  //                               bottomLeft: Radius.circular(0.r),
+  //                               bottomRight: Radius.circular(0.r),
+  //                               topLeft: Radius.circular(8.r),
+  //                               topRight: Radius.circular(8.r),
+  //                             ),
+  //                             child: CachedNetworkImage(
+  //                               fadeOutDuration: const Duration(seconds: 3),
+  //                               //  const Duration(seconds: 3),
+  //                               imageUrl: '$domain${data.image}',
+  //                               width: 72.w,
+  //                               height: 72.h,
+  //                               placeholder: (context, url) =>
+  //                                   ImageProductShimer(
+  //                                 width: 72.w,
+  //                                 height: 72.h,
+  //                               ), // Use the custom shimmer component
+  //                               errorWidget: (context, url, error) =>
+  //                                   const Icon(Icons.error),
+  //                             ),
+  //                           ),
+  //                         ),
+  //                       ],
+  //                     ),
+  //                     Container(
+  //                       padding:
+  //                           const EdgeInsets.only(top: 16, left: 4, right: 4),
+  //                       child: Column(
+  //                         crossAxisAlignment: CrossAxisAlignment.start,
+  //                         children: [
+  //                           Row(
+  //                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                             children: [
+  //                               Text(
+  //                                 data.promotionPrice?.pricePromotion?.price ==
+  //                                         0
+  //                                     ? '${data.price.price} \$'
+  //                                     : '${data.promotionPrice?.pricePromotion?.price} \$',
+  //                                 style: Theme.of(context)
+  //                                     .textTheme
+  //                                     .labelLarge
+  //                                     ?.copyWith(
+  //                                       color: colorMain,
+  //                                       fontWeight: FontWeight.bold,
+  //                                     ),
+  //                               ),
+  //                               data.promotionPrice?.pricePromotion?.price != 0
+  //                                   ? Text(
+  //                                       '${data.price.price} \$',
+  //                                       style: textTheme.bodySmall?.copyWith(
+  //                                         color: colorItemCover,
+  //                                         fontWeight: FontWeight.bold,
+  //                                         decoration:
+  //                                             TextDecoration.lineThrough,
+  //                                       ),
+  //                                     )
+  //                                   : space0,
+  //                             ],
+  //                           ),
+  //                           spaceH4,
+  //                           Text(
+  //                             'Thương hiệu: Samsung',
+  //                             style: textTheme.labelMedium?.copyWith(
+  //                               color: colorSecondary04,
+  //                               fontWeight: FontWeight.w500,
+  //                             ),
+  //                           ),
+  //                           spaceH4,
+  //                           (data.descriptions.isEmpty)
+  //                               ? Text(
+  //                                   '',
+  //                                   style: textTheme.labelMedium?.copyWith(
+  //                                     color: colorBlackTileItem,
+  //                                     fontWeight: FontWeight.w500,
+  //                                   ),
+  //                                 )
+  //                               : Text(
+  //                                   data.descriptions[0].name ?? '',
+  //                                   style: textTheme.labelMedium?.copyWith(
+  //                                     color: colorBlackTileItem,
+  //                                     fontWeight: FontWeight.w500,
+  //                                   ),
+  //                                 ),
+  //                           spaceH4,
+  //                           Row(
+  //                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                             children: [
+  //                               Row(
+  //                                 crossAxisAlignment: CrossAxisAlignment.center,
+  //                                 children: [
+  //                                   Container(
+  //                                     width: 42.w,
+  //                                     decoration: BoxDecoration(
+  //                                       borderRadius:
+  //                                           BorderRadius.circular(8.r),
+  //                                       color: colorMainCover,
+  //                                     ),
+  //                                     padding: EdgeInsets.symmetric(
+  //                                         horizontal: 4.w, vertical: 2.h),
+  //                                     child: Row(
+  //                                       children: [
+  //                                         Text(
+  //                                           '4.8',
+  //                                           style: Theme.of(context)
+  //                                               .textTheme
+  //                                               .labelSmall
+  //                                               ?.copyWith(
+  //                                                 color: colorBackgroundWhite,
+  //                                                 fontWeight: FontWeight.w500,
+  //                                               ),
+  //                                         ),
+  //                                         spaceW2,
+  //                                         Icon(
+  //                                           Icons.star,
+  //                                           size: 12.sp,
+  //                                           color: colorBackgroundWhite,
+  //                                         ),
+  //                                       ],
+  //                                     ),
+  //                                   ),
+  //                                   spaceW2,
+  //                                   Text(
+  //                                     '(120)',
+  //                                     style: Theme.of(context)
+  //                                         .textTheme
+  //                                         .labelSmall
+  //                                         ?.copyWith(
+  //                                           color: colorBlueGray02,
+  //                                           fontWeight: FontWeight.w500,
+  //                                         ),
+  //                                   ),
+  //                                 ],
+  //                               ),
+  //                               Row(
+  //                                 crossAxisAlignment: CrossAxisAlignment.center,
+  //                                 children: [
+  //                                   Icon(
+  //                                     Icons.shopping_cart_outlined,
+  //                                     color: colorBlueGray02,
+  //                                     size: 12.sp,
+  //                                   ),
+  //                                   spaceW2,
+  //                                   Text(
+  //                                     '${data.sold} mua',
+  //                                     style: Theme.of(context)
+  //                                         .textTheme
+  //                                         .labelSmall
+  //                                         ?.copyWith(
+  //                                           color: colorBlueGray02,
+  //                                           fontWeight: FontWeight.w500,
+  //                                         ),
+  //                                   ),
+  //                                 ],
+  //                               ),
+  //                             ],
+  //                           ),
+  //                           spaceH6,
+  //                           (data.promotionPrice?.dateEnd != null &&
+  //                                   data.promotionPrice?.dateEnd != '')
+  //                               ? Row(
+  //                                   mainAxisAlignment:
+  //                                       MainAxisAlignment.spaceBetween,
+  //                                   mainAxisSize: MainAxisSize.min,
+  //                                   children: [
+  //                                     Expanded(
+  //                                       child: Container(
+  //                                           decoration: BoxDecoration(
+  //                                               borderRadius:
+  //                                                   BorderRadius.circular(8.r),
+  //                                               color: colorMainCover),
+  //                                           //
+  //                                           padding: EdgeInsets.symmetric(
+  //                                               horizontal: 4.w, vertical: 2),
+  //                                           child: Padding(
+  //                                             padding:
+  //                                                 const EdgeInsets.symmetric(
+  //                                                     horizontal: 8),
+  //                                             child: CountdownTimer(
+  //                                                 dateStart: data.promotionPrice
+  //                                                         ?.dateStart ??
+  //                                                     '',
+  //                                                 dateEnd: data.promotionPrice
+  //                                                         ?.dateEnd ??
+  //                                                     ''),
+  //                                           )),
+  //                                     ),
+  //                                     spaceW4,
+  //                                   ],
+  //                                 )
+  //                               : const SizedBox(
+  //                                   height: 16,
+  //                                 ),
+  //                         ],
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ),
+  //             ),
+  //             (data.promotionPrice?.dateEnd != null &&
+  //                     data.promotionPrice?.dateEnd != '')
+  //                 ? Positioned(
+  //                     top: 0,
+  //                     left: 0,
+  //                     child: Container(
+  //                       padding: EdgeInsets.symmetric(
+  //                           horizontal: 8.w, vertical: 4.h),
+  //                       decoration: BoxDecoration(
+  //                         color: Colors.red,
+  //                         borderRadius: BorderRadius.only(
+  //                           topLeft: Radius.circular(8.r),
+  //                           bottomRight: Radius.circular(8.r),
+  //                         ),
+  //                       ),
+  //                       child: Text(
+  //                         'Flash Sale',
+  //                         style:
+  //                             Theme.of(context).textTheme.labelSmall?.copyWith(
+  //                                   color: Colors.white,
+  //                                   fontWeight: FontWeight.bold,
+  //                                 ),
+  //                       ),
+  //                     ),
+  //                   )
+  //                 : space0,
+  //             (data.promotionPrice?.percent != 0.0 &&
+  //                     data.promotionPrice?.percent != null)
+  //                 ? Positioned(
+  //                     top: 0,
+  //                     right: 0,
+  //                     child: Container(
+  //                       padding: EdgeInsets.symmetric(
+  //                           horizontal: 8.w, vertical: 4.h),
+  //                       decoration: BoxDecoration(
+  //                         color: Colors.yellow,
+  //                         borderRadius: BorderRadius.only(
+  //                           topRight: Radius.circular(8.r),
+  //                           bottomLeft: Radius.circular(8.r),
+  //                         ),
+  //                       ),
+  //                       child: Text(
+  //                         '- ${(bloc.removeZeroDouble(value: data.promotionPrice!.percent!))}%',
+  //                         style:
+  //                             Theme.of(context).textTheme.labelSmall?.copyWith(
+  //                                   color: colorBlack,
+  //                                   fontWeight: FontWeight.bold,
+  //                                 ),
+  //                       ),
+  //                     ),
+  //                   )
+  //                 : space0,
+  //           ],
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget _itemFlashSale(BuildContext context,
       {required DataProduct data, required int index}) {
@@ -623,7 +620,7 @@ class _HomePageState extends State<HomePage> {
                                 Text(
                                   data.promotionPrice == null
                                       ? '${data.price?.price} \$'
-                                      : '${data.promotionPrice?.pricePromotion?.price} \$',
+                                      : '${data.promotionPrice?.pricePromotion?.priceStr}',
                                   style: Theme.of(context)
                                       .textTheme
                                       .labelLarge
@@ -634,7 +631,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 data.promotionPrice != null
                                     ? Text(
-                                        '${data.price?.price} \$',
+                                        '${data.price?.priceStr}',
                                         style: textTheme.bodySmall?.copyWith(
                                           color: colorItemCover,
                                           fontWeight: FontWeight.bold,
@@ -859,7 +856,8 @@ class _HomePageState extends State<HomePage> {
                       ),
                     )
                   : space0,
-              data.promotionPrice?.pricePromotion?.price != null
+              (data.promotionPrice?.percent != 0.0 &&
+                      data.promotionPrice?.percent != null)
                   ? Positioned(
                       top: 0,
                       right: 0,
@@ -874,7 +872,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                         child: Text(
-                          'Sale ${(((data.price?.price ?? 0) - (data.promotionPrice?.pricePromotion?.price ?? 0)) / (data.price?.price ?? 0) * 100).floor()}%',
+                          '- ${(bloc.removeZeroDouble(value: data.promotionPrice!.percent!))}%',
                           style:
                               Theme.of(context).textTheme.labelSmall?.copyWith(
                                     color: colorBlack,
@@ -968,27 +966,6 @@ Widget _empty(BuildContext context) {
   return const DidntFound();
 }
 
-// Widget _shimmer(BuildContext context) {
-//   return Expanded(
-//     child: ListView.separated(
-//       shrinkWrap: true,
-//       physics: const NeverScrollableScrollPhysics(),
-//       padding: const EdgeInsets.all(16),
-//       itemBuilder: (context, index) => ShimmerEffect(
-//         child: Container(
-//           height: 100.h,
-//           decoration: BoxDecoration(
-//             color: context.appColor.colorWhite,
-//             borderRadius: BorderRadius.circular(16.0),
-//           ),
-//         ),
-//       ),
-//       separatorBuilder: (context, index) => spaceH12,
-//       itemCount: 4,
-//     ),
-//   );
-// }
-
 Widget _topCategoriesHeader(
   BuildContext context, {
   required final String title,
@@ -1014,7 +991,7 @@ Widget _topCategoriesHeader(
             style: Theme.of(context)
                 .textTheme
                 .titleMedium
-                ?.copyWith(color: Colors.deepOrange.withOpacity(0.7)),
+                ?.copyWith(color: colorMainCover),
           ),
         )
       ],

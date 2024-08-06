@@ -47,7 +47,7 @@ abstract class _$ProductDetailStateCWProxy {
 
   ProductDetailState canLoadMore(bool canLoadMore);
 
-  ProductDetailState dataProduct(DataProductDetail? dataProduct);
+  ProductDetailState dataProduct(DataProductDetailResponse? dataProduct);
 
   ProductDetailState userInfoLogin(UserInfoLogin? userInfoLogin);
 
@@ -78,7 +78,7 @@ abstract class _$ProductDetailStateCWProxy {
     List<String>? imageUrls,
     List<Products>? productsList,
     bool? canLoadMore,
-    DataProductDetail? dataProduct,
+    DataProductDetailResponse? dataProduct,
     UserInfoLogin? userInfoLogin,
   });
 }
@@ -167,7 +167,7 @@ class _$ProductDetailStateCWProxyImpl implements _$ProductDetailStateCWProxy {
       this(canLoadMore: canLoadMore);
 
   @override
-  ProductDetailState dataProduct(DataProductDetail? dataProduct) =>
+  ProductDetailState dataProduct(DataProductDetailResponse? dataProduct) =>
       this(dataProduct: dataProduct);
 
   @override
@@ -301,7 +301,7 @@ class _$ProductDetailStateCWProxyImpl implements _$ProductDetailStateCWProxy {
       dataProduct: dataProduct == const $CopyWithPlaceholder()
           ? _value.dataProduct
           // ignore: cast_nullable_to_non_nullable
-          : dataProduct as DataProductDetail?,
+          : dataProduct as DataProductDetailResponse?,
       userInfoLogin: userInfoLogin == const $CopyWithPlaceholder()
           ? _value.userInfoLogin
           // ignore: cast_nullable_to_non_nullable

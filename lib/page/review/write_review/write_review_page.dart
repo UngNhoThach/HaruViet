@@ -121,7 +121,7 @@ class _WriteReviewPageState extends State<WriteReviewPage> {
                                       Text(
                                         maxLines: 3,
                                         overflow: TextOverflow.ellipsis,
-                                        'Tủ lạnh Samsung Inverter 599 lít Tủ lạnh Samsung Inverter 599 lít Tủ lạnh Samsung Inverter 599 lít Tủ lạnh Samsung Inverter 599 lít',
+                                        'Tủ lạnh Samsung Inverter 599 lít ',
                                         style: Theme.of(context)
                                             .textTheme
                                             .titleSmall

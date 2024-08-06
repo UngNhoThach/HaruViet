@@ -30,6 +30,8 @@ class ProductApi {
       "${SettingApi.rootDomain}/api/v1/shop/product?page[size]={size}&page[number]={totalproduct}";
   static const getProductDetails =
       "${SettingApi.rootDomain}/api/v1/shop/product/{idProduct}";
+  static const searchDefault =
+      "${SettingApi.rootDomain}/suggestions?q={keyword}";
 }
 
 class AddressApi {

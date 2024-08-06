@@ -1,8 +1,7 @@
 import 'package:haruviet/base/base_bloc.dart';
 import 'package:haruviet/data/enum.dart';
 import 'package:haruviet/data/local/user_preferences.dart';
-import 'package:haruviet/data/reponsitory/product/models/list_product/data_product_detail.dart';
-import 'package:haruviet/data/reponsitory/product/models/list_product/data_product/data_product.dart';
+import 'package:haruviet/data/reponsitory/product/models/data_list_product/data_product_list.dart';
 import 'package:haruviet/data/reponsitory/product/product_repository.dart';
 import 'package:haruviet/database_local/product/cart_provider.dart';
 import 'package:haruviet/database_local/product/models/cart_model.dart';
@@ -50,19 +49,19 @@ class ProductDetailBloc extends BaseBloc<ProductDetailState> {
       }
       int totalItemInCart = await CartDatabase.instance.getCount();
       productsList = (await CartDatabase.instance.readAllItems());
-      final checkAttributes = (productDetail.attributes == null) ||
-              (productDetail.attributes!.isEmpty)
-          ? false
-          : true;
+      // final checkAttributes = (productDetail.attributes == null) ||
+      //         (productDetail.attributes!.isEmpty)
+      //     ? false
+      //     : true;
 
       emit(state.copyWith(
-        userInfoLogin: userInfoLogin,
-        dataProduct: productDetail,
-        totalProductInCart: totalItemInCart,
-        productsList: productsList,
-        imageUrls: imageUrls,
-        checkProductAttributes: checkAttributes,
-      ));
+          userInfoLogin: userInfoLogin,
+          dataProduct: productDetail,
+          totalProductInCart: totalItemInCart,
+          productsList: productsList,
+          imageUrls: imageUrls,
+          checkProductAttributes: false // checkAttributes,
+          ));
     } catch (error, statckTrace) {
       if (kDebugMode) {
         print("$error + $statckTrace");

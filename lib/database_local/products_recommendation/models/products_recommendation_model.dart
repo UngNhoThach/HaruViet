@@ -1,14 +1,14 @@
 import 'dart:convert';
 
-import 'package:haruviet/data/reponsitory/product/models/list_product/data_product/brand.dart';
-import 'package:haruviet/data/reponsitory/product/models/list_product/data_product/category.dart';
-import 'package:haruviet/data/reponsitory/product/models/list_product/data_product/data_product.dart';
-import 'package:haruviet/data/reponsitory/product/models/list_product/data_product/description.dart';
-import 'package:haruviet/data/reponsitory/product/models/list_product/data_product/price.dart';
-import 'package:haruviet/data/reponsitory/product/models/list_product/data_product/price_promotion.dart';
-import 'package:haruviet/data/reponsitory/product/models/list_product/data_product/promotion_price.dart';
-import 'package:haruviet/data/reponsitory/product/models/list_product/data_product/supplier.dart';
-import 'package:haruviet/data/reponsitory/product/models/list_product/images_product.dart';
+import 'package:haruviet/data/reponsitory/product/models/brand.dart';
+import 'package:haruviet/data/reponsitory/product/models/category.dart';
+import 'package:haruviet/data/reponsitory/product/models/data_list_product/data_product_list.dart';
+import 'package:haruviet/data/reponsitory/product/models/data_list_product/product_promotion_price_list.dart';
+import 'package:haruviet/data/reponsitory/product/models/price.dart';
+import 'package:haruviet/data/reponsitory/product/models/data_list_product/price_promotion_list.dart';
+import 'package:haruviet/data/reponsitory/product/models/product_promotion_price.dart';
+import 'package:haruviet/data/reponsitory/product/models/supplier.dart';
+import 'package:haruviet/data/reponsitory/product/models/images_product.dart';
 
 const String productsTable = 'products';
 
@@ -32,10 +32,10 @@ class ProductRecommendationModel {
   final int view;
   final String? dateLastview;
   final String? dateAvailable;
-  final List<Description> descriptions;
+  // final List<Description> descriptions;
   final List<Category> categories;
   final List<ImagesProduct> images;
-  final PromotionPrice? promotionPrice;
+  final ProductPromotionPriceList? promotionPrice;
 
   ProductRecommendationModel({
     required this.id,
@@ -57,7 +57,7 @@ class ProductRecommendationModel {
     required this.view,
     this.dateLastview,
     this.dateAvailable,
-    required this.descriptions,
+    //  required this.descriptions,
     required this.categories,
     required this.images,
     this.promotionPrice,
@@ -84,7 +84,7 @@ class ProductRecommendationModel {
       'view': view,
       'dateLastview': dateLastview,
       'dateAvailable': dateAvailable,
-      'descriptions': json.encode(descriptions.map((d) => d.toJson()).toList()),
+      //  'descriptions': json.encode(descriptions.map((d) => d.toJson()).toList()),
       'categories': json.encode(categories.map((c) => c.toJson()).toList()),
       'images': json.encode(images.map((c) => c.toJson()).toList()),
       'promotionPrice': json.encode(promotionPrice?.toJson()),
@@ -112,14 +112,14 @@ class ProductRecommendationModel {
       view: map['view'],
       dateLastview: map['dateLastview'],
       dateAvailable: map['dateAvailable'],
-      descriptions: List<Description>.from(
-          json.decode(map['descriptions']).map((x) => Description.fromJson(x))),
+      // descriptions: List<Description>.from(
+      //     json.decode(map['descriptions']).map((x) => Description.fromJson(x))),
       categories: List<Category>.from(
           json.decode(map['categories']).map((x) => Category.fromJson(x))),
       images: List<ImagesProduct>.from(json.decode(map['images']).map((x) =>
           ImagesProduct.fromJson(
               x))), // List<ImagesProduct>.from(json.decode(map['images'])),
-      promotionPrice: PromotionPrice.fromJson(
+      promotionPrice: ProductPromotionPriceList.fromJson(
           json.decode(map['promotionPrice'])), // map['promotionPrice'],
     );
   }
@@ -146,16 +146,16 @@ class ProductRecommendationModel {
         view: product.view ?? 0,
         dateLastview: product.dateLastview,
         dateAvailable: product.dateAvailable,
-        descriptions: product.descriptions ?? [],
+        //       descriptions: product.descriptions ?? [],
         categories: product.categories ?? [],
         images: product.images ?? [],
         promotionPrice: product.promotionPrice ??
-            PromotionPrice(
+            ProductPromotionPriceList(
                 dateEnd: '',
                 dateStart: '',
                 pricePromotion: PricePromotion(
                     currency: '', exchangeRate: 0, price: 0, priceStr: ''),
-                statusPromotion: 0));
+                percent: 0));
   }
 
   DataProduct toDataProduct() {
@@ -179,7 +179,7 @@ class ProductRecommendationModel {
       view: view,
       dateLastview: dateLastview,
       dateAvailable: dateAvailable,
-      descriptions: descriptions,
+      //     descriptions: descriptions,
       categories: categories,
       images: images,
       promotionPrice: promotionPrice,

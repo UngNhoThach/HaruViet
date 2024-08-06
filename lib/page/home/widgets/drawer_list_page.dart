@@ -132,36 +132,28 @@ class _DrawListState extends State<DrawerListPage>
                   context,
                   title: 'Lịch sử mua hàng',
                   icon: Icons.dashboard,
-                  onTap: () {
-                    routeService.pushNamed(Routes.categoryPage);
-                  },
+                  onTap: () {},
                 ),
                 const Divider(),
                 _itemDrawer(
                   context,
                   title: 'Chính sách đổi trả',
                   icon: Icons.repeat_rounded,
-                  onTap: () {
-                    routeService.pushNamed(Routes.categoryPage);
-                  },
+                  onTap: () {},
                 ),
                 const Divider(),
                 _itemDrawer(
                   context,
                   title: 'Hỏi đáp',
                   icon: Icons.question_mark,
-                  onTap: () {
-                    routeService.pushNamed(Routes.categoryPage);
-                  },
+                  onTap: () {},
                 ),
                 const Divider(),
                 _itemDrawer(
                   context,
                   title: 'Lịch sử mua hàng',
                   icon: Icons.history,
-                  onTap: () {
-                    routeService.pushNamed(Routes.historyPaymentPage);
-                  },
+                  onTap: () {},
                 ),
                 const Divider(),
                 _itemDrawer(

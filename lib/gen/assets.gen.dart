@@ -32,6 +32,26 @@ class $AssetsIconsGen {
   AssetGenImage get icPayment =>
       const AssetGenImage('assets/icons/ic_payment.png');
 
+  /// File path: assets/icons/icon_drawer.png
+  AssetGenImage get iconDrawer =>
+      const AssetGenImage('assets/icons/icon_drawer.png');
+
+  /// File path: assets/icons/icon_home.png
+  AssetGenImage get iconHome =>
+      const AssetGenImage('assets/icons/icon_home.png');
+
+  /// File path: assets/icons/icon_home_active.png
+  AssetGenImage get iconHomeActive =>
+      const AssetGenImage('assets/icons/icon_home_active.png');
+
+  /// File path: assets/icons/icon_setting.png
+  AssetGenImage get iconSetting =>
+      const AssetGenImage('assets/icons/icon_setting.png');
+
+  /// File path: assets/icons/icon_setting_active.png
+  AssetGenImage get iconSettingActive =>
+      const AssetGenImage('assets/icons/icon_setting_active.png');
+
   /// File path: assets/icons/icon_share.png
   AssetGenImage get iconShare =>
       const AssetGenImage('assets/icons/icon_share.png');
@@ -43,6 +63,11 @@ class $AssetsIconsGen {
         icLogout,
         icNotification,
         icPayment,
+        iconDrawer,
+        iconHome,
+        iconHomeActive,
+        iconSetting,
+        iconSettingActive,
         iconShare
       ];
 }

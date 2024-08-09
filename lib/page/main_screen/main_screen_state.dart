@@ -21,12 +21,14 @@ class MainScreenState extends BaseState {
   final String? nameNavBar;
   final String? totalNotiMessage;
   final String? totalNotiNewPost;
+  final bool hideBottomBar;
 
   const MainScreenState({
     ViewState viewState = ViewState.loaded,
     this.dataUser,
     this.accessToken,
     this.totalItemInCart,
+    this.hideBottomBar = false,
     String errorMsg = '',
     this.employeeId = '',
     this.fullName = '',

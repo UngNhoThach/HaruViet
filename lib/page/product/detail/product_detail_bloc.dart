@@ -1,3 +1,4 @@
+import 'package:haruviet/api/services/products/models/get_list_product_request.dart';
 import 'package:haruviet/base/base_bloc.dart';
 import 'package:haruviet/data/enum.dart';
 import 'package:haruviet/data/local/user_preferences.dart';
@@ -96,7 +97,8 @@ class ProductDetailBloc extends BaseBloc<ProductDetailState> {
         );
       }
       final productList = await _productRepository.getListProductsRP(
-          size: state.limit.toString(), totalproduct: page.toString());
+        request: GetListProductRequest(paegNumber: page, pageSize: state.limit),
+      );
 
       final datatList = List<DataProduct>.from(state.datatList)
         ..addAll(productList.data ?? []);

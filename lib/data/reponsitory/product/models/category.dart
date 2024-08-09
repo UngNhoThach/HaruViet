@@ -8,7 +8,7 @@ class Category {
   String? id;
   String? image;
   String? alias;
-  List<ProductDescription>? descriptions;
+  ProductDescription? descriptions;
 
   Category({this.id, this.image, this.alias, this.descriptions});
 

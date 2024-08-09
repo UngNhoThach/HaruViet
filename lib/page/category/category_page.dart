@@ -1,13 +1,19 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:haruviet/component/error/error_internet.dart';
-import 'package:haruviet/component/input/search_bar.dart';
+import 'package:haruviet/data/data_local/user_bloc.dart';
 import 'package:haruviet/data/reponsitory/category/item_category_response.dart';
 import 'package:haruviet/helper/colors.dart';
-import 'package:haruviet/page/category/models/category_paga_params.dart';
-import 'package:haruviet/resources/routes.dart';
+import 'package:haruviet/page/category/category_bloc.dart';
+import 'package:haruviet/page/category/category_state.dart';
+import 'package:haruviet/page/category/widgets/category_paga_params.dart';
+import 'package:haruviet/page/home/widgets/drawer_list_page.dart';
+import 'package:haruviet/search/search_product_category_bloc.dart';
+import 'package:haruviet/search/search_product_category_state.dart';
+import 'package:haruviet/search/widgets/search_widgets.dart';
 import 'package:haruviet/theme/typography.dart';
-import 'package:haruviet/utils/commons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:badges/badges.dart' as badges;
 
 class CategoryPage extends StatefulWidget {
   const CategoryPage({super.key, required this.params});
@@ -19,6 +25,8 @@ class CategoryPage extends StatefulWidget {
 
 class _CategoryPageState extends State<CategoryPage> {
   // variables and functions
+  FocusNode focusNode = FocusNode();
+  final SearchWidgets searchWidgets = SearchWidgets();
 
   List<ItemCategoryResponse> listCategories() {
     return [
@@ -49,150 +57,156 @@ class _CategoryPageState extends State<CategoryPage> {
   }
 
   List<ItemCategoryResponse> listCategorie = [];
+  late CategoryBloc bloc;
+  late String domain;
+  TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+    domain = context.read<UserBloc>().state.subDomain ?? '';
+
+    bloc = CategoryBloc()..getData();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-
-      // appBar: AppBar(
-      //   centerTitle: true,
-      //   title: _buildSearchField(),
-      //   backgroundColor: colorMain,
-      //   actions: <Widget>[
-      //     IconButton(
-      //       onPressed: () {
-      //         routeService.pushNamed(Routes.cartPage,
-      //             arguments: CartPageParams(isAppBar: true));
-      //       },
-      //       icon: Icon(
-      //         Icons.shopping_cart_outlined,
-      //         color: colorWhite,
-      //         weight: 2.5.sp,
-      //       ),
-      //     ),
-      //   ],
-      // ),
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Expanded(
-                  flex: 2,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 16),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ListView.separated(
-                          physics: const NeverScrollableScrollPhysics(),
-                          separatorBuilder: (context, index) => const Divider(
-                            color: colorGray04,
-                            height: 1,
-                          ),
-                          shrinkWrap: true,
-                          itemCount: listCategories().length,
-                          itemBuilder: (BuildContext context, index) {
-                            return GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  listCategories()
-                                      .asMap()
-                                      .forEach((key, value) {
-                                    value.isCheck = true;
-                                  });
-                                });
-                              },
-                              child: Container(
-                                padding: listCategories()[index].isCheck
-                                    ? EdgeInsets.only(
-                                        left: 8.w,
-                                        right: 6.w,
-                                        top: 16,
-                                        bottom: 16.h,
-                                      )
-                                    : EdgeInsets.only(
-                                        left: 8.w,
-                                        right: 6.w,
-                                        top: 16.h,
-                                        bottom: 16.h,
-                                      ),
-                                decoration: listCategories()[index].isCheck
-                                    ? BoxDecoration(
-                                        border: Border(
-                                          left: BorderSide(
-                                              width: 6.0.w, color: colorMain),
-                                        ),
-                                        color: Colors.white,
-                                      )
-                                    : const BoxDecoration(
-                                        color: colorBlueGray01,
-                                      ),
-                                child: Row(
-                                  children: [
-                                    Flexible(
-                                        child: Text(
-                                      '${listCategories()[index].name}',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall
-                                          ?.copyWith(
-                                            color: colorBlackTileItem,
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                    ))
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Expanded(
-                    flex: 7,
-                    child: Container(
-                      // color: colorWhite,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _category(context),
-                        ],
-                      ),
-                    )),
-              ],
-            ),
-          ],
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => bloc,
         ),
+      ],
+      child: BlocBuilder<CategoryBloc, CategoryState>(
+        builder: (context, state) {
+          return Scaffold(
+            drawer: const DrawerListPage(),
+            body: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Expanded(
+                        flex: 2,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 16),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ListView.separated(
+                                physics: const NeverScrollableScrollPhysics(),
+                                separatorBuilder: (context, index) =>
+                                    const Divider(
+                                  color: colorGray04,
+                                  height: 1,
+                                ),
+                                shrinkWrap: true,
+                                itemCount: listCategories().length,
+                                itemBuilder: (BuildContext context, index) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        listCategories()
+                                            .asMap()
+                                            .forEach((key, value) {
+                                          value.isCheck = true;
+                                        });
+                                      });
+                                    },
+                                    child: Container(
+                                      padding: listCategories()[index].isCheck
+                                          ? EdgeInsets.only(
+                                              left: 8.w,
+                                              right: 6.w,
+                                              top: 16,
+                                              bottom: 16.h,
+                                            )
+                                          : EdgeInsets.only(
+                                              left: 8.w,
+                                              right: 6.w,
+                                              top: 16.h,
+                                              bottom: 16.h,
+                                            ),
+                                      decoration:
+                                          listCategories()[index].isCheck
+                                              ? BoxDecoration(
+                                                  border: Border(
+                                                    left: BorderSide(
+                                                        width: 6.0.w,
+                                                        color: colorMain),
+                                                  ),
+                                                  color: Colors.white,
+                                                )
+                                              : const BoxDecoration(
+                                                  color: colorBlueGray01,
+                                                ),
+                                      child: Row(
+                                        children: [
+                                          Flexible(
+                                              child: Text(
+                                            '${listCategories()[index].name}',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall
+                                                ?.copyWith(
+                                                  color: colorBlackTileItem,
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                          ))
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                          flex: 7,
+                          child: Container(
+                            // color: colorWhite,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _category(context),
+                              ],
+                            ),
+                          )),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }
 
-  // widgets
-  Widget _buildSearchField() {
-    return AppSearchBar(
-      hintText: 'Tìm kiếm  ',
-      onChanged: (keyword) {
-        setState(() {
-          // keywordText = keyword;
-        });
-      },
-    );
+  Widget viewSearch(BuildContext context,
+      {required String domain,
+      required SearchProductCategoryBloc blocSearchProductCategory,
+      required TextEditingController searchController,
+      required SearchProductCategoryState stateSearchList}) {
+    return searchWidgets.viewSearch(context,
+        domain: domain,
+        stateSearchList: stateSearchList,
+        blocSearchProductCategory: blocSearchProductCategory,
+        searchController: searchController);
   }
 
   Widget _category(BuildContext context) {
@@ -211,9 +225,9 @@ class _CategoryPageState extends State<CategoryPage> {
         itemBuilder: (BuildContext context, int index) {
           return GestureDetector(
             onTap: () {
-              routeService.pushNamed(
-                Routes.categoryChildPage,
-              );
+              // routeService.pushNamed(
+              //   Routes.categoryChildPage,
+              // );
             },
             child: Stack(
               clipBehavior: Clip.none,

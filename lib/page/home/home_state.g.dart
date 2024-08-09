@@ -16,6 +16,8 @@ abstract class _$HomeStateCWProxy {
   HomeState idProductListLocal(
       List<IdProductRecommendationModel> idProductListLocal);
 
+  HomeState firtTimeLoadingPage(bool firtTimeLoadingPage);
+
   HomeState productList(ListProduct? productList);
 
   HomeState canLoadMore(bool canLoadMore);
@@ -45,6 +47,7 @@ abstract class _$HomeStateCWProxy {
     String? errorMsg,
     List<ProductRecommendationModel>? productListLocal,
     List<IdProductRecommendationModel>? idProductListLocal,
+    bool? firtTimeLoadingPage,
     ListProduct? productList,
     bool? canLoadMore,
     int? limit,
@@ -78,6 +81,10 @@ class _$HomeStateCWProxyImpl implements _$HomeStateCWProxy {
   HomeState idProductListLocal(
           List<IdProductRecommendationModel> idProductListLocal) =>
       this(idProductListLocal: idProductListLocal);
+
+  @override
+  HomeState firtTimeLoadingPage(bool firtTimeLoadingPage) =>
+      this(firtTimeLoadingPage: firtTimeLoadingPage);
 
   @override
   HomeState productList(ListProduct? productList) =>
@@ -124,6 +131,7 @@ class _$HomeStateCWProxyImpl implements _$HomeStateCWProxy {
     Object? errorMsg = const $CopyWithPlaceholder(),
     Object? productListLocal = const $CopyWithPlaceholder(),
     Object? idProductListLocal = const $CopyWithPlaceholder(),
+    Object? firtTimeLoadingPage = const $CopyWithPlaceholder(),
     Object? productList = const $CopyWithPlaceholder(),
     Object? canLoadMore = const $CopyWithPlaceholder(),
     Object? limit = const $CopyWithPlaceholder(),
@@ -153,6 +161,12 @@ class _$HomeStateCWProxyImpl implements _$HomeStateCWProxy {
           ? _value.idProductListLocal
           // ignore: cast_nullable_to_non_nullable
           : idProductListLocal as List<IdProductRecommendationModel>,
+      firtTimeLoadingPage:
+          firtTimeLoadingPage == const $CopyWithPlaceholder() ||
+                  firtTimeLoadingPage == null
+              ? _value.firtTimeLoadingPage
+              // ignore: cast_nullable_to_non_nullable
+              : firtTimeLoadingPage as bool,
       productList: productList == const $CopyWithPlaceholder()
           ? _value.productList
           // ignore: cast_nullable_to_non_nullable

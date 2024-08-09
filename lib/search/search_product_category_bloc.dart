@@ -8,7 +8,7 @@ import 'package:haruviet/data/reponsitory/product/models/data_search_default_res
 import 'package:haruviet/data/reponsitory/product/product_repository.dart';
 import 'package:haruviet/database_local/suggestion_data_search/models/suggestion_data_search_model.dart';
 import 'package:haruviet/database_local/suggestion_data_search/suggestion_data_search_database.dart';
-import 'package:haruviet/page/product/search/search_product_category_state.dart';
+import 'package:haruviet/search/search_product_category_state.dart';
 
 class SearchProductCategoryBloc extends BaseBloc<SearchProductCategoryState> {
   SearchProductCategoryBloc() : super(const SearchProductCategoryState());

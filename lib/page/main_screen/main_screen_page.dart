@@ -1,23 +1,30 @@
 import 'package:haruviet/component/input/search_bar.dart';
+import 'package:haruviet/component/input/search_barv2.dart';
 import 'package:haruviet/component/popup/popup.dart';
+import 'package:haruviet/data/data_local/user_bloc.dart';
 import 'package:haruviet/database_local/product/cart_provider.dart';
 import 'package:haruviet/helper/colors.dart';
+import 'package:haruviet/helper/spaces.dart';
 import 'package:haruviet/page/cart/models/cart_page_params.dart';
 import 'package:haruviet/page/category/category_page.dart';
-import 'package:haruviet/page/category/models/category_paga_params.dart';
+import 'package:haruviet/page/category/widgets/category_paga_params.dart';
 import 'package:haruviet/page/home/home_page.dart';
 import 'package:haruviet/page/home/widgets/drawer_list_page.dart';
 import 'package:haruviet/page/main_screen/main_screen_state.dart';
 import 'package:haruviet/page/notification/notification_page.dart';
 import 'package:haruviet/page/profile/profile_page.dart';
 import 'package:haruviet/resources/routes.dart';
+import 'package:haruviet/search/search_product_category_bloc.dart';
+import 'package:haruviet/search/search_product_category_page.dart';
+import 'package:haruviet/search/search_product_category_state.dart';
+import 'package:haruviet/search/widgets/search_widgets.dart';
 import 'package:haruviet/theme/typography.dart';
 import 'package:haruviet/utils/commons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:provider/provider.dart';
 import 'main_screen_bloc.dart';
 
@@ -37,36 +44,28 @@ class MainScreenPage extends StatefulWidget {
 
 class _MainScreenPageState extends State<MainScreenPage> {
   // variables and functions
-  FocusNode focusNode = FocusNode();
   TextEditingController searchController = TextEditingController();
   bool isFocused = false;
+  final SearchWidgets searchWidgets = SearchWidgets();
+  late SearchProductCategoryBloc blocSearchProductCategory;
+  late PersistentTabController _controller;
 
   late MainScreenBloc bloc;
-  late PersistentTabController _controller;
   String keywordText = '';
   int screenIndex = 0;
   TextStyle? styleTitles = textTheme.titleMedium
       ?.copyWith(color: colorWhite, fontWeight: FontWeight.bold);
-
-  void _onFocusChange() {
-    setState(() {
-      // bloc.onChangeSearch();
-      isFocused = focusNode.hasFocus;
-    });
-  }
+  late String domain;
 
   @override
   void dispose() {
-    focusNode.removeListener(_onFocusChange);
     _controller.dispose();
+
     super.dispose();
   }
 
   final List<Widget> _buildScreens = [
-    const HomePage(
-        // firstTabBarScrollController: _firstTabBarScrollController,
-        // secondTabBarScrollController: _secondTabBarScrollController,
-        ),
+    const HomePage(),
     const NotificationTabPage(),
     CategoryPage(
       params: CategoryPageParams(isAppBar: false),
@@ -76,12 +75,11 @@ class _MainScreenPageState extends State<MainScreenPage> {
 
   @override
   void initState() {
-    focusNode.addListener(_onFocusChange);
-
+    super.initState();
     _controller = PersistentTabController(initialIndex: screenIndex);
     _controller.addListener(_onTabChanged);
 
-    super.initState();
+    domain = context.read<UserBloc>().state.subDomain ?? '';
     bloc = MainScreenBloc()..getData();
   }
 
@@ -90,27 +88,6 @@ class _MainScreenPageState extends State<MainScreenPage> {
       screenIndex = _controller.index;
     });
   }
-
-  // void _onItemTapped(int index) {
-  //   setState(() {
-  //     _selectedIndex = index;
-  //   });
-  //   if (index == 0 && _firstTabBarScrollController.hasClients) {
-  //     _firstTabBarScrollController.animateTo(
-  //       0,
-  //       duration: const Duration(milliseconds: 500),
-  //       curve: Curves.easeOut,
-  //     );
-  //   }
-
-  //   if (index == 0 && _secondTabBarScrollController.hasClients) {
-  //     _secondTabBarScrollController.animateTo(
-  //       0,
-  //       duration: const Duration(milliseconds: 500),
-  //       curve: Curves.easeOut,
-  //     );
-  //   }
-  // }
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
     return [
@@ -149,8 +126,12 @@ class _MainScreenPageState extends State<MainScreenPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => bloc,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => bloc,
+        ),
+      ],
       child: MultiBlocListener(
         listeners: [
           BlocListener<MainScreenBloc, MainScreenState>(
@@ -170,38 +151,7 @@ class _MainScreenPageState extends State<MainScreenPage> {
           return Scaffold(
             resizeToAvoidBottomInset: false,
             appBar: screenIndex == 0
-                ? AppBar(
-                    centerTitle: true,
-                    title: _buildSearchField(),
-                    backgroundColor: colorMain,
-                    actions: <Widget>[
-                      Consumer<CartProvider>(
-                        builder: (BuildContext context, CartProvider value,
-                            Widget? child) {
-                          return badges.Badge(
-                            position:
-                                badges.BadgePosition.topEnd(top: 0, end: 2),
-                            showBadge: value.getCounter() == 0 ? false : true,
-                            ignorePointer: false,
-                            badgeStyle: const badges.BadgeStyle(
-                                badgeColor: Colors.yellow),
-                            badgeContent: Text('${value.counter}'),
-                            child: IconButton(
-                              onPressed: () {
-                                routeService.pushNamed(Routes.cartPage,
-                                    arguments: CartPageParams(isAppBar: true));
-                              },
-                              icon: Icon(
-                                Icons.shopping_cart_outlined,
-                                color: colorWhite,
-                                weight: 2.5.sp,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  )
+                ? _appbarSearch()
                 : screenIndex == 1
                     ? AppBar(
                         centerTitle: true,
@@ -211,51 +161,7 @@ class _MainScreenPageState extends State<MainScreenPage> {
                         backgroundColor: colorMain,
                       )
                     : screenIndex == 2
-                        ? AppBar(
-                            centerTitle: true,
-                            title: _buildSearchField(),
-                            backgroundColor: colorMain,
-                            actions: <Widget>[
-                              Consumer<CartProvider>(
-                                builder: (BuildContext context,
-                                    CartProvider value, Widget? child) {
-                                  return badges.Badge(
-                                    position: badges.BadgePosition.topEnd(
-                                        top: 0, end: 2),
-                                    showBadge:
-                                        value.getCounter() == 0 ? false : true,
-                                    ignorePointer: false,
-                                    badgeStyle: const badges.BadgeStyle(
-                                        badgeColor: Colors.yellow),
-                                    badgeContent: Text('${value.counter}'),
-                                    child: IconButton(
-                                      onPressed: () {
-                                        routeService.pushNamed(Routes.cartPage,
-                                            arguments:
-                                                CartPageParams(isAppBar: true));
-                                      },
-                                      icon: Icon(
-                                        Icons.shopping_cart_outlined,
-                                        color: colorWhite,
-                                        weight: 2.5.sp,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
-                          )
-                        // : screenIndex == 3
-                        //     ? AppBar(
-                        //         centerTitle: true,
-                        //         title: Text(
-                        //           'Giỏ hàng',
-                        //           style: textTheme.titleMedium?.copyWith(
-                        //               color: colorWhite,
-                        //               fontWeight: FontWeight.bold),
-                        //         ),
-                        //         backgroundColor: colorMain,
-                        //       )
+                        ? _appbarSearch()
                         : screenIndex == 3
                             ? AppBar(
                                 centerTitle: true,
@@ -290,27 +196,209 @@ class _MainScreenPageState extends State<MainScreenPage> {
                 curve: Curves.bounceInOut,
               ),
               navBarStyle: NavBarStyle.style6,
-              hideNavigationBar: isFocused,
+              //       hideNavigationBar: state.hideBottomBar,
               selectedTabScreenContext: (context) {
                 context = context;
               },
             ),
+
+            // IndexedStack(
+            //   index: screenIndex,
+            //   children: _buildScreens,
+            // ),
+            // bottomNavigationBar: Theme(
+            //   data: ThemeData(
+            //     splashColor: Colors.transparent,
+            //   ),
+            //   child: BottomNavigationBar(
+            //     showSelectedLabels: true,
+            //     selectedFontSize: 12,
+            //     type: BottomNavigationBarType.fixed,
+            //     selectedItemColor: colorMain,
+            //     unselectedItemColor: const Color(0xFFADADAD),
+            //     showUnselectedLabels: true,
+            //     onTap: (index) {
+            //       setState(() {
+            //         screenIndex = index;
+            //       });
+            //     },
+            //     currentIndex: screenIndex,
+            //     items: [
+            //       _bottomNavigationBarItem(
+            //         context,
+            //         label: 'Trang chủ',
+            //         icon: Assets.icons.iconHome.image(),
+            //         iconActive: Assets.icons.iconHomeActive.image(),
+            //       ),
+            //       _bottomNavigationBarItem(
+            //         context,
+            //         label: 'Lịch sử',
+            //         icon: Assets.icons.icNotification.image(),
+            //         iconActive: Assets.icons.icNotification.image(),
+            //       ),
+            //       _bottomNavigationBarItem(
+            //         context,
+            //         label: 'Cài đặt',
+            //         icon: Assets.icons.iconSetting.image(),
+            //         iconActive: Assets.icons.iconSettingActive.image(),
+            //       ),
+            //       _bottomNavigationBarItem(
+            //         context,
+            //         label: 'Cá nhân',
+            //         icon: Assets.icons.icNotification.image(),
+            //         iconActive: Assets.icons.icNotification.image(),
+            //       )
+            //     ],
+            //   ),
+            // ),
           );
         }),
       ),
     );
   }
 
-  Widget _buildSearchField() {
-    return AppSearchBar(
-      hintText: 'Tìm kiếm theo tên',
-      focusNode: focusNode,
-      controller: searchController,
-      onChanged: (keyword) {
-        setState(() {
-          keywordText = keyword;
-        });
-      },
+  Widget viewSearch(BuildContext context,
+      {required String domain,
+      required SearchProductCategoryBloc blocSearchProductCategory,
+      required TextEditingController searchController,
+      required SearchProductCategoryState stateSearchList}) {
+    return searchWidgets.viewSearch(context,
+        domain: domain,
+        stateSearchList: stateSearchList,
+        blocSearchProductCategory: blocSearchProductCategory,
+        searchController: searchController);
+  }
+
+  BottomNavigationBarItem _bottomNavigationBarItem(
+    BuildContext context, {
+    required String label,
+    required Widget icon,
+    required Widget iconActive,
+    String? noti,
+  }) {
+    return BottomNavigationBarItem(
+      label: label,
+      icon: badges.Badge(
+        showBadge: noti == null || noti == '' || noti == 'error' ? false : true,
+        position: badges.BadgePosition.topEnd(top: -12, end: -14),
+        badgeAnimation: const badges.BadgeAnimation.slide(
+          disappearanceFadeAnimationDuration: Duration(milliseconds: 100),
+          curve: Curves.easeInCubic,
+        ),
+        ignorePointer: false,
+        badgeContent: noti == null
+            ? space0
+            : Text(
+                noti,
+                style: const TextStyle(color: Colors.white),
+              ),
+        child: Column(
+          children: [
+            SizedBox(
+              width: 20,
+              height: 20,
+              child: icon,
+            ),
+            spaceH2,
+          ],
+        ),
+      ),
+      activeIcon: badges.Badge(
+        position: badges.BadgePosition.topEnd(top: -12, end: -14),
+        badgeAnimation: const badges.BadgeAnimation.slide(
+          disappearanceFadeAnimationDuration: Duration(milliseconds: 100),
+          curve: Curves.easeInCubic,
+        ),
+        ignorePointer: false,
+        showBadge: noti == null || noti == '' || noti == 'error' ? false : true,
+        badgeContent: noti == null || noti == '' || noti == 'error'
+            ? space0
+            : Text(
+                noti,
+                style: const TextStyle(color: colorWhite),
+              ),
+        child: Column(
+          children: [
+            SizedBox(
+              width: 20.r,
+              height: 20.r,
+              child: iconActive,
+            ),
+            spaceH2,
+          ],
+        ),
+      ),
+    );
+  }
+
+  PreferredSizeWidget _appbarSearch() {
+    return AppBar(
+      centerTitle: true,
+      backgroundColor: colorMain,
+      title: AppSearchBarV2(
+        hintText: 'Tìm kiếm sản phẩm',
+        onTap: () {
+          Navigator.push(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) {
+                const begin = Offset(0.8, 0.0);
+                const end = Offset.zero;
+                const curve = Curves.decelerate;
+
+                var tween = Tween(begin: begin, end: end);
+                var curvedAnimation = CurvedAnimation(
+                  parent: animation,
+                  curve: curve,
+                );
+
+                var offsetAnimation = tween.animate(curvedAnimation);
+
+                return SlideTransition(
+                  position: offsetAnimation,
+                  child: const SearchScaffold(),
+                );
+              },
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: child,
+                );
+              },
+            ),
+          );
+          //.then((value) => bloc.onHideBottomBar());
+        },
+      ),
+
+      // .then((value) =>
+      //         WidgetsBinding.instance.focusManager.primaryFocus?.unfocus());
+      actions: <Widget>[
+        spaceW16,
+        Consumer<CartProvider>(
+          builder: (BuildContext context, CartProvider value, Widget? child) {
+            return badges.Badge(
+              position: badges.BadgePosition.topEnd(top: 0, end: 2),
+              showBadge: value.getCounter() == 0 ? false : true,
+              ignorePointer: false,
+              badgeStyle: const badges.BadgeStyle(badgeColor: Colors.yellow),
+              badgeContent: Text('${value.counter}'),
+              child: IconButton(
+                onPressed: () {
+                  routeService.pushNamed(Routes.cartPage,
+                      arguments: CartPageParams(isAppBar: true));
+                },
+                icon: Icon(
+                  Icons.shopping_cart_outlined,
+                  color: colorWhite,
+                  weight: 2.5.sp,
+                ),
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 }

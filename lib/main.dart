@@ -13,9 +13,10 @@ import 'package:haruviet/page/add_address/add_address/add_address_page.dart';
 import 'package:haruviet/page/add_address/address_page.dart';
 import 'package:haruviet/page/cart/cart_page.dart';
 import 'package:haruviet/page/cart/models/cart_page_params.dart';
-import 'package:haruviet/page/category/category_child/category_child_page.dart';
+import 'package:haruviet/page/category/category_child/sub_category_page.dart';
+import 'package:haruviet/page/category/category_child/widgets/sub_category_params.dart';
 import 'package:haruviet/page/category/category_page.dart';
-import 'package:haruviet/page/category/models/category_paga_params.dart';
+import 'package:haruviet/page/category/widgets/category_paga_params.dart';
 import 'package:haruviet/page/chat/chat_page.dart';
 import 'package:haruviet/page/cart/bill/bill_info_page.dart';
 import 'package:haruviet/page/cart/payment_method/payment_method_page.dart';
@@ -49,7 +50,6 @@ import 'package:provider/provider.dart';
 import 'page/account/reset_password/reset_password_page.dart';
 import 'page/account/reset_password/widgets/reset_password_params.dart';
 import 'page/add_address/add_address/widgets/add_address_params.dart';
-import 'page/cart/checkout/widgets/checkout_params.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -277,10 +277,12 @@ class _HomePageState extends State<HomePage> {
           builder: (_) => const NewDetailPage(),
         );
       // CategoryChildPage
-      case Routes.categoryChildPage:
+      case Routes.subCategoryPage:
         return MaterialPageRoute(
-          settings: const RouteSettings(name: Routes.categoryChildPage),
-          builder: (_) => const CategoryChildPage(),
+          settings: const RouteSettings(name: Routes.subCategoryPage),
+          builder: (_) => SubCategoryPage(
+            params: settings.arguments as CategoryParams,
+          ),
         );
 
       // AboutPage

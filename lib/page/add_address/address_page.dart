@@ -99,31 +99,6 @@ class _AddressPageState extends State<AddressPage> {
                                         child: Row(
                                           children: [
                                             spaceW6,
-                                            // Checkbox(
-                                            //   value: state
-                                            //       .listAddresses[index]
-                                            //       .isDefault,
-                                            //   onChanged: (bool? newValue) {
-                                            //     bloc.onChaneDefalutLocation(
-                                            //         index: index,
-                                            //         value: newValue!);
-                                            //     // if (newValue != null) {
-                                            //     //   setState(() {
-                                            //     //     // for (int i = 0;
-                                            //     //     //     i <
-                                            //     //     //         state.listAddresses
-                                            //     //     //             .length;
-                                            //     //     //     i++) {
-                                            //     //     //   if (i == index) {
-                                            //     //     //     values[i] = newValue;
-                                            //     //     //   } else {
-                                            //     //     //     valuesi] = false;
-                                            //     //     //   }
-                                            //     //     // }
-                                            //     //   });
-                                            //     // }
-                                            //   },
-                                            // ),
                                             Expanded(
                                               child: Column(
                                                 crossAxisAlignment:
@@ -151,32 +126,6 @@ class _AddressPageState extends State<AddressPage> {
                                                               FontWeight.bold,
                                                         ),
                                                       ),
-                                                      // Container(
-                                                      //   padding:
-                                                      //       const EdgeInsets
-                                                      //           .symmetric(
-                                                      //           horizontal: 12,
-                                                      //           vertical: 6),
-                                                      //   decoration:
-                                                      //       BoxDecoration(
-                                                      //     shape: BoxShape
-                                                      //         .rectangle,
-                                                      //     color: Colors
-                                                      //         .grey.shade300,
-                                                      //     borderRadius:
-                                                      //         const BorderRadius
-                                                      //             .all(
-                                                      //       Radius.circular(16),
-                                                      //     ),
-                                                      //   ),
-                                                      //   child: const Text(
-                                                      //     "Nhà riêng",
-                                                      //     style: TextStyle(
-                                                      //         fontSize: 12,
-                                                      //         color:
-                                                      //             colorBlack),
-                                                      //   ),
-                                                      // )
                                                     ],
                                                   ),
                                                   spaceH6,

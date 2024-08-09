@@ -1,5 +1,6 @@
 import 'dart:ffi';
 
+import 'package:haruviet/api/services/products/models/get_list_product_request.dart';
 import 'package:haruviet/base/base_bloc.dart';
 import 'package:haruviet/component/help_basic/help_basic.dart';
 import 'package:haruviet/data/enum.dart';
@@ -21,6 +22,10 @@ class HomeBloc extends BaseBloc<HomeState> {
 
   removeZeroDouble({required double value}) {
     return help.formatDouble(value);
+  }
+
+  onChangeFirstTimeLoadinPage(bool firtTimeLoadingPage) {
+    emit(state.copyWith(firtTimeLoadingPage: firtTimeLoadingPage));
   }
 
   getData() async {
@@ -78,7 +83,8 @@ class HomeBloc extends BaseBloc<HomeState> {
         updatedDataList = List<DataProduct>.from(state.datatList);
       }
       final productList = await _productRepository.getListProductsRP(
-          size: state.limit.toString(), totalproduct: page.toString());
+        request: GetListProductRequest(paegNumber: page, pageSize: state.limit),
+      );
       updatedDataList.addAll(productList.data ?? []);
 
       final maxLoadMore = ((productList.total ?? 0) / state.limit).floor();

@@ -16,4 +16,8 @@ class MainScreenBloc extends Cubit<MainScreenState> {
       accessToken: data?.accessToken,
     ));
   }
+
+  onHideBottomBar() {
+    emit(state.copyWith(hideBottomBar: !state.hideBottomBar));
+  }
 }

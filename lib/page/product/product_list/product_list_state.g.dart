@@ -11,18 +11,7 @@ abstract class _$ProductListStateCWProxy {
 
   ProductListState errorMsg(String errorMsg);
 
-  ProductListState productList(ListProduct? productList);
-
   ProductListState firtTimeLoadingPage(bool firtTimeLoadingPage);
-
-  ProductListState checkSearch(bool checkSearch);
-
-  ProductListState categorySearchList(List<SearchCategory> categorySearchList);
-
-  ProductListState searchDataList(
-      List<SuggestionDataSearchModel> searchDataList);
-
-  ProductListState productSearchList(List<SearchProduct> productSearchList);
 
   ProductListState currentTab(CurrentTab currentTab);
 
@@ -51,12 +40,7 @@ abstract class _$ProductListStateCWProxy {
   ProductListState call({
     ViewState? viewState,
     String? errorMsg,
-    ListProduct? productList,
     bool? firtTimeLoadingPage,
-    bool? checkSearch,
-    List<SearchCategory>? categorySearchList,
-    List<SuggestionDataSearchModel>? searchDataList,
-    List<SearchProduct>? productSearchList,
     CurrentTab? currentTab,
     bool? canLoadMore,
     int? limit,
@@ -82,30 +66,8 @@ class _$ProductListStateCWProxyImpl implements _$ProductListStateCWProxy {
   ProductListState errorMsg(String errorMsg) => this(errorMsg: errorMsg);
 
   @override
-  ProductListState productList(ListProduct? productList) =>
-      this(productList: productList);
-
-  @override
   ProductListState firtTimeLoadingPage(bool firtTimeLoadingPage) =>
       this(firtTimeLoadingPage: firtTimeLoadingPage);
-
-  @override
-  ProductListState checkSearch(bool checkSearch) =>
-      this(checkSearch: checkSearch);
-
-  @override
-  ProductListState categorySearchList(
-          List<SearchCategory> categorySearchList) =>
-      this(categorySearchList: categorySearchList);
-
-  @override
-  ProductListState searchDataList(
-          List<SuggestionDataSearchModel> searchDataList) =>
-      this(searchDataList: searchDataList);
-
-  @override
-  ProductListState productSearchList(List<SearchProduct> productSearchList) =>
-      this(productSearchList: productSearchList);
 
   @override
   ProductListState currentTab(CurrentTab currentTab) =>
@@ -152,12 +114,7 @@ class _$ProductListStateCWProxyImpl implements _$ProductListStateCWProxy {
   ProductListState call({
     Object? viewState = const $CopyWithPlaceholder(),
     Object? errorMsg = const $CopyWithPlaceholder(),
-    Object? productList = const $CopyWithPlaceholder(),
     Object? firtTimeLoadingPage = const $CopyWithPlaceholder(),
-    Object? checkSearch = const $CopyWithPlaceholder(),
-    Object? categorySearchList = const $CopyWithPlaceholder(),
-    Object? searchDataList = const $CopyWithPlaceholder(),
-    Object? productSearchList = const $CopyWithPlaceholder(),
     Object? currentTab = const $CopyWithPlaceholder(),
     Object? canLoadMore = const $CopyWithPlaceholder(),
     Object? limit = const $CopyWithPlaceholder(),
@@ -177,36 +134,12 @@ class _$ProductListStateCWProxyImpl implements _$ProductListStateCWProxy {
           ? _value.errorMsg
           // ignore: cast_nullable_to_non_nullable
           : errorMsg as String,
-      productList: productList == const $CopyWithPlaceholder()
-          ? _value.productList
-          // ignore: cast_nullable_to_non_nullable
-          : productList as ListProduct?,
       firtTimeLoadingPage:
           firtTimeLoadingPage == const $CopyWithPlaceholder() ||
                   firtTimeLoadingPage == null
               ? _value.firtTimeLoadingPage
               // ignore: cast_nullable_to_non_nullable
               : firtTimeLoadingPage as bool,
-      checkSearch:
-          checkSearch == const $CopyWithPlaceholder() || checkSearch == null
-              ? _value.checkSearch
-              // ignore: cast_nullable_to_non_nullable
-              : checkSearch as bool,
-      categorySearchList: categorySearchList == const $CopyWithPlaceholder() ||
-              categorySearchList == null
-          ? _value.categorySearchList
-          // ignore: cast_nullable_to_non_nullable
-          : categorySearchList as List<SearchCategory>,
-      searchDataList: searchDataList == const $CopyWithPlaceholder() ||
-              searchDataList == null
-          ? _value.searchDataList
-          // ignore: cast_nullable_to_non_nullable
-          : searchDataList as List<SuggestionDataSearchModel>,
-      productSearchList: productSearchList == const $CopyWithPlaceholder() ||
-              productSearchList == null
-          ? _value.productSearchList
-          // ignore: cast_nullable_to_non_nullable
-          : productSearchList as List<SearchProduct>,
       currentTab:
           currentTab == const $CopyWithPlaceholder() || currentTab == null
               ? _value.currentTab

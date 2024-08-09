@@ -15,6 +15,8 @@ abstract class _$MainScreenStateCWProxy {
 
   MainScreenState totalItemInCart(int? totalItemInCart);
 
+  MainScreenState hideBottomBar(bool hideBottomBar);
+
   MainScreenState errorMsg(String errorMsg);
 
   MainScreenState employeeId(String employeeId);
@@ -50,6 +52,7 @@ abstract class _$MainScreenStateCWProxy {
     UserInfoLogin? dataUser,
     String? accessToken,
     int? totalItemInCart,
+    bool? hideBottomBar,
     String? errorMsg,
     String? employeeId,
     String? fullName,
@@ -84,6 +87,10 @@ class _$MainScreenStateCWProxyImpl implements _$MainScreenStateCWProxy {
   @override
   MainScreenState totalItemInCart(int? totalItemInCart) =>
       this(totalItemInCart: totalItemInCart);
+
+  @override
+  MainScreenState hideBottomBar(bool hideBottomBar) =>
+      this(hideBottomBar: hideBottomBar);
 
   @override
   MainScreenState errorMsg(String errorMsg) => this(errorMsg: errorMsg);
@@ -140,6 +147,7 @@ class _$MainScreenStateCWProxyImpl implements _$MainScreenStateCWProxy {
     Object? dataUser = const $CopyWithPlaceholder(),
     Object? accessToken = const $CopyWithPlaceholder(),
     Object? totalItemInCart = const $CopyWithPlaceholder(),
+    Object? hideBottomBar = const $CopyWithPlaceholder(),
     Object? errorMsg = const $CopyWithPlaceholder(),
     Object? employeeId = const $CopyWithPlaceholder(),
     Object? fullName = const $CopyWithPlaceholder(),
@@ -170,6 +178,11 @@ class _$MainScreenStateCWProxyImpl implements _$MainScreenStateCWProxy {
           ? _value.totalItemInCart
           // ignore: cast_nullable_to_non_nullable
           : totalItemInCart as int?,
+      hideBottomBar:
+          hideBottomBar == const $CopyWithPlaceholder() || hideBottomBar == null
+              ? _value.hideBottomBar
+              // ignore: cast_nullable_to_non_nullable
+              : hideBottomBar as bool,
       errorMsg: errorMsg == const $CopyWithPlaceholder() || errorMsg == null
           ? _value.errorMsg
           // ignore: cast_nullable_to_non_nullable

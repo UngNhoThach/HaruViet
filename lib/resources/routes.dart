@@ -45,7 +45,7 @@ class Routes {
   static const newDetailPage = "/newDetailPage";
 
   // Category
-  static const categoryChildPage = "/categoryChildPage";
+  static const subCategoryPage = "/subCategoryPage";
 
   // NOTI
   static const notificationPage = "/notificationPage";

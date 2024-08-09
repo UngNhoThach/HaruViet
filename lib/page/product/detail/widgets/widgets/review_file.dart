@@ -149,7 +149,8 @@ class _ReviewFilesState extends State<ReviewFiles> {
             right: 16,
             child: Center(
               child: Text(
-                imageScripts == null ? '' : imageScripts![currentPage],
+                '',
+                //  imageScripts == null ? '' : imageScripts![currentPage],
                 style: textTheme.titleMedium?.copyWith(
                   color: colorWhite,
                   fontWeight: FontWeight.w500,

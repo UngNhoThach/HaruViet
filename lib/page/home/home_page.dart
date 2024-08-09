@@ -1,12 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:haruviet/component/error/not_found.dart';
+import 'package:haruviet/component/input/search_bar.dart';
 import 'package:haruviet/component/shimer/image_product_shimer.dart';
 import 'package:haruviet/data/data_local/user_bloc.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_list_product/data_product_list.dart';
 import 'package:haruviet/database_local/product/models/count_model.dart';
 import 'package:haruviet/database_local/products_recommendation/id_product_recommendation_database.dart';
 import 'package:haruviet/database_local/products_recommendation/models/id_products_recommendation_model.dart';
-import 'package:haruviet/database_local/products_recommendation/models/products_recommendation_model.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/const.dart';
 import 'package:haruviet/helper/spaces.dart';
@@ -17,8 +17,11 @@ import 'package:haruviet/page/home/widgets/count_dount.dart';
 import 'package:haruviet/page/home/widgets/flash_deals.dart';
 import 'package:haruviet/page/home/widgets/home_icon.dart';
 import 'package:haruviet/page/product/detail/widgets/product_detail_params.dart';
+import 'package:haruviet/search/search_product_category_bloc.dart';
 import 'package:haruviet/qr/qr_page.dart';
 import 'package:haruviet/resources/routes.dart';
+import 'package:haruviet/search/search_product_category_state.dart';
+import 'package:haruviet/search/widgets/search_widgets.dart';
 import 'package:haruviet/theme/typography.dart';
 import 'package:haruviet/utils/commons.dart';
 import 'package:flutter/material.dart';
@@ -49,10 +52,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final PagingController<int, DataProduct> _pagingController =
       PagingController(firstPageKey: startPage, invisibleItemsThreshold: 3);
   late TabController _tabController;
+  FocusNode focusNode = FocusNode();
+  final SearchWidgets searchWidgets = SearchWidgets();
 
   @override
   void initState() {
     super.initState();
+
     _tabController = TabController(length: 2, vsync: this);
 
     bloc = HomeBloc()..getData();
@@ -67,8 +73,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   void dispose() {
     _pagingController.dispose();
-    _tabController.dispose();
 
+    _tabController.dispose();
+    _counterModel.dispose();
     super.dispose();
   }
 
@@ -76,8 +83,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => bloc,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => bloc,
+        ),
+      ],
       child: MultiBlocListener(
         listeners: [
           BlocListener<HomeBloc, HomeState>(
@@ -113,7 +124,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     padding: EdgeInsets.symmetric(horizontal: 8.w),
                     child: Column(
                       children: [
-                        //      Text('nhothach...${state.idProductListLocal[1].id}'),
                         Row(
                           children: [
                             Expanded(
@@ -235,307 +245,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  // Widget _itemDataLocal(
-  //   BuildContext context, {
-  //   required ProductRecommendationModel data,
-  // }) {
-  //   return Row(
-  //     children: [
-  //       GestureDetector(
-  //         onTap: () async {
-  //           // final ProductRecommendationDatabase test =
-  //           //     ProductRecommendationDatabase();
-  //           getIdProductRecommendation
-  //               .insertProduct(IdProductRecommendationModel(id: data.id));
-  //           ScaffoldMessenger.of(context).showSnackBar(
-  //               SnackBar(content: Text('Product inserted successfully')));
-  //           routeService.pushNamed(Routes.productDetailPage,
-  //               arguments: ProductDetailParams(idProduct: data.id ?? ''));
-  //         },
-  //         child: Stack(
-  //           children: [
-  //             Container(
-  //               padding: const EdgeInsets.symmetric(vertical: 12),
-  //               decoration: BoxDecoration(
-  //                 color: colorWhite,
-  //                 boxShadow: const [
-  //                   BoxShadow(
-  //                     blurRadius: 4,
-  //                     color: Color(0x3600000F),
-  //                     offset: Offset(0, 2),
-  //                   )
-  //                 ],
-  //                 borderRadius: BorderRadius.circular(8),
-  //               ),
-  //               child: SizedBox(
-  //                 width: MediaQuery.of(context).size.width * 0.46,
-  //                 child: Column(
-  //                   mainAxisSize: MainAxisSize.min,
-  //                   crossAxisAlignment: CrossAxisAlignment.start,
-  //                   children: [
-  //                     Row(
-  //                       mainAxisSize: MainAxisSize.max,
-  //                       mainAxisAlignment: MainAxisAlignment.center,
-  //                       children: [
-  //                         Expanded(
-  //                           child: ClipRRect(
-  //                             borderRadius: BorderRadius.only(
-  //                               bottomLeft: Radius.circular(0.r),
-  //                               bottomRight: Radius.circular(0.r),
-  //                               topLeft: Radius.circular(8.r),
-  //                               topRight: Radius.circular(8.r),
-  //                             ),
-  //                             child: CachedNetworkImage(
-  //                               fadeOutDuration: const Duration(seconds: 3),
-  //                               //  const Duration(seconds: 3),
-  //                               imageUrl: '$domain${data.image}',
-  //                               width: 72.w,
-  //                               height: 72.h,
-  //                               placeholder: (context, url) =>
-  //                                   ImageProductShimer(
-  //                                 width: 72.w,
-  //                                 height: 72.h,
-  //                               ), // Use the custom shimmer component
-  //                               errorWidget: (context, url, error) =>
-  //                                   const Icon(Icons.error),
-  //                             ),
-  //                           ),
-  //                         ),
-  //                       ],
-  //                     ),
-  //                     Container(
-  //                       padding:
-  //                           const EdgeInsets.only(top: 16, left: 4, right: 4),
-  //                       child: Column(
-  //                         crossAxisAlignment: CrossAxisAlignment.start,
-  //                         children: [
-  //                           Row(
-  //                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                             children: [
-  //                               Text(
-  //                                 data.promotionPrice?.pricePromotion?.price ==
-  //                                         0
-  //                                     ? '${data.price.price} \$'
-  //                                     : '${data.promotionPrice?.pricePromotion?.price} \$',
-  //                                 style: Theme.of(context)
-  //                                     .textTheme
-  //                                     .labelLarge
-  //                                     ?.copyWith(
-  //                                       color: colorMain,
-  //                                       fontWeight: FontWeight.bold,
-  //                                     ),
-  //                               ),
-  //                               data.promotionPrice?.pricePromotion?.price != 0
-  //                                   ? Text(
-  //                                       '${data.price.price} \$',
-  //                                       style: textTheme.bodySmall?.copyWith(
-  //                                         color: colorItemCover,
-  //                                         fontWeight: FontWeight.bold,
-  //                                         decoration:
-  //                                             TextDecoration.lineThrough,
-  //                                       ),
-  //                                     )
-  //                                   : space0,
-  //                             ],
-  //                           ),
-  //                           spaceH4,
-  //                           Text(
-  //                             'Thương hiệu: Samsung',
-  //                             style: textTheme.labelMedium?.copyWith(
-  //                               color: colorSecondary04,
-  //                               fontWeight: FontWeight.w500,
-  //                             ),
-  //                           ),
-  //                           spaceH4,
-  //                           (data.descriptions.isEmpty)
-  //                               ? Text(
-  //                                   '',
-  //                                   style: textTheme.labelMedium?.copyWith(
-  //                                     color: colorBlackTileItem,
-  //                                     fontWeight: FontWeight.w500,
-  //                                   ),
-  //                                 )
-  //                               : Text(
-  //                                   data.descriptions[0].name ?? '',
-  //                                   style: textTheme.labelMedium?.copyWith(
-  //                                     color: colorBlackTileItem,
-  //                                     fontWeight: FontWeight.w500,
-  //                                   ),
-  //                                 ),
-  //                           spaceH4,
-  //                           Row(
-  //                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                             children: [
-  //                               Row(
-  //                                 crossAxisAlignment: CrossAxisAlignment.center,
-  //                                 children: [
-  //                                   Container(
-  //                                     width: 42.w,
-  //                                     decoration: BoxDecoration(
-  //                                       borderRadius:
-  //                                           BorderRadius.circular(8.r),
-  //                                       color: colorMainCover,
-  //                                     ),
-  //                                     padding: EdgeInsets.symmetric(
-  //                                         horizontal: 4.w, vertical: 2.h),
-  //                                     child: Row(
-  //                                       children: [
-  //                                         Text(
-  //                                           '4.8',
-  //                                           style: Theme.of(context)
-  //                                               .textTheme
-  //                                               .labelSmall
-  //                                               ?.copyWith(
-  //                                                 color: colorBackgroundWhite,
-  //                                                 fontWeight: FontWeight.w500,
-  //                                               ),
-  //                                         ),
-  //                                         spaceW2,
-  //                                         Icon(
-  //                                           Icons.star,
-  //                                           size: 12.sp,
-  //                                           color: colorBackgroundWhite,
-  //                                         ),
-  //                                       ],
-  //                                     ),
-  //                                   ),
-  //                                   spaceW2,
-  //                                   Text(
-  //                                     '(120)',
-  //                                     style: Theme.of(context)
-  //                                         .textTheme
-  //                                         .labelSmall
-  //                                         ?.copyWith(
-  //                                           color: colorBlueGray02,
-  //                                           fontWeight: FontWeight.w500,
-  //                                         ),
-  //                                   ),
-  //                                 ],
-  //                               ),
-  //                               Row(
-  //                                 crossAxisAlignment: CrossAxisAlignment.center,
-  //                                 children: [
-  //                                   Icon(
-  //                                     Icons.shopping_cart_outlined,
-  //                                     color: colorBlueGray02,
-  //                                     size: 12.sp,
-  //                                   ),
-  //                                   spaceW2,
-  //                                   Text(
-  //                                     '${data.sold} mua',
-  //                                     style: Theme.of(context)
-  //                                         .textTheme
-  //                                         .labelSmall
-  //                                         ?.copyWith(
-  //                                           color: colorBlueGray02,
-  //                                           fontWeight: FontWeight.w500,
-  //                                         ),
-  //                                   ),
-  //                                 ],
-  //                               ),
-  //                             ],
-  //                           ),
-  //                           spaceH6,
-  //                           (data.promotionPrice?.dateEnd != null &&
-  //                                   data.promotionPrice?.dateEnd != '')
-  //                               ? Row(
-  //                                   mainAxisAlignment:
-  //                                       MainAxisAlignment.spaceBetween,
-  //                                   mainAxisSize: MainAxisSize.min,
-  //                                   children: [
-  //                                     Expanded(
-  //                                       child: Container(
-  //                                           decoration: BoxDecoration(
-  //                                               borderRadius:
-  //                                                   BorderRadius.circular(8.r),
-  //                                               color: colorMainCover),
-  //                                           //
-  //                                           padding: EdgeInsets.symmetric(
-  //                                               horizontal: 4.w, vertical: 2),
-  //                                           child: Padding(
-  //                                             padding:
-  //                                                 const EdgeInsets.symmetric(
-  //                                                     horizontal: 8),
-  //                                             child: CountdownTimer(
-  //                                                 dateStart: data.promotionPrice
-  //                                                         ?.dateStart ??
-  //                                                     '',
-  //                                                 dateEnd: data.promotionPrice
-  //                                                         ?.dateEnd ??
-  //                                                     ''),
-  //                                           )),
-  //                                     ),
-  //                                     spaceW4,
-  //                                   ],
-  //                                 )
-  //                               : const SizedBox(
-  //                                   height: 16,
-  //                                 ),
-  //                         ],
-  //                       ),
-  //                     ),
-  //                   ],
-  //                 ),
-  //               ),
-  //             ),
-  //             (data.promotionPrice?.dateEnd != null &&
-  //                     data.promotionPrice?.dateEnd != '')
-  //                 ? Positioned(
-  //                     top: 0,
-  //                     left: 0,
-  //                     child: Container(
-  //                       padding: EdgeInsets.symmetric(
-  //                           horizontal: 8.w, vertical: 4.h),
-  //                       decoration: BoxDecoration(
-  //                         color: Colors.red,
-  //                         borderRadius: BorderRadius.only(
-  //                           topLeft: Radius.circular(8.r),
-  //                           bottomRight: Radius.circular(8.r),
-  //                         ),
-  //                       ),
-  //                       child: Text(
-  //                         'Flash Sale',
-  //                         style:
-  //                             Theme.of(context).textTheme.labelSmall?.copyWith(
-  //                                   color: Colors.white,
-  //                                   fontWeight: FontWeight.bold,
-  //                                 ),
-  //                       ),
-  //                     ),
-  //                   )
-  //                 : space0,
-  //             (data.promotionPrice?.percent != 0.0 &&
-  //                     data.promotionPrice?.percent != null)
-  //                 ? Positioned(
-  //                     top: 0,
-  //                     right: 0,
-  //                     child: Container(
-  //                       padding: EdgeInsets.symmetric(
-  //                           horizontal: 8.w, vertical: 4.h),
-  //                       decoration: BoxDecoration(
-  //                         color: Colors.yellow,
-  //                         borderRadius: BorderRadius.only(
-  //                           topRight: Radius.circular(8.r),
-  //                           bottomLeft: Radius.circular(8.r),
-  //                         ),
-  //                       ),
-  //                       child: Text(
-  //                         '- ${(bloc.removeZeroDouble(value: data.promotionPrice!.percent!))}%',
-  //                         style:
-  //                             Theme.of(context).textTheme.labelSmall?.copyWith(
-  //                                   color: colorBlack,
-  //                                   fontWeight: FontWeight.bold,
-  //                                 ),
-  //                       ),
-  //                     ),
-  //                   )
-  //                 : space0,
-  //           ],
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
+  Widget viewSearch(BuildContext context,
+      {required String domain,
+      required SearchProductCategoryBloc blocSearchProductCategory,
+      required TextEditingController searchController,
+      required SearchProductCategoryState stateSearchList}) {
+    return searchWidgets.viewSearch(context,
+        domain: domain,
+        stateSearchList: stateSearchList,
+        blocSearchProductCategory: blocSearchProductCategory,
+        searchController: searchController);
+  }
 
   Widget _itemFlashSale(BuildContext context,
       {required DataProduct data, required int index}) {
@@ -553,7 +273,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             getIdProductRecommendation
                 .insertProduct(IdProductRecommendationModel(id: data.id ?? ''));
             ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Product inserted successfully')));
+                const SnackBar(content: Text('Product inserted successfully')));
             routeService.pushNamed(Routes.productDetailPage,
                 arguments: ProductDetailParams(idProduct: data.id ?? ''));
           },
@@ -655,10 +375,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               children: [
                                 Flexible(
                                   child: Text(
-                                    (data.descriptions == null ||
-                                            data.descriptions!.isEmpty)
+                                    (data.descriptions == null)
                                         ? ''
-                                        : data.descriptions![0].name ?? '',
+                                        : data.descriptions?.name ?? '',
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                     style: textTheme.labelMedium?.copyWith(

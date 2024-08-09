@@ -2,15 +2,16 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:haruviet/component/header/header_item.dart';
 import 'package:haruviet/component/input/search_bar.dart';
 import 'package:haruviet/component/error/not_found.dart';
+import 'package:haruviet/component/input/search_barv2.dart';
 import 'package:haruviet/component/shimer/image_product_shimer.dart';
 import 'package:haruviet/data/data_local/user_bloc.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_list_product/data_product_list.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_search_default_response/search_category.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_search_default_response/search_product.dart';
+import 'package:haruviet/database_local/product/cart_provider.dart';
 import 'package:haruviet/database_local/suggestion_data_search/models/suggestion_data_search_model.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/const.dart';
-import 'package:haruviet/helper/context.dart';
 import 'package:haruviet/helper/spaces.dart';
 import 'package:haruviet/page/cart/models/cart_page_params.dart';
 import 'package:haruviet/page/home/widgets/count_dount.dart';
@@ -18,8 +19,9 @@ import 'package:haruviet/page/product/detail/product_deatail_page.dart';
 import 'package:haruviet/page/product/detail/widgets/product_detail_params.dart';
 import 'package:haruviet/page/product/product_list/product_list_bloc.dart';
 import 'package:haruviet/page/product/product_list/product_list_state.dart';
-import 'package:haruviet/page/product/search/search_product_category_bloc.dart';
-import 'package:haruviet/page/product/search/search_product_category_state.dart';
+import 'package:haruviet/search/search_product_category_bloc.dart';
+import 'package:haruviet/search/search_product_category_page.dart';
+import 'package:haruviet/search/search_product_category_state.dart';
 import 'package:haruviet/resources/routes.dart';
 import 'package:haruviet/theme/typography.dart';
 import 'package:haruviet/utils/commons.dart';
@@ -27,6 +29,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:provider/provider.dart';
+import 'package:badges/badges.dart' as badges;
 
 class ProductListPage extends StatefulWidget {
   const ProductListPage({super.key});
@@ -47,23 +51,12 @@ class _ProductListPageState extends State<ProductListPage> {
   FocusNode focusNode = FocusNode();
   bool isFocused = false;
   late ProductListBloc bloc;
-  late SearchProductCategoryBloc blocSearchProductCategory;
 
   // late SearchProductCategoryBloc blocSearch;
-
-  void _onFocusChange() {
-    setState(() {
-      // bloc.onChangeSearch();
-      isFocused = focusNode.hasFocus;
-      isFocused == false ? bloc.onResetSearch() : {};
-    });
-  }
 
   @override
   void initState() {
     super.initState();
-    focusNode.addListener(_onFocusChange);
-    blocSearchProductCategory = SearchProductCategoryBloc()..getData();
     bloc = ProductListBloc()..getData();
     _pagingController.addPageRequestListener((pageKey) {
       if (pageKey != startPage) {
@@ -76,7 +69,6 @@ class _ProductListPageState extends State<ProductListPage> {
 
   @override
   void dispose() {
-    focusNode.removeListener(_onFocusChange);
     _pagingController.dispose();
     super.dispose();
   }
@@ -88,196 +80,52 @@ class _ProductListPageState extends State<ProductListPage> {
         BlocProvider(
           create: (context) => bloc,
         ),
-        BlocProvider(
-          create: (context) => blocSearchProductCategory,
-        ),
       ],
       child: MultiBlocListener(
         listeners: [
-          isFocused
-              ? BlocListener<ProductListBloc, ProductListState>(
-                  listenWhen: (previous, current) =>
-                      previous.productSearchList != current.productSearchList,
-                  listener: (context, state) {},
-                )
-              : BlocListener<ProductListBloc, ProductListState>(
-                  listenWhen: (previous, current) =>
-                      previous.newDataList != current.newDataList,
-                  listener: (context, state) {
-                    if (state.currentPage == startPage) {
-                      _pagingController.refresh();
-                    }
-                    if (state.canLoadMore) {
-                      _pagingController.appendPage(
-                        state.newDataList ?? [],
-                        state.currentPage + 1,
-                      );
-                    } else {
-                      _pagingController.appendLastPage(state.newDataList ?? []);
-                    }
-                  },
-                ),
+          BlocListener<ProductListBloc, ProductListState>(
+            listenWhen: (previous, current) =>
+                previous.newDataList != current.newDataList,
+            listener: (context, state) {
+              if (state.currentPage == startPage) {
+                _pagingController.refresh();
+              }
+              if (state.canLoadMore) {
+                _pagingController.appendPage(
+                  state.newDataList ?? [],
+                  state.currentPage + 1,
+                );
+              } else {
+                _pagingController.appendLastPage(state.newDataList ?? []);
+              }
+            },
+          ),
+          BlocListener<ProductListBloc, ProductListState>(
+            listenWhen: (previous, current) =>
+                previous.currentTab != current.currentTab,
+            listener: (context, state) {
+              bloc.onFetch(page: startPage);
+              _pagingController.refresh();
+            },
+          ),
         ],
         child: BlocBuilder<ProductListBloc, ProductListState>(
           builder: (context, state) {
-            return Scaffold(
-              appBar: AppBar(
-                leading: IconButton(
-                  icon: const Icon(Icons.arrow_back, color: colorWhite),
-                  onPressed: isFocused
-                      ? () {
-                          setState(() {
-                            searchController.text = '';
-                            isFocused = false;
-                            FocusScope.of(context).unfocus(); //
-                          });
-                        }
-                      : () {
-                          context.justBack();
+            return isFocused
+                ? const SearchScaffold()
+                : Scaffold(
+                    appBar: _appbarSearch(context),
+                    body: RefreshIndicator(
+                        onRefresh: () async {
+                          _pagingController.refresh();
+                          bloc.onFetch(page: startPage);
                         },
-                ),
-                centerTitle: true,
-                title: _buildSearchField(),
-                backgroundColor: colorMain,
-                actions: isFocused
-                    ? null
-                    : <Widget>[
-                        IconButton(
-                          onPressed: () {
-                            routeService.pushNamed(Routes.cartPage,
-                                arguments: CartPageParams(isAppBar: true));
-                          },
-                          icon: const Icon(
-                            Icons.shopping_cart_outlined,
-                            color: colorWhite,
-                            weight: 2.5,
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            setState(() {
-                              checkIsChangeListItem = !checkIsChangeListItem;
-                            });
-                          },
-                          icon: Icon(
-                            checkIsChangeListItem
-                                ? Icons.border_all
-                                : Icons.format_line_spacing_outlined,
-                            color: colorWhite,
-                            weight: 2.5,
-                          ),
-                        ),
-                      ],
-              ),
-              body: isFocused
-                  ? GestureDetector(
-                      onTap: () =>
-                          FocusManager.instance.primaryFocus?.unfocus(),
-                      child: _viewSearch(context, state: state))
-                  : RefreshIndicator(
-                      onRefresh: () async {
-                        _pagingController.refresh();
-                        bloc.onFetch(page: startPage);
-                      },
-                      child: _viewDefault(context, state: state)),
-            );
+                        child: _viewDefault(context, state: state)),
+                  );
           },
         ),
       ),
     );
-  }
-
-//  CustomScrollView kết hợp với SliverList để dễ dàng quản lý và hiển thị các danh sách cuộn.
-  Widget _viewSearch(BuildContext context, {required ProductListState state}) {
-    return state.categorySearchList.isEmpty && state.productSearchList.isEmpty
-        ? _emptyV2(context, state: state)
-        : CustomScrollView(
-            slivers: [
-              SliverToBoxAdapter(
-                child: state.productSearchList.isNotEmpty
-                    ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Text('Sản phẩm',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleMedium
-                                    ?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        color: colorMain,
-                                        fontSize: 18)),
-                          ),
-                        ],
-                      )
-                    : space0,
-              ),
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    if (index.isOdd) {
-                      return const Divider(
-                        color:
-                            //     isInteger(index) ? colorPrimary :
-                            colorBlueGray02,
-                      );
-                    }
-                    final itemIndex = index ~/ 2;
-                    if (itemIndex < state.productSearchList.length) {
-                      final item = state.productSearchList[itemIndex];
-                      return _itemSearchProducts(context,
-                          data: item, index: itemIndex);
-                    }
-                    return space0;
-                  },
-                  childCount: state.productSearchList.length * 2 -
-                      1, // Account for dividers
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: state.categorySearchList.isNotEmpty
-                    ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Divider(
-                            color: colorBlueGray03,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                right: 16, top: 16, bottom: 8, left: 16),
-                            child: Text('Danh mục',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleMedium
-                                    ?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        color: colorMain,
-                                        fontSize: 18)),
-                          ),
-                        ],
-                      )
-                    : space0,
-              ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 12.w),
-                  child: Wrap(
-                    spacing: 8.w,
-                    runSpacing: 8.w,
-                    children: List.generate(
-                      state.categorySearchList.length,
-                      (index) {
-                        final item = state.categorySearchList[index];
-                        return _itemSearchCategories(context,
-                            data: item, index: index);
-                      },
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          );
   }
 
   Widget _viewDefault(BuildContext context, {required ProductListState state}) {
@@ -518,10 +366,10 @@ class _ProductListPageState extends State<ProductListPage> {
                           ),
                     ),
                     const SizedBox(height: 4),
-                    (data.descriptions == null || data.descriptions!.isEmpty)
+                    (data.descriptions == null)
                         ? space0
                         : Text(
-                            data.descriptions![0].name ?? '',
+                            data.descriptions?.name ?? '',
                             style: Theme.of(context)
                                 .textTheme
                                 .titleSmall
@@ -641,77 +489,6 @@ class _ProductListPageState extends State<ProductListPage> {
     );
   }
 
-  Widget _emptyV2(BuildContext context, {required ProductListState state}) {
-    return BlocSelector<SearchProductCategoryBloc, SearchProductCategoryState,
-        List<SuggestionDataSearchModel>>(
-      selector: (data) {
-        return data.searchDataList;
-      },
-      builder: (context, data) {
-        return ListView.builder(
-          itemCount: data.length,
-          itemBuilder: (context, index) {
-            final reversedData = List.from(data.reversed);
-            final value = reversedData[index].value;
-            return InkWell(
-              onTap: () {
-                searchController.text = value;
-                bloc.onGetDataSearch(value);
-              },
-              borderRadius: BorderRadius.circular(8.0.r),
-              splashColor: colorGray03, // Hiệu ứng ripple
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 12.0, horizontal: 16.0),
-                child: Text(
-                  value,
-                  style: textTheme.titleMedium?.copyWith(
-                    color: colorSecondary04,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
-    // BlocSelector<ProductListBloc, ProductListState,
-    //     List<SuggestionDataSearchModel>>(
-    //   selector: (data) {
-    //     return data.searchDataList;
-    //   },
-    //   builder: (context, data) {
-    //     return ListView.builder(
-    //       itemCount: data.length,
-    //       itemBuilder: (context, index) {
-    //         final reversedData = List.from(data.reversed);
-    //         final value = reversedData[index].value;
-    //         return InkWell(
-    //           onTap: () {
-    //             searchController.text = value;
-    //             bloc.onGetDataSearch(value);
-    //           },
-    //           borderRadius: BorderRadius.circular(8.0.r),
-    //           splashColor: colorGray03, // Hiệu ứng ripple
-    //           child: Padding(
-    //             padding: const EdgeInsets.symmetric(
-    //                 vertical: 12.0, horizontal: 16.0),
-    //             child: Text(
-    //               value,
-    //               style: textTheme.titleMedium?.copyWith(
-    //                 color: colorSecondary04,
-    //                 fontWeight: FontWeight.w500,
-    //               ),
-    //             ),
-    //           ),
-    //         );
-    //       },
-    //     );
-    //   },
-    // );
-  }
-
   Widget _empty(BuildContext context) {
     return const DidntFound();
   }
@@ -819,11 +596,10 @@ class _ProductListPageState extends State<ProductListPage> {
                               ),
                             ),
                             spaceH4,
-                            (data.descriptions == null ||
-                                    data.descriptions!.isEmpty)
+                            (data.descriptions == null)
                                 ? space0
                                 : Text(
-                                    data.descriptions![0].name ?? '',
+                                    data.descriptions?.name ?? '',
                                     style: textTheme.labelMedium?.copyWith(
                                       color: colorBlackTileItem,
                                       fontWeight: FontWeight.w500,
@@ -1001,19 +777,85 @@ class _ProductListPageState extends State<ProductListPage> {
     );
   }
 
-  Widget _buildSearchField() {
-    return AppSearchBar(
-      focusNode: focusNode,
-      hintText: 'Tìm kiếm sản phẩm',
-      controller: searchController,
-      onChanged: (keyword) {
-        setState(() {
-          blocSearchProductCategory.onKeywordChanged(keyword: keyword);
-          //   bloc.onKeywordChanged(keyword: keyword);
-          //    bloc.onUserSearchBloc(keyword: keyword);
-          isFocused != true ? keyword = '' : {};
-        });
-      },
+  PreferredSizeWidget _appbarSearch(BuildContext context) {
+    return AppBar(
+      centerTitle: true,
+      backgroundColor: colorMain,
+      title: AppSearchBarV2(
+        hintText: 'Tìm kiếm sản phẩm',
+        onTap: () {
+          Navigator.push(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) {
+                const begin = Offset(0.8, 0.0);
+                const end = Offset.zero;
+                const curve = Curves.decelerate;
+
+                var tween = Tween(begin: begin, end: end);
+                var curvedAnimation = CurvedAnimation(
+                  parent: animation,
+                  curve: curve,
+                );
+
+                var offsetAnimation = tween.animate(curvedAnimation);
+
+                return SlideTransition(
+                  position: offsetAnimation,
+                  child: const SearchScaffold(),
+                );
+              },
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: child,
+                );
+              },
+            ),
+          );
+          //.then((value) => bloc.onHideBottomBar());
+        },
+      ),
+      actions: <Widget>[
+        spaceW16,
+        Consumer<CartProvider>(
+          builder: (BuildContext context, CartProvider value, Widget? child) {
+            return badges.Badge(
+              position: badges.BadgePosition.topEnd(top: 0, end: 2),
+              showBadge: value.getCounter() == 0 ? false : true,
+              ignorePointer: false,
+              badgeStyle: const badges.BadgeStyle(badgeColor: Colors.yellow),
+              badgeContent: Text('${value.counter}'),
+              child: IconButton(
+                onPressed: () {
+                  routeService.pushNamed(Routes.cartPage,
+                      arguments: CartPageParams(isAppBar: true));
+                },
+                icon: Icon(
+                  Icons.shopping_cart_outlined,
+                  color: colorWhite,
+                  weight: 2.5.sp,
+                ),
+              ),
+            );
+          },
+        ),
+        IconButton(
+          onPressed: () {
+            setState(() {
+              checkIsChangeListItem = !checkIsChangeListItem;
+            });
+          },
+          icon: Icon(
+            checkIsChangeListItem
+                ? Icons.border_all
+                : Icons.format_line_spacing_outlined,
+            color: colorWhite,
+            weight: 2.5,
+          ),
+        ),
+      ],
     );
   }
 }

@@ -1,4 +1,3 @@
-import 'package:haruviet/page/main_screen/widget/bottom_nar_item.dart';
 import 'package:haruviet/page/product/models/numerical.dart';
 import 'package:haruviet/page/product/models/product_model.dart';
 import 'package:haruviet/page/product/models/product_size.dart';
@@ -163,33 +162,6 @@ class AppData {
     ),
   ];
 
-  // static List<ProductCategory> categories = [
-  //   ProductCategory(
-  //     type: ProductType.all,
-  //     icon: Icons.all_inclusive,
-  //   ),
-  //   ProductCategory(
-  //     type: ProductType.mobile,
-  //     icon: FontAwesomeIcons.mobileScreenButton,
-  //   ),
-  //   ProductCategory(
-  //     type: ProductType.watch,
-  //     icon: Icons.watch,
-  //   ),
-  //   ProductCategory(
-  //     type: ProductType.tablet,
-  //     icon: FontAwesomeIcons.tablet,
-  //   ),
-  //   ProductCategory(
-  //     type: ProductType.headphone,
-  //     icon: Icons.headphones,
-  //   ),
-  //   ProductCategory(
-  //     type: ProductType.tv,
-  //     icon: Icons.tv,
-  //   ),
-  // ];
-
   static List<Color> randomColors = [
     const Color(0xFFFCE4EC),
     const Color(0xFFF3E5F5),
@@ -199,29 +171,6 @@ class AppData {
     const Color(0xFFF1F8E9),
     const Color(0xFFFFF8E1),
     const Color(0xFFECEFF1),
-  ];
-
-  static List<BottomNavyBarItem> bottomNavyBarItems = [
-    const BottomNavyBarItem(
-      "Home",
-      Icon(Icons.home),
-      Color(0xFFEC6813),
-    ),
-    const BottomNavyBarItem(
-      "Favorite",
-      Icon(Icons.favorite),
-      Color(0xFFEC6813),
-    ),
-    const BottomNavyBarItem(
-      "Cart",
-      Icon(Icons.shopping_cart),
-      Color(0xFFEC6813),
-    ),
-    const BottomNavyBarItem(
-      "Profile",
-      Icon(Icons.person),
-      Color(0xFFEC6813),
-    ),
   ];
 
   static List<RecommendedProduct> recommendedProducts = [
@@ -237,8 +186,8 @@ class AppData {
     ),
     RecommendedProduct(
       imagePath: "",
-      cardBackgroundColor: Color.fromARGB(255, 48, 225, 66),
-      buttonBackgroundColor: Color.fromARGB(255, 255, 184, 70),
+      cardBackgroundColor: const Color.fromARGB(255, 48, 225, 66),
+      buttonBackgroundColor: const Color.fromARGB(255, 255, 184, 70),
       buttonTextColor: Colors.white,
     ),
   ];

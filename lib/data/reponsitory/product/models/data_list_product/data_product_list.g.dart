@@ -30,11 +30,12 @@ DataProduct _$DataProductFromJson(Map<String, dynamic> json) => DataProduct(
       approve: json['approve'] as int?,
       sort: json['sort'] as int?,
       view: json['view'] as int?,
-      dateLastview: json['date_lastview'],
+      dateLastview: json['date_lastview'] as String?,
       dateAvailable: json['date_available'],
-      descriptions: (json['descriptions'] as List<dynamic>?)
-          ?.map((e) => ProductDescription.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      descriptions: json['descriptions'] == null
+          ? null
+          : ProductDescription.fromJson(
+              json['descriptions'] as Map<String, dynamic>),
       categories: (json['categories'] as List<dynamic>?)
           ?.map((e) => Category.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -45,6 +46,12 @@ DataProduct _$DataProductFromJson(Map<String, dynamic> json) => DataProduct(
           ? null
           : ProductPromotionPriceList.fromJson(
               json['promotion_price'] as Map<String, dynamic>),
+      reviews: json['reviews'] == null
+          ? null
+          : ProductReview.fromJson(json['reviews'] as Map<String, dynamic>),
+      promotionDetails: (json['promotiondetails'] as List<dynamic>?)
+          ?.map((e) => ProductMotionDetails.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$DataProductToJson(DataProduct instance) =>
@@ -72,4 +79,6 @@ Map<String, dynamic> _$DataProductToJson(DataProduct instance) =>
       'categories': instance.categories,
       'images': instance.images,
       'promotion_price': instance.promotionPrice,
+      'promotiondetails': instance.promotionDetails,
+      'reviews': instance.reviews,
     };

@@ -200,7 +200,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 onPressed: validBuyProductAttributes
                     ? () {
                         bloc.onAddItemToCart(
-                            quantity: state.currentCounter ?? 0,
+                            quantity: state.currentCounter ?? 1,
                             idProduct: state.dataProduct?.id ?? '',
                             nameProduct:
                                 state.dataProduct?.descriptions?.name ?? '',
@@ -233,10 +233,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       offset: const Offset(-24, 0), // Dịch sang trái 24px
                       child: Align(
                         alignment: Alignment.centerLeft,
-                        widthFactor:
-                            0.85, // Tỉ lệ chiều rộng của ảnh so với Container (để dịch thêm)
+                        widthFactor: 0.85,
                         child: Image.network(
-                          '${state.imageUrls[0]}}',
+                          '${state.imageUrls[1]}}',
                           height: 100,
                           fit: BoxFit.cover,
                         ),
@@ -355,6 +354,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                             itemBuilder: (context, index) {
                                               return InkWell(
                                                 onTap: () {
+                                                  // unfocus textfield
+                                                  FocusManager
+                                                      .instance.primaryFocus
+                                                      ?.unfocus();
                                                   ReviewFiles.show(
                                                     imageScripts: [
                                                       state
@@ -380,7 +383,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                             },
                                           ),
                                         ),
-
                                         spaceH6,
                                         Container(
                                           color: colorGray02,
@@ -762,7 +764,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                               context, state)
                                                           : bloc.onAddItemToCart(
                                                               quantity: state.currentCounter ??
-                                                                  0,
+                                                                  1,
                                                               idProduct: state
                                                                       .dataProduct
                                                                       ?.id ??
@@ -2058,7 +2060,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         ),
                         spaceH4,
                         Text(
-                          data.descriptions?[0].name ?? '',
+                          data.descriptions?.name ?? '',
                           style: textTheme.labelMedium?.copyWith(
                             color: colorBlackTileItem,
                             fontWeight: FontWeight.w500,

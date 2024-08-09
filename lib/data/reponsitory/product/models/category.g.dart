@@ -10,9 +10,10 @@ Category _$CategoryFromJson(Map<String, dynamic> json) => Category(
       id: json['id'] as String?,
       image: json['image'] as String?,
       alias: json['alias'] as String?,
-      descriptions: (json['descriptions'] as List<dynamic>?)
-          ?.map((e) => ProductDescription.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      descriptions: json['descriptions'] == null
+          ? null
+          : ProductDescription.fromJson(
+              json['descriptions'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$CategoryToJson(Category instance) => <String, dynamic>{

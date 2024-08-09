@@ -19,25 +19,15 @@ class ProductListState extends BaseState {
   final bool isLoading;
   final bool canLoadMore;
   final int currentPage;
-  final ListProduct? productList;
   final List<DataProduct>? newDataList;
   final List<DataProduct> datatList;
   final int limit;
   final CurrentTab currentTab;
-  final List<SearchCategory> categorySearchList;
-  final List<SearchProduct> productSearchList;
-  final List<SuggestionDataSearchModel> searchDataList;
-  final bool checkSearch;
   final bool firtTimeLoadingPage;
   const ProductListState({
     ViewState viewState = ViewState.loaded,
     String errorMsg = '',
-    this.productList,
     this.firtTimeLoadingPage = true,
-    this.checkSearch = false,
-    this.categorySearchList = const [],
-    this.searchDataList = const [],
-    this.productSearchList = const [],
     this.currentTab = CurrentTab.all,
     this.canLoadMore = false,
     this.limit = 12, // perPage,

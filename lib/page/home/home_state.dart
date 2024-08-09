@@ -23,12 +23,14 @@ class HomeState extends BaseState {
   final int limit;
   final List<ProductRecommendationModel> productListLocal;
   final List<IdProductRecommendationModel> idProductListLocal;
+  final bool firtTimeLoadingPage;
 
   const HomeState({
     ViewState viewState = ViewState.loaded,
     String errorMsg = '',
     this.productListLocal = const [],
     this.idProductListLocal = const [],
+    this.firtTimeLoadingPage = true,
     this.productList,
     this.canLoadMore = false,
     this.limit = 8, // perPageHome,

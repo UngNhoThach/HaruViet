@@ -46,3 +46,8 @@ class AddressApi {
   static const getAddressId =
       "${SettingApi.rootDomain}/api/v1/customer/address_edit/{idAddress}";
 }
+
+class CategoryApi {
+  static const getDetailCategory =
+      "${SettingApi.rootDomain}/api/v1/shop/category/{idCategory}";
+}

@@ -1,3 +1,4 @@
+import 'package:haruviet/api/services/products/models/get_list_product_request.dart';
 import 'package:haruviet/api/services/products/product_services.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_list_product/list_product.dart';
 import 'package:flutter/foundation.dart';
@@ -9,12 +10,10 @@ class ProductRepository {
   final _productService = ProductService();
 
   Future<ListProduct> getListProductsRP(
-      {required String size, required String totalproduct}) async {
+      {required GetListProductRequest request}) async {
     try {
-      final response = await _productService.getListProductsSV(
-        size: size,
-        totalproduct: totalproduct,
-      );
+      final response =
+          await _productService.getListProductsSV(request: request);
       final result = ListProduct.fromJson(response.data);
       return result;
     } catch (error, statckTrace) {

@@ -8,17 +8,17 @@ abstract class BaseService {
   final Logger _logger = Logger();
 
   Future<dynamic> get(String path,
-      {Map<String, dynamic>? data,
+      {Map<String, dynamic>? params,
       Map<String, dynamic>? headers,
       ignoreResultCode = false,
       String? dataKey}) async {
     try {
       final response = await RestClient.dio.get(
         path,
-        data: data,
+        queryParameters: params,
         options: Options(headers: headers),
       );
-      _logger.i('path: $path \ndata: $data\nresponse: $response');
+      _logger.i('path: $path \nparams: $params\nresponse: $response');
       return _handleResponse(response);
     } catch (error, stackTrace) {
       print("$error + $stackTrace");

@@ -14,7 +14,6 @@ class ListProduct {
   String? path;
   @JsonKey(name: 'per_page')
   int? perPage;
-
   int? to;
   int? total;
 

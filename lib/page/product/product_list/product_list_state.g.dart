@@ -11,6 +11,10 @@ abstract class _$ProductListStateCWProxy {
 
   ProductListState errorMsg(String errorMsg);
 
+  ProductListState checkFilterProductList(bool checkFilterProductList);
+
+  ProductListState checkIsChangeListItem(bool checkIsChangeListItem);
+
   ProductListState firtTimeLoadingPage(bool firtTimeLoadingPage);
 
   ProductListState currentTab(CurrentTab currentTab);
@@ -40,6 +44,8 @@ abstract class _$ProductListStateCWProxy {
   ProductListState call({
     ViewState? viewState,
     String? errorMsg,
+    bool? checkFilterProductList,
+    bool? checkIsChangeListItem,
     bool? firtTimeLoadingPage,
     CurrentTab? currentTab,
     bool? canLoadMore,
@@ -64,6 +70,14 @@ class _$ProductListStateCWProxyImpl implements _$ProductListStateCWProxy {
 
   @override
   ProductListState errorMsg(String errorMsg) => this(errorMsg: errorMsg);
+
+  @override
+  ProductListState checkFilterProductList(bool checkFilterProductList) =>
+      this(checkFilterProductList: checkFilterProductList);
+
+  @override
+  ProductListState checkIsChangeListItem(bool checkIsChangeListItem) =>
+      this(checkIsChangeListItem: checkIsChangeListItem);
 
   @override
   ProductListState firtTimeLoadingPage(bool firtTimeLoadingPage) =>
@@ -114,6 +128,8 @@ class _$ProductListStateCWProxyImpl implements _$ProductListStateCWProxy {
   ProductListState call({
     Object? viewState = const $CopyWithPlaceholder(),
     Object? errorMsg = const $CopyWithPlaceholder(),
+    Object? checkFilterProductList = const $CopyWithPlaceholder(),
+    Object? checkIsChangeListItem = const $CopyWithPlaceholder(),
     Object? firtTimeLoadingPage = const $CopyWithPlaceholder(),
     Object? currentTab = const $CopyWithPlaceholder(),
     Object? canLoadMore = const $CopyWithPlaceholder(),
@@ -134,6 +150,18 @@ class _$ProductListStateCWProxyImpl implements _$ProductListStateCWProxy {
           ? _value.errorMsg
           // ignore: cast_nullable_to_non_nullable
           : errorMsg as String,
+      checkFilterProductList:
+          checkFilterProductList == const $CopyWithPlaceholder() ||
+                  checkFilterProductList == null
+              ? _value.checkFilterProductList
+              // ignore: cast_nullable_to_non_nullable
+              : checkFilterProductList as bool,
+      checkIsChangeListItem:
+          checkIsChangeListItem == const $CopyWithPlaceholder() ||
+                  checkIsChangeListItem == null
+              ? _value.checkIsChangeListItem
+              // ignore: cast_nullable_to_non_nullable
+              : checkIsChangeListItem as bool,
       firtTimeLoadingPage:
           firtTimeLoadingPage == const $CopyWithPlaceholder() ||
                   firtTimeLoadingPage == null

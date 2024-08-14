@@ -11,9 +11,10 @@ Subcategory _$SubcategoryFromJson(Map<String, dynamic> json) => Subcategory(
       name: json['name'],
       image: json['image'] as String?,
       alias: json['alias'] as String?,
-      descriptions: (json['descriptions'] as List<dynamic>?)
-          ?.map((e) => ProductDescription.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      descriptions: json['descriptions'] == null
+          ? null
+          : ProductDescription.fromJson(
+              json['descriptions'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$SubcategoryToJson(Subcategory instance) =>

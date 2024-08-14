@@ -825,6 +825,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                 ),
                                               ],
                                             )),
+
                                         const Divider(
                                           color: colorGray03,
                                         ),

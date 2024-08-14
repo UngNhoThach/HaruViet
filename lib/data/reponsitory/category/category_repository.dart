@@ -5,7 +5,7 @@ import 'package:haruviet/data/reponsitory/category/models/category_detail_respon
 class CategoryRepository {
   final _categoryService = CategoryService();
 
-  Future<CategoryDetailResponse> getListProductsRP(
+  Future<CategoryDetailResponse> getDetailCategoryRP(
       {required String idCategory}) async {
     try {
       final response =

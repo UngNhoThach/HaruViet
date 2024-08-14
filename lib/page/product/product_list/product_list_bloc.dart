@@ -9,10 +9,12 @@ import 'package:haruviet/database_local/suggestion_data_search/suggestion_data_s
 import 'package:haruviet/helper/const.dart';
 import 'package:haruviet/page/product/product_list/product_list_state.dart';
 import 'package:flutter/foundation.dart';
+import 'package:haruviet/page/product/product_list/widgets/product_list_page_params.dart';
 
 // ProductListBloc
 class ProductListBloc extends BaseBloc<ProductListState> {
-  ProductListBloc() : super(const ProductListState());
+  final ProductListPageParams? params;
+  ProductListBloc(this.params) : super(const ProductListState());
   final ProductRepository _productRepository = ProductRepository();
   final SuggestionDataSearchDatabase searchDatabase =
       SuggestionDataSearchDatabase();
@@ -40,10 +42,11 @@ class ProductListBloc extends BaseBloc<ProductListState> {
             viewState: ViewState.error, errorMsg: error.toString()));
       }
     }
+    await onFetch(page: startPage);
+
     emit(state.copyWith(
       isLoading: false,
     ));
-    onFetch(page: startPage);
   }
 
   onReset() {
@@ -54,10 +57,6 @@ class ProductListBloc extends BaseBloc<ProductListState> {
     required int page,
   }) async {
     try {
-      emit(state.copyWith(
-        isLoading: true,
-      ));
-
       // Reset the list if fetching the first page
       List<DataProduct> updatedDataList = [];
       if (page == startPage) {
@@ -77,6 +76,7 @@ class ProductListBloc extends BaseBloc<ProductListState> {
         request: GetListProductRequest(
             paegNumber: page,
             pageSize: state.limit,
+            category: params?.subCategoryID ?? '',
             sort: state.currentTab.value),
       );
 
@@ -92,9 +92,6 @@ class ProductListBloc extends BaseBloc<ProductListState> {
         canLoadMore: canLoadMore,
       ));
 
-      emit(state.copyWith(
-        isLoading: false,
-      ));
       onChangeFirstTimeLoadinPage(false);
     } catch (error, stackTrace) {
       if (kDebugMode) {

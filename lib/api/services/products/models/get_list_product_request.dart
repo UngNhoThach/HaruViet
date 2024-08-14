@@ -12,13 +12,31 @@ class GetListProductRequest {
   String? sort;
   @JsonKey(name: 'lang')
   String? language;
+  @JsonKey(name: 'category')
+  String? category;
+  Map<String, String>? filters;
 
   GetListProductRequest({
     required this.paegNumber,
     required this.pageSize,
     this.sort,
     this.language,
+    this.category,
+    this.filters,
   });
 
-  Map<String, dynamic> toJson() => _$GetListProductRequestToJson(this);
+  // Map<String, dynamic> toJson() => _$GetListProductRequestToJson(this);
+
+  Map<String, dynamic> toJson() {
+    final data = _$GetListProductRequestToJson(this);
+
+    // Add dynamic filters to the JSON map
+    if (filters != null) {
+      for (var entry in filters!.entries) {
+        data['filter-${entry.key}'] = entry.value;
+      }
+    }
+
+    return data;
+  }
 }

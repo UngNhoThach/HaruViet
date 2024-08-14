@@ -12,10 +12,10 @@ CategoryDetailResponse _$CategoryDetailResponseFromJson(
       category: json['category'] == null
           ? null
           : Category.fromJson(json['category'] as Map<String, dynamic>),
-      filterableAttributes: json['filterableAttributes'] as List<dynamic>?,
-      products: json['products'] == null
-          ? null
-          : ListProduct.fromJson(json['products'] as Map<String, dynamic>),
+      filterableAttributes: (json['filterableAttributes'] as List<dynamic>?)
+          ?.map((e) =>
+              AtributesCategoryResponse.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$CategoryDetailResponseToJson(
@@ -23,5 +23,4 @@ Map<String, dynamic> _$CategoryDetailResponseToJson(
     <String, dynamic>{
       'category': instance.category,
       'filterableAttributes': instance.filterableAttributes,
-      'products': instance.products,
     };

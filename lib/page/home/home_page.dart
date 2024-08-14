@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:haruviet/component/error/not_found.dart';
-import 'package:haruviet/component/input/search_bar.dart';
 import 'package:haruviet/component/shimer/image_product_shimer.dart';
 import 'package:haruviet/data/data_local/user_bloc.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_list_product/data_product_list.dart';
@@ -17,11 +16,10 @@ import 'package:haruviet/page/home/widgets/count_dount.dart';
 import 'package:haruviet/page/home/widgets/flash_deals.dart';
 import 'package:haruviet/page/home/widgets/home_icon.dart';
 import 'package:haruviet/page/product/detail/widgets/product_detail_params.dart';
-import 'package:haruviet/search/search_product_category_bloc.dart';
+import 'package:haruviet/page/product/product_list/widgets/product_list_page_params.dart';
+import 'package:haruviet/page/product/widgets/item_products_widget.dart';
 import 'package:haruviet/qr/qr_page.dart';
 import 'package:haruviet/resources/routes.dart';
-import 'package:haruviet/search/search_product_category_state.dart';
-import 'package:haruviet/search/widgets/search_widgets.dart';
 import 'package:haruviet/theme/typography.dart';
 import 'package:haruviet/utils/commons.dart';
 import 'package:flutter/material.dart';
@@ -30,13 +28,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class HomePage extends StatefulWidget {
-  // final ScrollController firstTabBarScrollController;
-  // final ScrollController secondTabBarScrollController;
-
   const HomePage({
     super.key,
-    // required this.firstTabBarScrollController,
-    // required this.secondTabBarScrollController,
   });
 
   @override
@@ -53,7 +46,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       PagingController(firstPageKey: startPage, invisibleItemsThreshold: 3);
   late TabController _tabController;
   FocusNode focusNode = FocusNode();
-  final SearchWidgets searchWidgets = SearchWidgets();
+  final ItemProductWidget itemProductWidgets = ItemProductWidget();
 
   @override
   void initState() {
@@ -183,6 +176,26 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   // widgets
 
+  Widget _itemRow(
+    BuildContext context, {
+    required DataProduct data,
+    required int index,
+    required String domain,
+  }) {
+    return itemProductWidgets.itemRow(context,
+        data: data, index: index, domain: domain);
+  }
+
+  Widget _itemGridView(
+    BuildContext context, {
+    required DataProduct data,
+    required int index,
+    required String domain,
+  }) {
+    return itemProductWidgets.itemGridView(context,
+        data: data, index: index, domain: domain);
+  }
+
   Widget _flashDealsProductListView(
     BuildContext context,
   ) {
@@ -205,22 +218,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  // Widget _listdataLocal(BuildContext context, HomeState state) {
-  //   return SizedBox(
-  //     height: 210.h, // Define a fixed height for the ListView
-  //     child: ListView.separated(
-  //       separatorBuilder: (context, index) => spaceW12,
-  //       shrinkWrap: true,
-  //       scrollDirection: Axis.horizontal,
-  //       itemCount: state.productListLocal.length,
-  //       itemBuilder: (context, index) {
-  //         return _itemDataLocal(context, data: state.productListLocal[index]);
-  //       },
-  //       physics: const BouncingScrollPhysics(),
-  //     ),
-  //   );
-  // }
-
   Widget _flashDealsProductGridView(BuildContext context) {
     return CustomScrollView(
       shrinkWrap: true,
@@ -237,24 +234,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ),
           builderDelegate: PagedChildBuilderDelegate<DataProduct>(
             noItemsFoundIndicatorBuilder: _empty,
-            itemBuilder: (context, item, index) =>
-                _itemFlashSale(context, index: index, data: item),
+            itemBuilder: (context, item, index) => _itemGridView(context,
+                index: index, data: item, domain: domain),
           ),
         ),
       ],
     );
-  }
-
-  Widget viewSearch(BuildContext context,
-      {required String domain,
-      required SearchProductCategoryBloc blocSearchProductCategory,
-      required TextEditingController searchController,
-      required SearchProductCategoryState stateSearchList}) {
-    return searchWidgets.viewSearch(context,
-        domain: domain,
-        stateSearchList: stateSearchList,
-        blocSearchProductCategory: blocSearchProductCategory,
-        searchController: searchController);
   }
 
   Widget _itemFlashSale(BuildContext context,
@@ -703,7 +688,8 @@ Widget _topCategoriesHeader(
         isTimer ? const FlashDealsTimer() : const SizedBox(),
         TextButton(
           onPressed: () {
-            routeService.pushNamed(Routes.productListPage);
+            routeService.pushNamed(Routes.productListPage,
+                arguments: ProductListPageParams());
           },
           child: Text(
             "Xem tất cả",

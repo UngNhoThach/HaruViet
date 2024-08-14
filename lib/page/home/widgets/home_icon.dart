@@ -1,11 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:haruviet/component/shimer/image_product_shimer.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/shadows.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:haruviet/helper/spaces.dart';
 
 class HomePageIcon extends StatelessWidget {
   final String assetImageString;
@@ -110,51 +112,53 @@ class ChildCategory extends StatelessWidget {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          SizedBox(
-            width: 76,
-            height: 60,
-            child: Wrap(alignment: WrapAlignment.center, children: [
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  border: Border.all(color: colorGray02),
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
-                child: Center(
-                  child: CachedNetworkImage(
-                    fit: BoxFit.contain,
-
-                    fadeOutDuration: const Duration(seconds: 1),
-                    //  const Duration(seconds: 3),
-                    imageUrl: assetImageString,
-                    width: 32,
-                    height: 32,
-                    placeholder: (context, url) => const ImageProductShimer(
-                      width: 32,
-                      height: 32,
-                    ), // Use the custom shimmer component
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
+          Wrap(alignment: WrapAlignment.center, children: [
+            Container(
+              width: 80.w,
+              height: 80.h,
+              decoration: BoxDecoration(
+                color: colorWhite,
+                border: Border.all(color: colorWhite),
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              child: Column(
+                children: [
+                  spaceH8,
+                  Center(
+                    child: CachedNetworkImage(
+                      fit: BoxFit.contain,
+                      fadeOutDuration: const Duration(seconds: 1),
+                      //  const Duration(seconds: 3),
+                      imageUrl: assetImageString,
+                      width: 38.w,
+                      height: 38.h,
+                      placeholder: (context, url) => ImageProductShimer(
+                        width: 38.w,
+                        height: 38.h,
+                      ), // Use the custom shimmer component
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
+                    ),
                   ),
-                ),
+                  spaceH8,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    child: Text(
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      itemString,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: colorBlack,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(
-                height: 8,
-                width: double.infinity,
-              ),
-              Text(
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                itemString,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ]),
-          ),
+            ),
+          ]),
         ],
       ),
     );

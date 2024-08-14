@@ -8,10 +8,10 @@ part 'category.g.dart';
 @JsonSerializable()
 class Category {
   String? id;
-  dynamic name;
+  String? name;
   String? image;
   String? alias;
-  List<ProductDescription>? descriptions;
+  ProductDescription? descriptions;
   List<Subcategory>? subcategories;
 
   Category({

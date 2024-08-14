@@ -7,9 +7,6 @@ import 'package:haruviet/page/category/category_bloc.dart';
 import 'package:haruviet/page/category/category_state.dart';
 import 'package:haruviet/page/category/widgets/category_paga_params.dart';
 import 'package:haruviet/page/home/widgets/drawer_list_page.dart';
-import 'package:haruviet/search/search_product_category_bloc.dart';
-import 'package:haruviet/search/search_product_category_state.dart';
-import 'package:haruviet/search/widgets/search_widgets.dart';
 import 'package:haruviet/theme/typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -26,7 +23,6 @@ class CategoryPage extends StatefulWidget {
 class _CategoryPageState extends State<CategoryPage> {
   // variables and functions
   FocusNode focusNode = FocusNode();
-  final SearchWidgets searchWidgets = SearchWidgets();
 
   List<ItemCategoryResponse> listCategories() {
     return [
@@ -195,18 +191,6 @@ class _CategoryPageState extends State<CategoryPage> {
         },
       ),
     );
-  }
-
-  Widget viewSearch(BuildContext context,
-      {required String domain,
-      required SearchProductCategoryBloc blocSearchProductCategory,
-      required TextEditingController searchController,
-      required SearchProductCategoryState stateSearchList}) {
-    return searchWidgets.viewSearch(context,
-        domain: domain,
-        stateSearchList: stateSearchList,
-        blocSearchProductCategory: blocSearchProductCategory,
-        searchController: searchController);
   }
 
   Widget _category(BuildContext context) {

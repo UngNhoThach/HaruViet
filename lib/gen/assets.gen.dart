@@ -12,6 +12,22 @@ import 'package:flutter/widgets.dart';
 class $AssetsIconsGen {
   const $AssetsIconsGen();
 
+  /// File path: assets/icons/filter_high.png
+  AssetGenImage get filterHigh =>
+      const AssetGenImage('assets/icons/filter_high.png');
+
+  /// File path: assets/icons/filter_hot-deal.png
+  AssetGenImage get filterHotDeal =>
+      const AssetGenImage('assets/icons/filter_hot-deal.png');
+
+  /// File path: assets/icons/filter_low.png
+  AssetGenImage get filterLow =>
+      const AssetGenImage('assets/icons/filter_low.png');
+
+  /// File path: assets/icons/filter_price.png
+  AssetGenImage get filterPrice =>
+      const AssetGenImage('assets/icons/filter_price.png');
+
   /// File path: assets/icons/ic_about_us.png
   AssetGenImage get icAboutUs =>
       const AssetGenImage('assets/icons/ic_about_us.png');
@@ -32,42 +48,21 @@ class $AssetsIconsGen {
   AssetGenImage get icPayment =>
       const AssetGenImage('assets/icons/ic_payment.png');
 
-  /// File path: assets/icons/icon_drawer.png
-  AssetGenImage get iconDrawer =>
-      const AssetGenImage('assets/icons/icon_drawer.png');
-
-  /// File path: assets/icons/icon_home.png
-  AssetGenImage get iconHome =>
-      const AssetGenImage('assets/icons/icon_home.png');
-
-  /// File path: assets/icons/icon_home_active.png
-  AssetGenImage get iconHomeActive =>
-      const AssetGenImage('assets/icons/icon_home_active.png');
-
-  /// File path: assets/icons/icon_setting.png
-  AssetGenImage get iconSetting =>
-      const AssetGenImage('assets/icons/icon_setting.png');
-
-  /// File path: assets/icons/icon_setting_active.png
-  AssetGenImage get iconSettingActive =>
-      const AssetGenImage('assets/icons/icon_setting_active.png');
-
   /// File path: assets/icons/icon_share.png
   AssetGenImage get iconShare =>
       const AssetGenImage('assets/icons/icon_share.png');
 
   /// List of all assets
   List<AssetGenImage> get values => [
+        filterHigh,
+        filterHotDeal,
+        filterLow,
+        filterPrice,
         icAboutUs,
         icInviteFriends,
         icLogout,
         icNotification,
         icPayment,
-        iconDrawer,
-        iconHome,
-        iconHomeActive,
-        iconSetting,
-        iconSettingActive,
         iconShare
       ];
 }

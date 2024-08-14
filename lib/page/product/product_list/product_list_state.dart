@@ -22,13 +22,18 @@ class ProductListState extends BaseState {
   final List<DataProduct>? newDataList;
   final List<DataProduct> datatList;
   final int limit;
+  final bool checkIsChangeListItem;
+  final bool checkFilterProductList;
+
   final CurrentTab currentTab;
   final bool firtTimeLoadingPage;
   const ProductListState({
     ViewState viewState = ViewState.loaded,
     String errorMsg = '',
+    this.checkFilterProductList = false,
+    this.checkIsChangeListItem = false,
     this.firtTimeLoadingPage = true,
-    this.currentTab = CurrentTab.all,
+    this.currentTab = CurrentTab.latest,
     this.canLoadMore = false,
     this.limit = 12, // perPage,
     this.currentPage = startPage,

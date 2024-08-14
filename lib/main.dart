@@ -50,6 +50,7 @@ import 'package:provider/provider.dart';
 import 'page/account/reset_password/reset_password_page.dart';
 import 'page/account/reset_password/widgets/reset_password_params.dart';
 import 'page/add_address/add_address/widgets/add_address_params.dart';
+import 'page/product/product_list/widgets/product_list_page_params.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -326,7 +327,9 @@ class _HomePageState extends State<HomePage> {
       case Routes.productListPage:
         return MaterialPageRoute(
           settings: const RouteSettings(name: Routes.productListPage),
-          builder: (_) => const ProductListPage(),
+          builder: (_) => ProductListPage(
+            params: settings.arguments as ProductListPageParams,
+          ),
         );
 
       // forgot password

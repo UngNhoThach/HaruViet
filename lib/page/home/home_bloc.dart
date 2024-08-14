@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:haruviet/api/services/products/models/get_list_product_request.dart';
 import 'package:haruviet/base/base_bloc.dart';
 import 'package:haruviet/component/help_basic/help_basic.dart';

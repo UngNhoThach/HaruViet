@@ -23,7 +23,7 @@ class CategoryState extends BaseState {
     ViewState viewState = ViewState.loaded,
     String errorMsg = '',
     this.firtTimeLoadingPage = true,
-    this.currentTab = CurrentTab.all,
+    this.currentTab = CurrentTab.latest,
     this.canLoadMore = false,
     this.limit = 12, // perPage,
     this.currentPage = startPage,

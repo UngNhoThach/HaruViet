@@ -3,11 +3,11 @@ import 'package:haruviet/helper/colors.dart';
 
 enum CurrentTab {
 //  'topsale','latest','pricelowtohigh','pricehightolow',
-  all(''),
+  hot('topsale'),
   topsale('topsale'),
   latest('latest'),
-  pricelowtohigh('pricelowtohigh'),
-  pricehightolow('pricehightolow');
+  priceLow('pricelowtohigh'),
+  priceHigh('pricehightolow');
 
   const CurrentTab(this.value);
 
@@ -16,52 +16,53 @@ enum CurrentTab {
   static CurrentTab from(String? value) {
     return CurrentTab.values.firstWhere(
       (element) => element.value == value,
-      orElse: () => CurrentTab.all,
+      orElse: () => CurrentTab.latest,
     );
   }
 
   String get name {
     switch (this) {
-      case CurrentTab.all:
-        return 'Tất cả';
+      case CurrentTab.hot:
+        return "Hot";
       case CurrentTab.topsale:
         return 'Bán chạy';
       case CurrentTab.latest:
         return 'Mới nhất';
-      case CurrentTab.pricehightolow:
-        return 'Giá giảm dần';
-      case CurrentTab.pricelowtohigh:
-        return 'Giá tăng dần';
+      case CurrentTab.priceLow:
+        return '';
+      case CurrentTab.priceHigh:
+        return '';
     }
   }
 
   Color get backgroundColor {
     switch (this) {
-      case CurrentTab.all:
-        return colorMain;
       case CurrentTab.topsale:
-        return const Color(0xFFB6B6B6);
-      case CurrentTab.latest:
         return const Color(0xFFFFF2CC);
-      case CurrentTab.pricehightolow:
-        return const Color(0xFFDEEBF7);
-      case CurrentTab.pricelowtohigh:
-        return const Color(0xFFDCFFEA);
+      case CurrentTab.hot:
+        return colorMain;
+
+      case CurrentTab.latest:
+        return colorMain;
+      case CurrentTab.priceLow:
+        return colorMain;
+      case CurrentTab.priceHigh:
+        return colorMain;
     }
   }
 
   Color get color {
     switch (this) {
-      case CurrentTab.all:
-        return const Color(0xFFFFFFFF);
       case CurrentTab.topsale:
+        return const Color(0xFFC55A11);
+      case CurrentTab.hot:
         return const Color(0xFFFFFFFF);
       case CurrentTab.latest:
-        return const Color(0xFFC55A11);
-      case CurrentTab.pricehightolow:
-        return const Color(0xFF0070C0);
-      case CurrentTab.pricelowtohigh:
-        return const Color(0xFF00B050);
+        return const Color(0xFFFFFFFF);
+      case CurrentTab.priceLow:
+        return const Color(0xFFFFFFFF);
+      case CurrentTab.priceHigh:
+        return const Color(0xFFFFFFFF);
     }
   }
 }

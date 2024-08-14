@@ -9,7 +9,7 @@ class Subcategory {
   dynamic name;
   String? image;
   String? alias;
-  List<ProductDescription>? descriptions;
+  ProductDescription? descriptions;
 
   Subcategory({
     this.id,

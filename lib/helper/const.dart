@@ -8,21 +8,21 @@ const unknown = 'Không xác định';
 const noData = ' ';
 
 CurrencyTextInputFormatter get currencyFormatWithoutSymbol =>
-    CurrencyTextInputFormatter(
+    CurrencyTextInputFormatter.currency(
       locale: 'vi',
       decimalDigits: 0,
       symbol: '',
     );
 
 CurrencyTextInputFormatter get defaultCurrencyFormatter =>
-    CurrencyTextInputFormatter(
+    CurrencyTextInputFormatter.currency(
       locale: 'vi',
       symbol: 'đ',
       decimalDigits: 0,
     );
 
 CurrencyTextInputFormatter get defaultCurrencyVNDFormatter =>
-    CurrencyTextInputFormatter(
+    CurrencyTextInputFormatter.currency(
       locale: 'vi',
       symbol: 'VNĐ',
       decimalDigits: 0,

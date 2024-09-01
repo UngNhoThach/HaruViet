@@ -19,7 +19,7 @@ class SubCategoryState extends BaseState {
   final bool isLoading;
   final bool isLoadingProduct;
   final Map<AtributesCategoryResponse, AtributesValue>? filteredCategories;
-
+  final bool isFilter;
   final bool canLoadMore;
   final int currentPage;
   final List<DataProduct>? newDataList;
@@ -48,6 +48,7 @@ class SubCategoryState extends BaseState {
     String errorMsg = '',
     this.nameCategory,
     this.filteredCategories,
+    this.isFilter = false,
     this.checkResetFilter = false,
     this.checkIsChangeListItem = false,
     this.checkFilterProductList = false,

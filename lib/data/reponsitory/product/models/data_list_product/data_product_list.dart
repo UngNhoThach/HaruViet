@@ -40,10 +40,10 @@ class DataProduct {
   ProductDescription? descriptions;
   List<Category>? categories;
   List<ImagesProduct>? images;
-  @JsonKey(name: 'promotion_price')
-  ProductPromotionPriceList? promotionPrice;
+  @JsonKey(name: 'discount')
+  ProductPromotionPriceList? discount;
   @JsonKey(name: 'promotiondetails')
-  List<ProductMotionDetails>? promotionDetails;
+  List<ProductMotionDetails?>? promotionDetails;
   @JsonKey(name: 'reviews')
   ProductReview? reviews;
 
@@ -70,7 +70,7 @@ class DataProduct {
       this.descriptions,
       this.categories,
       this.images,
-      this.promotionPrice,
+      this.discount,
       this.reviews,
       this.promotionDetails});
 

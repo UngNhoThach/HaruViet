@@ -43,61 +43,62 @@ class HomeBloc extends BaseBloc<HomeState> {
         idProductListLocal: idProductListLocal,
         userInfoLogin: userInfoLogin,
       ));
+      await onFetch(page: startPage);
     } catch (error, statckTrace) {
       if (kDebugMode) {
         print("$error + $statckTrace");
       }
       emit(state.copyWith(
           viewState: ViewState.error, errorMsg: error.toString()));
+    } finally {
+      emit(state.copyWith(
+        isLoading: false,
+      ));
     }
-    emit(state.copyWith(
-      isLoading: false,
-    ));
-    onFetch(page: startPage);
   }
 
   onReset() {
     onFetch(page: startPage);
   }
 
+  bool isINT(double number) {
+    return number % 1 == 0;
+  }
+
+  bool canLoadMore = false;
+
   onFetch({
     required int page,
   }) async {
     try {
-      emit(state.copyWith(
-        isLoading: true,
-      ));
-      List<DataProduct> updatedDataList = [];
-
       if (page == startPage) {
         emit(
           state.copyWith(
             newDataList: null,
             canLoadMore: false,
-            datatList: updatedDataList,
           ),
         );
-      } else {
-        updatedDataList = List<DataProduct>.from(state.datatList);
       }
+
       final productList = await _productRepository.getListProductsRP(
         request: GetListProductRequest(paegNumber: page, pageSize: state.limit),
       );
-      updatedDataList.addAll(productList.data ?? []);
 
-      final maxLoadMore = ((productList.total ?? 0) / state.limit).floor();
-      final canLoadMore = page <= maxLoadMore;
+      var newDataList = List<DataProduct>.from(productList.data ?? []);
 
+      final loadingCount = ((productList.total ?? 0) / state.limit);
+      final maxLoadMore = loadingCount.floor();
+      if (isINT(loadingCount)) {
+        canLoadMore = page < maxLoadMore;
+      } else {
+        canLoadMore = page <= maxLoadMore;
+        print('error');
+      }
       emit(state.copyWith(
         productList: productList,
-        datatList: updatedDataList,
-        newDataList: productList.data,
+        newDataList: newDataList,
         currentPage: page,
         canLoadMore: canLoadMore,
-      ));
-
-      emit(state.copyWith(
-        isLoading: false,
       ));
     } catch (error, statckTrace) {
       if (kDebugMode) {

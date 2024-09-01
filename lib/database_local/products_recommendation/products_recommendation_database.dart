@@ -110,7 +110,7 @@ class ProductRecommendationDatabase {
         product.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
-      print('Product inserted: ${product.id}');
+      //  print('Product inserted: ${product.id}');
     } catch (e) {
       print('Error inserting product: $e');
     }

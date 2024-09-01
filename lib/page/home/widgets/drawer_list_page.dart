@@ -1,6 +1,8 @@
+import 'package:haruviet/base/base_state.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/spaces.dart';
 import 'package:haruviet/page/cart/models/cart_page_params.dart';
+import 'package:haruviet/page/history_orders/widget/history_order_params.dart';
 import 'package:haruviet/page/home/widgets/drawer_list_bloc.dart';
 import 'package:haruviet/page/home/widgets/drawer_list_state.dart';
 import 'package:haruviet/resources/routes.dart';
@@ -25,7 +27,7 @@ class _DrawListState extends State<DrawerListPage>
   @override
   void initState() {
     super.initState();
-    bloc = DrawerListBloc();
+    bloc = DrawerListBloc()..getData();
     bloc.getData();
     _controller = AnimationController(vsync: this);
   }
@@ -49,141 +51,141 @@ class _DrawListState extends State<DrawerListPage>
               right: 4,
               top: 60,
             ),
-            child: ListView(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              children: <Widget>[
-                Row(
-                  children: [
-                    CircleAvatar(
-                        radius: 30.r,
-                        backgroundColor: colorBackgroundWhite,
-                        child: CircleAvatar(
-                          radius: 38.r,
-                          child: (state.dataUser?.avatar == "" ||
-                                  state.dataUser?.avatar == null)
-                              ? AspectRatio(
-                                  aspectRatio: 1,
-                                  child: Container(
-                                      decoration: BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(65.r)),
-                                    color:
-                                        colorBackgroundWhite.withOpacity(0.5),
-                                  )),
-                                )
-                              : AspectRatio(
-                                  aspectRatio: 1,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: Colors.grey.shade400,
-                                            width: 2.w),
-                                        shape: BoxShape.circle,
-                                        image: DecorationImage(
-                                            image: NetworkImage(
-                                                '${state.dataUser?.avatar}'),
-                                            fit: BoxFit.contain)),
-                                  )),
-                        )
+            child: state.isLoading
+                ? const LoadingWidget()
+                : ListView(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    children: <Widget>[
+                      Row(
+                        children: [
+                          CircleAvatar(
+                              radius: 30.r,
+                              backgroundColor: colorBackgroundWhite,
+                              child: CircleAvatar(
+                                radius: 38.r,
+                                child: (state.dataUser?.avatar == "" ||
+                                        state.dataUser?.avatar == null)
+                                    ? AspectRatio(
+                                        aspectRatio: 1,
+                                        child: Container(
+                                            decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(65.r)),
+                                          color: colorBackgroundWhite
+                                              .withOpacity(0.5),
+                                        )),
+                                      )
+                                    : AspectRatio(
+                                        aspectRatio: 1,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Colors.grey.shade400,
+                                                  width: 2.w),
+                                              shape: BoxShape.circle,
+                                              image: DecorationImage(
+                                                  image: NetworkImage(
+                                                      '${state.dataUser?.avatar}'),
+                                                  fit: BoxFit.contain)),
+                                        )),
+                              )
 
-                        //
-                        ),
-                    spaceW12,
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Xin chào,",
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            color: colorPrimary,
-                          ),
-                        ),
-                        spaceH4,
-                        GestureDetector(
-                          onTap: () {},
-                          child: Row(
+                              //
+                              ),
+                          spaceW12,
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                state.dataUser?.name ?? '',
-                                style: textTheme.bodyMedium?.copyWith(
-                                  color: colorBlackTileItem,
+                                "Xin chào,",
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  color: colorPrimary,
                                 ),
                               ),
+                              spaceH4,
+                              GestureDetector(
+                                onTap: () {},
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      state.dataUser?.name ?? '',
+                                      style: textTheme.bodyMedium?.copyWith(
+                                        color: colorBlackTileItem,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
                             ],
-                          ),
-                        )
-                      ],
-                    )
-                  ],
-                ),
-                spaceH26,
-                _itemDrawer(
-                  context,
-                  title: 'Giỏ hàng',
-                  icon: Icons.shopping_basket,
-                  onTap: () {
-                    routeService.pushNamed(Routes.cartPage,
-                        arguments: CartPageParams(isAppBar: true));
-                  },
-                ),
-                const Divider(),
-                _itemDrawer(
-                  context,
-                  title: 'Lịch sử mua hàng',
-                  icon: Icons.dashboard,
-                  onTap: () {},
-                ),
-                const Divider(),
-                _itemDrawer(
-                  context,
-                  title: 'Chính sách đổi trả',
-                  icon: Icons.repeat_rounded,
-                  onTap: () {},
-                ),
-                const Divider(),
-                _itemDrawer(
-                  context,
-                  title: 'Hỏi đáp',
-                  icon: Icons.question_mark,
-                  onTap: () {},
-                ),
-                const Divider(),
-                _itemDrawer(
-                  context,
-                  title: 'Lịch sử mua hàng',
-                  icon: Icons.history,
-                  onTap: () {},
-                ),
-                const Divider(),
-                _itemDrawer(
-                  context,
-                  title: 'Hỗ trợ',
-                  icon: Icons.support_agent_rounded,
-                  onTap: () {
-                    routeService.pushNamed(Routes.supportPage);
-                  },
-                ),
-                const Divider(),
-                _itemDrawer(
-                  context,
-                  title: 'Cài đăt',
-                  icon: Icons.settings,
-                  onTap: () {
-                    routeService.pushNamed(Routes.supportPage);
-                  },
-                ),
-                const Divider(),
-                _itemDrawer(
-                  context,
-                  title: 'Về chúng tôi',
-                  icon: Icons.help,
-                  onTap: () {
-                    routeService.pushNamed(Routes.aboutPage);
-                  },
-                ),
-              ],
-            ),
+                          )
+                        ],
+                      ),
+                      spaceH26,
+                      _itemDrawer(
+                        context,
+                        title: 'Giỏ hàng',
+                        icon: Icons.shopping_basket,
+                        onTap: () {
+                          routeService.pushNamed(Routes.cartPage,
+                              arguments: CartPageParams(isAppBar: true));
+                        },
+                      ),
+                      const Divider(),
+                      _itemDrawer(
+                        context,
+                        title: 'Lịch sử mua hàng',
+                        icon: Icons.history,
+                        onTap: () {
+                          routeService.pushNamed(Routes.historyOrderPage,
+                              arguments: HistoryOrderParams(
+                                  onReload: () {},
+                                  listStatusOrder: state.listStatusOrder));
+                        },
+                      ),
+                      const Divider(),
+                      _itemDrawer(
+                        context,
+                        title: 'Chính sách đổi trả',
+                        icon: Icons.repeat_rounded,
+                        onTap: () {},
+                      ),
+                      const Divider(),
+                      _itemDrawer(
+                        context,
+                        title: 'Hỏi đáp',
+                        icon: Icons.question_mark,
+                        onTap: () {},
+                      ),
+                      const Divider(),
+                      _itemDrawer(
+                        context,
+                        title: 'Hỗ trợ',
+                        icon: Icons.support_agent_rounded,
+                        onTap: () {
+                          routeService.pushNamed(Routes.supportPage);
+                        },
+                      ),
+                      const Divider(),
+                      _itemDrawer(
+                        context,
+                        title: 'Cài đăt',
+                        icon: Icons.settings,
+                        onTap: () {
+                          routeService.pushNamed(Routes.supportPage);
+                        },
+                      ),
+                      const Divider(),
+                      _itemDrawer(
+                        context,
+                        title: 'Về chúng tôi',
+                        icon: Icons.help,
+                        onTap: () {
+                          routeService.pushNamed(Routes.aboutPage);
+                        },
+                      ),
+                    ],
+                  ),
           ));
         },
       ),

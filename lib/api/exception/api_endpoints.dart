@@ -32,6 +32,8 @@ class ProductApi {
       "${SettingApi.rootDomain}/api/v1/shop/product/{idProduct}";
   static const searchDefault =
       "${SettingApi.rootDomain}/suggestions?q={keyword}";
+  static const productFlashsale =
+      "${SettingApi.rootDomain}/api/v1/shop/product/flashsale";
 }
 
 class AddressApi {
@@ -50,4 +52,33 @@ class AddressApi {
 class CategoryApi {
   static const getDetailCategory =
       "${SettingApi.rootDomain}/api/v1/shop/category/{idCategory}";
+  static const getCategory = "${SettingApi.rootDomain}/api/v1/shop/category";
+
+  static const getTopCategory =
+      "${SettingApi.rootDomain}/api/v1/shop/category?lang=en&type=topcategories&page[size]=10";
+}
+
+class BrandApi {
+  static const getListBrand =
+      "${SettingApi.rootDomain}/api/v1/shop/brand?type=khudc";
+  static const getTopBrand =
+      "${SettingApi.rootDomain}/api/v1/shop/brand?lang=en&type=topbrand&page[size]=10";
+  static const getDetailBrand =
+      "${SettingApi.rootDomain}/api/v1/shop/brand/9ca4f2f5-0367-4d43-b154-de43b63abba0";
+}
+
+class ReviewApi {
+  static const getAllReviews =
+      "${SettingApi.rootDomain}/api/v1/shop/review/{idProduct}";
+
+  static const postReviewProduct =
+      "${SettingApi.rootDomain}/api/v1/shop/review";
+}
+
+class CartApi {
+  static const getStatusOrders =
+      "${SettingApi.rootDomain}/api/v1/shop/status/order";
+  // orders
+  static const getHistoryOrders =
+      "${SettingApi.rootDomain}/api/v1/shop/orders/list/{idCustomer}?status={status}";
 }

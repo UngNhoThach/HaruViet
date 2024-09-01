@@ -22,6 +22,10 @@ import 'package:haruviet/page/cart/bill/bill_info_page.dart';
 import 'package:haruviet/page/cart/payment_method/payment_method_page.dart';
 import 'package:haruviet/page/cart/voucher/voucher_page.dart';
 import 'package:haruviet/page/account/forget_password/forget_password_page.dart';
+import 'package:haruviet/page/history_orders/history_order_page.dart';
+import 'package:haruviet/page/history_orders/tab/history_order_tab.dart';
+import 'package:haruviet/page/history_orders/tab/widgets/history_order_tab_params.dart';
+import 'package:haruviet/page/history_orders/widget/history_order_params.dart';
 import 'package:haruviet/page/main_screen/main_screen_page.dart';
 import 'package:haruviet/page/account/phone_authen/phone_authen_page.dart';
 import 'package:haruviet/page/account/phone_authen/widgets/phone_authen_params.dart';
@@ -32,6 +36,7 @@ import 'package:haruviet/page/product/product_list/product_list_page.dart';
 import 'package:haruviet/page/profile/profile_page.dart';
 import 'package:haruviet/page/review/ask_quesition_page/ask_quesition_page.dart';
 import 'package:haruviet/page/review/review_page.dart';
+import 'package:haruviet/page/review/write_review/widgets/write_review_params.dart';
 import 'package:haruviet/page/review/write_review/write_review_page.dart';
 import 'package:haruviet/page/account/signin/signin_page.dart';
 import 'package:haruviet/page/account/signin/widgets/signin_params.dart';
@@ -202,14 +207,19 @@ class _HomePageState extends State<HomePage> {
       case Routes.reviewPage:
         return MaterialPageRoute(
           settings: const RouteSettings(name: Routes.reviewPage),
-          builder: (_) => const ReviewPage(),
+          builder: (_) => ReviewPage(
+            params: settings.arguments! as WriteReviewParams,
+          ),
         );
       //writeReviewPage
       case Routes.writeReviewPage:
         return MaterialPageRoute(
           settings: const RouteSettings(name: Routes.writeReviewPage),
-          builder: (_) => const WriteReviewPage(),
+          builder: (_) => WriteReviewPage(
+            params: settings.arguments as WriteReviewParams,
+          ),
         );
+
       //askQuesitionPage
       case Routes.askQuesitionPage:
         return MaterialPageRoute(
@@ -221,15 +231,6 @@ class _HomePageState extends State<HomePage> {
         return MaterialPageRoute(
           settings: const RouteSettings(name: Routes.chatPage),
           builder: (_) => const ChatPage(),
-        );
-
-      // CartPage
-      case Routes.cartPage:
-        return MaterialPageRoute(
-          settings: const RouteSettings(name: Routes.cartPage),
-          builder: (_) => CartPage(
-            params: settings.arguments! as CartPageParams,
-          ),
         );
 
       //billInfoPage
@@ -341,12 +342,30 @@ class _HomePageState extends State<HomePage> {
           ),
         );
 
-      // OrdersPage
-      // case Routes.ordersPage:
-      //   return MaterialPageRoute(
-      //     settings: const RouteSettings(name: Routes.ordersPage),
-      //     builder: (_) => const OrdersPage(),
-      //   );
+      // CART
+      case Routes.cartPage:
+        return MaterialPageRoute(
+          settings: const RouteSettings(name: Routes.cartPage),
+          builder: (_) => CartPage(
+            params: settings.arguments! as CartPageParams,
+          ),
+        );
+
+      case Routes.historyOrderTab:
+        return MaterialPageRoute(
+          settings: const RouteSettings(name: Routes.historyOrderTab),
+          builder: (_) => HistoryOrderTab(
+            params: settings.arguments! as HistoryOrderTabParms,
+          ),
+        );
+
+      case Routes.historyOrderPage:
+        return MaterialPageRoute(
+          settings: const RouteSettings(name: Routes.historyOrderPage),
+          builder: (_) => HistoryOrderPage(
+            params: settings.arguments! as HistoryOrderParams,
+          ),
+        );
 
       //SupportPage
       case Routes.supportPage:

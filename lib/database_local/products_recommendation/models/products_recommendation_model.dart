@@ -6,7 +6,6 @@ import 'package:haruviet/data/reponsitory/product/models/data_list_product/data_
 import 'package:haruviet/data/reponsitory/product/models/data_list_product/product_promotion_price_list.dart';
 import 'package:haruviet/data/reponsitory/product/models/price.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_list_product/price_promotion_list.dart';
-import 'package:haruviet/data/reponsitory/product/models/product_promotion_price.dart';
 import 'package:haruviet/data/reponsitory/product/models/supplier.dart';
 import 'package:haruviet/data/reponsitory/product/models/images_product.dart';
 
@@ -35,7 +34,7 @@ class ProductRecommendationModel {
   // final List<Description> descriptions;
   final List<Category> categories;
   final List<ImagesProduct> images;
-  final ProductPromotionPriceList? promotionPrice;
+  final ProductPromotionPriceList? discount;
 
   ProductRecommendationModel({
     required this.id,
@@ -60,7 +59,7 @@ class ProductRecommendationModel {
     //  required this.descriptions,
     required this.categories,
     required this.images,
-    this.promotionPrice,
+    this.discount,
   });
 
   Map<String, dynamic> toMap() {
@@ -87,7 +86,7 @@ class ProductRecommendationModel {
       //  'descriptions': json.encode(descriptions.map((d) => d.toJson()).toList()),
       'categories': json.encode(categories.map((c) => c.toJson()).toList()),
       'images': json.encode(images.map((c) => c.toJson()).toList()),
-      'promotionPrice': json.encode(promotionPrice?.toJson()),
+      'promotionPrice': json.encode(discount?.toJson()),
     };
   }
 
@@ -119,7 +118,7 @@ class ProductRecommendationModel {
       images: List<ImagesProduct>.from(json.decode(map['images']).map((x) =>
           ImagesProduct.fromJson(
               x))), // List<ImagesProduct>.from(json.decode(map['images'])),
-      promotionPrice: ProductPromotionPriceList.fromJson(
+      discount: ProductPromotionPriceList.fromJson(
           json.decode(map['promotionPrice'])), // map['promotionPrice'],
     );
   }
@@ -149,7 +148,7 @@ class ProductRecommendationModel {
         //       descriptions: product.descriptions ?? [],
         categories: product.categories ?? [],
         images: product.images ?? [],
-        promotionPrice: product.promotionPrice ??
+        discount: product.discount ??
             ProductPromotionPriceList(
                 dateEnd: '',
                 dateStart: '',
@@ -182,7 +181,7 @@ class ProductRecommendationModel {
       //     descriptions: descriptions,
       categories: categories,
       images: images,
-      promotionPrice: promotionPrice,
+      discount: discount,
     );
   }
 }

@@ -1,4 +1,3 @@
-import 'package:haruviet/data/reponsitory/product/models/product_description.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'category.g.dart';
@@ -8,9 +7,16 @@ class Category {
   String? id;
   String? image;
   String? alias;
-  ProductDescription? descriptions;
+//  ProductDescription? descriptions;
+  String? title;
 
-  Category({this.id, this.image, this.alias, this.descriptions});
+  Category({
+    this.id,
+    this.image,
+    this.alias,
+    this.title,
+    // this.descriptions
+  });
 
   factory Category.fromJson(Map<String, dynamic> json) {
     return _$CategoryFromJson(json);

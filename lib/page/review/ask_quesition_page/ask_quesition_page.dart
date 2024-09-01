@@ -219,26 +219,38 @@ class _AskQuesitonPageState extends State<AskQuesitonPage> {
                       children: [
                         Text(
                           'NGÔ THỊ THẮM',
-                          style: Theme.of(context).textTheme.caption?.copyWith(
-                              fontWeight: FontWeight.w600, color: colorBlack),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: colorBlack),
                         ),
                         spaceH4,
                         Text(
                           '${data.content}',
-                          style: Theme.of(context).textTheme.caption?.copyWith(
-                              fontWeight: FontWeight.w300, color: colorBlack),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(
+                                  fontWeight: FontWeight.w300,
+                                  color: colorBlack),
                         ),
                         spaceH4,
                         Text(
                           '${data.time}',
-                          style: Theme.of(context).textTheme.caption?.copyWith(
-                              fontWeight: FontWeight.w300, color: colorGray05),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(
+                                  fontWeight: FontWeight.w300,
+                                  color: colorGray05),
                         ),
                       ],
                     ),
                   ),
                   DefaultTextStyle(
-                    style: Theme.of(context).textTheme.caption!.copyWith(
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         color: colorGray03, fontWeight: FontWeight.bold),
                     child: const Padding(
                       padding: EdgeInsets.only(top: 4),
@@ -274,20 +286,32 @@ class _AskQuesitonPageState extends State<AskQuesitonPage> {
                       children: [
                         Text(
                           'DANG VAN THANH',
-                          style: Theme.of(context).textTheme.caption!.copyWith(
-                              fontWeight: FontWeight.w600, color: colorBlack),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: colorBlack),
                         ),
                         spaceH4,
                         Text(
                           '${data.content}',
-                          style: Theme.of(context).textTheme.caption!.copyWith(
-                              fontWeight: FontWeight.w300, color: colorBlack),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(
+                                  fontWeight: FontWeight.w300,
+                                  color: colorBlack),
                         ),
                         spaceH4,
                         Text(
                           '${data.time}',
-                          style: Theme.of(context).textTheme.caption!.copyWith(
-                              fontWeight: FontWeight.w300, color: colorGray05),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(
+                                  fontWeight: FontWeight.w300,
+                                  color: colorGray05),
                         ),
 
                         // colorGray05
@@ -295,7 +319,7 @@ class _AskQuesitonPageState extends State<AskQuesitonPage> {
                     ),
                   ),
                   DefaultTextStyle(
-                    style: Theme.of(context).textTheme.caption!.copyWith(
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         color: colorGray03, fontWeight: FontWeight.bold),
                     child: const Padding(
                       padding: EdgeInsets.only(top: 4),

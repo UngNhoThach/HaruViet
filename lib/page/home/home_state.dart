@@ -33,7 +33,7 @@ class HomeState extends BaseState {
     this.firtTimeLoadingPage = true,
     this.productList,
     this.canLoadMore = false,
-    this.limit = 8, // perPageHome,
+    this.limit = 12, // perPageHome,
     this.currentPage = startPage,
     this.isSubmitSuccess = false,
     this.datatList = const [],

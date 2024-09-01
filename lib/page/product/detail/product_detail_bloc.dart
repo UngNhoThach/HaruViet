@@ -3,6 +3,8 @@ import 'package:haruviet/base/base_bloc.dart';
 import 'package:haruviet/data/enum.dart';
 import 'package:haruviet/data/local/user_preferences.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_list_product/data_product_list.dart';
+import 'package:haruviet/data/reponsitory/product/models/data_product_detail_response/option_product_detail.dart';
+import 'package:haruviet/data/reponsitory/product/models/data_product_detail_response/value_product_detail.dart';
 import 'package:haruviet/data/reponsitory/product/product_repository.dart';
 import 'package:haruviet/database_local/product/cart_provider.dart';
 import 'package:haruviet/database_local/product/models/cart_model.dart';
@@ -18,6 +20,7 @@ class ProductDetailBloc extends BaseBloc<ProductDetailState> {
   final BuildContext context;
   ProductDetailBloc(this.context) : super(const ProductDetailState());
   final ProductRepository _productRepository = ProductRepository();
+
   List<Products> productsList = [];
   ValueNotifier<int> counter = ValueNotifier<int>(1);
 
@@ -50,19 +53,21 @@ class ProductDetailBloc extends BaseBloc<ProductDetailState> {
       }
       int totalItemInCart = await CartDatabase.instance.getCount();
       productsList = (await CartDatabase.instance.readAllItems());
-      // final checkAttributes = (productDetail.attributes == null) ||
-      //         (productDetail.attributes!.isEmpty)
-      //     ? false
-      //     : true;
 
+      final checkAttributes =
+          (productDetail.options == null) || (productDetail.options!.isEmpty)
+              ? false
+              : true;
       emit(state.copyWith(
-          userInfoLogin: userInfoLogin,
-          dataProduct: productDetail,
-          totalProductInCart: totalItemInCart,
-          productsList: productsList,
-          imageUrls: imageUrls,
-          checkProductAttributes: false // checkAttributes,
-          ));
+        userInfoLogin: userInfoLogin,
+        dataProduct: productDetail,
+        attributes: productDetail.attributes,
+        options: productDetail.options,
+        totalProductInCart: totalItemInCart,
+        productsList: productsList,
+        imageUrls: imageUrls,
+        checkProductAttributes: checkAttributes,
+      ));
     } catch (error, statckTrace) {
       if (kDebugMode) {
         print("$error + $statckTrace");
@@ -175,40 +180,43 @@ class ProductDetailBloc extends BaseBloc<ProductDetailState> {
     emit(state.copyWith(checkProductInCart: false));
   }
 
-  onSelectSize(String sizeSelected) async {
-    if (!isClosed) {
-      emit(state.copyWith(
-        sizeSelected: sizeSelected,
-      ));
-      await onValidPopSelected();
-    }
+  onSelectSize(String sizeSelected) {
+    // if (!isClosed) {
+    emit(state.copyWith(
+      sizeSelected: sizeSelected,
+    ));
+    onValidPopSelected();
+    //  }
   }
 
-  onSelectColor(String colorSelected) async {
-    if (!isClosed) {
-      emit(state.copyWith(
-        colorSelected: colorSelected,
-      ));
-      await onValidPopSelected();
-    }
+  onChangeValueDropdown() {
+    emit(state.copyWith());
+  }
+
+  onSelectColor(Color colorSelected) {
+    emit(state.copyWith(
+      colorSelected: colorSelected,
+    ));
+    onValidPopSelected();
   }
 
   onResetSelectAttributes(String colorSelected) {
     emit(state.copyWith(colorSelected: null, sizeSelected: null));
   }
 
-  onHandleCounterChanged(int newCounter) async {
-    if (!isClosed) {
-      emit(state.copyWith(currentCounter: newCounter));
-      await onValidPopSelected();
-    }
+  onHandleCounterChanged(int newCounter) {
+    emit(state.copyWith(currentCounter: newCounter));
+    onValidPopSelected();
   }
 
   onValidPopSelected() {
-    bool check = state.sizeSelected != null &&
+    bool check = (state.sizeSelected != null &&
         state.colorSelected != null &&
-        state.currentCounter != null;
-    emit(state.copyWith(validBuyProductAttributes: check));
+        state.currentCounter != null &&
+        state.currentCounter != 0);
+    emit(state.copyWith(
+      validBuyProductAttributes: check,
+    ));
   }
 
   void onResetValiPopSelected() {
@@ -219,5 +227,48 @@ class ProductDetailBloc extends BaseBloc<ProductDetailState> {
 
   onChangePopUp(bool changePopUp) {
     emit(state.copyWith(changePopUp: changePopUp));
+  }
+
+  void onSelectAttributeValue({
+    required Option option,
+    required ValueOptionProduct selectedValue,
+    required List<Option> listOptions,
+  }) {
+    List<Option> updatedCategories = listOptions.map((c) {
+      if (c.id == option.id) {
+        List<ValueOptionProduct> updatedValues = c.values!.map((v) {
+          if (v.id == selectedValue.id) {
+            return v.copyWith(isSelected: true);
+          } else {
+            return v.copyWith(isSelected: false);
+          }
+        }).toList();
+
+        return c.copyWith(values: updatedValues);
+      }
+      return c;
+    }).toList();
+    emit(state.copyWith(
+        options: updatedCategories, isSelected: !state.isSelected));
+
+    //   // Find categories with at least one value where isFilter is true
+    //   Map<ValueOptionProduct, Option> filteredCategories = {};
+    //   for (var category in updatedCategories) {
+    //     for (var value in category.values!) {
+    //       if (value.isFilter == true) {
+    //         filteredCategories[category] = value;
+    //         break; // Only need the first matched value
+    //       }
+    //     }
+    //   }
+
+    //   // Emit the updated state with the modified categories and selected attributes
+    //   emit(
+    //     state.copyWith(
+    //       filteredCategories: filteredCategories,
+    //       //      attributesSelected: filteredCategories,
+    //       atributesCategoryData: updatedCategories,
+    //     ),
+    //   );
   }
 }

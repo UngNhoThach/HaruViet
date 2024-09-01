@@ -1,4 +1,5 @@
 import 'package:haruviet/component/error/error_internet.dart';
+import 'package:haruviet/component/error/not_found_item.dart';
 import 'package:haruviet/component/input/custom_count_textfield.dart';
 import 'package:haruviet/component/loading/loading.dart';
 import 'package:haruviet/component/loading_scaffold.dart';
@@ -12,6 +13,7 @@ import 'package:haruviet/page/account/signin/widgets/signin_params.dart';
 import 'package:haruviet/page/cart/cart_bloc.dart';
 import 'package:haruviet/page/cart/cart_sate.dart';
 import 'package:haruviet/page/cart/models/cart_page_params.dart';
+import 'package:haruviet/page/product/product_list/widgets/product_list_page_params.dart';
 import 'package:haruviet/resources/routes.dart';
 import 'package:haruviet/theme/typography.dart';
 import 'package:haruviet/utils/commons.dart';
@@ -305,10 +307,6 @@ class _CartPageState extends State<CartPage> {
         listenWhen: (previous, current) =>
             previous.isLoading != current.isLoading,
         listener: (context, state) {
-          // if (state.isLoading) {
-          //   showPopupLoading(context, text: 'Đang tải...');
-          // } else if (state.isSubmitSuccess) {
-          //   // Navigator.of(context).pop();
           // }
         },
         child: BlocBuilder<CartBloc, CartState>(builder: (context, state) {
@@ -329,38 +327,7 @@ class _CartPageState extends State<CartPage> {
               body: state.isLoading
                   ? const LoadingLogo()
                   : state.totalItem == 0
-                      ? Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                child: Icon(
-                                  color: colorBlueGray02,
-                                  Icons.add_shopping_cart_rounded,
-                                  size: 160.r,
-                                ),
-                              ),
-                              Text('Giỏ hàng trống',
-                                  style: myThemeData.textTheme.headlineSmall),
-                              spaceH12,
-                              ElevatedButton(
-                                onPressed: () {
-                                  routeService
-                                      .pushNamed(Routes.productListPage);
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: colorMain,
-                                ),
-                                child: Text(
-                                  "Mua sắm",
-                                  style: myThemeData.textTheme.titleLarge
-                                      ?.copyWith(color: colorWhite),
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
+                      ? _didFoundItem(context)
                       : LoadingScaffold(
                           isLoading: state.isLoading,
                           child: Builder(builder: (context) {
@@ -393,6 +360,12 @@ class _CartPageState extends State<CartPage> {
                         ));
         }),
       ),
+    );
+  }
+
+  Widget _didFoundItem(BuildContext context) {
+    return const DidntFoundItem(
+      isCartWidget: true,
     );
   }
 }

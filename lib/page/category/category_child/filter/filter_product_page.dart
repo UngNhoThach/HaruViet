@@ -1,6 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:haruviet/component/error/not_found_v2.dart';
 import 'package:haruviet/component/loading/loading.dart';
 import 'package:haruviet/data/reponsitory/category/models/atribute_category_response/attributes_category_response.dart';
 import 'package:haruviet/data/reponsitory/category/models/atribute_category_response/value_attributes.dart';
@@ -285,9 +284,5 @@ class _FilterProductPageState extends State<FilterProductPage> {
         ),
       ),
     );
-  }
-
-  Widget _emptyData(BuildContext context) {
-    return const DidntFoundV2();
   }
 }

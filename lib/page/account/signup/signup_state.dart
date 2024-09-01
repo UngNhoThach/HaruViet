@@ -3,7 +3,7 @@ import 'package:haruviet/base/base_bloc.dart';
 import 'package:haruviet/data/enum.dart';
 import 'package:haruviet/data/reponsitory/customers/models/login_response/data_login.dart';
 import 'package:haruviet/data/reponsitory/customers/models/login_response/login_response.dart';
-import 'package:haruviet/data/reponsitory/normal_response/normal_error.dart';
+import 'package:haruviet/data/reponsitory/normal_response/customer_response/normal_error.dart';
 import 'package:haruviet/data/data_local/user_state.dart';
 import 'package:haruviet/page/account/signup/widgets/sigup_type.dart';
 

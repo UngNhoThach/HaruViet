@@ -1,6 +1,6 @@
+import 'package:haruviet/component/error/not_found.dart';
 import 'package:haruviet/component/error/not_found_v2.dart';
 import 'package:haruviet/component/header/header_item.dart';
-import 'package:haruviet/component/error/not_found.dart';
 import 'package:haruviet/component/input/search_barv2.dart';
 import 'package:haruviet/component/status/status_header_item.dart';
 import 'package:haruviet/data/data_local/user_bloc.dart';
@@ -46,7 +46,6 @@ class _ProductListPageState extends State<ProductListPage> {
   late ProductListBloc bloc;
   final ItemProductWidget itemProductWidgets = ItemProductWidget();
   bool checkIsChangeListItem = false;
-
   @override
   void initState() {
     super.initState();
@@ -73,46 +72,46 @@ class _ProductListPageState extends State<ProductListPage> {
           create: (context) => bloc,
         ),
       ],
-      child: MultiBlocListener(
-        listeners: [
-          BlocListener<ProductListBloc, ProductListState>(
-            listenWhen: (previous, current) =>
-                previous.newDataList != current.newDataList,
-            listener: (context, state) {
-              if (state.currentPage == startPage) {
+      child: Scaffold(
+        appBar: _appbarSearch(context),
+        body: MultiBlocListener(
+          listeners: [
+            BlocListener<ProductListBloc, ProductListState>(
+              listenWhen: (previous, current) =>
+                  previous.newDataList != current.newDataList,
+              listener: (context, state) {
+                if (state.currentPage == startPage) {
+                  _pagingController.refresh();
+                }
+                if (state.canLoadMore) {
+                  _pagingController.appendPage(
+                    state.newDataList ?? [],
+                    state.currentPage + 1,
+                  );
+                } else {
+                  _pagingController.appendLastPage(state.newDataList ?? []);
+                }
+              },
+            ),
+            BlocListener<ProductListBloc, ProductListState>(
+              listenWhen: (previous, current) =>
+                  previous.currentTab != current.currentTab,
+              listener: (context, state) {
+                bloc.onFetch(page: startPage);
                 _pagingController.refresh();
-              }
-              if (state.canLoadMore) {
-                _pagingController.appendPage(
-                  state.newDataList ?? [],
-                  state.currentPage + 1,
-                );
-              } else {
-                _pagingController.appendLastPage(state.newDataList ?? []);
-              }
-            },
-          ),
-          BlocListener<ProductListBloc, ProductListState>(
-            listenWhen: (previous, current) =>
-                previous.currentTab != current.currentTab,
-            listener: (context, state) {
-              bloc.onFetch(page: startPage);
-              _pagingController.refresh();
-            },
-          ),
-        ],
-        child: BlocBuilder<ProductListBloc, ProductListState>(
-          builder: (context, state) {
-            return Scaffold(
-              appBar: _appbarSearch(context),
-              body: RefreshIndicator(
+              },
+            ),
+          ],
+          child: BlocBuilder<ProductListBloc, ProductListState>(
+            builder: (context, state) {
+              return RefreshIndicator(
                   onRefresh: () async {
                     _pagingController.refresh();
                     bloc.onFetch(page: startPage);
                   },
-                  child: _viewDefault(context, state: state)),
-            );
-          },
+                  child: _viewDefault(context, state: state));
+            },
+          ),
         ),
       ),
     );
@@ -175,12 +174,13 @@ class _ProductListPageState extends State<ProductListPage> {
             bloc.onChangeCurrentTab(value);
           },
         ),
-        state.isLoading
+        state.newDataList == null
             ? _empty(context)
             : Expanded(
                 child: checkIsChangeListItem
                     ? Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 16),
                         child: CustomScrollView(
                           slivers: [
                             PagedSliverGrid(
@@ -188,13 +188,14 @@ class _ProductListPageState extends State<ProductListPage> {
                               pagingController: _pagingController,
                               gridDelegate:
                                   const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2, // Số cột là 2
+                                crossAxisCount: 2, // column count error loading
                                 mainAxisSpacing: 12.0,
                                 crossAxisSpacing: 8.0,
                                 childAspectRatio: 0.8,
                               ),
                               builderDelegate:
                                   PagedChildBuilderDelegate<DataProduct>(
+                                // animateTransitions: true,
                                 noItemsFoundIndicatorBuilder: _empty,
                                 itemBuilder: (context, item, index) =>
                                     _itemGridView(context,
@@ -214,7 +215,7 @@ class _ProductListPageState extends State<ProductListPage> {
                         shrinkWrap: true,
                         physics: const ClampingScrollPhysics(),
                         builderDelegate: PagedChildBuilderDelegate<DataProduct>(
-                          noItemsFoundIndicatorBuilder: _empty,
+                          noItemsFoundIndicatorBuilder: _emptyData,
                           itemBuilder: (context, item, index) {
                             return _itemRow(context,
                                 data: item, index: index, domain: domain);

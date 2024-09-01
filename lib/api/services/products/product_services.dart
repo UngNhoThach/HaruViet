@@ -18,6 +18,13 @@ class ProductService extends BaseService {
     return response;
   }
 
+  Future<Response> getProductFlashSaleSV(
+      {required GetListProductRequest request}) async {
+    final response = await get(ProductApi.productFlashsale,
+        params: request.toJson(), headers: apiHeaders.appMobileHeaders);
+    return response;
+  }
+
   Future<Response> getProductDetailsSV({required String idProduct}) async {
     final response = await get(
         ProductApi.getProductDetails

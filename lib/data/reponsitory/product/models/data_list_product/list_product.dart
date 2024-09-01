@@ -7,6 +7,7 @@ part 'list_product.g.dart';
 class ListProduct {
   @JsonKey(name: 'current_page')
   int? currentPage;
+  @JsonKey(name: 'data')
   List<DataProduct>? data;
   int? from;
   @JsonKey(name: 'last_page')

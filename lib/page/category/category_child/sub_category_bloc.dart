@@ -52,17 +52,10 @@ class SubCategoryBloc extends BaseBloc<SubCategoryState> {
       atributesCategoryData
           .addAll(categoryDetailData.filterableAttributes ?? []);
 
-      // add dato to list attributesSelected
-      // if (atributesCategoryData.isNotEmpty) {
-      //   for (var i = 0; i < atributesCategoryData.length; i++) {
-      //     attributesSelected
-      //         .addAll(categoryDetailData.filterableAttributes?[i].values ?? []);
-      //   }
-      // }
-
       emit(state.copyWith(
         subcategories: subcategories,
         userInfoLogin: userInfoLogin,
+        isFilter: atributesCategoryData.isEmpty ? false : true,
         //    attributesSelected: attributesSelected,
         atributesCategoryData: atributesCategoryData,
         atributesCategoryDataSave: atributesCategoryData,

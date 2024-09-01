@@ -2,7 +2,7 @@ import 'package:haruviet/base/base_state.dart';
 import 'package:haruviet/component/input/textfiled_input.dart';
 import 'package:haruviet/component/input/password_input.dart';
 import 'package:haruviet/component/loading_scaffold.dart';
-import 'package:haruviet/data/reponsitory/normal_response/normal_error.dart';
+import 'package:haruviet/data/reponsitory/normal_response/customer_response/normal_error.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/context.dart';
 import 'package:haruviet/helper/spaces.dart';

@@ -27,50 +27,60 @@ class ProductListBloc extends BaseBloc<ProductListState> {
     emit(state.copyWith(
       isLoading: true,
     ));
-    if (state.firtTimeLoadingPage) {
-      try {
-        final userInfoLogin = await Preference.getUserInfo();
+//    if (state.firtTimeLoadingPage) {
+    try {
+      final userInfoLogin = await Preference.getUserInfo();
 
-        emit(state.copyWith(
-          userInfoLogin: userInfoLogin,
-        ));
-      } catch (error, statckTrace) {
-        if (kDebugMode) {
-          print("$error + $statckTrace");
-        }
-        emit(state.copyWith(
-            viewState: ViewState.error, errorMsg: error.toString()));
+      emit(state.copyWith(
+        userInfoLogin: userInfoLogin,
+      ));
+      await onFetch(page: startPage);
+    } catch (error, statckTrace) {
+      if (kDebugMode) {
+        print("$error + $statckTrace");
       }
+      emit(state.copyWith(
+          viewState: ViewState.error, errorMsg: error.toString()));
+    } finally {
+      emit(state.copyWith(
+        isLoading: false,
+      ));
     }
-    await onFetch(page: startPage);
-
-    emit(state.copyWith(
-      isLoading: false,
-    ));
+    //}
   }
 
   onReset() {
     onFetch(page: startPage);
   }
 
+  bool isINT(double number) {
+    return number % 1 == 0;
+  }
+
+  bool canLoadMore = false;
+
   onFetch({
     required int page,
   }) async {
+    // emit(state.copyWith(
+    //   isLoading: true,
+    // ));
     try {
       // Reset the list if fetching the first page
-      List<DataProduct> updatedDataList = [];
+      //  List<DataProduct> updatedDataList = [];
       if (page == startPage) {
         emit(
           state.copyWith(
             newDataList: null,
             canLoadMore: false,
-            datatList: updatedDataList, // Reset datatList to an empty list
+            //     datatList: updatedDataList, // Reset datatList to an empty list
           ),
         );
-      } else {
-        // Keep the existing list if not fetching the first page
-        updatedDataList = List<DataProduct>.from(state.datatList);
       }
+      //else {
+      // Keep the existing list if not fetching the first page
+      //   updatedDataList = List<DataProduct>.from(state.datatList);
+      // }
 
       final productList = await _productRepository.getListProductsRP(
         request: GetListProductRequest(
@@ -80,14 +90,23 @@ class ProductListBloc extends BaseBloc<ProductListState> {
             sort: state.currentTab.value),
       );
 
-      updatedDataList.addAll(productList.data ?? []);
+      //   updatedDataList.addAll(productList.data ?? []);
+
+      var newDataList = List<DataProduct>.from(productList.data ?? []);
 
       final maxLoadMore = ((productList.total ?? 0) / state.limit).floor();
-      final canLoadMore = page <= maxLoadMore;
+      // final canLoadMore = page < maxLoadMore;
+
+      if (isINT(((productList.total ?? 0) / state.limit))) {
+        canLoadMore = page < maxLoadMore;
+      } else {
+        canLoadMore = page <= maxLoadMore;
+        print('error');
+      }
 
       emit(state.copyWith(
-        datatList: updatedDataList,
-        newDataList: productList.data,
+        //     datatList: updatedDataList,
+        newDataList: newDataList,
         currentPage: page,
         canLoadMore: canLoadMore,
       ));
@@ -102,6 +121,9 @@ class ProductListBloc extends BaseBloc<ProductListState> {
         errorMsg: error.toString(),
       ));
     }
+    // emit(state.copyWith(
+    //   isLoading: false,
+    // ));
   }
 
   // onchange current tab

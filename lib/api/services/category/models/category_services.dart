@@ -12,4 +12,11 @@ class CategoryService extends BaseService {
         headers: apiHeaders.appMobileHeaders);
     return response;
   }
+
+  // getCategory
+  Future<Response> getCategorySV() async {
+    final response = await get(CategoryApi.getCategory,
+        headers: apiHeaders.appMobileHeaders);
+    return response;
+  }
 }

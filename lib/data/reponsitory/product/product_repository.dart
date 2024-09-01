@@ -24,6 +24,21 @@ class ProductRepository {
     return ListProduct();
   }
 
+  Future<ListProduct> getProductFlashSaleRP(
+      {required GetListProductRequest request}) async {
+    try {
+      final response =
+          await _productService.getProductFlashSaleSV(request: request);
+      final result = ListProduct.fromJson(response.data);
+      return result;
+    } catch (error, statckTrace) {
+      if (kDebugMode) {
+        print("$error + $statckTrace");
+      }
+    }
+    return ListProduct();
+  }
+
   Future<DataProductDetailResponse> getProductDetailsRP(
       {required String idProduct}) async {
     try {

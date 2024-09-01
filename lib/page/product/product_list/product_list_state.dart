@@ -3,11 +3,7 @@ import 'package:haruviet/base/base_bloc.dart';
 import 'package:haruviet/component/status/status_header_item.dart';
 import 'package:haruviet/data/enum.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_list_product/data_product_list.dart';
-import 'package:haruviet/data/reponsitory/product/models/data_list_product/list_product.dart';
 import 'package:haruviet/data/data_local/user_state.dart';
-import 'package:haruviet/data/reponsitory/product/models/data_search_default_response/search_category.dart';
-import 'package:haruviet/data/reponsitory/product/models/data_search_default_response/search_product.dart';
-import 'package:haruviet/database_local/suggestion_data_search/models/suggestion_data_search_model.dart';
 import 'package:haruviet/helper/const.dart';
 
 part 'product_list_state.g.dart';

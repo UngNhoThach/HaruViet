@@ -1,9 +1,12 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
+import 'package:flutter/material.dart';
 import 'package:haruviet/base/base_bloc.dart';
 import 'package:haruviet/data/enum.dart';
 import 'package:haruviet/data/data_local/user_state.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_list_product/data_product_list.dart';
+import 'package:haruviet/data/reponsitory/product/models/data_product_detail_response/attributes_product_detail/attributes_product_detail.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_product_detail_response/data_product_detail_response.dart';
+import 'package:haruviet/data/reponsitory/product/models/data_product_detail_response/option_product_detail.dart';
 import 'package:haruviet/database_local/product/cart_provider.dart';
 import 'package:haruviet/database_local/product/models/cart_model.dart';
 import 'package:haruviet/helper/const.dart';
@@ -23,7 +26,7 @@ class ProductDetailState extends BaseState {
   final bool checkProductInCart;
   final bool checkProductAttributes;
   final String? sizeSelected;
-  final String? colorSelected;
+  final Color? colorSelected;
   final int? currentCounter;
   final bool validBuyProductAttributes;
   final bool changePopUp;
@@ -32,6 +35,9 @@ class ProductDetailState extends BaseState {
   final bool canLoadMore;
   final int limit;
   final int currentPage;
+  final List<Option> options;
+  final List<AttributesProductDetail> attributes;
+  final bool isSelected;
 
   const ProductDetailState({
     ViewState viewState = ViewState.loaded,
@@ -43,6 +49,7 @@ class ProductDetailState extends BaseState {
     this.currentPage = startPage,
     this.changePopUp = false,
     this.checkProductInCart = false,
+    this.isSelected = false,
     this.checkProductAttributes = false,
     this.totalProductInCart,
     this.limit = perPageHome,
@@ -50,6 +57,8 @@ class ProductDetailState extends BaseState {
     this.isSubmitSuccess = false,
     this.isLoading = false,
     this.datatList = const [],
+    this.options = const [],
+    this.attributes = const [],
     this.newDataList = const [],
     this.imageUrls = const [],
     this.productsList = const [],

@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:haruviet/component/help_basic/help_basic.dart';
 import 'package:haruviet/component/shimer/image_product_shimer.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_list_product/data_product_list.dart';
 import 'package:haruviet/helper/colors.dart';
@@ -63,18 +63,18 @@ class ItemProductWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          data.promotionPrice == null
+                          data.discount == null
                               ? '${data.price?.price} \$'
-                              : '${data.promotionPrice?.pricePromotion?.price} \$',
+                              : '${data.discount?.pricePromotion?.priceStr}',
                           style:
                               Theme.of(context).textTheme.bodyLarge?.copyWith(
                                     color: colorMain,
                                     fontWeight: FontWeight.bold,
                                   ),
                         ),
-                        data.promotionPrice != null
+                        data.discount != null
                             ? Text(
-                                '${data.price?.price} \$',
+                                '${data.price?.priceStr}',
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyMedium
@@ -89,7 +89,7 @@ class ItemProductWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Thương hiệu: Samsung',
+                      data.brand?.name ?? '',
                       style: Theme.of(context).textTheme.titleSmall?.copyWith(
                             color: colorSecondary04,
                             fontWeight: FontWeight.w500,
@@ -126,7 +126,8 @@ class ItemProductWidget {
                               child: Row(
                                 children: [
                                   Text(
-                                    '4.8',
+                                    data.reviews?.averageRating.toString() ??
+                                        '',
                                     style: Theme.of(context)
                                         .textTheme
                                         .labelSmall
@@ -146,7 +147,7 @@ class ItemProductWidget {
                             ),
                             spaceW2,
                             Text(
-                              '(120)',
+                              '(${data.reviews?.averageRating.toString() ?? ''})',
                               style: Theme.of(context)
                                   .textTheme
                                   .labelSmall
@@ -181,7 +182,7 @@ class ItemProductWidget {
                       ],
                     ),
                     spaceH6,
-                    data.promotionPrice?.dateEnd != null
+                    data.discount?.dateEnd != null
                         ? Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             mainAxisSize: MainAxisSize.min,
@@ -198,10 +199,8 @@ class ItemProductWidget {
                                         EdgeInsets.symmetric(horizontal: 12.w),
                                     child: CountdownTimer(
                                         dateStart:
-                                            data.promotionPrice?.dateStart ??
-                                                '',
-                                        dateEnd:
-                                            data.promotionPrice?.dateEnd ?? ''),
+                                            data.discount?.dateStart ?? '',
+                                        dateEnd: data.discount?.dateEnd ?? ''),
                                   ),
                                 ),
                               ),
@@ -289,9 +288,9 @@ class ItemProductWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  data.promotionPrice == null
-                                      ? '${data.price?.price} \$'
-                                      : '${data.promotionPrice?.pricePromotion?.price} \$',
+                                  data.discount == null
+                                      ? '${data.price?.priceStr}'
+                                      : '${data.discount?.pricePromotion?.priceStr}',
                                   style: Theme.of(context)
                                       .textTheme
                                       .labelLarge
@@ -300,22 +299,22 @@ class ItemProductWidget {
                                         fontWeight: FontWeight.bold,
                                       ),
                                 ),
-                                data.promotionPrice != null
-                                    ? Text(
-                                        '${data.price?.price} \$',
+                                data.discount == null
+                                    ? space0
+                                    : Text(
+                                        '${data.price?.priceStr}',
                                         style: textTheme.bodySmall?.copyWith(
                                           color: colorItemCover,
                                           fontWeight: FontWeight.bold,
                                           decoration:
                                               TextDecoration.lineThrough,
                                         ),
-                                      )
-                                    : space0,
+                                      ),
                               ],
                             ),
                             spaceH4,
                             Text(
-                              'Thương hiệu: Samsung',
+                              data.brand?.name ?? '',
                               style: textTheme.labelMedium?.copyWith(
                                 color: colorSecondary04,
                                 fontWeight: FontWeight.w500,
@@ -350,7 +349,9 @@ class ItemProductWidget {
                                       child: Row(
                                         children: [
                                           Text(
-                                            '4.8',
+                                            data.reviews?.averageRating
+                                                    .toString() ??
+                                                '',
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .labelSmall
@@ -370,7 +371,7 @@ class ItemProductWidget {
                                     ),
                                     spaceW2,
                                     Text(
-                                      '(120)',
+                                      '(${data.reviews?.averageRating.toString() ?? ''})',
                                       style: Theme.of(context)
                                           .textTheme
                                           .labelSmall
@@ -405,7 +406,8 @@ class ItemProductWidget {
                               ],
                             ),
                             spaceH6,
-                            data.promotionPrice?.dateEnd != null
+                            (data.discount != null &&
+                                    data.discount?.dateEnd != null)
                                 ? Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -425,12 +427,12 @@ class ItemProductWidget {
                                                   const EdgeInsets.symmetric(
                                                       horizontal: 8),
                                               child: CountdownTimer(
-                                                  dateStart: data.promotionPrice
+                                                  dateStart: data.discount
                                                           ?.dateStart ??
                                                       '',
-                                                  dateEnd: data.promotionPrice
-                                                          ?.dateEnd ??
-                                                      ''),
+                                                  dateEnd:
+                                                      data.discount?.dateEnd ??
+                                                          ''),
                                             )),
                                       ),
                                       spaceW4,
@@ -446,60 +448,73 @@ class ItemProductWidget {
                   ),
                 ),
               ),
-              data.promotionPrice?.dateEnd != null
-                  ? Positioned(
-                      top: 0,
-                      left: 0,
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 8.w, vertical: 4.h),
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(8.r),
-                            bottomRight: Radius.circular(8.r),
+              if (data.discount != null) ...[
+                (data.discount?.dateEnd != null)
+                    ? Positioned(
+                        top: 0,
+                        left: 0,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 8.w, vertical: 4.h),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(8.r),
+                              bottomRight: Radius.circular(8.r),
+                            ),
+                          ),
+                          child: Text(
+                            'Flash Sale',
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelSmall
+                                ?.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
                           ),
                         ),
-                        child: Text(
-                          'Flash Sale',
-                          style:
-                              Theme.of(context).textTheme.labelSmall?.copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                        ),
-                      ),
-                    )
-                  : space0,
-              data.promotionPrice?.pricePromotion?.price != null
-                  ? Positioned(
-                      top: 0,
-                      right: 0,
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 8.w, vertical: 4.h),
-                        decoration: BoxDecoration(
-                          color: Colors.yellow,
-                          borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(8.r),
-                            bottomLeft: Radius.circular(8.r),
+                      )
+                    : space0,
+                (data.discount?.percent != 0.0 &&
+                        data.discount?.percent != null)
+                    ? Positioned(
+                        top: 0,
+                        right: 0,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 8.w, vertical: 4.h),
+                          decoration: BoxDecoration(
+                            color: Colors.yellow,
+                            borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(8.r),
+                              bottomLeft: Radius.circular(8.r),
+                            ),
+                          ),
+                          child: Text(
+                            '- ${(removeZeroDouble(value: data.discount!.percent!))}%',
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelSmall
+                                ?.copyWith(
+                                  color: colorBlack,
+                                  fontWeight: FontWeight.bold,
+                                ),
                           ),
                         ),
-                        child: Text(
-                          'Sale ${(((data.price?.price ?? 0) - (data.promotionPrice?.pricePromotion?.price ?? 0)) / (data.price?.price ?? 0) * 100).floor()}%',
-                          style:
-                              Theme.of(context).textTheme.labelSmall?.copyWith(
-                                    color: colorBlack,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                        ),
-                      ),
-                    )
-                  : space0,
+                      )
+                    : space0,
+              ],
             ],
           ),
         ),
       ],
     );
+  }
+
+  final help = HelpBasic();
+
+  removeZeroDouble({required double value}) {
+    return help.formatDouble(value);
   }
 }

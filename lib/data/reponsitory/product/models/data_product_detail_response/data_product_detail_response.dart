@@ -6,8 +6,8 @@ import 'package:haruviet/data/reponsitory/product/models/images_product.dart';
 import 'package:haruviet/data/reponsitory/product/models/price.dart';
 import 'package:haruviet/data/reponsitory/product/models/product_description.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'attributes_product_detail/attributes_product_detail.dart';
 import 'option_product_detail.dart';
-import '../product_promotion_price.dart';
 import 'promotiondetail_product_detail.dart';
 
 part 'data_product_detail_response.g.dart';
@@ -41,14 +41,14 @@ class DataProductDetailResponse {
   @JsonKey(name: 'date_available')
   dynamic dateAvailable;
   ProductDescription? descriptions;
-  // List<Category>? categories;
+  List<Category>? categories;
   List<ImagesProduct>? images;
   @JsonKey(name: 'promotion_price')
   ProductPromotionPriceList? promotionPrice;
   List<Promotiondetail>? promotiondetails;
   dynamic reviews;
   List<Option>? options;
-  //  Attributes? attributes;
+  List<AttributesProductDetail>? attributes;
 
   DataProductDetailResponse({
     this.id,
@@ -74,13 +74,13 @@ class DataProductDetailResponse {
     this.dateLastview,
     this.dateAvailable,
     this.descriptions,
-    // this.categories,
+    this.categories,
     this.images,
     this.promotionPrice,
     this.promotiondetails,
     this.reviews,
     this.options,
-    //   this.attributes,
+    this.attributes,
   });
 
   factory DataProductDetailResponse.fromJson(Map<String, dynamic> json) {

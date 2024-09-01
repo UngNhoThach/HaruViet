@@ -1,16 +1,24 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:haruviet/component/error/error_internet.dart';
+import 'package:haruviet/base/base_state.dart';
+import 'package:haruviet/component/shimer/image_product_shimer.dart';
 import 'package:haruviet/data/data_local/user_bloc.dart';
-import 'package:haruviet/data/reponsitory/category/item_category_response.dart';
+import 'package:haruviet/data/reponsitory/category/models/list_category_response/data_category.dart';
+import 'package:haruviet/data/reponsitory/category/models/list_category_response/subcategory.dart';
 import 'package:haruviet/helper/colors.dart';
+import 'package:haruviet/helper/const.dart';
 import 'package:haruviet/page/category/category_bloc.dart';
 import 'package:haruviet/page/category/category_state.dart';
 import 'package:haruviet/page/category/widgets/category_paga_params.dart';
 import 'package:haruviet/page/home/widgets/drawer_list_page.dart';
+import 'package:haruviet/page/product/product_list/widgets/product_list_page_params.dart';
+import 'package:haruviet/resources/routes.dart';
 import 'package:haruviet/theme/typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:haruviet/utils/commons.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class CategoryPage extends StatefulWidget {
   const CategoryPage({super.key, required this.params});
@@ -22,37 +30,11 @@ class CategoryPage extends StatefulWidget {
 
 class _CategoryPageState extends State<CategoryPage> {
   // variables and functions
+
+  final PagingController<int, DataCategory> _pagingController =
+      PagingController(firstPageKey: startPage, invisibleItemsThreshold: 3);
   FocusNode focusNode = FocusNode();
 
-  List<ItemCategoryResponse> listCategories() {
-    return [
-      ItemCategoryResponse(
-          id: 1, code: 'CAT001', name: 'Sức khoẻ & làm đẹp', isCheck: false),
-      ItemCategoryResponse(
-          id: 2, code: 'CAT002', name: 'Sức khoẻ & làm đẹp', isCheck: false),
-      ItemCategoryResponse(
-          id: 3, code: 'CAT003', name: 'Sức khoẻ & làm đẹp', isCheck: false),
-      ItemCategoryResponse(
-          id: 4, code: 'CAT004', name: 'Sức khoẻ & làm đẹp', isCheck: false),
-      ItemCategoryResponse(
-          id: 5, code: 'CAT005', name: 'Sức khoẻ & làm đẹp', isCheck: false),
-      ItemCategoryResponse(
-          id: 6, code: 'CAT006', name: 'Mỹ phẩm High', isCheck: false),
-      ItemCategoryResponse(
-          id: 7, code: 'CAT007', name: 'Mỹ phẩm High-End', isCheck: false),
-      ItemCategoryResponse(
-          id: 8, code: 'CAT008', name: 'Sức khoẻ & làm đẹp', isCheck: false),
-      ItemCategoryResponse(
-          id: 9, code: 'CAT009', name: 'Sức khoẻ & làm đẹp', isCheck: false),
-      ItemCategoryResponse(
-          id: 10, code: 'CAT0010', name: 'Sức khoẻ & làm đẹp', isCheck: false),
-      ItemCategoryResponse(
-          id: 11, code: 'CAT0011', name: 'Sức khoẻ & làm đẹp', isCheck: false),
-      // Thêm các danh mục giả lập khác nếu cần
-    ];
-  }
-
-  List<ItemCategoryResponse> listCategorie = [];
   late CategoryBloc bloc;
   late String domain;
   TextEditingController searchController = TextEditingController();
@@ -61,12 +43,18 @@ class _CategoryPageState extends State<CategoryPage> {
   void initState() {
     super.initState();
     domain = context.read<UserBloc>().state.subDomain ?? '';
-
+    _pagingController.addPageRequestListener((pageKey) {
+      if (pageKey != startPage) {
+        bloc.onFetch(page: pageKey);
+      }
+    });
     bloc = CategoryBloc()..getData();
   }
 
   @override
   void dispose() {
+    _pagingController.dispose();
+
     super.dispose();
   }
 
@@ -78,140 +66,162 @@ class _CategoryPageState extends State<CategoryPage> {
           create: (context) => bloc,
         ),
       ],
-      child: BlocBuilder<CategoryBloc, CategoryState>(
-        builder: (context, state) {
-          return Scaffold(
-            drawer: const DrawerListPage(),
-            body: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Expanded(
-                        flex: 2,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 16),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ListView.separated(
-                                physics: const NeverScrollableScrollPhysics(),
-                                separatorBuilder: (context, index) =>
-                                    const Divider(
-                                  color: colorGray04,
-                                  height: 1,
-                                ),
-                                shrinkWrap: true,
-                                itemCount: listCategories().length,
-                                itemBuilder: (BuildContext context, index) {
-                                  return GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        listCategories()
-                                            .asMap()
-                                            .forEach((key, value) {
-                                          value.isCheck = true;
-                                        });
-                                      });
-                                    },
-                                    child: Container(
-                                      padding: listCategories()[index].isCheck
-                                          ? EdgeInsets.only(
-                                              left: 8.w,
-                                              right: 6.w,
-                                              top: 16,
-                                              bottom: 16.h,
-                                            )
-                                          : EdgeInsets.only(
-                                              left: 8.w,
-                                              right: 6.w,
-                                              top: 16.h,
-                                              bottom: 16.h,
-                                            ),
-                                      decoration:
-                                          listCategories()[index].isCheck
-                                              ? BoxDecoration(
-                                                  border: Border(
-                                                    left: BorderSide(
-                                                        width: 6.0.w,
-                                                        color: colorMain),
-                                                  ),
-                                                  color: Colors.white,
-                                                )
-                                              : const BoxDecoration(
-                                                  color: colorBlueGray01,
-                                                ),
-                                      child: Row(
-                                        children: [
-                                          Flexible(
-                                              child: Text(
-                                            '${listCategories()[index].name}',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodySmall
-                                                ?.copyWith(
-                                                  color: colorBlackTileItem,
-                                                  fontWeight: FontWeight.w400,
-                                                ),
-                                          ))
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                          flex: 7,
-                          child: Container(
-                            // color: colorWhite,
+      child: BlocListener<CategoryBloc, CategoryState>(
+        listenWhen: (previous, current) =>
+            previous.newListCategory != current.newListCategory,
+        listener: (context, state) {
+          if (state.currentPage == startPage) {
+            _pagingController.refresh();
+          }
+          if (state.canLoadMore) {
+            _pagingController.appendPage(
+              state.newListCategory ?? [],
+              state.currentPage + 1,
+            );
+          } else {
+            _pagingController.appendLastPage(state.newListCategory ?? []);
+          }
+        },
+        child: BlocBuilder<CategoryBloc, CategoryState>(
+          builder: (context, state) {
+            return Scaffold(
+              drawer: const DrawerListPage(),
+              body: state.isLoading
+                  ? const LoadingWidget()
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Expanded(
+                          flex: 2,
+                          child: SingleChildScrollView(
+                            physics: const BouncingScrollPhysics(),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                _category(context),
+                                ListView.separated(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  separatorBuilder: (context, index) =>
+                                      const Divider(
+                                    color: colorGray04,
+                                    height: 1,
+                                  ),
+                                  shrinkWrap: true,
+                                  // newListCategory
+                                  itemCount: state.newListCategory!.length,
+                                  itemBuilder: (BuildContext context, index) {
+                                    return GestureDetector(
+                                      onTap: () {
+                                        bloc.onChangeSelecCategories(
+                                            selectedCategory: index);
+                                      },
+                                      child: Container(
+                                        padding:
+                                            // listCategories()[index].isCheck
+                                            //     ?
+
+                                            EdgeInsets.only(
+                                          left: 8.w,
+                                          right: 6.w,
+                                          top: 16.h,
+                                          bottom: 16.h,
+                                        ),
+                                        // : EdgeInsets.only(
+                                        //     left: 8.w,
+                                        //     right: 6.w,
+                                        //     top: 16.h,
+                                        //     bottom: 16.h,
+                                        //   ),
+                                        decoration: state.selectedCategory ==
+                                                index
+                                            ?
+                                            // listCategories()[index].isCheck
+                                            //     ?
+                                            BoxDecoration(
+                                                border: Border(
+                                                  left: BorderSide(
+                                                      width: 6.0.w,
+                                                      color: colorMain),
+                                                ),
+                                                color: Colors.white,
+                                              )
+                                            : const BoxDecoration(
+                                                color: colorBlueGray01,
+                                              ),
+                                        child: Row(
+                                          children: [
+                                            Flexible(
+                                              child: Text(
+                                                '${state.newListCategory?[index].descriptions?.title}',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodySmall
+                                                    ?.copyWith(
+                                                      color: colorBlackTileItem,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                    ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
                               ],
                             ),
-                          )),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
+                          ),
+                        ),
+                        Expanded(
+                          flex: 7,
+                          child: Container(
+                            color: colorWhite,
+                            child: Column(
+                              children: [
+                                _category(context,
+                                    subcategory: state
+                                            .newListCategory?[
+                                                state.selectedCategory]
+                                            .subcategories ??
+                                        []),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+            );
+          },
+        ),
       ),
     );
   }
 
-  Widget _category(BuildContext context) {
+  Widget _category(
+    BuildContext context, {
+    required List<Subcategory> subcategory,
+  }) {
     return Container(
-      color: colorWhite,
       padding: EdgeInsets.only(top: 16.h, bottom: 40.h, left: 6.w, right: 6.w),
       child: GridView.builder(
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 40,
+          crossAxisSpacing: 16,
+          mainAxisSpacing: 16,
         ),
-        itemCount: 5,
+        itemCount: subcategory.length,
         itemBuilder: (BuildContext context, int index) {
           return GestureDetector(
             onTap: () {
-              // routeService.pushNamed(
-              //   Routes.categoryChildPage,
-              // );
+              routeService.pushNamed(Routes.productListPage,
+                  arguments: ProductListPageParams(
+                      onReload: () {},
+                      //    categoryID: widget.params.idCategory,
+                      subCategoryID: subcategory[index].id ?? ''));
             },
             child: Stack(
               clipBehavior: Clip.none,
@@ -220,21 +230,19 @@ class _CategoryPageState extends State<CategoryPage> {
                   width: double.infinity,
                   decoration: const BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(6)),
-                    color: colorWhite,
                   ),
                   child: Wrap(alignment: WrapAlignment.center, children: [
-                    Container(
-                      color: colorTransparent,
-                      child: Image.network(
-                        'https://dienmaygiakho79.com/wp-content/uploads/2022/08/tu-lanh-thong-minh-toshiba-inverter-gr-rf605wi-pmv06-mg-4.jpg',
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                        colorBlendMode:
-                            BlendMode.dstATop, // Kích hoạt kết hợp màu sắc
-                        errorBuilder: (context, error, stackTrace) {
-                          return const ErrorInternet();
-                        },
+                    CachedNetworkImage(
+                      fadeOutDuration: const Duration(seconds: 2),
+                      imageUrl: '$domain${subcategory[index].image ?? ''}',
+                      width: 48.w,
+                      height: 48.h,
+                      placeholder: (context, url) => ImageProductShimer(
+                        width: 48.w,
+                        height: 48.h,
                       ),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
                     ),
                     Padding(
                       padding: EdgeInsets.all(4.r),
@@ -242,8 +250,9 @@ class _CategoryPageState extends State<CategoryPage> {
                         textAlign: TextAlign.center,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        'Chăm sóc tóc và da đầu của giới trẻ',
-                        style: textTheme.bodySmall?.copyWith(color: colorBlack),
+                        subcategory[index].descriptions?.title ?? '',
+                        style: textTheme.bodySmall?.copyWith(
+                            color: colorBlack, fontWeight: FontWeight.w600),
                       ),
                     ),
                   ]),

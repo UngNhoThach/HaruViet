@@ -1,4 +1,4 @@
-import 'package:haruviet/component/alert/alert_one_button.dart';
+import 'package:haruviet/component/popup/alert/alert_one_button.dart';
 import 'package:haruviet/component/snackbar/snackbar_bottom.dart';
 import 'package:haruviet/helper/base_status_response.dart';
 import 'package:haruviet/helper/colors.dart';

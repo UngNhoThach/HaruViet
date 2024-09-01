@@ -5,9 +5,9 @@ part 'product_reviews.g.dart';
 @JsonSerializable()
 class ProductReview {
   @JsonKey(name: 'average_rating')
-  int? averageRating;
+  double? averageRating;
   @JsonKey(name: 'total_reviews')
-  int? totalReviews;
+  double? totalReviews;
 
   ProductReview({
     this.averageRating,

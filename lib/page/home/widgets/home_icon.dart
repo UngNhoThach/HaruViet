@@ -115,11 +115,11 @@ class ChildCategory extends StatelessWidget {
           Wrap(alignment: WrapAlignment.center, children: [
             Container(
               width: 80.w,
-              height: 80.h,
+              height: 82.h,
               decoration: BoxDecoration(
                 color: colorWhite,
                 border: Border.all(color: colorWhite),
-                borderRadius: BorderRadius.circular(16.0),
+                borderRadius: BorderRadius.circular(16.0.r),
               ),
               child: Column(
                 children: [

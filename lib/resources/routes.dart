@@ -60,4 +60,6 @@ class Routes {
 
   // orders
   static const ordersPage = "ordersPage";
+  static const historyOrderPage = "historyOrderPage";
+  static const historyOrderTab = "historyOrderTab";
 }

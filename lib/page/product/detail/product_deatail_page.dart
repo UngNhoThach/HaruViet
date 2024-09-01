@@ -1,7 +1,7 @@
 import 'package:comment_tree/data/comment.dart';
 import 'package:comment_tree/widgets/comment_tree_widget.dart';
 import 'package:comment_tree/widgets/tree_theme_data.dart';
-import 'package:haruviet/component/alert/alert_one_button.dart';
+import 'package:haruviet/component/popup/alert/alert_one_button.dart';
 import 'package:haruviet/component/button/bottom_bar_button.dart';
 import 'package:haruviet/component/button/solid_button.dart';
 import 'package:badges/badges.dart' as badges;
@@ -16,7 +16,6 @@ import 'package:haruviet/helper/const.dart';
 import 'package:haruviet/helper/context.dart';
 import 'package:haruviet/helper/spaces.dart';
 import 'package:haruviet/page/cart/models/cart_page_params.dart';
-import 'package:haruviet/page/home/widgets/flash_deals.dart';
 import 'package:haruviet/page/product/detail/product_detail_bloc.dart';
 import 'package:haruviet/page/product/detail/product_detail_state.dart';
 import 'package:haruviet/page/product/detail/widgets/popup_show_option_product.dart';
@@ -26,7 +25,7 @@ import 'package:haruviet/page/product/detail/widgets/widgets/count_qualition.dar
 import 'package:haruviet/page/product/detail/widgets/widgets/review_file.dart';
 import 'package:haruviet/page/product/detail/widgets/widgets/scoll_to_hide_bottom_bar.dart';
 import 'package:haruviet/page/product/detail/widgets/widgets/size_selector.dart';
-import 'package:haruviet/page/product/product_list/product_list_page.dart';
+import 'package:haruviet/page/review/write_review/widgets/write_review_params.dart';
 import 'package:haruviet/resources/routes.dart';
 import 'package:haruviet/theme/typography.dart';
 import 'package:haruviet/utils/commons.dart';
@@ -179,119 +178,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     );
   }
 
-  void _showPopupAndReset(
-      BuildContext context, ProductDetailState state) async {
-    final result = await PopupCreateTerminationResignation.show(
-      widgetCountQuality: CountQuality(
-        initialCounter: state.currentCounter ?? 0,
-        onCounterChanged: (newCounter) {
-          bloc.onHandleCounterChanged(newCounter);
-        },
-      ),
-      widgetButton: BlocProvider(
-        create: (context) => bloc,
-        child: BlocSelector<ProductDetailBloc, ProductDetailState, bool>(
-          selector: (selector) {
-            return selector.validBuyProductAttributes;
-          },
-          builder: (context, validBuyProductAttributes) {
-            return AppSolidButton.medium(
-                disabledColor: colorGray02,
-                onPressed: validBuyProductAttributes
-                    ? () {
-                        bloc.onAddItemToCart(
-                            quantity: state.currentCounter ?? 1,
-                            idProduct: state.dataProduct?.id ?? '',
-                            nameProduct:
-                                state.dataProduct?.descriptions?.name ?? '',
-                            brandProduct: state.dataProduct?.brand?.id ?? '',
-                            imageProduct: state.dataProduct?.image ?? '',
-                            priceProduct:
-                                state.dataProduct!.price!.price != null
-                                    ? state.dataProduct!.price!.price.toString()
-                                    : '',
-                            description:
-                                state.dataProduct?.descriptions?.description ??
-                                    '');
-                      }
-                    : null,
-                'Mua hàng');
-          },
-        ),
-      ),
-      widgetImage: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  ClipRect(
-                    child: Transform.translate(
-                      offset: const Offset(-24, 0), // Dịch sang trái 24px
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        widthFactor: 0.85,
-                        child: Image.network(
-                          '${state.imageUrls[1]}}',
-                          height: 100,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          spaceW10,
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '\$ ${state.dataProduct!.price}',
-                style: textTheme.titleLarge,
-              ),
-              spaceH6,
-              Text(
-                'Kho: ${state.dataProduct!.stock}',
-                style: textTheme.bodyMedium,
-              ),
-            ],
-          ),
-        ],
-      ),
-      widgetColor: ColorSelector(
-        colors: const [
-          Colors.red,
-          Colors.green,
-          Colors.blue,
-          Colors.yellow,
-        ],
-        onColorSelected: (color) {
-          bloc.onSelectColor(color.toString());
-          print('Màu đã chọn: $color');
-        },
-      ),
-      widgetSize: SizeSelector(
-        sizes: const ['S', 'M', 'L', 'XL'],
-        onSizeSelected: (size) {
-          bloc.onSelectSize(size.toString());
-          print('Size đã chọn: $size');
-        },
-      ),
-      colorSelected: '#ec555c',
-      context,
-      onReload: () {
-        // bloc.onReset();
-      },
-    );
-    // This is called after the popup is closed
-    bloc.onResetValiPopSelected();
-  }
-
   @override
   Widget build(BuildContext context) {
     length = commentList.length;
@@ -401,7 +287,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                         state.dataProduct
                                                                     ?.promotionPrice ==
                                                                 null
-                                                            ? '${state.dataProduct?.price?.price} \$'
+                                                            ? '${state.dataProduct?.price?.priceStr}'
                                                             : '${state.dataProduct?.promotionPrice?.pricePromotion?.priceStr}',
                                                         style: textTheme
                                                             .titleLarge
@@ -761,7 +647,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                     onTap: () async {
                                                       state.checkProductAttributes
                                                           ? _showPopupAndReset(
-                                                              context, state)
+                                                              context, state, bloc)
                                                           : bloc.onAddItemToCart(
                                                               quantity: state.currentCounter ??
                                                                   1,
@@ -783,14 +669,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                                       .dataProduct
                                                                       ?.image ??
                                                                   '',
-                                                              priceProduct:
-                                                                  state.dataProduct!.price!.price != null
-                                                                      ? state
-                                                                          .dataProduct!
-                                                                          .price!
-                                                                          .price
-                                                                          .toString()
-                                                                      : '',
+                                                              priceProduct: state.dataProduct!.price!.price != null
+                                                                  ? state
+                                                                      .dataProduct!
+                                                                      .price!
+                                                                      .price
+                                                                      .toString()
+                                                                  : '',
                                                               description: state.dataProduct?.descriptions?.description ?? '');
                                                     },
                                                     child: Container(
@@ -987,84 +872,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                         )
                                                       ],
                                                     ),
-                                                    //     spaceH8,
-                                                    // Row(
-                                                    //   mainAxisAlignment:
-                                                    //       MainAxisAlignment
-                                                    //           .spaceBetween,
-                                                    //   children: [
-                                                    //     Text(
-                                                    //       'Số lượng:',
-                                                    //       style: textTheme
-                                                    //           .bodySmall
-                                                    //           ?.copyWith(
-                                                    //         color: colorGray05,
-                                                    //         fontWeight:
-                                                    //             FontWeight.w500,
-                                                    //       ),
-                                                    //     ),
-                                                    //     Row(
-                                                    //       children: [
-                                                    //         GestureDetector(
-                                                    //             onTap: () {
-                                                    //               _decrementCounter();
-                                                    //             },
-                                                    //             child: const Icon(
-                                                    //               Icons.remove,
-                                                    //               color:
-                                                    //                   colorGray05,
-                                                    //             )),
-                                                    //         spaceW16,
-                                                    //         SizedBox(
-                                                    //           width: 60,
-                                                    //           height: 30,
-                                                    //           child: TextField(
-                                                    //             textAlign:
-                                                    //                 TextAlign
-                                                    //                     .center,
-                                                    //             decoration:
-                                                    //                 const InputDecoration(
-                                                    //               border:
-                                                    //                   OutlineInputBorder(),
-                                                    //             ),
-                                                    //             keyboardType:
-                                                    //                 TextInputType
-                                                    //                     .number,
-                                                    //             onChanged:
-                                                    //                 (newValue) {
-                                                    //               if (int.tryParse(
-                                                    //                       newValue) !=
-                                                    //                   null) {
-                                                    //                 setState(() {
-                                                    //                   _counter =
-                                                    //                       int.parse(
-                                                    //                           newValue);
-                                                    //                 });
-                                                    //               }
-                                                    //             },
-                                                    //             controller:
-                                                    //                 TextEditingController(
-                                                    //                     text:
-                                                    //                         ''),
-                                                    //           ),
-                                                    //         ),
-                                                    //         spaceW16,
-                                                    //         GestureDetector(
-                                                    //           onTap: () {
-                                                    //             _incrementCounter();
-                                                    //           },
-                                                    //           child: const Icon(
-                                                    //             Icons.add,
-                                                    //             color:
-                                                    //                 colorGray05,
-                                                    //           ),
-                                                    //         ),
-                                                    //       ],
-                                                    //     ),
-                                                    //     spaceH12,
-                                                    //   ],
-                                                    // ),
-
                                                     spaceW4,
                                                   ],
                                                 ),
@@ -1287,7 +1094,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                                 style: Theme.of(
                                                                         context)
                                                                     .textTheme
-                                                                    .caption
+                                                                    .bodyMedium
                                                                     ?.copyWith(
                                                                         fontWeight:
                                                                             FontWeight
@@ -1301,7 +1108,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                                 style: Theme.of(
                                                                         context)
                                                                     .textTheme
-                                                                    .caption
+                                                                    .bodyMedium
                                                                     ?.copyWith(
                                                                         fontWeight:
                                                                             FontWeight
@@ -1316,7 +1123,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                           style: Theme.of(
                                                                   context)
                                                               .textTheme
-                                                              .caption!
+                                                              .bodyMedium!
                                                               .copyWith(
                                                                   color: Colors
                                                                           .grey[
@@ -1376,7 +1183,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                                 style: Theme.of(
                                                                         context)
                                                                     .textTheme
-                                                                    .caption!
+                                                                    .bodyMedium!
                                                                     .copyWith(
                                                                         fontWeight:
                                                                             FontWeight
@@ -1390,7 +1197,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                                 style: Theme.of(
                                                                         context)
                                                                     .textTheme
-                                                                    .caption!
+                                                                    .bodyMedium!
                                                                     .copyWith(
                                                                         fontWeight:
                                                                             FontWeight
@@ -1405,7 +1212,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                           style: Theme.of(
                                                                   context)
                                                               .textTheme
-                                                              .caption!
+                                                              .bodyMedium!
                                                               .copyWith(
                                                                   color: Colors
                                                                           .grey[
@@ -1730,8 +1537,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                     onTap: () {
                                                       setState(() {
                                                         routeService.pushNamed(
-                                                          Routes.reviewPage,
-                                                        );
+                                                            Routes.reviewPage,
+                                                            arguments: WriteReviewParams(
+                                                                onReload: () {},
+                                                                itemProductDetailResponse:
+                                                                    state
+                                                                        .dataProduct));
                                                       });
                                                     },
                                                     child: Row(
@@ -1759,41 +1570,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                             ],
                                           ),
                                         ),
-                                        // BlocListener<ProductDetailBloc,
-                                        //     ProductDetailState>(
-                                        //   listenWhen: (previous, current) =>
-                                        //       previous.newDataList !=
-                                        //       current.newDataList,
-                                        //   listener: (context, state) {
-                                        //     if (state.currentPage ==
-                                        //         startPage) {
-                                        //       _pagingController.refresh();
-                                        //     }
-                                        //     if (state.canLoadMore) {
-                                        //       _pagingController.appendPage(
-                                        //         state.newDataList,
-                                        //         state.currentPage + 1,
-                                        //       );
-                                        //     } else {
-                                        //       _pagingController.appendLastPage(
-                                        //           state.newDataList);
-                                        //     }
-                                        //   },
-                                        //   child: Padding(
-                                        //     padding: const EdgeInsets.symmetric(
-                                        //         horizontal: 16),
-                                        //     child: Column(
-                                        //       children: [
-                                        //         _topCategoriesHeader(context,
-                                        //             title:
-                                        //                 "Sản phẩm xem gần đây",
-                                        //             isTimer: false),
-                                        //         _flashDealsProductGridView(
-                                        //             context),
-                                        //       ],
-                                        //     ),
-                                        //   ),
-                                        // ),
 
                                         spaceH72,
                                       ],
@@ -1881,7 +1657,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                           'Mua hàng',
                           onPressed: () async {
                             state.checkProductAttributes
-                                ? _showPopupAndReset(context, state)
+                                ? _showPopupAndReset(context, state, bloc)
                                 : bloc.onAddItemToCart(
                                     quantity: state.currentCounter ?? 0,
                                     idProduct: state.dataProduct?.id ?? '',
@@ -1900,7 +1676,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                     description: state.dataProduct?.descriptions
                                             ?.description ??
                                         '');
-                            ;
                           },
                         );
                       },
@@ -1915,509 +1690,130 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     );
   }
 
-  Widget _topCategoriesHeader(
-    BuildContext context, {
-    required final String title,
-    required bool isTimer,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(title,
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(fontWeight: FontWeight.bold)),
-          isTimer ? const FlashDealsTimer() : const SizedBox(),
-          TextButton(
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (builder) => const ProductListPage()));
-            },
-            child: Text(
-              "Xem tất cả",
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(color: colorPrimary),
-            ),
-          )
-        ],
+  void _showPopupAndReset(
+    BuildContext context,
+    ProductDetailState state,
+    ProductDetailBloc bloc,
+  ) async {
+    PopupCreateTerminationResignation.show(
+      state: state,
+      bloc: bloc,
+      widgetCountQuality: CountQuality(
+        initialCounter: state.currentCounter ?? 0,
+        onCounterChanged: (newCounter) {
+          bloc.onHandleCounterChanged(newCounter);
+        },
       ),
-    );
-  }
-
-  Widget _flashDealsProductGridView(BuildContext context) {
-    return CustomScrollView(
-      shrinkWrap: true,
-      physics: const BouncingScrollPhysics(),
-      slivers: [
-        PagedSliverGrid(
-          shrinkWrapFirstPageIndicators: true,
-          pagingController: _pagingController,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: 12.0,
-            crossAxisSpacing: 8.0,
-            childAspectRatio: 0.8,
-          ),
-          builderDelegate: PagedChildBuilderDelegate<DataProduct>(
-            itemBuilder: (context, item, index) =>
-                _itemFlashSale(context, index: index, data: item),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _itemFlashSale(BuildContext context,
-      {required DataProduct data, required int index}) {
-    return Row(
-      children: [
-        GestureDetector(
-          onTap: () {
-            routeService.pushNamed(Routes.productDetailPage,
-                arguments: ProductDetailParams(idProduct: data.id ?? ''));
-          },
-          child: Container(
-            padding: EdgeInsets.symmetric(vertical: 12.h),
-            decoration: BoxDecoration(
-              color: colorWhite,
-              boxShadow: const [
-                BoxShadow(
-                  blurRadius: 4,
-                  color: Color(0x3600000F),
-                  offset: Offset(0, 2),
-                )
-              ],
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width * 0.46,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
+      widgetButton: BlocSelector<ProductDetailBloc, ProductDetailState, bool>(
+        selector: (state) => state.validBuyProductAttributes,
+        builder: (context, validBuyProductAttributes) {
+          return AppSolidButton.medium(
+              key: ObjectKey(validBuyProductAttributes), // Ensure UI updates
+              color: validBuyProductAttributes ? colorPrimary : colorGray02,
+              disabledColor:
+                  validBuyProductAttributes ? colorPrimary : colorGray02,
+              onPressed: validBuyProductAttributes
+                  ? () {
+                      bloc.onAddItemToCart(
+                          quantity: state.currentCounter ?? 1,
+                          idProduct: state.dataProduct?.id ?? '',
+                          nameProduct:
+                              state.dataProduct?.descriptions?.name ?? '',
+                          brandProduct: state.dataProduct?.brand?.id ?? '',
+                          imageProduct: state.dataProduct?.image ?? '',
+                          priceProduct: state.dataProduct!.price!.price != null
+                              ? state.dataProduct!.price!.price.toString()
+                              : '',
+                          description:
+                              state.dataProduct?.descriptions?.description ??
+                                  '');
+                    }
+                  : null,
+              'Mua hàng');
+        },
+      ),
+      widgetImage: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(0.r),
-                            bottomRight: Radius.circular(0.r),
-                            topLeft: Radius.circular(8.r),
-                            topRight: Radius.circular(8.r),
-                          ),
-                          child: Image.network(
-                            '$domain${data.image ?? ''}',
-                            width: 75.w,
-                            height: 75.h,
-                          ),
+                  ClipRect(
+                    child: Transform.translate(
+                      offset: const Offset(-24, 0),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        widthFactor: 0.85,
+                        child: Image.network(
+                          '$domain${state.dataProduct?.image ?? ''}',
+                          height: 100,
+                          fit: BoxFit.cover,
                         ),
                       ),
-                    ],
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(top: 16.h, left: 4.w, right: 4.w),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              '900.000 đ',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelLarge
-                                  ?.copyWith(
-                                    color: colorMain,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                            ),
-                            Text(
-                              '1.200.000 đ',
-                              style: textTheme.bodySmall?.copyWith(
-                                color: colorItemCover,
-                                fontWeight: FontWeight.bold,
-                                decoration: TextDecoration.lineThrough,
-                              ),
-                            ),
-                          ],
-                        ),
-                        spaceH4,
-                        Text(
-                          'Thương hiệu: Samsung',
-                          style: textTheme.labelMedium?.copyWith(
-                            color: colorSecondary04,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        spaceH4,
-                        Text(
-                          data.descriptions?.name ?? '',
-                          style: textTheme.labelMedium?.copyWith(
-                            color: colorBlackTileItem,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        spaceH4,
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  width: 42.w,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8.r),
-                                    color: colorMainCover,
-                                  ),
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 4.w, vertical: 2.h),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        '4.8',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .labelSmall
-                                            ?.copyWith(
-                                              color: colorBackgroundWhite,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                      ),
-                                      spaceW2,
-                                      Icon(
-                                        Icons.star,
-                                        size: 12.sp,
-                                        color: colorBackgroundWhite,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                spaceW2,
-                                Text(
-                                  '(120)',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelSmall
-                                      ?.copyWith(
-                                        color: colorBlueGray02,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.shopping_cart_outlined,
-                                  color: colorBlueGray02,
-                                  size: 12.sp,
-                                ),
-                                spaceW2,
-                                Text(
-                                  '1.3k/tháng',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelSmall
-                                      ?.copyWith(
-                                        color: colorBlueGray02,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        spaceH6,
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Expanded(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8.r),
-                                  gradient: LinearGradient(
-                                    stops: const [0.6, 0.02],
-                                    colors: [
-                                      colorMainCover,
-                                      colorMainCover.withOpacity(0.4),
-                                    ],
-                                  ),
-                                ),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 4.w, vertical: 2.h),
-                                child: Text(
-                                  'Còn: 01 : 37: 00',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelSmall
-                                      ?.copyWith(
-                                        color: colorWhite,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                ),
-                              ),
-                            ),
-                            spaceW4,
-                            Text(
-                              '60%',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .labelMedium
-                                  ?.copyWith(color: colorMain),
-                            ),
-                          ],
-                        ),
-                      ],
                     ),
                   ),
                 ],
               ),
-            ),
+            ],
           ),
-        ),
-      ],
+          spaceW10,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '${state.dataProduct!.price?.priceStr}',
+                style: textTheme.titleLarge,
+              ),
+              spaceH6,
+              Text(
+                'Kho: ${state.dataProduct!.stock}',
+                style: textTheme.bodyMedium,
+              ),
+            ],
+          ),
+        ],
+      ),
+      widgetColor: ColorSelector(
+        bloc: bloc,
+        // onTapSelectItem: () {},
+        // onTapSelectItem: () {
+        //   bloc.onSelectAttributeValue
+        // },
+        // onSizeSelected: (vakue) async {
+        //   await bloc.onSelectSize(vakue);
+        // },
+        //     onChangeValueDropdown: (value) {},
+        //   options: state.options,
+        selectedSize: state.sizeSelected,
+        //  selectedColor: state.colorSelected,
+        colors: const [
+          Colors.red,
+          Colors.green,
+          Colors.blue,
+          Colors.yellow,
+        ],
+        onColorSelected: (color) {
+          bloc.onSelectColor(color);
+          print('Màu đã chọn: $color');
+        },
+      ),
+      // widgetSize: SizeSelector(
+      //   selectedSize: state.sizeSelected,
+      //   sizes: const ['S', 'M', 'L', 'XL'],
+      //   onSizeSelected: (size) async {
+      //     await bloc.onSelectSize(size);
+      //     print('Size đã chọn: ${size}');
+      //   },
+      // ),
+      context,
+      onReload: () {
+        // bloc.onReset();
+      },
     );
+    // This is called after the popup is closed
+    // bloc.onResetValiPopSelected();
   }
-
-  // Widget _flashDealsProductListView(BuildContext context) {
-  //   return SizedBox(
-  //     height: 280.h,
-  //     child: ListView.separated(
-  //       padding: EdgeInsets.symmetric(vertical: 10.h),
-  //       shrinkWrap: true,
-  //       physics: const BouncingScrollPhysics(),
-  //       scrollDirection: Axis.horizontal,
-  //       itemCount: AppData.recommendedProducts.length + 4,
-  //       separatorBuilder: (_, __) => spaceW12,
-  //       itemBuilder: (_, index) {
-  //         return GestureDetector(
-  //           onTap: () {
-  //             // Navigator.push(
-  //             //     context,
-  //             //     MaterialPageRoute(
-  //             //         builder: (builder) => const ProductDetailPage()));
-  //           },
-  //           child: Container(
-  //             padding: EdgeInsets.symmetric(vertical: 12.h),
-  //             decoration: BoxDecoration(
-  //               color: Colors.white,
-  //               boxShadow: const [
-  //                 BoxShadow(
-  //                   blurRadius: 4,
-  //                   color: Color(0x3600000F),
-  //                   offset: Offset(0, 2),
-  //                 )
-  //               ],
-  //               borderRadius: BorderRadius.circular(8),
-  //             ),
-  //             child: SizedBox(
-  //               width: MediaQuery.of(context).size.width * 0.46,
-  //               child: Column(
-  //                 mainAxisSize: MainAxisSize.min,
-  //                 crossAxisAlignment: CrossAxisAlignment.start,
-  //                 children: [
-  //                   Row(
-  //                     mainAxisSize: MainAxisSize.max,
-  //                     children: [
-  //                       Expanded(
-  //                         child: ClipRRect(
-  //                           borderRadius: BorderRadius.only(
-  //                             bottomLeft: Radius.circular(0.r),
-  //                             bottomRight: Radius.circular(0.r),
-  //                             topLeft: Radius.circular(8.r),
-  //                             topRight: Radius.circular(8.r),
-  //                           ),
-  //                           child: Image.network(
-  //                             'https://bizweb.dktcdn.net/thumb/large/100/465/278/products/samsung-inverter-488-lit-rf48a4010b4-sv-2-1-1667208459141.jpg?v=1700295265767',
-  //                             width: 100.w,
-  //                             height: 100.h,
-  //                             fit: BoxFit.cover,
-  //                           ),
-  //                         ),
-  //                       ),
-  //                     ],
-  //                   ),
-  //                   Container(
-  //                     padding:
-  //                         EdgeInsets.only(top: 16.h, left: 4.w, right: 4.w),
-  //                     child: Column(
-  //                       crossAxisAlignment: CrossAxisAlignment.start,
-  //                       children: [
-  //                         Row(
-  //                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                           children: [
-  //                             Text(
-  //                               '900.000 đ',
-  //                               style: Theme.of(context)
-  //                                   .textTheme
-  //                                   .labelLarge
-  //                                   ?.copyWith(
-  //                                     color: colorMain,
-  //                                     fontWeight: FontWeight.bold,
-  //                                   ),
-  //                             ),
-  //                             Text(
-  //                               '1.200.000 đ',
-  //                               style: textTheme.bodySmall?.copyWith(
-  //                                 color: colorItemCover,
-  //                                 fontWeight: FontWeight.bold,
-  //                                 decoration: TextDecoration.lineThrough,
-  //                               ),
-  //                             ),
-  //                           ],
-  //                         ),
-  //                         spaceH4,
-  //                         Text(
-  //                           'Thương hiệu: Samsung',
-  //                           style: textTheme.labelMedium?.copyWith(
-  //                             color: colorSecondary04,
-  //                             fontWeight: FontWeight.w500,
-  //                           ),
-  //                         ),
-  //                         spaceH4,
-  //                         Text(
-  //                           'Tủ lạnh Samsung Inverter 599 lít',
-  //                           style: textTheme.labelMedium?.copyWith(
-  //                             color: colorBlackTileItem,
-  //                             fontWeight: FontWeight.w500,
-  //                           ),
-  //                         ),
-  //                         spaceH4,
-  //                         Row(
-  //                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                           children: [
-  //                             Row(
-  //                               crossAxisAlignment: CrossAxisAlignment.center,
-  //                               children: [
-  //                                 Container(
-  //                                   width: 42.w,
-  //                                   decoration: BoxDecoration(
-  //                                     borderRadius: BorderRadius.circular(8.r),
-  //                                     color: colorMainCover,
-  //                                   ),
-  //                                   padding: EdgeInsets.symmetric(
-  //                                       horizontal: 4.w, vertical: 2.h),
-  //                                   child: Row(
-  //                                     children: [
-  //                                       Text(
-  //                                         '4.8',
-  //                                         style: Theme.of(context)
-  //                                             .textTheme
-  //                                             .labelSmall
-  //                                             ?.copyWith(
-  //                                               color: colorBackgroundWhite,
-  //                                               fontWeight: FontWeight.w500,
-  //                                             ),
-  //                                       ),
-  //                                       spaceW2,
-  //                                       Icon(
-  //                                         Icons.star,
-  //                                         size: 12.sp,
-  //                                         color: colorBackgroundWhite,
-  //                                       ),
-  //                                     ],
-  //                                   ),
-  //                                 ),
-  //                                 spaceW2,
-  //                                 Text(
-  //                                   '(120)',
-  //                                   style: Theme.of(context)
-  //                                       .textTheme
-  //                                       .labelSmall
-  //                                       ?.copyWith(
-  //                                         color: colorBlueGray02,
-  //                                         fontWeight: FontWeight.w500,
-  //                                       ),
-  //                                 ),
-  //                               ],
-  //                             ),
-  //                             Row(
-  //                               crossAxisAlignment: CrossAxisAlignment.center,
-  //                               children: [
-  //                                 Icon(
-  //                                   Icons.shopping_cart_outlined,
-  //                                   color: colorBlueGray02,
-  //                                   size: 12.sp,
-  //                                 ),
-  //                                 spaceW2,
-  //                                 Text(
-  //                                   '1.3k/tháng',
-  //                                   style: Theme.of(context)
-  //                                       .textTheme
-  //                                       .labelSmall
-  //                                       ?.copyWith(
-  //                                         color: colorBlueGray02,
-  //                                         fontWeight: FontWeight.w500,
-  //                                       ),
-  //                                 ),
-  //                               ],
-  //                             ),
-  //                           ],
-  //                         ),
-  //                         spaceH6,
-  //                         Row(
-  //                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                           mainAxisSize: MainAxisSize.min,
-  //                           children: [
-  //                             Expanded(
-  //                               child: Container(
-  //                                 decoration: BoxDecoration(
-  //                                   borderRadius: BorderRadius.circular(8.r),
-  //                                   gradient: LinearGradient(
-  //                                     stops: const [0.6, 0.02],
-  //                                     colors: [
-  //                                       colorMainCover,
-  //                                       colorMainCover.withOpacity(0.4),
-  //                                     ],
-  //                                   ),
-  //                                 ),
-  //                                 padding: EdgeInsets.symmetric(
-  //                                     horizontal: 4.w, vertical: 2.h),
-  //                                 child: Text(
-  //                                   'Còn: 01 : 37: 00',
-  //                                   style: Theme.of(context)
-  //                                       .textTheme
-  //                                       .labelSmall
-  //                                       ?.copyWith(
-  //                                         color: colorWhite,
-  //                                         fontWeight: FontWeight.w500,
-  //                                       ),
-  //                                 ),
-  //                               ),
-  //                             ),
-  //                             spaceW4,
-  //                             Text(
-  //                               '60%',
-  //                               style: Theme.of(context)
-  //                                   .textTheme
-  //                                   .labelMedium
-  //                                   ?.copyWith(color: colorMain),
-  //                             ),
-  //                           ],
-  //                         ),
-  //                       ],
-  //                     ),
-  //                   ),
-  //                 ],
-  //               ),
-  //             ),
-  //           ),
-  //         );
-  //       },
-  //     ),
-  //   );
-  // }
 }

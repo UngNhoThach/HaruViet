@@ -1,5 +1,5 @@
-import 'package:haruviet/component/error/not_found_v2.dart';
 import 'package:haruviet/component/error/not_found.dart';
+import 'package:haruviet/component/error/not_found_v2.dart';
 import 'package:haruviet/component/header/header_item.dart';
 import 'package:haruviet/component/input/search_barv2.dart';
 import 'package:haruviet/component/loading/loading.dart';
@@ -858,7 +858,8 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
                     },
                   ),
                 ),
-                isFilter: true,
+                // fix here
+                isFilter: state.isFilter,
                 nameCategory: nameCategory,
                 onTap: () {
                   _openDrawer();

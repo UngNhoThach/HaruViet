@@ -36,13 +36,6 @@ class _FilterSubCategoryState extends State<FilterSubCategory> {
           color: colorWhite,
           border: Border(
             bottom: BorderSide(color: colorGray02, width: 4),
-            //  boxShadow: [
-            //         BoxShadow(
-            //           color: colorWhite, // Màu và độ mờ của bóng
-            //           spreadRadius: 2, // Độ rộng của bóng
-            //           blurRadius: 2, // Độ mờ của bóng
-            //           offset: Offset(0, 2), // Vị trí bóng, chỉ dưới thôi
-            //         ),],
           )),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,

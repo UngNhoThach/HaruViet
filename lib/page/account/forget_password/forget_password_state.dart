@@ -1,7 +1,7 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:haruviet/base/base_bloc.dart';
 import 'package:haruviet/data/enum.dart';
-import 'package:haruviet/data/reponsitory/normal_response/normal_error.dart';
+import 'package:haruviet/data/reponsitory/normal_response/customer_response/normal_error.dart';
 import 'package:haruviet/page/account/signup/widgets/sigup_type.dart';
 import 'package:haruviet/page/account/signup/widgets/verify_status.dart';
 

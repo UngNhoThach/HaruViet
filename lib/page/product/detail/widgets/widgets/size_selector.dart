@@ -5,10 +5,14 @@ import 'package:flutter/material.dart';
 class SizeSelector extends StatefulWidget {
   final List<String> sizes;
   final Function(String) onSizeSelected;
+  final String? selectedSize;
 
-  const SizeSelector(
-      {required this.sizes, required this.onSizeSelected, Key? key})
-      : super(key: key);
+  const SizeSelector({
+    required this.sizes,
+    required this.onSizeSelected,
+    this.selectedSize,
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<SizeSelector> createState() => _SizeSelectorState();
@@ -16,6 +20,11 @@ class SizeSelector extends StatefulWidget {
 
 class _SizeSelectorState extends State<SizeSelector> {
   String? selectedSize;
+  @override
+  void initState() {
+    selectedSize = widget.selectedSize;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

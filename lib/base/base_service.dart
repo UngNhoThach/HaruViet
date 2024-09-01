@@ -7,11 +7,13 @@ import 'package:logger/web.dart';
 abstract class BaseService {
   final Logger _logger = Logger();
 
-  Future<dynamic> get(String path,
-      {Map<String, dynamic>? params,
-      Map<String, dynamic>? headers,
-      ignoreResultCode = false,
-      String? dataKey}) async {
+  Future<dynamic> get(
+    String path, {
+    Map<String, dynamic>? params,
+    Map<String, dynamic>? headers,
+    //  ignoreResultCode = false,
+    //   String? dataKey
+  }) async {
     try {
       final response = await RestClient.dio.get(
         path,
@@ -26,11 +28,13 @@ abstract class BaseService {
     }
   }
 
-  Future<dynamic> post(String path,
-      {Map<String, dynamic>? data,
-      Map<String, dynamic>? headers,
-      ignoreResultCode = false,
-      String? dataKey}) async {
+  Future<dynamic> post(
+    String path, {
+    Map<String, dynamic>? data,
+    Map<String, dynamic>? headers,
+    // ignoreResultCode = false,
+    // String? dataKey
+  }) async {
     try {
       final response = await RestClient.dio.post(
         path,
@@ -45,19 +49,23 @@ abstract class BaseService {
     }
   }
 
-  Future<dynamic> put(String path,
-      {Map<String, dynamic>? data,
-      ignoreResultCode = false,
-      String? dataKey}) async {
+  Future<dynamic> put(
+    String path, {
+    Map<String, dynamic>? data,
+    // ignoreResultCode = false,
+    // String? dataKey
+  }) async {
     final response = await RestClient.dio.put(path, data: data);
     _logger.i('path: $path \ndata: $data\nresponse: $response');
     return _handleResponse(response);
   }
 
-  Future<dynamic> delete(String path,
-      {Map<String, dynamic>? data,
-      ignoreResultCode = false,
-      String? dataKey}) async {
+  Future<dynamic> delete(
+    String path, {
+    Map<String, dynamic>? data,
+    // ignoreResultCode = false,
+    // String? dataKey
+  }) async {
     final response = await RestClient.dio.delete(path, data: data);
     _logger.i('path: $path \ndata: $data\nresponse: $response');
     return _handleResponse(response);

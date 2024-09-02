@@ -63,14 +63,14 @@ class CategoryBloc extends BaseBloc<CategoryState> {
       }
       final category = await _categoryRepository.getCategoryRP();
 
-      updatedDataList.addAll(category.data ?? []);
+      updatedDataList.addAll(category.parseDataCategory() ?? []);
 
       final maxLoadMore = ((category.total ?? 0) / state.limit).floor();
       final canLoadMore = page <= maxLoadMore;
 
       emit(state.copyWith(
         currentPage: page,
-        newListCategory: category.data,
+        newListCategory: category.parseDataCategory(),
         listCategory: updatedDataList,
         canLoadMore: canLoadMore,
       ));

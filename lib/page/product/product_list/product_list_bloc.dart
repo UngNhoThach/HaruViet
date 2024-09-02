@@ -92,7 +92,8 @@ class ProductListBloc extends BaseBloc<ProductListState> {
 
       //   updatedDataList.addAll(productList.data ?? []);
 
-      var newDataList = List<DataProduct>.from(productList.data ?? []);
+      var newDataList =
+          List<DataProduct>.from(productList.parseDataProduct() ?? []);
 
       final maxLoadMore = ((productList.total ?? 0) / state.limit).floor();
       // final canLoadMore = page < maxLoadMore;

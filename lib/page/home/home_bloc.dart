@@ -84,7 +84,8 @@ class HomeBloc extends BaseBloc<HomeState> {
         request: GetListProductRequest(paegNumber: page, pageSize: state.limit),
       );
 
-      var newDataList = List<DataProduct>.from(productList.data ?? []);
+      var newDataList =
+          List<DataProduct>.from(productList.parseDataProduct() ?? []);
 
       final loadingCount = ((productList.total ?? 0) / state.limit);
       final maxLoadMore = loadingCount.floor();
@@ -95,7 +96,6 @@ class HomeBloc extends BaseBloc<HomeState> {
         print('error');
       }
       emit(state.copyWith(
-        productList: productList,
         newDataList: newDataList,
         currentPage: page,
         canLoadMore: canLoadMore,

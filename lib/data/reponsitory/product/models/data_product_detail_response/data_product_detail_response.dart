@@ -45,10 +45,10 @@ class DataProductDetailResponse {
   List<ImagesProduct>? images;
   @JsonKey(name: 'promotion_price')
   ProductPromotionPriceList? promotionPrice;
-  List<Promotiondetail>? promotiondetails;
+  List<Promotiondetail?>? promotiondetails;
   dynamic reviews;
-  List<Option>? options;
-  List<AttributesProductDetail>? attributes;
+  List<Option?>? options;
+  List<AttributesProductDetail?>? attributes;
 
   DataProductDetailResponse({
     this.id,

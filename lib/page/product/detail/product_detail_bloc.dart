@@ -106,14 +106,14 @@ class ProductDetailBloc extends BaseBloc<ProductDetailState> {
       );
 
       final datatList = List<DataProduct>.from(state.datatList)
-        ..addAll(productList.data ?? []);
+        ..addAll(productList.parseDataProduct() ?? []);
 
       final maxLoadMore = ((productList.total ?? 0) / state.limit).floor();
       final canLoadMore = page <= maxLoadMore;
 
       emit(state.copyWith(
         datatList: datatList,
-        newDataList: productList.data,
+        newDataList: productList.parseDataProduct(),
         currentPage: page,
         canLoadMore: canLoadMore,
       ));
@@ -232,11 +232,11 @@ class ProductDetailBloc extends BaseBloc<ProductDetailState> {
   void onSelectAttributeValue({
     required Option option,
     required ValueOptionProduct selectedValue,
-    required List<Option> listOptions,
+    required List<Option?> listOptions,
   }) {
-    List<Option> updatedCategories = listOptions.map((c) {
-      if (c.id == option.id) {
-        List<ValueOptionProduct> updatedValues = c.values!.map((v) {
+    List<Option?> updatedCategories = listOptions.map((c) {
+      if (c?.id == option.id) {
+        List<ValueOptionProduct> updatedValues = c!.values!.map((v) {
           if (v.id == selectedValue.id) {
             return v.copyWith(isSelected: true);
           } else {

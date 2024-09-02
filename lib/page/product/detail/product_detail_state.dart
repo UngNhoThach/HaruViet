@@ -35,8 +35,8 @@ class ProductDetailState extends BaseState {
   final bool canLoadMore;
   final int limit;
   final int currentPage;
-  final List<Option> options;
-  final List<AttributesProductDetail> attributes;
+  final List<Option?> options;
+  final List<AttributesProductDetail?> attributes;
   final bool isSelected;
 
   const ProductDetailState({

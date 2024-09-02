@@ -14,7 +14,7 @@ class NormalResponse {
   @JsonKey(name: 'success')
   bool? success;
   String? message;
-  dynamic data; // Use dynamic to allow any type of data
+  dynamic data;
 
 //  DataNormalResponse? data;
   @JsonKey(name: 'errors')

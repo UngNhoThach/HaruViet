@@ -1,7 +1,6 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:haruviet/base/base_bloc.dart';
 import 'package:haruviet/data/enum.dart';
-import 'package:haruviet/data/reponsitory/cart_orders/models/cart_order_response/data_cart_response.dart';
 import 'package:haruviet/data/reponsitory/cart_orders/models/cart_order_status_response/data_status_order.dart';
 
 part 'history_order_state.g.dart';

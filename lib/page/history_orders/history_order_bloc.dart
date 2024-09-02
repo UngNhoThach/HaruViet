@@ -14,8 +14,9 @@ class HistoryOrderBloc extends Cubit<HistoryOrderState> {
     try {
       final data = await Preference.getUserInfo();
       final status = await _cartOrderRepository.getStatusOrderRP();
-      emit(
-          state.copyWith(listStatusOrder: status.data, idUser: data?.id ?? ''));
+      emit(state.copyWith(
+          listStatusOrder: status.parseDataStatusOrder(),
+          idUser: data?.id ?? ''));
     } catch (e) {
       print(e);
     }

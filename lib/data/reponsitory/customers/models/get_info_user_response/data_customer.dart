@@ -1,9 +1,9 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'data.g.dart';
+part 'data_customer.g.dart';
 
 @JsonSerializable()
-class Data {
+class DataCustomer {
   String? id;
   dynamic avatar;
   dynamic sku;
@@ -55,7 +55,7 @@ class Data {
   dynamic providerId;
   String? name;
 
-  Data({
+  DataCustomer({
     this.id,
     this.avatar,
     this.sku,
@@ -92,7 +92,8 @@ class Data {
     this.name,
   });
 
-  factory Data.fromJson(Map<String, dynamic> json) => _$DataFromJson(json);
+  factory DataCustomer.fromJson(Map<String, dynamic> json) =>
+      _$DataCustomerFromJson(json);
 
-  Map<String, dynamic> toJson() => _$DataToJson(this);
+  Map<String, dynamic> toJson() => _$DataCustomerToJson(this);
 }

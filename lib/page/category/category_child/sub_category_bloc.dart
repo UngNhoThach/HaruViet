@@ -135,13 +135,13 @@ class SubCategoryBloc extends BaseBloc<SubCategoryState> {
             filters: state.filterValues),
       );
 
-      updatedDataList.addAll(productList.data ?? []);
+      updatedDataList.addAll(productList.parseDataProduct() ?? []);
 
       final maxLoadMore = ((productList.total ?? 0) / state.limit).floor();
       final canLoadMore = page <= maxLoadMore;
       emit(state.copyWith(
         datatList: updatedDataList,
-        newDataList: productList.data,
+        newDataList: productList.parseDataProduct(),
         currentPage: page,
         canLoadMore: canLoadMore,
       ));

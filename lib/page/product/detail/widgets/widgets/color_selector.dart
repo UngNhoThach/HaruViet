@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:haruviet/component/input/textfiled_input.dart';
-import 'package:haruviet/data/reponsitory/product/models/data_product_detail_response/option_product_detail.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_product_detail_response/value_product_detail.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/page/product/detail/product_detail_bloc.dart';
@@ -80,13 +79,13 @@ class _ColorSelectorState extends State<ColorSelector> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                item.title ?? '',
+                                item?.title ?? '',
                                 style: textTheme.titleMedium,
                               ),
                             ],
                           ),
                           const SizedBox(height: 16),
-                          if (item.type == "field") ...[
+                          if (item?.type == "field") ...[
                             TextFiledInputText(
                               keyboardType: TextInputType.name,
                               icon: const Icon(
@@ -99,14 +98,14 @@ class _ColorSelectorState extends State<ColorSelector> {
                               },
                               isClear: true,
                             ),
-                          ] else if (item.type == "dropdown") ...[
+                          ] else if (item?.type == "dropdown") ...[
                             DropDownOptionProducts(
-                              label: 'Chọn ${item.title ?? ''}',
+                              label: 'Chọn ${item?.title ?? ''}',
                               isDense: true,
                               onChanged: (value) {
                                 //    widget.onChangeValueDropdown(value);
                               },
-                              reasonList: item.values!,
+                              reasonList: item?.values ?? [],
                             ),
                           ] else ...[
                             Row(
@@ -116,7 +115,7 @@ class _ColorSelectorState extends State<ColorSelector> {
                                     spacing: 12,
                                     runSpacing: 12,
                                     direction: Axis.horizontal,
-                                    children: item.values!
+                                    children: item!.values!
                                         .map((itemSelected) => _item(
                                               selectedValue: itemSelected,
                                               onTap: () {

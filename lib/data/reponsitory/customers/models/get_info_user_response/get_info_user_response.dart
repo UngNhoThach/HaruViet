@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import 'data.dart';
+import 'data_customer.dart';
 
 part 'get_info_user_response.g.dart';
 
@@ -10,7 +10,7 @@ class GetInfoUserResponse {
   @JsonKey(name: 'is_status')
   bool? isStatus;
   String? message;
-  Data? data;
+  DataCustomer? data;
 
   GetInfoUserResponse({
     this.status,

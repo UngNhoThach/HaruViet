@@ -1,35 +1,37 @@
-import 'package:json_annotation/json_annotation.dart';
+// import 'package:json_annotation/json_annotation.dart';
 
-import 'data_status_order.dart';
+// import 'data_status_order.dart';
 
-part 'cart_order_status_response.g.dart';
+// part 'cart_order_status_response.g.dart';
 
-@JsonSerializable()
-class CartOrderStatusResponse {
-  @JsonKey(name: 'current_page')
-  int? currentPage;
-  List<DataStatusOrder>? data;
-  int? from;
-  @JsonKey(name: 'last_page')
-  int? lastPage;
-  @JsonKey(name: 'per_page')
-  int? perPage;
-  int? to;
-  int? total;
+// // checked it
 
-  CartOrderStatusResponse({
-    this.currentPage,
-    this.data,
-    this.from,
-    this.lastPage,
-    this.perPage,
-    this.to,
-    this.total,
-  });
+// @JsonSerializable()
+// class CartOrderStatusResponse {
+//   @JsonKey(name: 'current_page')
+//   int? currentPage;
+//   List<DataStatusOrder>? data;
+//   int? from;
+//   @JsonKey(name: 'last_page')
+//   int? lastPage;
+//   @JsonKey(name: 'per_page')
+//   int? perPage;
+//   int? to;
+//   int? total;
 
-  factory CartOrderStatusResponse.fromJson(Map<String, dynamic> json) {
-    return _$CartOrderStatusResponseFromJson(json);
-  }
+//   CartOrderStatusResponse({
+//     this.currentPage,
+//     this.data,
+//     this.from,
+//     this.lastPage,
+//     this.perPage,
+//     this.to,
+//     this.total,
+//   });
 
-  Map<String, dynamic> toJson() => _$CartOrderStatusResponseToJson(this);
-}
+//   factory CartOrderStatusResponse.fromJson(Map<String, dynamic> json) {
+//     return _$CartOrderStatusResponseFromJson(json);
+//   }
+
+//   Map<String, dynamic> toJson() => _$CartOrderStatusResponseToJson(this);
+// }

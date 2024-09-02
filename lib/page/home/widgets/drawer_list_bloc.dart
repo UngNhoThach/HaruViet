@@ -17,7 +17,7 @@ class DrawerListBloc extends Cubit<DrawerListState> {
       final order = await _cartOrderRepository.getStatusOrderRP();
       emit(state.copyWith(
           dataUser: data,
-          listStatusOrder: order.data,
+          listStatusOrder: order.parseDataStatusOrder(),
           viewState: ViewState.loaded));
     } catch (error, statckTrace) {
       if (kDebugMode) {

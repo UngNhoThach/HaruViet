@@ -45,7 +45,7 @@ class HistoryOrderTabBloc extends Cubit<HistoryOrderTabState> {
         status: state.status ?? 1,
       );
       emit(state.copyWith(
-        newDataList: orders.data ?? [],
+        newDataList: orders.parseDataCart() ?? [],
       ));
     } catch (error, statckTrace) {
       if (kDebugMode) {

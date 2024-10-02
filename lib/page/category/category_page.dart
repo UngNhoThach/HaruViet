@@ -2,11 +2,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:haruviet/base/base_state.dart';
 import 'package:haruviet/component/shimer/image_product_shimer.dart';
+import 'package:haruviet/component/shimer/shimer.dart';
 import 'package:haruviet/data/data_local/user_bloc.dart';
 import 'package:haruviet/data/reponsitory/category/models/list_category_response/data_category.dart';
 import 'package:haruviet/data/reponsitory/category/models/list_category_response/subcategory.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/const.dart';
+import 'package:haruviet/helper/context.dart';
+import 'package:haruviet/helper/spaces.dart';
 import 'package:haruviet/page/category/category_bloc.dart';
 import 'package:haruviet/page/category/category_state.dart';
 import 'package:haruviet/page/category/widgets/category_paga_params.dart';
@@ -32,7 +35,7 @@ class _CategoryPageState extends State<CategoryPage> {
   // variables and functions
 
   final PagingController<int, DataCategory> _pagingController =
-      PagingController(firstPageKey: startPage, invisibleItemsThreshold: 3);
+      PagingController(firstPageKey: startPage, invisibleItemsThreshold: 1);
   FocusNode focusNode = FocusNode();
 
   late CategoryBloc bloc;
@@ -42,13 +45,14 @@ class _CategoryPageState extends State<CategoryPage> {
   @override
   void initState() {
     super.initState();
+    bloc = CategoryBloc()..getData();
+
     domain = context.read<UserBloc>().state.subDomain ?? '';
     _pagingController.addPageRequestListener((pageKey) {
       if (pageKey != startPage) {
         bloc.onFetch(page: pageKey);
       }
     });
-    bloc = CategoryBloc()..getData();
   }
 
   @override
@@ -66,135 +70,156 @@ class _CategoryPageState extends State<CategoryPage> {
           create: (context) => bloc,
         ),
       ],
-      child: BlocListener<CategoryBloc, CategoryState>(
-        listenWhen: (previous, current) =>
-            previous.newListCategory != current.newListCategory,
-        listener: (context, state) {
-          if (state.currentPage == startPage) {
-            _pagingController.refresh();
-          }
-          if (state.canLoadMore) {
-            _pagingController.appendPage(
-              state.newListCategory ?? [],
-              state.currentPage + 1,
-            );
-          } else {
-            _pagingController.appendLastPage(state.newListCategory ?? []);
-          }
-        },
-        child: BlocBuilder<CategoryBloc, CategoryState>(
-          builder: (context, state) {
-            return Scaffold(
-              drawer: const DrawerListPage(),
-              body: state.isLoading
-                  ? const LoadingWidget()
-                  : Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Expanded(
-                          flex: 2,
-                          child: SingleChildScrollView(
-                            physics: const BouncingScrollPhysics(),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ListView.separated(
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  separatorBuilder: (context, index) =>
-                                      const Divider(
-                                    color: colorGray04,
-                                    height: 1,
-                                  ),
-                                  shrinkWrap: true,
-                                  // newListCategory
-                                  itemCount: state.newListCategory!.length,
-                                  itemBuilder: (BuildContext context, index) {
-                                    return GestureDetector(
-                                      onTap: () {
-                                        bloc.onChangeSelecCategories(
-                                            selectedCategory: index);
-                                      },
-                                      child: Container(
-                                        padding:
-                                            // listCategories()[index].isCheck
-                                            //     ?
-
-                                            EdgeInsets.only(
-                                          left: 8.w,
-                                          right: 6.w,
-                                          top: 16.h,
-                                          bottom: 16.h,
-                                        ),
-                                        // : EdgeInsets.only(
-                                        //     left: 8.w,
-                                        //     right: 6.w,
-                                        //     top: 16.h,
-                                        //     bottom: 16.h,
-                                        //   ),
-                                        decoration: state.selectedCategory ==
-                                                index
-                                            ?
-                                            // listCategories()[index].isCheck
-                                            //     ?
-                                            BoxDecoration(
-                                                border: Border(
-                                                  left: BorderSide(
-                                                      width: 6.0.w,
-                                                      color: colorMain),
-                                                ),
-                                                color: Colors.white,
-                                              )
-                                            : const BoxDecoration(
-                                                color: colorBlueGray01,
-                                              ),
-                                        child: Row(
-                                          children: [
-                                            Flexible(
-                                              child: Text(
-                                                '${state.newListCategory?[index].descriptions?.title}',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodySmall
-                                                    ?.copyWith(
-                                                      color: colorBlackTileItem,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                    ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 7,
-                          child: Container(
-                            color: colorWhite,
-                            child: Column(
-                              children: [
-                                _category(context,
-                                    subcategory: state
-                                            .newListCategory?[
-                                                state.selectedCategory]
-                                            .subcategories ??
-                                        []),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-            );
+      child: Scaffold(
+        drawer: const DrawerListPage(),
+        body: BlocListener<CategoryBloc, CategoryState>(
+          listenWhen: (previous, current) =>
+              previous.newListCategory != current.newListCategory,
+          listener: (context, state) {
+            if (state.currentPage == startPage) {
+              _pagingController.refresh();
+            }
+            if (state.canLoadMore) {
+              _pagingController.appendPage(
+                state.newListCategory ?? [],
+                state.currentPage + 1,
+              );
+            } else {
+              _pagingController.appendLastPage(state.newListCategory ?? []);
+            }
           },
+          child: BlocBuilder<CategoryBloc, CategoryState>(
+            builder: (context, state) {
+              return state.isLoading
+                  ? const LoadingWidget()
+                  : RefreshIndicator(
+                      onRefresh: () async {
+                        _pagingController.refresh();
+                        bloc.onFetch(page: startPage);
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Expanded(
+                            flex: 2,
+                            child: SingleChildScrollView(
+                              physics: const BouncingScrollPhysics(),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  PagedListView.separated(
+                                    scrollDirection: Axis.vertical,
+                                    keyboardDismissBehavior:
+                                        ScrollViewKeyboardDismissBehavior
+                                            .onDrag,
+                                    pagingController: _pagingController,
+                                    shrinkWrap: true,
+                                    physics: const ClampingScrollPhysics(),
+                                    builderDelegate:
+                                        PagedChildBuilderDelegate<DataCategory>(
+                                      noItemsFoundIndicatorBuilder: _shimmer,
+                                      itemBuilder: (context, item, index) {
+                                        return GestureDetector(
+                                          onTap: () {
+                                            bloc.onChangeSelecCategories(
+                                                selectedCategory: index);
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.only(
+                                              left: 8.w,
+                                              right: 6.w,
+                                              top: 16.h,
+                                              bottom: 16.h,
+                                            ),
+                                            decoration:
+                                                state.selectedCategory == index
+                                                    ? BoxDecoration(
+                                                        border: Border(
+                                                          left: BorderSide(
+                                                              width: 6.0.w,
+                                                              color: colorMain),
+                                                        ),
+                                                        color: Colors.white,
+                                                      )
+                                                    : const BoxDecoration(
+                                                        color: colorBlueGray01,
+                                                      ),
+                                            child: Row(
+                                              children: [
+                                                Flexible(
+                                                  child: Text(
+                                                    item.descriptions?.title ??
+                                                        '',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodySmall
+                                                        ?.copyWith(
+                                                          color:
+                                                              colorBlackTileItem,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                        ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                    separatorBuilder: (context, index) =>
+                                        const Divider(
+                                      color: colorBlueGray03,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 7,
+                            child: Container(
+                              color: colorWhite,
+                              child: Column(
+                                children: [
+                                  _category(context,
+                                      subcategory: state
+                                              .listCategory?[
+                                                  state.selectedCategory]
+                                              .subcategories ??
+                                          []),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+            },
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget _shimmer(BuildContext context) {
+    return Expanded(
+      child: ListView.separated(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemBuilder: (context, index) => ShimmerEffect(
+          child: Container(
+            height: 50.h,
+            decoration: BoxDecoration(
+              color: context.appColor.colorWhite,
+              borderRadius: BorderRadius.circular(16.0),
+            ),
+          ),
+        ),
+        separatorBuilder: (context, index) => spaceH12,
+        itemCount: 12,
       ),
     );
   }

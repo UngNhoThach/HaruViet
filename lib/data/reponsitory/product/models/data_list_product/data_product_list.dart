@@ -19,6 +19,7 @@ class DataProduct {
   String? image;
   Brand? brand;
   Supplier? supplier;
+  int? totalQuantity;
   Price? price;
   String? cost;
   int? stock;
@@ -49,6 +50,7 @@ class DataProduct {
 
   DataProduct(
       {this.id,
+      this.totalQuantity,
       this.sku,
       this.image,
       this.brand,

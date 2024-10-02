@@ -90,7 +90,7 @@ class _HistoryOrderPageState extends State<HistoryOrderPage>
                               tab: i + 1,
                             ),
                             child: HistoryOrderTab(
-                              params: HistoryOrderTabParms(
+                              params: HistoryOrderTabParams(
                                   status: state.tab,
                                   onReload: () {},
                                   idUser: state.idUser),
@@ -119,6 +119,7 @@ class _HistoryOrderPageState extends State<HistoryOrderPage>
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: TabBar(
+          indicatorColor: colorMainCover,
           isScrollable: true, // Thêm dòng này
           onTap: (value) async {
             _pageController.jumpToPage(value);

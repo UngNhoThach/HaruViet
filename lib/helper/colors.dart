@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 
+// RADIO
+
+const Color colorRadioSelectedBlueBr = Color(0xFF64FFDA);
+const Color colorRadioSelected = Color.fromRGBO(29, 233, 182, 1);
+
 // ERROR
 
 // TEXT

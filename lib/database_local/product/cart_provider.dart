@@ -29,6 +29,14 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setPrefsItemsLogout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt('cart_items', 0);
+    prefs.setInt('item_quantity', 0);
+    prefs.setDouble('total_price', 0);
+    notifyListeners();
+  }
+
   void _getPrefsItems() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _counter = prefs.getInt('cart_items') ?? 0;

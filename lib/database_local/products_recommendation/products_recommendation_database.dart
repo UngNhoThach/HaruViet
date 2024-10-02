@@ -6,8 +6,6 @@ class ProductRecommendationDatabase {
   static final ProductRecommendationDatabase _instance =
       ProductRecommendationDatabase._internal();
 
-  // static const ProductRecommendationDatabase instance = CartDatabase._privateConstructor();
-
   factory ProductRecommendationDatabase() => _instance;
   static const String _databaseName = 'products.db';
 

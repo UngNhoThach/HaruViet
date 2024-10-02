@@ -34,7 +34,7 @@ class _CountQualityState extends State<CountQuality> {
   }
 
   void _decrementCounter() {
-    if (_counter > 0) {
+    if (_counter > 1) {
       setState(() {
         _counter--;
       });

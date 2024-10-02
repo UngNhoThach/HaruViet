@@ -182,21 +182,26 @@ class TitleBottomSheetAutoHeightWrapper extends StatelessWidget {
     this.initialChildSize = 0.8,
     this.maxChildSize = 0.95,
     this.isHiddenTitleBar = false,
+    this.isHiddenButton = false,
     this.closeBtn,
     this.minimum = const EdgeInsets.only(bottom: 16),
     this.titlePadding,
     this.isPadding = false,
+    this.bottomWidget,
   });
 
   final VoidCallback? onCloseTapped;
   final String? title;
   final String? subTitle;
   final Widget? subTitleWidget;
+  final Widget? bottomWidget;
+
   final Widget child;
   final double minChildSize;
   final double initialChildSize;
   final double maxChildSize;
   final bool isHiddenTitleBar;
+  final bool isHiddenButton;
   final bool isPadding;
 
   final Widget? closeBtn;
@@ -270,6 +275,11 @@ class TitleBottomSheetAutoHeightWrapper extends StatelessWidget {
               ),
             ),
             Flexible(child: child),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Visibility(
+                  visible: !isHiddenButton, child: bottomWidget ?? space0),
+            ),
           ],
         ),
       ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:haruviet/component/dropdown/dropdown_item_row.dart';
+import 'package:haruviet/data/reponsitory/product/models/data_product_detail_response/option_product_detail.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_product_detail_response/value_product_detail.dart';
 import 'package:haruviet/helper/context.dart';
 import 'package:haruviet/theme/typography.dart';
@@ -10,7 +11,7 @@ class DropDownOptionProducts extends StatelessWidget {
     this.initValue,
     required this.onChanged,
     this.border,
-    required this.reasonList,
+    required this.item,
     required this.label,
     this.isRequiredLabel = false,
     this.isDense = false,
@@ -19,22 +20,30 @@ class DropDownOptionProducts extends StatelessWidget {
   final ValueOptionProduct? initValue;
   final void Function(ValueOptionProduct? value) onChanged;
   final InputBorder? border;
-  final List<ValueOptionProduct> reasonList;
+  final Option item;
   final String label;
   final bool isRequiredLabel;
   final bool isDense;
-  // final TextStyle? style;
 
   @override
   Widget build(BuildContext context) {
+    // Tìm giá trị nào có isSelected == true
+    final ValueOptionProduct? selectedValue;
+    final check = item.values!.any((element) => element.isSelected == true);
+
+    selectedValue = item.values!.firstWhere(
+      (e) => e.isSelected,
+      orElse: () => item.values![0],
+    );
+
     return AppDropDownFormFieldRow<ValueOptionProduct>(
       border: border,
-      value: initValue,
+      value: check == true ? selectedValue : initValue,
       isExpanded: true,
       isDense: isDense,
       label: isRequiredLabel ? null : label,
       requiredLabel: isRequiredLabel ? label : null,
-      items: reasonList
+      items: item.values!
           .map(
             (e) => DropdownMenuItem<ValueOptionProduct>(
               value: e,

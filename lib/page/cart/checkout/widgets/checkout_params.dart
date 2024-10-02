@@ -1,6 +1,10 @@
 class CheckoutParams {
   CheckoutParams({
-    this.isAppBar = false,
+    this.price,
+    required this.discountOrder,
+    required this.weight,
   });
-  final bool isAppBar;
+  final String? price;
+  final int discountOrder;
+  final int weight;
 }

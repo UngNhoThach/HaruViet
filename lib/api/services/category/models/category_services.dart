@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:haruviet/api/exception/api_endpoints.dart';
 import 'package:haruviet/api/services/headers_request/headers_request.dart';
+import 'package:haruviet/api/services/products/models/get_list_product_request.dart';
 import 'package:haruviet/base/base_service.dart';
 
 class CategoryService extends BaseService {
@@ -14,9 +15,11 @@ class CategoryService extends BaseService {
   }
 
   // getCategory
-  Future<Response> getCategorySV() async {
+  Future<Response> getCategorySV({
+    required GetListProductRequest request,
+  }) async {
     final response = await get(CategoryApi.getCategory,
-        headers: apiHeaders.appMobileHeaders);
+        headers: apiHeaders.appMobileHeaders, params: request.toJson());
     return response;
   }
 }

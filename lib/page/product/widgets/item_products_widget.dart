@@ -1,10 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:haruviet/component/help_basic/help_basic.dart';
 import 'package:haruviet/component/shimer/image_product_shimer.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_list_product/data_product_list.dart';
 import 'package:haruviet/helper/colors.dart';
+import 'package:haruviet/helper/const.dart';
 import 'package:haruviet/helper/spaces.dart';
 import 'package:haruviet/page/home/widgets/count_dount.dart';
 import 'package:haruviet/page/product/detail/product_deatail_page.dart';
@@ -221,6 +221,7 @@ class ItemProductWidget {
   Widget itemGridView(BuildContext context,
       {required DataProduct data, required int index, required String domain}) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         GestureDetector(
           onTap: () {
@@ -243,7 +244,7 @@ class ItemProductWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.46,
+                  width: MediaQuery.of(context).size.width * 0.455,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -512,9 +513,7 @@ class ItemProductWidget {
     );
   }
 
-  final help = HelpBasic();
-
   removeZeroDouble({required double value}) {
-    return help.formatDouble(value);
+    return formatDouble(value);
   }
 }

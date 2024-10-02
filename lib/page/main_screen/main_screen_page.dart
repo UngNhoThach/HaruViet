@@ -1,8 +1,9 @@
-import 'package:haruviet/component/input/search_bar.dart';
+import 'package:flutter/widgets.dart';
 import 'package:haruviet/component/input/search_barv2.dart';
 import 'package:haruviet/component/popup/popup.dart';
 import 'package:haruviet/data/data_local/user_bloc.dart';
 import 'package:haruviet/database_local/product/cart_provider.dart';
+import 'package:haruviet/database_local/product/cart_provider_v2.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/spaces.dart';
 import 'package:haruviet/page/cart/models/cart_page_params.dart';
@@ -36,7 +37,7 @@ class MainScreenPage extends StatefulWidget {
   });
 
   final int? screenIndex;
-  // final CartDatabase cartDatabase;
+  // final CartDatabaseV2 cartDatabase;
 
   @override
   State<MainScreenPage> createState() => _MainScreenPageState();
@@ -376,8 +377,8 @@ class _MainScreenPageState extends State<MainScreenPage> {
       //         WidgetsBinding.instance.focusManager.primaryFocus?.unfocus());
       actions: <Widget>[
         spaceW16,
-        Consumer<CartProvider>(
-          builder: (BuildContext context, CartProvider value, Widget? child) {
+        Consumer<CartProviderV2>(
+          builder: (BuildContext context, CartProviderV2 value, Widget? child) {
             return badges.Badge(
               position: badges.BadgePosition.topEnd(top: 0, end: 2),
               showBadge: value.getCounter() == 0 ? false : true,

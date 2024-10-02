@@ -1,6 +1,7 @@
 import 'package:haruviet/base/base_state.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/spaces.dart';
+import 'package:haruviet/page/account/signin/widgets/signin_params.dart';
 import 'package:haruviet/page/cart/models/cart_page_params.dart';
 import 'package:haruviet/page/history_orders/widget/history_order_params.dart';
 import 'package:haruviet/page/home/widgets/drawer_list_bloc.dart';
@@ -28,7 +29,6 @@ class _DrawListState extends State<DrawerListPage>
   void initState() {
     super.initState();
     bloc = DrawerListBloc()..getData();
-    bloc.getData();
     _controller = AnimationController(vsync: this);
   }
 
@@ -137,10 +137,14 @@ class _DrawListState extends State<DrawerListPage>
                         title: 'Lịch sử mua hàng',
                         icon: Icons.history,
                         onTap: () {
-                          routeService.pushNamed(Routes.historyOrderPage,
-                              arguments: HistoryOrderParams(
-                                  onReload: () {},
-                                  listStatusOrder: state.listStatusOrder));
+                          (state.dataUser == null ||
+                                  state.dataUser?.isLogin == false)
+                              ? routeService.pushNamed(Routes.login,
+                                  arguments: SignInParams(typeDirec: 1))
+                              : routeService.pushNamed(Routes.historyOrderPage,
+                                  arguments: HistoryOrderParams(
+                                      onReload: () {},
+                                      listStatusOrder: state.listStatusOrder));
                         },
                       ),
                       const Divider(),

@@ -10,6 +10,7 @@ class Subcategory {
   String? image;
   String? alias;
   String? parent;
+  @JsonKey(name: 'descriptions')
   DescriptionsCategory? descriptions;
   List<dynamic>? subcategories;
 

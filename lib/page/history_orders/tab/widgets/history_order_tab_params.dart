@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
-class HistoryOrderTabParms {
-  HistoryOrderTabParms({
+class HistoryOrderTabParams {
+  HistoryOrderTabParams({
     required this.onReload,
     this.idUser,
     this.status,

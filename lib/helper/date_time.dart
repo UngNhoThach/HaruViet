@@ -401,3 +401,12 @@ DateTime converStringtToDate(String dateString) {
 
   return DateTime(day, month, year);
 }
+
+String converDateToString(String dateTimeString) {
+  String formattedDate = '';
+  if (dateTimeString != '') {
+    DateTime dateTime = DateTime.parse(dateTimeString);
+    formattedDate = DateFormat('dd-MM-yyyy HH:mm:ss').format(dateTime);
+  }
+  return formattedDate;
+}

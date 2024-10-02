@@ -24,6 +24,8 @@ class CartDatabase {
   Future<Database> _initDatabase() async {
     String dbPath = await getDatabasesPath();
     final String path = join(dbPath, _databaseName);
+    print("Database path: $path"); // Debugging line
+
     return await openDatabase(
       path,
       version: _databaseVersion,
@@ -36,8 +38,7 @@ class CartDatabase {
     const idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
     const textType = 'TEXT NOT NULL';
     const boolType = 'INTEGER NOT NULL';
-    const intType =
-        'INTEGER NOT NULL'; // Added this line to define int type for totalQuantity
+    const intType = 'INTEGER NOT NULL';
 
     await db.execute('''
       CREATE TABLE IF NOT EXISTS $cartTable (
@@ -58,15 +59,18 @@ class CartDatabase {
   //! C --> CRUD = Create
   Future<Products> createCart(Products product) async {
     final db = await instance.database;
-    final id = await db.insert(
-      cartTable,
-      product.toMap(),
-    );
-    // final id = await db.insert(
-    //   productssTable,
-    //   product.toMap(),
-    // );
-    return product.copy(id: id);
+    return await db.transaction((txn) async {
+      final id = await txn.insert(
+        cartTable,
+        product.toMap(),
+      );
+      return product.copy(id: id);
+    });
+  }
+
+  Future<void> deleteTable() async {
+    final db = await instance.database;
+    await db.execute("delete from $cartTable");
   }
 
   //! R -- CURD = Read
@@ -138,10 +142,10 @@ class CartDatabase {
   }
 
   //  count total products in database
+
   Future<int> getCount() async {
     final db = await instance.database;
-
-    var x = await db.rawQuery('SELECT COUNT (*) from $cartTable');
+    var x = await db.rawQuery('SELECT COUNT(*) FROM $cartTable');
     int? count = Sqflite.firstIntValue(x);
     return count ?? 0;
   }

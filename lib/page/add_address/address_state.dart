@@ -10,14 +10,20 @@ class AddressState extends BaseState {
   final bool isLoading;
   final bool isSubmitSuccess;
   final String? addressDefaultId;
+  final bool isShippingAddress;
+  final DataListAddress? addressShipping;
+  final String? idAddressShipping;
 
   final List<DataListAddress> listAddresses;
   const AddressState({
     ViewState viewState = ViewState.loaded,
     String errorMsg = '',
+    this.addressShipping,
     this.addressDefaultId,
     this.isLoading = false,
+    this.idAddressShipping,
     this.listAddresses = const [],
+    this.isShippingAddress = false,
     this.isSubmitSuccess = false,
   }) : super(viewState, errorMsg);
 }

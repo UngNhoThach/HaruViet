@@ -1,17 +1,17 @@
 import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:haruviet/component/select_address/models/select_address_params.dart';
 import 'package:haruviet/component/select_address/select_address_page.dart';
 import 'package:haruviet/data/data_local/user_bloc.dart';
-import 'package:haruviet/database_local/product/cart_provider.dart';
+import 'package:haruviet/database_local/product/cart_provider_v2.dart';
 import 'package:haruviet/helper/theme.dart';
 import 'package:haruviet/page/about_us/about_us_page.dart';
 import 'package:haruviet/page/account/update_profile/widgets/update_profile_params.dart';
 import 'package:haruviet/page/add_address/add_address/add_address_page.dart';
 import 'package:haruviet/page/add_address/address_page.dart';
 import 'package:haruviet/page/cart/cart_page.dart';
+import 'package:haruviet/page/cart/checkout/widgets/checkout_params.dart';
 import 'package:haruviet/page/cart/models/cart_page_params.dart';
 import 'package:haruviet/page/category/category_child/sub_category_page.dart';
 import 'package:haruviet/page/category/category_child/widgets/sub_category_params.dart';
@@ -26,6 +26,7 @@ import 'package:haruviet/page/history_orders/history_order_page.dart';
 import 'package:haruviet/page/history_orders/tab/history_order_tab.dart';
 import 'package:haruviet/page/history_orders/tab/widgets/history_order_tab_params.dart';
 import 'package:haruviet/page/history_orders/widget/history_order_params.dart';
+import 'package:haruviet/page/cart/checkout/checkout_page.dart';
 import 'package:haruviet/page/main_screen/main_screen_page.dart';
 import 'package:haruviet/page/account/phone_authen/phone_authen_page.dart';
 import 'package:haruviet/page/account/phone_authen/widgets/phone_authen_params.dart';
@@ -41,6 +42,8 @@ import 'package:haruviet/page/review/write_review/write_review_page.dart';
 import 'package:haruviet/page/account/signin/signin_page.dart';
 import 'package:haruviet/page/account/signin/widgets/signin_params.dart';
 import 'package:haruviet/page/account/signup/signup_page.dart';
+import 'package:haruviet/page/shipment/shipment_page.dart';
+import 'package:haruviet/page/shipment/widgets/shipment_params.dart';
 import 'package:haruviet/page/support/support_page.dart';
 import 'package:haruviet/page/account/update_profile/update_profile_page.dart';
 import 'package:haruviet/resources/routes.dart';
@@ -55,17 +58,22 @@ import 'package:provider/provider.dart';
 import 'page/account/reset_password/reset_password_page.dart';
 import 'page/account/reset_password/widgets/reset_password_params.dart';
 import 'page/add_address/add_address/widgets/add_address_params.dart';
+import 'page/add_address/add_address/widgets/address_params.dart';
+import 'page/cart/payment_method/widgets/payment_method_params.dart';
+import 'page/history_orders/tab/order_detail/order_detail_page.dart';
+import 'page/history_orders/tab/widgets/order_detail_params.dart';
 import 'page/product/product_list/widgets/product_list_page_params.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-      // options: DefaultFirebaseOptions.currentPlatform,
-      );
+  // await Firebase.initializeApp(
+  //   options: DefaultFirebaseOptions.currentPlatform,
+  // );
+//  FireBaseApi().connectNotrifc();
   CachedNetworkImage.logLevel = CacheManagerLogLevel.debug;
 
   runApp(ChangeNotifierProvider(
-      create: (context) => CartProvider(), child: const MyApp()));
+      create: (context) => CartProviderV2(), child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -121,7 +129,6 @@ class _HomePageState extends State<HomePage> {
             home: _getRootScreen(context),
           );
         },
-        // child: const HomePage(title: 'First Method'),
       ),
     );
   }
@@ -244,7 +251,9 @@ class _HomePageState extends State<HomePage> {
       case Routes.paymentMethodPage:
         return MaterialPageRoute(
           settings: const RouteSettings(name: Routes.paymentMethodPage),
-          builder: (_) => const PaymentMethodPage(),
+          builder: (_) => PaymentMethodPage(
+            params: settings.arguments! as PaymentMethodParams,
+          ),
         );
 
       // AddressPage
@@ -263,7 +272,9 @@ class _HomePageState extends State<HomePage> {
       case Routes.addressPage:
         return MaterialPageRoute(
           settings: const RouteSettings(name: Routes.addressPage),
-          builder: (_) => const AddressPage(),
+          builder: (_) => AddressPage(
+            params: settings.arguments! as AddressParams,
+          ),
         );
       // VoucherPage
       case Routes.voucherPage:
@@ -351,11 +362,24 @@ class _HomePageState extends State<HomePage> {
           ),
         );
 
+      // check out
+      case Routes.orderDetailPage:
+        return MaterialPageRoute(
+            settings: const RouteSettings(name: Routes.orderDetailPage),
+            builder: (_) => OrderDetailPage(
+                params: settings.arguments! as OrderDetailParams));
+
+      case Routes.checkOutPage:
+        return MaterialPageRoute(
+            settings: const RouteSettings(name: Routes.checkOutPage),
+            builder: (_) =>
+                CheckOutPage(params: settings.arguments! as CheckoutParams));
+
       case Routes.historyOrderTab:
         return MaterialPageRoute(
           settings: const RouteSettings(name: Routes.historyOrderTab),
           builder: (_) => HistoryOrderTab(
-            params: settings.arguments! as HistoryOrderTabParms,
+            params: settings.arguments! as HistoryOrderTabParams,
           ),
         );
 
@@ -364,6 +388,14 @@ class _HomePageState extends State<HomePage> {
           settings: const RouteSettings(name: Routes.historyOrderPage),
           builder: (_) => HistoryOrderPage(
             params: settings.arguments! as HistoryOrderParams,
+          ),
+        );
+
+      case Routes.shipmentPage:
+        return MaterialPageRoute(
+          settings: const RouteSettings(name: Routes.shipmentPage),
+          builder: (_) => ShipmentPage(
+            params: settings.arguments! as ShipmentParams,
           ),
         );
 

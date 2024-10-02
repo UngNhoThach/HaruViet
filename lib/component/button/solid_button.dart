@@ -239,9 +239,8 @@ class AppSolidButton extends StatelessWidget {
       textTheme: textTheme,
       textColor: textColor,
       disabledTextColor: disabledTextColor,
-      color: enabled ? primarColor : primarColor.withOpacity(0.5),
-      disabledColor:
-          disabledColor ?? context.theme.primaryColor.withOpacity(0.5),
+      color: enabled ? colorMain : colorMain.withOpacity(0.5),
+      disabledColor: disabledColor ?? colorMain.withOpacity(0.5),
       focusColor: focusColor,
       hoverColor: hoverColor,
       highlightColor: highlightColor,

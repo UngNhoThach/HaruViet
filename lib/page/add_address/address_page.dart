@@ -11,11 +11,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'add_address/widgets/address_params.dart';
+
 class AddressPage extends StatefulWidget {
-  // final CheckoutParams params;
+  final AddressParams params;
   const AddressPage({
     super.key,
-    // required this.params,
+    required this.params,
   });
 
   @override
@@ -31,10 +33,17 @@ class _AddressPageState extends State<AddressPage> {
   @override
   void initState() {
     super.initState();
-    bloc = AddressBloc()..getData();
+    bloc = AddressBloc()
+      ..getData(
+        isShipping: widget.params.isShipping,
+        idAddressShipping: widget.params.idAddressShipping!,
+      );
   }
 
-  final List<bool> values = [true, false, false];
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +57,14 @@ class _AddressPageState extends State<AddressPage> {
               key: _scaffoldKey,
               resizeToAvoidBottomInset: false,
               appBar: AppBar(
+                leading: IconButton(
+                    icon: const Icon(Icons.arrow_back, color: colorWhite),
+                    onPressed: widget.params.isShipping
+                        ? () {
+                            widget.params.returnAddress!(state.addressShipping);
+                            Navigator.of(context).pop();
+                          }
+                        : () => Navigator.of(context).pop()),
                 backgroundColor: colorMain,
                 title: const Text(
                   "Địa chỉ của tôi",
@@ -77,100 +94,173 @@ class _AddressPageState extends State<AddressPage> {
                                         thickness: 10,
                                       ),
                                   itemBuilder: (context, index) {
-                                    return InkWell(
-                                      onTap: () {
-                                        routeService.pushNamed(
-                                            Routes.addnewaddressPage,
-                                            arguments: AddNewAddressParams(
-                                              dataListAddress:
-                                                  state.listAddresses[index],
-                                              isUpdate: true,
-                                              onReload: () {
-                                                bloc.getData();
-                                              },
-                                            ));
-                                      },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: colorWhite,
-                                          border: Border.all(color: colorWhite),
-                                        ),
-                                        padding: const EdgeInsets.all(16),
-                                        child: Row(
-                                          children: [
-                                            spaceW6,
-                                            Expanded(
-                                              child: Column(
+                                    final item = state.listAddresses[index];
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                        color: colorWhite,
+                                        border: Border.all(color: colorWhite),
+                                      ),
+                                      padding: const EdgeInsets.all(16),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            child: GestureDetector(
+                                              behavior: HitTestBehavior.opaque,
+                                              onTap: widget.params.isShipping
+                                                  ? () => {
+                                                        bloc.onChangeShippingAddress(
+                                                          isDefault: false,
+                                                          idAddresses:
+                                                              item.id ?? '',
+                                                          item: item,
+                                                        ),
+                                                        bloc.onUpdateIdShipping(
+                                                            addressShipping:
+                                                                item),
+                                                      }
+                                                  : null,
+                                              child: Row(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
-                                                children: <Widget>[
-                                                  spaceH6,
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: <Widget>[
-                                                      Text(
-                                                        state.addressDefaultId ==
-                                                                state
-                                                                    .listAddresses[
-                                                                        index]
-                                                                    .id
-                                                            ? "Địa chỉ (mặc định)"
-                                                            : "Địa chỉ",
-                                                        style: textTheme
-                                                            .bodyLarge
-                                                            ?.copyWith(
-                                                          color: colorBlack,
-                                                          fontWeight:
-                                                              FontWeight.bold,
+                                                children: [
+                                                  widget.params.isShipping
+                                                      ? Radio(
+                                                          visualDensity:
+                                                              const VisualDensity(
+                                                                  horizontal:
+                                                                      -4,
+                                                                  vertical: -4),
+                                                          materialTapTargetSize:
+                                                              MaterialTapTargetSize
+                                                                  .shrinkWrap,
+                                                          value: item.isShipping
+                                                              ? true
+                                                              : false,
+                                                          groupValue: true,
+                                                          onChanged:
+                                                              (isChecked) {
+                                                            bloc.onChangeShippingAddress(
+                                                              isDefault: false,
+                                                              idAddresses:
+                                                                  item.id ?? '',
+                                                              item: item,
+                                                            );
+                                                            bloc.onUpdateIdShipping(
+                                                                addressShipping:
+                                                                    item);
+                                                          },
+                                                          activeColor:
+                                                              colorMainCover1,
+                                                        )
+                                                      : space0,
+                                                  spaceW8,
+                                                  Expanded(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: <Widget>[
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: <Widget>[
+                                                            Text(
+                                                              state.addressDefaultId ==
+                                                                      item.id
+                                                                  ? "Địa chỉ (mặc định)"
+                                                                  : "Địa chỉ",
+                                                              style: textTheme
+                                                                  .bodyLarge
+                                                                  ?.copyWith(
+                                                                color:
+                                                                    colorBlack,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ],
                                                         ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  spaceH6,
-                                                  Row(
-                                                    children: [
-                                                      Text(
-                                                        state
-                                                                .listAddresses[
-                                                                    index]
-                                                                .phone ??
-                                                            ' ',
-                                                        style: textTheme
-                                                            .bodyMedium
-                                                            ?.copyWith(
-                                                          color: colorBlack,
-                                                          fontWeight:
-                                                              FontWeight.bold,
+                                                        spaceH6,
+                                                        Row(
+                                                          children: [
+                                                            Text(
+                                                              item.phone ?? ' ',
+                                                              style: textTheme
+                                                                  .bodyMedium
+                                                                  ?.copyWith(
+                                                                color:
+                                                                    colorBlack,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ],
                                                         ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  spaceH6,
-                                                  Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: Text(
-                                                          '${state.listAddresses[index].address3 ?? ''}, ${state.listAddresses[index].address2 ?? ''},${state.listAddresses[index].address1 ?? ''}',
-                                                          maxLines: 2,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          style: textTheme
-                                                              .bodyMedium
-                                                              ?.copyWith(
-                                                            color: colorGray04,
-                                                          ),
+                                                        spaceH6,
+                                                        Row(
+                                                          children: [
+                                                            Expanded(
+                                                              child: Text(
+                                                                '${item.address3 ?? ''}, ${item.address2 ?? ''},${item.address1 ?? ''}',
+                                                                maxLines: 2,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                                style: textTheme
+                                                                    .bodyMedium
+                                                                    ?.copyWith(
+                                                                  color:
+                                                                      colorGray04,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
                                                         ),
-                                                      ),
-                                                    ],
+                                                        spaceH12,
+                                                      ],
+                                                    ),
                                                   ),
-                                                  spaceH12,
                                                 ],
                                               ),
                                             ),
-                                          ],
-                                        ),
+                                          ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              routeService.pushNamed(
+                                                  Routes.addnewaddressPage,
+                                                  arguments:
+                                                      AddNewAddressParams(
+                                                    dataListAddress: item,
+                                                    isUpdate: true,
+                                                    onReload: () {
+                                                      bloc.getData(
+                                                          isShipping: widget
+                                                              .params
+                                                              .isShipping,
+                                                          idAddressShipping: widget
+                                                              .params
+                                                              .idAddressShipping!);
+                                                    },
+                                                  ));
+                                            },
+                                            child: SizedBox(
+                                                height: 40.h,
+                                                width: 36.w,
+                                                child: const Text(
+                                                    style: TextStyle(
+                                                        color: colorMainCover1,
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                    textAlign: TextAlign.end,
+                                                    'sửa')),
+                                          ),
+                                        ],
                                       ),
                                     );
                                   }),
@@ -183,7 +273,10 @@ class _AddressPageState extends State<AddressPage> {
                                 routeService.pushNamed(Routes.addnewaddressPage,
                                     arguments: AddNewAddressParams(
                                   onReload: () {
-                                    bloc.getData();
+                                    bloc.getData(
+                                        isShipping: widget.params.isShipping,
+                                        idAddressShipping:
+                                            widget.params.idAddressShipping!);
                                   },
                                 ));
                               },

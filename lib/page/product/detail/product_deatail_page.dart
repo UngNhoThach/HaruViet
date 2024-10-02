@@ -1,6 +1,7 @@
 import 'package:comment_tree/data/comment.dart';
 import 'package:comment_tree/widgets/comment_tree_widget.dart';
 import 'package:comment_tree/widgets/tree_theme_data.dart';
+import 'package:flutter/widgets.dart';
 import 'package:haruviet/component/popup/alert/alert_one_button.dart';
 import 'package:haruviet/component/button/bottom_bar_button.dart';
 import 'package:haruviet/component/button/solid_button.dart';
@@ -10,7 +11,7 @@ import 'package:haruviet/component/rowcontent/rowcontent_v1.dart';
 import 'package:haruviet/component/shimer/shimer.dart';
 import 'package:haruviet/data/data_local/user_bloc.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_list_product/data_product_list.dart';
-import 'package:haruviet/database_local/product/cart_provider.dart';
+import 'package:haruviet/database_local/product/cart_provider_v2.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/const.dart';
 import 'package:haruviet/helper/context.dart';
@@ -20,11 +21,11 @@ import 'package:haruviet/page/product/detail/product_detail_bloc.dart';
 import 'package:haruviet/page/product/detail/product_detail_state.dart';
 import 'package:haruviet/page/product/detail/widgets/popup_show_option_product.dart';
 import 'package:haruviet/page/product/detail/widgets/product_detail_params.dart';
-import 'package:haruviet/page/product/detail/widgets/widgets/color_selector.dart';
+import 'package:haruviet/page/product/detail/widgets/widgets/widget_value_select.dart';
 import 'package:haruviet/page/product/detail/widgets/widgets/count_qualition.dart';
+import 'package:haruviet/page/product/detail/widgets/widgets/product_params.dart';
 import 'package:haruviet/page/product/detail/widgets/widgets/review_file.dart';
 import 'package:haruviet/page/product/detail/widgets/widgets/scoll_to_hide_bottom_bar.dart';
-import 'package:haruviet/page/product/detail/widgets/widgets/size_selector.dart';
 import 'package:haruviet/page/review/write_review/widgets/write_review_params.dart';
 import 'package:haruviet/resources/routes.dart';
 import 'package:haruviet/theme/typography.dart';
@@ -646,37 +647,16 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                   child: GestureDetector(
                                                     onTap: () async {
                                                       state.checkProductAttributes
-                                                          ? _showPopupAndReset(
-                                                              context, state, bloc)
+                                                          ? _showPopupBuy(
+                                                              context,
+                                                              state,
+                                                              bloc)
                                                           : bloc.onAddItemToCart(
-                                                              quantity: state.currentCounter ??
-                                                                  1,
-                                                              idProduct: state
-                                                                      .dataProduct
-                                                                      ?.id ??
-                                                                  '',
-                                                              nameProduct: state
-                                                                      .dataProduct
-                                                                      ?.descriptions
-                                                                      ?.name ??
-                                                                  '',
-                                                              brandProduct: state
-                                                                      .dataProduct
-                                                                      ?.brand
-                                                                      ?.id ??
-                                                                  '',
-                                                              imageProduct: state
-                                                                      .dataProduct
-                                                                      ?.image ??
-                                                                  '',
-                                                              priceProduct: state.dataProduct!.price!.price != null
-                                                                  ? state
-                                                                      .dataProduct!
-                                                                      .price!
-                                                                      .price
-                                                                      .toString()
-                                                                  : '',
-                                                              description: state.dataProduct?.descriptions?.description ?? '');
+                                                              productParams:
+                                                                  ProductParams(
+                                                                      dataProduct:
+                                                                          state
+                                                                              .dataProduct!));
                                                     },
                                                     child: Container(
                                                       height: 36.h,
@@ -1595,9 +1575,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                             ),
                           ),
                           actions: <Widget>[
-                            Consumer<CartProvider>(
+                            Consumer<CartProviderV2>(
                               builder: (BuildContext context,
-                                  CartProvider value, Widget? child) {
+                                  CartProviderV2 value, Widget? child) {
                                 return badges.Badge(
                                   position: badges.BadgePosition.topEnd(
                                       top: 0, end: -8),
@@ -1623,17 +1603,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                               },
                             ),
                             spaceW16,
-                            // IconButton(
-                            //   onPressed: () {
-                            //     routeService.pushNamed(Routes.cartPage,
-                            //         arguments: CartPageParams());
-                            //   },
-                            //   icon: Icon(
-                            //     Icons.more_vert_sharp,
-                            //     color: colorBlack,
-                            //     weight: 2.5.sp,
-                            //   ),
-                            // ),
                           ],
                         ),
                       ),
@@ -1650,32 +1619,15 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       'Gọi điện',
                       onPressed: () {},
                     ),
-                    button2: Consumer<CartProvider>(
+                    button2: Consumer<CartProviderV2>(
                       builder: (context, provider, child) {
                         return AppSolidButton.medium(
                           color: colorPrimary,
                           'Mua hàng',
                           onPressed: () async {
-                            state.checkProductAttributes
-                                ? _showPopupAndReset(context, state, bloc)
-                                : bloc.onAddItemToCart(
-                                    quantity: state.currentCounter ?? 0,
-                                    idProduct: state.dataProduct?.id ?? '',
-                                    nameProduct:
-                                        state.dataProduct?.descriptions?.name ??
-                                            '',
-                                    brandProduct:
-                                        state.dataProduct?.brand?.id ?? '',
-                                    imageProduct:
-                                        state.dataProduct?.image ?? '',
-                                    priceProduct:
-                                        state.dataProduct!.price!.price != null
-                                            ? state.dataProduct!.price!.price
-                                                .toString()
-                                            : '',
-                                    description: state.dataProduct?.descriptions
-                                            ?.description ??
-                                        '');
+                            bloc.onAddItemToCart(
+                                productParams: ProductParams(
+                                    dataProduct: state.dataProduct!));
                           },
                         );
                       },
@@ -1690,7 +1642,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     );
   }
 
-  void _showPopupAndReset(
+  void _showPopupBuy(
     BuildContext context,
     ProductDetailState state,
     ProductDetailBloc bloc,
@@ -1699,69 +1651,64 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       state: state,
       bloc: bloc,
       widgetCountQuality: CountQuality(
-        initialCounter: state.currentCounter ?? 0,
+        initialCounter: state.currentCounter,
         onCounterChanged: (newCounter) {
           bloc.onHandleCounterChanged(newCounter);
         },
       ),
       widgetButton: BlocSelector<ProductDetailBloc, ProductDetailState, bool>(
-        selector: (state) => state.validBuyProductAttributes,
-        builder: (context, validBuyProductAttributes) {
-          return AppSolidButton.medium(
-              key: ObjectKey(validBuyProductAttributes), // Ensure UI updates
-              color: validBuyProductAttributes ? colorPrimary : colorGray02,
-              disabledColor:
-                  validBuyProductAttributes ? colorPrimary : colorGray02,
-              onPressed: validBuyProductAttributes
-                  ? () {
-                      bloc.onAddItemToCart(
-                          quantity: state.currentCounter ?? 1,
-                          idProduct: state.dataProduct?.id ?? '',
-                          nameProduct:
-                              state.dataProduct?.descriptions?.name ?? '',
-                          brandProduct: state.dataProduct?.brand?.id ?? '',
-                          imageProduct: state.dataProduct?.image ?? '',
-                          priceProduct: state.dataProduct!.price!.price != null
-                              ? state.dataProduct!.price!.price.toString()
-                              : '',
-                          description:
-                              state.dataProduct?.descriptions?.description ??
-                                  '');
-                    }
-                  : null,
-              'Mua hàng');
+        selector: (selector) => selector.isSoldOut,
+        builder: (context, isSoldOut) {
+          return Column(
+            key: ObjectKey(isSoldOut), // Ensure UI updates
+
+            children: [
+              if (isSoldOut && state.currentCounter != 1) ...[
+                Text('Số lượng còn lại không đủ',
+                    style: textTheme.titleMedium?.copyWith(color: colorMain)),
+                spaceH8,
+              ],
+              AppSolidButton.medium(
+                  color: isSoldOut ? colorGray02 : colorPrimary,
+                  disabledColor: isSoldOut ? colorGray02 : colorPrimary,
+                  onPressed: isSoldOut
+                      ? null
+                      : () {
+                          bloc.onAddItemToCart(
+                              productParams: ProductParams(
+                                  dataProduct: state.dataProduct!));
+                          Future.delayed(const Duration(milliseconds: 400), () {
+                            context.justBack();
+                          });
+                        },
+                  'Mua hàng'),
+            ],
+          );
         },
       ),
       widgetImage: Row(
         mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment:
+            CrossAxisAlignment.center, // Thay đổi crossAxisAlignment
         children: [
-          Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  ClipRect(
-                    child: Transform.translate(
-                      offset: const Offset(-24, 0),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        widthFactor: 0.85,
-                        child: Image.network(
-                          '$domain${state.dataProduct?.image ?? ''}',
-                          height: 100,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+          ClipRect(
+            child: Transform.translate(
+              offset: const Offset(-24, 0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                widthFactor: 0.85,
+                child: Image.network(
+                  '$domain${state.dataProduct?.image ?? ''}',
+                  height: 100,
+                  fit: BoxFit.cover,
+                ),
               ),
-            ],
+            ),
           ),
           spaceW10,
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 '${state.dataProduct!.price?.priceStr}',
@@ -1769,51 +1716,21 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               ),
               spaceH6,
               Text(
-                'Kho: ${state.dataProduct!.stock}',
+                'Kho: ${state.productStoreDefault}',
                 style: textTheme.bodyMedium,
               ),
             ],
           ),
         ],
       ),
-      widgetColor: ColorSelector(
+      widgetValueSelect: WidgetValueSelect(
         bloc: bloc,
-        // onTapSelectItem: () {},
-        // onTapSelectItem: () {
-        //   bloc.onSelectAttributeValue
-        // },
-        // onSizeSelected: (vakue) async {
-        //   await bloc.onSelectSize(vakue);
-        // },
-        //     onChangeValueDropdown: (value) {},
-        //   options: state.options,
         selectedSize: state.sizeSelected,
-        //  selectedColor: state.colorSelected,
-        colors: const [
-          Colors.red,
-          Colors.green,
-          Colors.blue,
-          Colors.yellow,
-        ],
-        onColorSelected: (color) {
-          bloc.onSelectColor(color);
-          print('Màu đã chọn: $color');
-        },
       ),
-      // widgetSize: SizeSelector(
-      //   selectedSize: state.sizeSelected,
-      //   sizes: const ['S', 'M', 'L', 'XL'],
-      //   onSizeSelected: (size) async {
-      //     await bloc.onSelectSize(size);
-      //     print('Size đã chọn: ${size}');
-      //   },
-      // ),
       context,
       onReload: () {
         // bloc.onReset();
       },
     );
-    // This is called after the popup is closed
-    // bloc.onResetValiPopSelected();
   }
 }

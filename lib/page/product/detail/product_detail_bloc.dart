@@ -3,16 +3,17 @@ import 'package:haruviet/base/base_bloc.dart';
 import 'package:haruviet/data/enum.dart';
 import 'package:haruviet/data/local/user_preferences.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_list_product/data_product_list.dart';
+import 'package:haruviet/data/reponsitory/product/models/data_product_detail_response/data_product_detail_response.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_product_detail_response/option_product_detail.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_product_detail_response/value_product_detail.dart';
 import 'package:haruviet/data/reponsitory/product/product_repository.dart';
-import 'package:haruviet/database_local/product/cart_provider.dart';
-import 'package:haruviet/database_local/product/models/cart_model.dart';
-import 'package:haruviet/database_local/product/cart_database.dart';
+import 'package:haruviet/database_local/product/cart_database_v2.dart';
+import 'package:haruviet/database_local/product/cart_provider_v2.dart';
 import 'package:haruviet/helper/const.dart';
 import 'package:haruviet/page/product/detail/product_detail_state.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:haruviet/page/product/detail/widgets/widgets/product_params.dart';
 import 'package:provider/provider.dart';
 
 // ProductDetailBloc
@@ -21,7 +22,7 @@ class ProductDetailBloc extends BaseBloc<ProductDetailState> {
   ProductDetailBloc(this.context) : super(const ProductDetailState());
   final ProductRepository _productRepository = ProductRepository();
 
-  List<Products> productsList = [];
+  List<DataProductDetailResponse> productsList = [];
   ValueNotifier<int> counter = ValueNotifier<int>(1);
 
   int splitCurrency(String currency) {
@@ -51,16 +52,25 @@ class ProductDetailBloc extends BaseBloc<ProductDetailState> {
           imageUrls.add('$domain${element.image ?? ''}');
         }
       }
-      int totalItemInCart = await CartDatabase.instance.getCount();
-      productsList = (await CartDatabase.instance.readAllItems());
+      int totalItemInCart = (CartProviderV2().getCounter());
+      productsList = await CartDatabaseV2().getAllProducts();
 
-      final checkAttributes =
-          (productDetail.options == null) || (productDetail.options!.isEmpty)
-              ? false
-              : true;
+      final bool checkAttributes;
+      final List<bool> isValid = [];
+
+      if ((productDetail.options == null) || (productDetail.options!.isEmpty)) {
+        checkAttributes = false;
+      } else {
+        checkAttributes = true;
+        isValid.addAll(
+            List.generate(productDetail.options!.length, (index) => false));
+      }
+
       emit(state.copyWith(
         userInfoLogin: userInfoLogin,
         dataProduct: productDetail,
+        isValid: isValid,
+        productStoreDefault: productDetail.stock,
         attributes: productDetail.attributes,
         options: productDetail.options,
         totalProductInCart: totalItemInCart,
@@ -75,10 +85,13 @@ class ProductDetailBloc extends BaseBloc<ProductDetailState> {
       emit(state.copyWith(
           viewState: ViewState.error, errorMsg: error.toString()));
     }
+    // for check isValid and fetch data
+    onValidPopSelected();
+    onFetch(page: startPage);
+
     emit(state.copyWith(
       isLoading: false,
     ));
-    onFetch(page: startPage);
   }
 
   onReset() {
@@ -132,110 +145,68 @@ class ProductDetailBloc extends BaseBloc<ProductDetailState> {
 
   int checkIndexProducts(String idProduct) {
     final productList = state.productsList;
-    final index =
-        productList.indexWhere((element) => element.idProduct == idProduct);
+    final index = productList.indexWhere((element) => element.id == idProduct);
     return index;
   }
 
   onAddItemToCart({
-    required String idProduct,
-    required String nameProduct,
-    required String brandProduct,
-    required String imageProduct,
-    required String priceProduct,
-    required String description,
-    required int quantity,
+    required ProductParams productParams,
   }) async {
     var productList = state.productsList;
-    final index = checkIndexProducts(idProduct);
-    final cart = Provider.of<CartProvider>(context, listen: false);
+    final index = checkIndexProducts(productParams.dataProduct.id ?? '');
+    final cart = Provider.of<CartProviderV2>(context, listen: false);
 
+    // change quality
+    productParams.dataProduct.totalQuantity = state.currentCounter;
+    productParams.dataProduct.options = state.options;
     if (index == -1) {
-      final product = Products(
-          nameProduct: nameProduct,
-          description: description,
-          isCompleted: false,
-          totalQuantity: ValueNotifier<int>(quantity),
-          idProduct: idProduct,
-          brandProduct: brandProduct,
-          imageProduct: imageProduct,
-          priceProduct: priceProduct);
-      await CartDatabase.instance.createCart(product);
-      // onAddProductToCart();
-      productList.add(product);
+      await CartDatabaseV2().insertProductFromDataProduct(
+        productParams.dataProduct,
+      );
+      productList.add(productParams.dataProduct);
       cart.addCounter();
-      cart.addTotalPrice(splitCurrency(product.priceProduct).toDouble());
+      // cart.addTotalPrice(productParams.dataProduct.price!.price!.toDouble());
       //  cart.addListener(() { })
     } else {
       // sản phẩm đã tồn tại trong giỏ hàng
-      // productList[index].totalQuantity.value += quantity;
-      // final updatedProduct = productList[index].copy(
-      //     totalQuantity:
-      //         ValueNotifier<int>(productList[index].totalQuantity.value));
-      // await CartDatabase.instance.updateCart(updatedProduct);
-      // cart.addTotalPrice(splitCurrency(updatedProduct.priceProduct).toDouble());
       emit(state.copyWith(checkProductInCart: true));
     }
     emit(state.copyWith(productsList: productList));
     emit(state.copyWith(checkProductInCart: false));
   }
 
-  onSelectSize(String sizeSelected) {
-    // if (!isClosed) {
-    emit(state.copyWith(
-      sizeSelected: sizeSelected,
-    ));
-    onValidPopSelected();
-    //  }
-  }
-
-  onChangeValueDropdown() {
-    emit(state.copyWith());
-  }
-
-  onSelectColor(Color colorSelected) {
-    emit(state.copyWith(
-      colorSelected: colorSelected,
-    ));
-    onValidPopSelected();
-  }
-
-  onResetSelectAttributes(String colorSelected) {
-    emit(state.copyWith(colorSelected: null, sizeSelected: null));
-  }
-
+// popup check
   onHandleCounterChanged(int newCounter) {
     emit(state.copyWith(currentCounter: newCounter));
     onValidPopSelected();
   }
 
   onValidPopSelected() {
-    bool check = (state.sizeSelected != null &&
-        state.colorSelected != null &&
-        state.currentCounter != null &&
-        state.currentCounter != 0);
-    emit(state.copyWith(
-      validBuyProductAttributes: check,
-    ));
-  }
-
-  void onResetValiPopSelected() {
-    if (!isClosed) {
-      emit(state.copyWith(validBuyProductAttributes: false));
+    bool check = true;
+    final tempCheck = List.from(state.isValid)
+        .firstWhere((element) => element == false, orElse: () => true);
+    if (tempCheck == true && state.currentCounter < state.productStoreDefault) {
+      check = false;
     }
+    emit(state.copyWith(
+      isSoldOut: check,
+    ));
   }
 
   onChangePopUp(bool changePopUp) {
     emit(state.copyWith(changePopUp: changePopUp));
   }
 
-  void onSelectAttributeValue({
-    required Option option,
+//user for attributes dropdown
+  void onChangeValueDropdownAttribute({
+    required String idOption,
+    required int index,
     required ValueOptionProduct selectedValue,
-    required List<Option?> listOptions,
   }) {
-    List<Option?> updatedCategories = listOptions.map((c) {
-      if (c?.id == option.id) {
+    List<bool> isValid = List.from(state.isValid);
+    isValid[index] = true;
+    List<Option?> updatedCategories = state.options.map((c) {
+      if (c?.id == idOption) {
         List<ValueOptionProduct> updatedValues = c!.values!.map((v) {
           if (v.id == selectedValue.id) {
             return v.copyWith(isSelected: true);
@@ -249,26 +220,66 @@ class ProductDetailBloc extends BaseBloc<ProductDetailState> {
       return c;
     }).toList();
     emit(state.copyWith(
-        options: updatedCategories, isSelected: !state.isSelected));
+      isValid: isValid,
+      options: updatedCategories,
+    ));
+    // for check isvalid
+    onValidPopSelected();
+  }
 
-    //   // Find categories with at least one value where isFilter is true
-    //   Map<ValueOptionProduct, Option> filteredCategories = {};
-    //   for (var category in updatedCategories) {
-    //     for (var value in category.values!) {
-    //       if (value.isFilter == true) {
-    //         filteredCategories[category] = value;
-    //         break; // Only need the first matched value
-    //       }
-    //     }
-    //   }
+// use for attributes filtering
+  void onFieldAttributeValue({
+    required String idOption,
+    required String value,
+    required int index,
+  }) {
+    List<bool> isValid = List.from(state.isValid);
+    isValid[index] = true;
+    List<Option?> updatedCategories = state.options.map((c) {
+      if (c?.id == idOption) {
+        List<ValueOptionProduct> updatedValues = c!.values!.map((v) {
+          return v.copyWith(note: value, isSelected: true);
+        }).toList();
+        return c.copyWith(values: updatedValues);
+      }
+      return c;
+    }).toList();
 
-    //   // Emit the updated state with the modified categories and selected attributes
-    //   emit(
-    //     state.copyWith(
-    //       filteredCategories: filteredCategories,
-    //       //      attributesSelected: filteredCategories,
-    //       atributesCategoryData: updatedCategories,
-    //     ),
-    //   );
+    emit(state.copyWith(
+        isValid: isValid,
+        options: updatedCategories,
+        isSelected: !state.isSelected));
+    // for check isvalid
+    onValidPopSelected();
+  }
+
+// use for attributes selection
+  void onSelectAttributeValue({
+    required String idOption,
+    required ValueOptionProduct selectedValue,
+    required int index,
+  }) {
+    List<bool> isValid = List.from(state.isValid);
+    isValid[index] = true;
+    List<Option?> updatedCategories = state.options.map((c) {
+      if (c?.id == idOption) {
+        List<ValueOptionProduct> updatedValues = c!.values!.map((v) {
+          if (v.id == selectedValue.id) {
+            return v.copyWith(isSelected: true);
+          } else {
+            return v.copyWith(isSelected: false);
+          }
+        }).toList();
+
+        return c.copyWith(values: updatedValues);
+      }
+      return c;
+    }).toList();
+    emit(state.copyWith(
+        isValid: isValid,
+        options: updatedCategories,
+        isSelected: !state.isSelected));
+    // for check isvalid
+    onValidPopSelected();
   }
 }

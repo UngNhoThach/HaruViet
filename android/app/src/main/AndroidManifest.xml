@@ -45,7 +45,10 @@ package="vn.eco_app" xmlns:tools="http://schemas.android.com/tools">
         android:enableOnBackInvokedCallback="true"
         android:label="HaruViet"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:allowBackup="false"
+        android:fullBackupOnly="false">
+   
         
         <activity
             android:name=".MainActivity"

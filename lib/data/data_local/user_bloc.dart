@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:haruviet/api/rest_clien_ghtk.dart';
 import 'package:haruviet/api/rest_client.dart';
 import 'package:haruviet/data/local/user_preferences.dart';
 import 'package:haruviet/data/data_local/user_state.dart';
@@ -14,6 +15,9 @@ class UserBloc extends Cubit<UserInfoLogin> {
       if (userInfoLogin != null) {
         emit(userInfoLogin);
         RestClient().init(userInfoLogin.subDomain ?? "");
+        RestClientGHTK().init(
+          "https://services.giaohangtietkiem.vn",
+        );
       }
     } catch (error, stackTrace) {
       log("$error $stackTrace");

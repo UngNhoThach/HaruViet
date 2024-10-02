@@ -5,7 +5,9 @@ class WriteReviewParams {
   WriteReviewParams({
     required this.onReload,
     this.itemProductDetailResponse,
+    this.idItem,
   });
   final VoidCallback onReload;
   final DataProductDetailResponse? itemProductDetailResponse;
+  final String? idItem;
 }

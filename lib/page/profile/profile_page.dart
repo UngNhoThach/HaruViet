@@ -5,6 +5,7 @@ import 'package:haruviet/helper/context.dart';
 import 'package:haruviet/helper/dialog.dart';
 import 'package:haruviet/helper/spaces.dart';
 import 'package:haruviet/page/account/update_profile/widgets/update_profile_params.dart';
+import 'package:haruviet/page/add_address/add_address/widgets/address_params.dart';
 import 'package:haruviet/page/profile/models/list_profile_selection.dart';
 import 'package:haruviet/page/profile/profile_bloc.dart';
 import 'package:haruviet/page/profile/profile_state.dart';
@@ -34,7 +35,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   void initState() {
-    bloc = ProfileBloc()..getData();
+    bloc = ProfileBloc(context)..getData();
 
     super.initState();
 
@@ -135,9 +136,12 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
       colorMain.withOpacity(0.7),
       onTap: () {
-        routeService.pushNamed(
-          Routes.addressPage,
-        );
+        routeService.pushNamed(Routes.addressPage,
+            arguments: AddressParams(
+              isShipping: false,
+              idAddressShipping: '',
+              returnAddress: (dataAddress) {},
+            ));
       },
     ));
     listSection.add(createSection(
@@ -507,10 +511,11 @@ class _ProfilePageState extends State<ProfilePage> {
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       itemBuilder: (context, index) {
-        return _item(context,
-            onTap: listSection[index].onTap,
-            child: listSection[index].icon,
-            title: listSection[index].title);
+        return // _itemListProfile();
+            _item(context,
+                onTap: listSection[index].onTap,
+                child: listSection[index].icon,
+                title: listSection[index].title);
       },
       itemCount:
           (state.userInfoLogin?.isLogin == false || state.userInfoLogin == null)
@@ -518,6 +523,60 @@ class _ProfilePageState extends State<ProfilePage> {
               : listSection.length,
     );
   }
+
+  // Widget _itemListProfile() {
+  //   return Container(
+  //     height: 60,
+  //     width: double.infinity,
+  //     child: Column(children: [
+  //       Expanded(
+  //         child: Container(
+  //           margin: const EdgeInsets.symmetric(horizontal: 16),
+  //           width: double.infinity,
+  //           height: double.infinity,
+  //           child: Row(children: [
+  //             Container(
+  //                 margin: const EdgeInsets.only(right: 16),
+  //                 width: 20,
+  //                 height: 20,
+  //                 child: Image.network(
+  //                   "https://raw.githubusercontent.com/coredxor/images/main/q8.png",
+  //                   fit: BoxFit.fill,
+  //                 )),
+  //             Text(
+  //               "Orders",
+  //               style: TextStyle(
+  //                 color: Color(0xFF181725),
+  //                 fontSize: 18,
+  //                 fontWeight: FontWeight.bold,
+  //               ),
+  //             ),
+  //             Expanded(
+  //               child: Container(
+  //                 width: double.infinity,
+  //                 height: double.infinity,
+  //                 child: SizedBox(),
+  //               ),
+  //             ),
+  //             Container(
+  //                 width: 12,
+  //                 height: 20,
+  //                 child: Image.network(
+  //                   "https://raw.githubusercontent.com/coredxor/images/main/q2.png",
+  //                   fit: BoxFit.fill,
+  //                 )),
+  //           ]),
+  //         ),
+  //       ),
+  //       Container(
+  //         color: Color(0xFFE2E2E2),
+  //         height: 1,
+  //         width: double.infinity,
+  //         child: SizedBox(),
+  //       ),
+  //     ]),
+  //   );
+  // }
 
   Widget _item(
     BuildContext context, {

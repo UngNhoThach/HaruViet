@@ -1,3 +1,4 @@
+import 'package:haruviet/api/services/products/models/get_list_product_request.dart';
 import 'package:haruviet/base/base_bloc.dart';
 import 'package:haruviet/component/status/status_header_item.dart';
 import 'package:haruviet/data/enum.dart';
@@ -20,6 +21,12 @@ class CategoryBloc extends BaseBloc<CategoryState> {
     emit(state.copyWith(firtTimeLoadingPage: firtTimeLoadingPage));
   }
 
+  bool isINT(double number) {
+    return number % 1 == 0;
+  }
+
+  bool canLoadMore = false;
+
   getData() async {
     emit(state.copyWith(
       isLoading: true,
@@ -30,6 +37,7 @@ class CategoryBloc extends BaseBloc<CategoryState> {
         emit(state.copyWith(
           userInfoLogin: userInfoLogin,
         ));
+        await onFetch(page: startPage);
       } catch (error, statckTrace) {
         if (kDebugMode) {
           print("$error + $statckTrace");
@@ -38,7 +46,6 @@ class CategoryBloc extends BaseBloc<CategoryState> {
             viewState: ViewState.error, errorMsg: error.toString()));
       }
     }
-    await onFetch(page: startPage);
     emit(state.copyWith(
       isLoading: false,
     ));
@@ -48,30 +55,41 @@ class CategoryBloc extends BaseBloc<CategoryState> {
     required int page,
   }) async {
     try {
-      List<DataCategory> updatedDataList = [];
-
       if (page == startPage) {
         emit(
           state.copyWith(
             newListCategory: null,
             canLoadMore: false,
-            listCategory: updatedDataList,
           ),
         );
-      } else {
-        updatedDataList = List<DataCategory>.from(state.listCategory ?? []);
       }
-      final category = await _categoryRepository.getCategoryRP();
 
-      updatedDataList.addAll(category.parseDataCategory() ?? []);
+      final category = await _categoryRepository.getCategoryRP(
+          request: GetListProductRequest(
+        paegNumber: page,
+        language: 'en',
+        pageSize: state.limit,
+      ));
+
+      var newDataList =
+          List<DataCategory>.from(category.parseDataCategory() ?? []);
+
+      final listCategory = List<DataCategory>.from(state.listCategory ?? [])
+        ..addAll(newDataList);
 
       final maxLoadMore = ((category.total ?? 0) / state.limit).floor();
-      final canLoadMore = page <= maxLoadMore;
+
+      if (isINT(((category.total ?? 0) / state.limit))) {
+        canLoadMore = page < maxLoadMore;
+      } else {
+        canLoadMore = page <= maxLoadMore;
+        print('error');
+      }
 
       emit(state.copyWith(
         currentPage: page,
-        newListCategory: category.parseDataCategory(),
-        listCategory: updatedDataList,
+        listCategory: listCategory,
+        newListCategory: newDataList,
         canLoadMore: canLoadMore,
       ));
     } catch (error, statckTrace) {

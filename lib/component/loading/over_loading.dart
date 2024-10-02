@@ -101,8 +101,8 @@ class _OverLayAnimationState extends State<OverLayAnimation>
   void initState() {
     super.initState();
     _overlayVisible = false;
-    _controller =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 300));
+    _controller = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 300));
     _animation = Tween(begin: 0.0, end: 1.0).animate(_controller);
     _animation.addStatusListener((status) {
       status == AnimationStatus.forward

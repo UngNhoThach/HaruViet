@@ -199,6 +199,7 @@ class _SearchScaffoldState extends State<SearchScaffold> {
       required int index,
       required String domain}) {
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: () {
         routeService
             .pushNamed(Routes.productDetailPage,

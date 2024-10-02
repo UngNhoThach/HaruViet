@@ -7,11 +7,21 @@ class Price {
   int? price;
   @JsonKey(name: 'price_str')
   String? priceStr;
+  num? discountDetail;
   @JsonKey(name: 'exchange_rate')
   int? exchangeRate;
+  int? totalPriceItem;
   String? currency;
+  int? discountOrder;
 
-  Price({this.price, this.priceStr, this.exchangeRate, this.currency});
+  Price(
+      {this.price,
+      this.priceStr,
+      this.exchangeRate,
+      this.totalPriceItem,
+      this.currency,
+      this.discountOrder,
+      this.discountDetail});
 
   factory Price.fromJson(Map<String, dynamic> json) => _$PriceFromJson(json);
 

@@ -10,6 +10,7 @@ import 'package:haruviet/data/reponsitory/category/models/atribute_category_resp
 import 'package:haruviet/data/reponsitory/category/models/category_detail_response/subcategory.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_list_product/data_product_list.dart';
 import 'package:haruviet/database_local/product/cart_provider.dart';
+import 'package:haruviet/database_local/product/cart_provider_v2.dart';
 import 'package:haruviet/gen/assets.gen.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/const.dart';
@@ -55,6 +56,7 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
   late String domain;
   FocusNode focusNode = FocusNode();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  late double childAspectRatio;
 
   bool isFocused = false;
   late SubCategoryBloc bloc;
@@ -99,6 +101,8 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    childAspectRatio = MediaQuery.of(context).size.width /
+        (MediaQuery.of(context).size.height / 1.35.h);
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -245,7 +249,7 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
                                 : state.checkIsChangeListItem
                                     ? Padding(
                                         padding: const EdgeInsets.symmetric(
-                                            horizontal: 8, vertical: 16),
+                                            horizontal: 8, vertical: 8),
                                         child: CustomScrollView(
                                           slivers: [
                                             PagedSliverGrid(
@@ -254,11 +258,12 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
                                               pagingController:
                                                   _pagingController,
                                               gridDelegate:
-                                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                                  SliverGridDelegateWithFixedCrossAxisCount(
                                                 crossAxisCount: 2,
-                                                mainAxisSpacing: 12.0,
-                                                crossAxisSpacing: 8.0,
-                                                childAspectRatio: 0.8,
+                                                mainAxisSpacing: 0,
+                                                crossAxisSpacing: 0,
+                                                childAspectRatio:
+                                                    childAspectRatio,
                                               ),
                                               builderDelegate:
                                                   PagedChildBuilderDelegate<
@@ -617,8 +622,8 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
       ),
       actions: <Widget>[
         spaceW16,
-        Consumer<CartProvider>(
-          builder: (BuildContext context, CartProvider value, Widget? child) {
+        Consumer<CartProviderV2>(
+          builder: (BuildContext context, CartProviderV2 value, Widget? child) {
             return badges.Badge(
               position: badges.BadgePosition.topEnd(top: 0, end: 2),
               showBadge: value.getCounter() == 0 ? false : true,

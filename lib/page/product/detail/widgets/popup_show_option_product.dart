@@ -10,38 +10,32 @@ import 'package:haruviet/page/product/detail/product_detail_state.dart';
 class PopupCreateTerminationResignation extends StatefulWidget {
   const PopupCreateTerminationResignation._(
       {required this.onReload,
-      //  required this.colorSelected,
-      this.widgetImage,
-      this.widgetColor,
-      this.widgetSize,
+      this.widgetValueSelect,
       required this.widgetButton,
       required this.widgetCountQuality,
+      this.widgetImage,
       required this.bloc,
       Key? key})
       : super(key: key);
 
-  //  final String colorSelected;
   final VoidCallback onReload;
-  final Widget? widgetImage;
-  final Widget? widgetColor;
-  final Widget? widgetSize;
+  final Widget? widgetValueSelect;
   final Widget widgetButton;
+  final Widget? widgetImage;
+
   final Widget widgetCountQuality;
+
   final ProductDetailBloc bloc; // Store the bloc instance
 
   static Future<void> show(
     BuildContext context, {
-    //  required String colorSelected,
+    Widget? widgetValueSelect,
     Widget? widgetImage,
-    Widget? widgetColor,
-    Widget? widgetSize,
     required Widget widgetCountQuality,
     required Widget widgetButton,
     required VoidCallback onReload,
     required ProductDetailBloc bloc,
     required ProductDetailState state,
-
-    // Pass the bloc instance here
   }) {
     return showAppModalBottomSheetV3<void>(
       context: context,
@@ -51,16 +45,14 @@ class PopupCreateTerminationResignation extends StatefulWidget {
           builder: (context, state) {
             return BlocSelector<ProductDetailBloc, ProductDetailState, bool>(
               selector: (selector) {
-                return selector.validBuyProductAttributes;
+                return selector.isSoldOut;
               },
               builder: (context, state) {
                 return PopupCreateTerminationResignation._(
                   onReload: onReload,
                   widgetButton: widgetButton,
-                  //       colorSelected: colorSelected,
-                  widgetColor: widgetColor,
+                  widgetValueSelect: widgetValueSelect,
                   widgetImage: widgetImage,
-                  widgetSize: widgetSize,
                   widgetCountQuality: widgetCountQuality,
                   bloc: bloc, // Pass the bloc instance to the widget
                 );
@@ -84,41 +76,29 @@ class _PopupChangePersonalInformationState
   @override
   void initState() {
     super.initState();
-    // indexSelected = ColorWorkPlan.values.indexWhere(
-    //     (element) => element == ColorWorkPlan.from(widget.colorSelected));
   }
 
   @override
   Widget build(BuildContext context) {
     return TitleBottomSheetAutoHeightWrapper(
+      bottomWidget: widget.widgetButton,
       child: LayoutBuilder(
-        builder: (context, constraints) => SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(
-                maxHeight: double.infinity, maxWidth: double.infinity),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
+        builder: (context, constraints) {
+          return ConstrainedBox(
+            constraints: BoxConstraints(maxHeight: 400.h),
+            child: ListView(
+              shrinkWrap: true,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               children: [
                 widget.widgetImage ?? space0,
-                widget.widgetColor ?? space0,
-                widget.widgetSize ?? space0,
-                // Column(
-                //   children: [
-                //     widget.widgetImage ?? space0,
-                //     widget.widgetColor ?? space0,
-                //     widget.widgetSize ?? space0,
-                //   ],
-                // ),
+                widget.widgetValueSelect ?? space0,
                 spaceH10,
                 widget.widgetCountQuality,
                 spaceH16,
-                widget.widgetButton,
-                spaceH8,
               ],
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

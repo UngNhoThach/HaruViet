@@ -107,6 +107,7 @@ class TextFiledInputText extends StatefulWidget {
     this.contentPadding,
     this.isErrorBorder = true,
     this.readOnly = false,
+    this.onClearText, // Thêm hàm callback khi clear text
   }) : super(key: key);
   final bool isErrorBorder;
   final String? Function(String?)? validator;
@@ -114,6 +115,8 @@ class TextFiledInputText extends StatefulWidget {
   final bool? isClear;
   final bool? isTextFieldFocused;
   final String? hintext;
+  final void Function()? onClearText; // Callback khi text được clear
+
   final Icon? icon;
   final String? initialText;
   final bool readOnly;
@@ -206,6 +209,10 @@ class _TextFiledInputTextState extends State<TextFiledInputText> {
                 ),
                 onTap: () {
                   _inputController.clear();
+                  // Gọi callback onClearText nếu có
+                  if (widget.onClearText != null) {
+                    widget.onClearText!();
+                  }
                   setState(() {});
                 },
               )

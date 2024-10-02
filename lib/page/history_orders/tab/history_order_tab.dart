@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:haruviet/component/error/error_internet.dart';
 import 'package:haruviet/component/error/not_found_item.dart';
 import 'package:haruviet/component/shimer/shimer.dart';
 import 'package:haruviet/data/data_local/user_bloc.dart';
 import 'package:haruviet/data/reponsitory/cart_orders/models/cart_order_response/data_cart_response.dart';
+import 'package:haruviet/gen/assets.gen.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/const.dart';
 import 'package:haruviet/helper/context.dart';
+import 'package:haruviet/helper/date_time.dart';
 import 'package:haruviet/helper/spaces.dart';
-import 'package:haruviet/page/review/write_review/widgets/write_review_params.dart';
+import 'package:haruviet/page/history_orders/tab/widgets/order_detail_params.dart';
 import 'package:haruviet/resources/routes.dart';
 import 'package:haruviet/theme/typography.dart';
 import 'package:haruviet/utils/commons.dart';
@@ -22,7 +22,7 @@ import 'history_order_tab_state.dart';
 import 'widgets/history_order_tab_params.dart';
 
 class HistoryOrderTab extends StatefulWidget {
-  final HistoryOrderTabParms params;
+  final HistoryOrderTabParams params;
   const HistoryOrderTab({
     super.key,
     required this.params,
@@ -133,11 +133,14 @@ class _HistoryOrderTabState extends State<HistoryOrderTab> {
       onTap: () {},
       child: Container(
         decoration: BoxDecoration(
+          border: Border.all(
+            color: colorMainCover,
+          ),
           color: const Color.fromARGB(255, 248, 249, 255),
           borderRadius: BorderRadius.circular(16.0),
         ),
         padding: EdgeInsets.symmetric(
-          horizontal: 16.w,
+          horizontal: 8.w,
           vertical: 12.h,
         ),
         child: Row(
@@ -157,121 +160,107 @@ class _HistoryOrderTabState extends State<HistoryOrderTab> {
                       children: [
                         Expanded(
                           child: Text(
-                            'Vận chuyển: ${data.shippingMethod ?? ''}',
+                            'Sản phẩm đã mua (${data.details?.totalProduct})',
                             style: textTheme.bodyMedium
                                 ?.copyWith(color: colorBlueGray03),
                           ),
                         ),
                         InkWell(
-                            onTap: () async {
-                              await bloc.onGetDetailProduct(
-                                  idProduct: data.id ?? '');
-                              if (state.isLoadingProductDetails != true) {
-                                routeService.pushNamed(Routes.writeReviewPage,
-                                    arguments: WriteReviewParams(
-                                        onReload: () {},
-                                        itemProductDetailResponse:
-                                            state.productDetail));
-                              }
+                            onTap: () {
+                              routeService.pushNamed(Routes.orderDetailPage,
+                                  arguments: OrderDetailParams(
+                                    // not done
+                                    //       isReview: ,
+                                    idOrder: data.id ?? '',
+                                  ));
                             },
                             child: Text(
-                              'Đánh giá',
+                              'xem chi tiết',
                               style: textTheme.bodyMedium?.copyWith(
                                 color: colorMain,
                               ),
                             ))
                       ],
                     ),
-                    const Divider(),
-                    Row(
-                      children: [
-                        Expanded(
-                          flex: 3,
-                          child: SizedBox(
-                            width: 80.w,
-                            child: Image.network(
-                              '$domain${data.details?.itemProduct?.image ?? ''}',
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return const ErrorInternet();
-                              },
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 7,
-                          child: Column(
+                    spaceH4,
+                    const Divider(
+                      height: 1,
+                    ),
+
+                    // item here
+                    Container(
+                      margin: const EdgeInsets.symmetric(vertical: 8.0),
+                      padding: const EdgeInsets.all(12.0),
+                      decoration: BoxDecoration(
+                        color: colorMainCover.withOpacity(0.04),
+                        borderRadius:
+                            BorderRadius.circular(8.0), // Tạo bo góc cho item
+                      ),
+                      child: Row(
+                        children: [
+                          // Tên sản phẩm
+                          Column(
                             children: [
-                              const SizedBox(
-                                height: 8,
+                              Text(
+                                data.details?.itemProduct?.name ?? '',
+                                style: textTheme.bodyMedium?.copyWith(
+                                  color: context.appColor.colorBlack,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                              Row(
-                                children: [
-                                  const SizedBox(
-                                    width: 8,
-                                  ),
-                                  Flexible(
-                                    child: Text(
-                                      maxLines: null,
-                                      data.details?.itemProduct?.name ?? '',
-                                      style: textTheme.titleMedium?.copyWith(
-                                        color: context.appColor.colorBlack,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              spaceH8,
-                              Row(
-                                children: [
-                                  const SizedBox(
-                                    width: 8,
-                                  ),
-                                  Flexible(
-                                    child: Text(
-                                      maxLines: null,
-                                      '${data.details?.itemProduct?.price ?? ''} VND',
-                                      style: textTheme.bodyMedium?.copyWith(
-                                        color: colorMain,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 20,
+                              const SizedBox(height: 8),
+
+                              // Giá sản phẩm
+                              Text(
+                                toPrice(
+                                    value:
+                                        data.details?.itemProduct?.price ?? ''),
+                                style: textTheme.bodyMedium?.copyWith(
+                                  color: colorMain,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ],
                           ),
-                        ),
-                      ],
+                          spaceW20,
+                          _subExpand(
+                            time: converDateToString(
+                                data.details?.createdAt ?? ''),
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            name: data.shippingMethod ?? '',
+                            widget: Assets.icons.shipmentMethod.image(
+                                height: 18, width: 18, color: colorSuccess03),
+                          ),
+                        ],
+                      ),
                     ),
-                    const Divider(),
+
+                    const Divider(
+                      height: 1,
+                    ),
+                    spaceH4,
+
                     Row(
                       children: [
-                        Expanded(
-                          child: Text(
-                            '${data.details?.itemProduct?.qty ?? ''} sản phẩm',
-                            style: textTheme.bodyMedium
-                                ?.copyWith(color: colorBlueGray03),
-                          ),
+                        _subExpand(
+                          name: data.paymentMethod ?? '',
+                          widget: Assets.icons.paymentMethod.image(
+                              height: 16, width: 16, color: colorSuccess03),
                         ),
                         Row(
                           children: [
                             Text(
-                              'Thành tiền: ',
+                              'Tổng tiền: ',
                               style: textTheme.titleMedium
                                   ?.copyWith(color: colorBlueGray03),
                             ),
                             Text(
-                              '${data.total ?? ''} VND',
+                              toPrice(value: data.total ?? ''),
                               style: textTheme.titleMedium
                                   ?.copyWith(color: colorMain),
                             ),
                           ],
                         )
-                        //
-                        //    Text('01-12-2023', style: textTheme.bodySmall),
                       ],
                     ),
                   ],
@@ -301,6 +290,52 @@ class _HistoryOrderTabState extends State<HistoryOrderTab> {
         ),
         separatorBuilder: (context, index) => spaceH12,
         itemCount: 10,
+      ),
+    );
+  }
+
+  Widget _subExpand(
+      {required String name,
+      Widget? widget,
+      String? time,
+      MainAxisAlignment? mainAxisAlignment}) {
+    return Expanded(
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: mainAxisAlignment ?? MainAxisAlignment.start,
+            children: [
+              widget ?? space0,
+              spaceW4,
+              Text(
+                name,
+                style: textTheme.bodyMedium?.copyWith(color: colorSuccess03),
+              ),
+            ],
+          ),
+          time == null
+              ? space0
+              : Padding(
+                  padding: const EdgeInsets.only(left: 8, top: 4),
+                  child: Row(
+                    mainAxisAlignment:
+                        mainAxisAlignment ?? MainAxisAlignment.start,
+                    children: [
+                      const Icon(
+                        Icons.av_timer_sharp,
+                        size: 24,
+                        color: colorSuccess03,
+                      ),
+                      spaceW2,
+                      Text(
+                        time,
+                        style: textTheme.bodyMedium
+                            ?.copyWith(color: colorSuccess03),
+                      ),
+                    ],
+                  ),
+                )
+        ],
       ),
     );
   }

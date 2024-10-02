@@ -60,6 +60,11 @@ class _AddNewAddressPageState extends State<AddNewAddressPage> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => bloc,

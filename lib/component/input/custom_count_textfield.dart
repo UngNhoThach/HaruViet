@@ -36,10 +36,12 @@ class _CustomCountTextFormFieldState extends State<CustomCountTextFormField> {
     return Row(
       children: [
         GestureDetector(
-            onTap: widget.onChangedLeft, child: const Icon(Icons.remove)),
-        const SizedBox(
-          width: 16,
-        ),
+            onTap: widget.onChangedLeft,
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              child: Icon(Icons.remove),
+            )),
+
         Expanded(
           child: SizedBox(
             height: 36,
@@ -57,12 +59,15 @@ class _CustomCountTextFormFieldState extends State<CustomCountTextFormField> {
             ),
           ),
         ),
-        const SizedBox(
-          width: 16,
-        ),
+        // const SizedBox(
+        //   width: 16,
+        // ),
         GestureDetector(
           onTap: widget.onChangedRight,
-          child: const Icon(Icons.add),
+          child: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8),
+            child: Icon(Icons.add),
+          ),
         ),
       ],
     );

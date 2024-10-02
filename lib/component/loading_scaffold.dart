@@ -11,6 +11,8 @@ class LoadingScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return LoadingWithAppIcon(
         isLoading: isLoading,
+        overlayOpacity: 0.3,
+        borderRadius: 0.2,
         circularProgressColor: colorMain,
         appIcon: Image.asset(
           'assets/images/logo_2.png',

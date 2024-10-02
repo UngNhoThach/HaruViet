@@ -32,7 +32,7 @@ class RadioListSelect extends StatelessWidget {
 
   Widget _radioButton(BuildContext context, int index, String title) {
     final isSelected = index == currentIndex;
-    return InkWell(
+    return GestureDetector(
       onTap: enabled
           ? () {
               onSelectedIndex(index);

@@ -14,7 +14,10 @@ part 'data_product_detail_response.g.dart';
 
 @JsonSerializable()
 class DataProductDetailResponse {
+  int? totalQuantity;
+  int discountDetail;
   String? id;
+  double? totalPriceItem;
   String? sku;
   String? image;
   Brand? brand;
@@ -52,6 +55,9 @@ class DataProductDetailResponse {
 
   DataProductDetailResponse({
     this.id,
+    this.totalPriceItem,
+    this.discountDetail = 0,
+    this.totalQuantity,
     this.sku,
     this.image,
     this.brand,

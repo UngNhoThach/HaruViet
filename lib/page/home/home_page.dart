@@ -36,6 +36,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final IdProductRecommendationDatabase getIdProductRecommendation =
       IdProductRecommendationDatabase();
   late HomeBloc bloc;
+  late double childAspectRatio;
+
   final PagingController<int, DataProduct> _pagingController =
       PagingController(firstPageKey: startPage, invisibleItemsThreshold: 3);
   FocusNode focusNode = FocusNode();
@@ -165,6 +167,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget _flashDealsProductListView(
     BuildContext context,
   ) {
+    childAspectRatio = MediaQuery.of(context).size.width /
+        (MediaQuery.of(context).size.height / 1.35.h);
     return SizedBox(
       height: 210.h,
       child: PagedListView.separated(
@@ -197,12 +201,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             // showNoMoreItemsIndicatorAsGridChild: false,
             shrinkWrapFirstPageIndicators: true,
             pagingController: _pagingController,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               //    mainAxisExtent: BorderSide.strokeAlignCenter,
               crossAxisCount: 2, // Số cột là 2
-              mainAxisSpacing: 12.0,
-              crossAxisSpacing: 8.0,
-              childAspectRatio: 0.78,
+              mainAxisSpacing: 0,
+              crossAxisSpacing: 0,
+              childAspectRatio: childAspectRatio,
             ),
             builderDelegate: PagedChildBuilderDelegate<DataProduct>(
               noItemsFoundIndicatorBuilder: _empty,

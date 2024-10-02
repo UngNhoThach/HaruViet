@@ -11,6 +11,7 @@ class DataCategory {
   String? image;
   String? alias;
   String? parent;
+  @JsonKey(name: 'descriptions')
   DescriptionsCategory? descriptions;
   List<Subcategory>? subcategories;
 

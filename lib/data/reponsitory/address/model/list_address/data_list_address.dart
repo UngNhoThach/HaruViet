@@ -28,10 +28,12 @@ class DataListAddress {
   @JsonKey(name: 'updated_at')
   DateTime? updatedAt;
   bool isDefault;
+  bool isShipping;
 
   DataListAddress({
     this.id,
     this.isDefault = false,
+    this.isShipping = false,
     this.customerId,
     this.firstName,
     this.idAddress,
@@ -53,5 +55,43 @@ class DataListAddress {
 
   Map<String, dynamic> toJson() => _$DataListAddressToJson(this);
 
-  copyWith({required}) {}
+  DataListAddress copyWith({
+    String? id,
+    String? customerId,
+    String? firstName,
+    String? lastName,
+    String? firstNameKana,
+    String? lastNameKana,
+    String? postcode,
+    String? address1,
+    String? address2,
+    String? address3,
+    String? idAddress,
+    String? country,
+    String? phone,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    bool? isDefault,
+    bool? isShipping,
+  }) {
+    return DataListAddress(
+      isShipping: isShipping ?? this.isShipping,
+      address1: address1 ?? this.address1,
+      address2: address2 ?? this.address2,
+      address3: address3 ?? this.address3,
+      country: country ?? this.country,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      customerId: customerId ?? this.customerId,
+      firstName: firstName ?? this.firstName,
+      firstNameKana: firstNameKana ?? this.firstNameKana,
+      id: id ?? this.id,
+      idAddress: idAddress ?? this.idAddress,
+      isDefault: isDefault ?? this.isDefault,
+      lastName: lastName ?? this.lastName,
+      lastNameKana: lastNameKana ?? this.lastNameKana,
+      phone: phone ?? this.phone,
+      postcode: postcode ?? this.postcode,
+    );
+  }
 }

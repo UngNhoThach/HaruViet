@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -28,15 +25,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -68,5 +59,38 @@ class DefaultFirebaseOptions {
     iosClientId:
         '441828524688-o4fufjgofptnpmqbribbvjf4g0qtense.apps.googleusercontent.com',
     iosBundleId: 'com.example.ecoApp',
+  );
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyCo68iirqaES7ZmI907Uj5l3rloDWepY10',
+    appId: '1:441828524688:web:7221ac70c84a4bf9ae4e15',
+    messagingSenderId: '441828524688',
+    projectId: 'haruviet-809ef',
+    authDomain: 'haruviet-809ef.firebaseapp.com',
+    storageBucket: 'haruviet-809ef.appspot.com',
+    measurementId: 'G-DMMKHXSWGH',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyCid6V5r7d27SD_ZCZCwowYzFyJ8J8G808',
+    appId: '1:441828524688:ios:9e9b0a2d32138c2eae4e15',
+    messagingSenderId: '441828524688',
+    projectId: 'haruviet-809ef',
+    storageBucket: 'haruviet-809ef.appspot.com',
+    androidClientId:
+        '441828524688-7uji4ar0islsihrv6uj8v88cp8l1huce.apps.googleusercontent.com',
+    iosClientId:
+        '441828524688-o4fufjgofptnpmqbribbvjf4g0qtense.apps.googleusercontent.com',
+    iosBundleId: 'com.example.ecoApp',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyCo68iirqaES7ZmI907Uj5l3rloDWepY10',
+    appId: '1:441828524688:web:caac3e2030407229ae4e15',
+    messagingSenderId: '441828524688',
+    projectId: 'haruviet-809ef',
+    authDomain: 'haruviet-809ef.firebaseapp.com',
+    storageBucket: 'haruviet-809ef.appspot.com',
+    measurementId: 'G-3TELB1ZYMR',
   );
 }

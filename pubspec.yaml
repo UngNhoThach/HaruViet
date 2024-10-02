@@ -72,6 +72,7 @@ dependencies:
   provider: ^6.1.2
   firebase_core: ^2.32.0
   loading_animation_widget: ^1.2.1
+  firebase_messaging: ^14.9.4
 
 flutter_icons:
   android: true

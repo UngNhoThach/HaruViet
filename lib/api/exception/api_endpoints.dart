@@ -1,5 +1,6 @@
 class SettingApi {
   static const rootDomain = "https://dev.sni.vn";
+  static const giaohangtietkiem = "https://services.giaohangtietkiem.vn";
   static const getCountryList =
       "$rootDomain/api/v1/shop/province?id_country={id_country}";
   static const getDistrictList =
@@ -81,4 +82,16 @@ class CartApi {
   // orders
   static const getHistoryOrders =
       "${SettingApi.rootDomain}/api/v1/shop/orders/list/{idCustomer}?status={status}";
+  static const checkOrderPrice =
+      "${SettingApi.rootDomain}/api/v1/shop/orders/checkpromotionorder";
+  static const getOderDetail =
+      "${SettingApi.rootDomain}/api/v1/shop/orders/detail/{idCustomer}/{idOrder}";
+}
+
+class DeliveryApi {
+  static const create =
+      "${SettingApi.giaohangtietkiem}/services/shipment/order/?ver=1.5";
+
+  static const shipmentFee =
+      "${SettingApi.giaohangtietkiem}/services/shipment/fee";
 }

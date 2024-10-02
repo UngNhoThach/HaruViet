@@ -52,6 +52,14 @@ class $AssetsIconsGen {
   AssetGenImage get iconShare =>
       const AssetGenImage('assets/icons/icon_share.png');
 
+  /// File path: assets/icons/payment_method.png
+  AssetGenImage get paymentMethod =>
+      const AssetGenImage('assets/icons/payment_method.png');
+
+  /// File path: assets/icons/shipment_method.png
+  AssetGenImage get shipmentMethod =>
+      const AssetGenImage('assets/icons/shipment_method.png');
+
   /// List of all assets
   List<AssetGenImage> get values => [
         filterHigh,
@@ -63,7 +71,9 @@ class $AssetsIconsGen {
         icLogout,
         icNotification,
         icPayment,
-        iconShare
+        iconShare,
+        paymentMethod,
+        shipmentMethod
       ];
 }
 

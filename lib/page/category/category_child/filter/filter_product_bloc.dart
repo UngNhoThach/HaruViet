@@ -61,7 +61,6 @@ class FilterProductBloc extends BaseBloc<FilterProductState> {
             return v.copyWith(isFilter: false);
           }
         }).toList();
-
         return c.copyWith(values: updatedValues);
       }
       return c;
@@ -77,7 +76,6 @@ class FilterProductBloc extends BaseBloc<FilterProductState> {
         }
       }
     }
-
     // Emit the updated state with the modified categories and selected attributes
     emit(
       state.copyWith(

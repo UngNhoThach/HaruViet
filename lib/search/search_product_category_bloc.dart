@@ -72,7 +72,6 @@ class SearchProductCategoryBloc extends BaseBloc<SearchProductCategoryState> {
       _debounce = Timer(const Duration(milliseconds: 400), () {
         onGetDataSearch(keyword);
         onSaveDataSearchLocal(keyword);
-        //  inSertDataSearch(value: keyword);
       });
     }
   }

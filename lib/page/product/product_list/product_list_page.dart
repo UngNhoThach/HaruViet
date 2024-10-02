@@ -5,7 +5,7 @@ import 'package:haruviet/component/input/search_barv2.dart';
 import 'package:haruviet/component/status/status_header_item.dart';
 import 'package:haruviet/data/data_local/user_bloc.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_list_product/data_product_list.dart';
-import 'package:haruviet/database_local/product/cart_provider.dart';
+import 'package:haruviet/database_local/product/cart_provider_v2.dart';
 import 'package:haruviet/gen/assets.gen.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/const.dart';
@@ -44,11 +44,13 @@ class _ProductListPageState extends State<ProductListPage> {
   late String domain;
   FocusNode focusNode = FocusNode();
   late ProductListBloc bloc;
+  late double childAspectRatio;
   final ItemProductWidget itemProductWidgets = ItemProductWidget();
   bool checkIsChangeListItem = false;
   @override
   void initState() {
     super.initState();
+
     bloc = ProductListBloc(widget.params)..getData();
     _pagingController.addPageRequestListener((pageKey) {
       if (pageKey != startPage) {
@@ -122,6 +124,8 @@ class _ProductListPageState extends State<ProductListPage> {
   }
 
   Widget _viewDefault(BuildContext context, {required ProductListState state}) {
+    childAspectRatio = MediaQuery.of(context).size.width /
+        (MediaQuery.of(context).size.height / 1.35.h);
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -147,8 +151,8 @@ class _ProductListPageState extends State<ProductListPage> {
                 ),
                 spaceW4,
                 SizedBox(
-                  height: 24,
-                  width: 24,
+                  height: 24.r,
+                  width: 24.r,
                   child: Image.asset(
                     (state.currentTab != CurrentTab.priceHigh &&
                             state.currentTab != CurrentTab.priceLow)
@@ -180,31 +184,28 @@ class _ProductListPageState extends State<ProductListPage> {
                 child: checkIsChangeListItem
                     ? Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 16),
-                        child: CustomScrollView(
-                          slivers: [
-                            PagedSliverGrid(
-                              shrinkWrapFirstPageIndicators: true,
-                              pagingController: _pagingController,
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2, // column count error loading
-                                mainAxisSpacing: 12.0,
-                                crossAxisSpacing: 8.0,
-                                childAspectRatio: 0.8,
-                              ),
-                              builderDelegate:
-                                  PagedChildBuilderDelegate<DataProduct>(
-                                // animateTransitions: true,
-                                noItemsFoundIndicatorBuilder: _empty,
-                                itemBuilder: (context, item, index) =>
-                                    _itemGridView(context,
-                                        index: index,
-                                        data: item,
-                                        domain: domain),
-                              ),
-                            ),
-                          ],
+                            horizontal: 8, vertical: 8),
+                        child: PagedGridView<int, DataProduct>(
+                          pagingController: _pagingController,
+                          showNewPageProgressIndicatorAsGridChild: false,
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  mainAxisSpacing: 0,
+                                  crossAxisSpacing: 0,
+                                  childAspectRatio: childAspectRatio),
+                          builderDelegate:
+                              PagedChildBuilderDelegate<DataProduct>(
+                            noItemsFoundIndicatorBuilder: _empty,
+                            itemBuilder: (context, item, index) {
+                              return _itemGridView(
+                                context,
+                                index: index,
+                                data: item,
+                                domain: domain,
+                              );
+                            },
+                          ),
                         ),
                       )
                     : PagedListView.separated(
@@ -296,8 +297,8 @@ class _ProductListPageState extends State<ProductListPage> {
       ),
       actions: <Widget>[
         spaceW16,
-        Consumer<CartProvider>(
-          builder: (BuildContext context, CartProvider value, Widget? child) {
+        Consumer<CartProviderV2>(
+          builder: (BuildContext context, CartProviderV2 value, Widget? child) {
             return badges.Badge(
               position: badges.BadgePosition.topEnd(top: 0, end: 2),
               showBadge: value.getCounter() == 0 ? false : true,

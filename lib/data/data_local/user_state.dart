@@ -7,7 +7,6 @@ part 'user_state.g.dart';
 class UserInfoLogin {
   bool isLogin;
   String? subDomain;
-
   @JsonKey(name: "user_name")
   String? userName;
   @JsonKey(name: "pathologicaldetail")
@@ -77,12 +76,15 @@ class UserInfoLogin {
   String? provider;
   @JsonKey(name: "provider_id")
   String? providerId;
+  @JsonKey(name: "id_shipping")
+  String? idShipping;
 
   UserInfoLogin(
       {this.isLogin = false,
       this.subDomain = 'https://dev.sni.vn',
       this.provider,
       this.userName,
+      this.idShipping,
       this.providerId,
       this.id,
       this.pathologicaldetail,
@@ -118,7 +120,7 @@ class UserInfoLogin {
 
   @override
   String toString() {
-    return 'avatar: $avatar,  id: $id, access_token: $accessToken, token_type: $tokenType, emai: $email, email_verified_at: $emailVerifiedAt,  name: $name, first_name: $firstName, last_name: $lastName , first_name_kana $firstNameKana,  last_name_kana $lastNameKana, sex $sex, birthday $birthDay, address_id $addressId, postcode $postCode, address1 $address1, address2 $address2, address3 $address3, company $company, country $company, phone $phone, store_id $storeId, status $status, group $group, user_id $userId, agency_name $agencyName';
+    return 'avatar: $avatar,id_shipping: $idShipping,  id: $id, access_token: $accessToken, token_type: $tokenType, emai: $email, email_verified_at: $emailVerifiedAt,  name: $name, first_name: $firstName, last_name: $lastName , first_name_kana $firstNameKana,  last_name_kana $lastNameKana, sex $sex, birthday $birthDay, address_id $addressId, postcode $postCode, address1 $address1, address2 $address2, address3 $address3, company $company, country $company, phone $phone, store_id $storeId, status $status, group $group, user_id $userId, agency_name $agencyName';
   }
 
   factory UserInfoLogin.fromJson(Map<String, dynamic> json) =>

@@ -1,8 +1,7 @@
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:haruviet/component/button/bottom_bar_button.dart';
 import 'package:haruviet/component/button/solid_button.dart';
-import 'package:haruviet/component/input/text_filed_icon.dart';
+import 'package:haruviet/component/loading/loading.dart';
 import 'package:haruviet/component/snackbar/snackbar_bottom.dart';
 import 'package:haruviet/data/data_local/user_bloc.dart';
 import 'package:haruviet/helper/colors.dart';
@@ -26,8 +25,6 @@ class WriteReviewPage extends StatefulWidget {
 
 class _WriteReviewPageState extends State<WriteReviewPage> {
   int? replyId;
-  final FocusNode _focusNode = FocusNode();
-  final TextEditingController _nameController = TextEditingController();
   late WriteReviewBloc bloc;
   late String domain;
   final _formKey = GlobalKey<FormState>();
@@ -35,9 +32,7 @@ class _WriteReviewPageState extends State<WriteReviewPage> {
   @override
   void initState() {
     domain = context.read<UserBloc>().state.subDomain ?? '';
-    bloc =
-        WriteReviewBloc(dataProduct: widget.params?.itemProductDetailResponse)
-          ..getData();
+    bloc = WriteReviewBloc(params: widget.params)..getData();
     super.initState();
   }
 
@@ -76,260 +71,258 @@ class _WriteReviewPageState extends State<WriteReviewPage> {
                   title: const Text('Viết đánh giá'),
                   backgroundColor: colorMain,
                 ),
-                body: Stack(
-                  children: [
-                    SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                body: state.isLoading
+                    ? const LoadingLogo()
+                    : Stack(
                         children: [
-                          spaceH16,
-                          SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.16,
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      spaceW12,
-                                      Expanded(
-                                        flex: 3,
-                                        child: ClipRRect(
-                                          borderRadius: const BorderRadius.only(
-                                            bottomLeft: Radius.circular(0),
-                                            bottomRight: Radius.circular(0),
-                                            topLeft: Radius.circular(8),
-                                            topRight: Radius.circular(8),
-                                          ),
-                                          child: Image.network(
-                                            '$domain${state.dataProduct?.image ?? ''}',
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.16,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      ),
-                                      spaceW12,
-                                      Expanded(
-                                        flex: 7,
-                                        child: Container(
-                                          padding: EdgeInsets.only(
-                                              top: 16.h, left: 4.w, right: 4.w),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    state.dataProduct
-                                                                ?.promotionPrice ==
-                                                            null
-                                                        ? '${state.dataProduct?.price?.priceStr}'
-                                                        : '${state.dataProduct?.promotionPrice?.pricePromotion?.priceStr}',
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyLarge
-                                                        ?.copyWith(
-                                                          color: colorMain,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                  ),
-                                                  state.dataProduct
-                                                              ?.promotionPrice !=
-                                                          null
-                                                      ? Text(
-                                                          '${state.dataProduct?.price?.priceStr}',
-                                                          style:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .bodyMedium
-                                                                  ?.copyWith(
-                                                                    color:
-                                                                        colorItemCover,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    decoration:
-                                                                        TextDecoration
-                                                                            .lineThrough,
-                                                                  ),
-                                                        )
-                                                      : space0,
-                                                ],
-                                              ),
-                                              spaceH6,
-                                              Text(
-                                                maxLines: 3,
-                                                overflow: TextOverflow.ellipsis,
-                                                state.dataProduct?.descriptions
-                                                        ?.name ??
-                                                    '',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .titleSmall
-                                                    ?.copyWith(
-                                                      color: colorSecondary04,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                    ),
-                                              ),
-                                              spaceH6,
-                                              Text(
-                                                state.dataProduct?.brand
-                                                        ?.name ??
-                                                    '',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .titleSmall
-                                                    ?.copyWith(
-                                                      color: colorBlackTileItem,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                    ),
-                                              ),
-                                              spaceH6,
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      spaceW16,
-                                    ],
-                                  ),
-                                ],
-                              )),
-                          spaceH12,
-                          const Divider(
-                            color: colorGray03,
-                          ),
-
-                          // make ratting
-                          Column(
-                            children: [
-                              spaceH12,
-                              Text(
-                                'Chạm vào ngôi sao để đánh giá',
-                                style: textTheme.bodyMedium?.copyWith(
-                                  color: context.appColorScheme
-                                      .colorExtendedTextBodyMedium,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              spaceH12,
-                              Container(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                child: RatingBar.builder(
-                                  initialRating: state.rating ?? 0.0,
-                                  minRating: 1,
-                                  direction: Axis.horizontal,
-                                  allowHalfRating: false,
-                                  itemCount: 5,
-                                  itemSize: 40,
-                                  itemPadding:
-                                      const EdgeInsets.symmetric(horizontal: 8),
-                                  itemBuilder: (context, _) => Icon(
-                                    _selectedIcon ?? Icons.star,
-                                    color: colorMainCover,
-                                  ),
-                                  onRatingUpdate: (rating) {
-                                    bloc.onChangeRating(rating: rating);
-                                    // _rating = rating;
-                                    // setState(() {});
-                                  },
-                                ),
-                              ),
-                              spaceH16,
-                              Container(
-                                color: colorGray02,
-                                padding: EdgeInsets.all(16.r),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Column(
+                          SingleChildScrollView(
+                            physics: const BouncingScrollPhysics(),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                spaceH16,
+                                SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.16,
+                                    child: Column(
                                       children: [
-                                        IconButton(
-                                            onPressed: () {},
-                                            icon: const Icon(
-                                              Icons.camera_alt_outlined,
-                                              size: 40,
-                                            )),
-                                        spaceH16,
-                                        Text(
-                                          'Thêm hình ảnh thực tế (không bắt buộc)',
-                                          style: textTheme.bodyMedium?.copyWith(
-                                            color: colorGray04,
-                                            fontWeight: FontWeight.w400,
-                                          ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            spaceW12,
+                                            Expanded(
+                                              flex: 4,
+                                              child: ClipRRect(
+                                                borderRadius:
+                                                    const BorderRadius.only(
+                                                  bottomLeft:
+                                                      Radius.circular(0),
+                                                  bottomRight:
+                                                      Radius.circular(0),
+                                                  topLeft: Radius.circular(8),
+                                                  topRight: Radius.circular(8),
+                                                ),
+                                                child: Image.network(
+                                                  '$domain${state.dataProduct?.image ?? ''}',
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      0.16,
+                                                  fit: BoxFit.contain,
+                                                ),
+                                              ),
+                                            ),
+                                            spaceW12,
+                                            Expanded(
+                                              flex: 7,
+                                              child: Container(
+                                                padding: EdgeInsets.only(
+                                                    top: 16.h,
+                                                    left: 4.w,
+                                                    right: 4.w),
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Text(
+                                                          state.dataProduct
+                                                                      ?.promotionPrice ==
+                                                                  null
+                                                              ? '${state.dataProduct?.price?.priceStr}'
+                                                              : '${state.dataProduct?.promotionPrice?.pricePromotion?.priceStr}',
+                                                          style: textTheme
+                                                              .bodyLarge
+                                                              ?.copyWith(
+                                                            color: colorMain,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                        state.dataProduct
+                                                                    ?.promotionPrice !=
+                                                                null
+                                                            ? Text(
+                                                                '${state.dataProduct?.price?.priceStr}',
+                                                                style: textTheme
+                                                                    .bodyMedium
+                                                                    ?.copyWith(
+                                                                  color:
+                                                                      colorItemCover,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  decoration:
+                                                                      TextDecoration
+                                                                          .lineThrough,
+                                                                ),
+                                                              )
+                                                            : space0,
+                                                      ],
+                                                    ),
+                                                    spaceH6,
+                                                    Text(
+                                                      maxLines: 3,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      state
+                                                              .dataProduct
+                                                              ?.descriptions
+                                                              ?.name ??
+                                                          '',
+                                                      style: textTheme
+                                                          .titleSmall
+                                                          ?.copyWith(
+                                                        color: colorBlack,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                    spaceH6,
+                                                    Text(
+                                                      state.dataProduct?.brand
+                                                              ?.name ??
+                                                          '',
+                                                      style: textTheme
+                                                          .titleSmall
+                                                          ?.copyWith(
+                                                        color: colorGray03,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                    spaceH6,
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            spaceW16,
+                                          ],
                                         ),
-                                        spaceH8,
                                       ],
-                                    )
+                                    )),
+                                spaceH8,
+
+                                const Divider(
+                                  color: colorGray03,
+                                  thickness: 2,
+                                ),
+                                spaceH12,
+
+                                Text(
+                                  getRatingText(state.rating),
+                                  style: textTheme.bodyMedium?.copyWith(
+                                    color: context.appColorScheme
+                                        .colorExtendedTextBodyMedium,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                // make ratting
+                                Column(
+                                  children: [
+                                    spaceH12,
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16),
+                                      child: RatingBar.builder(
+                                        initialRating: state.rating ?? 0.0,
+                                        minRating: 1,
+                                        direction: Axis.horizontal,
+                                        allowHalfRating: false,
+                                        itemCount: 5,
+                                        itemSize: 40,
+                                        itemPadding: const EdgeInsets.symmetric(
+                                            horizontal: 8),
+                                        itemBuilder: (context, _) => Icon(
+                                          _selectedIcon ?? Icons.star,
+                                          color: colorMainCover,
+                                        ),
+                                        onRatingUpdate: (rating) {
+                                          bloc.onChangeRating(rating: rating);
+                                          // _rating = rating;
+                                          // setState(() {});
+                                        },
+                                      ),
+                                    ),
+                                    spaceH16,
+                                    const Divider(
+                                      color: colorGray03,
+                                      thickness: 2,
+                                      height: 2,
+                                    ),
+                                    Container(
+                                      color: colorGray02,
+                                      padding: EdgeInsets.all(16.r),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Column(
+                                            children: [
+                                              IconButton(
+                                                  onPressed: () {},
+                                                  icon: const Icon(
+                                                    Icons.camera_alt_outlined,
+                                                    size: 40,
+                                                  )),
+                                              spaceH16,
+                                              Text(
+                                                'Thêm hình ảnh thực tế (không bắt buộc)',
+                                                style: textTheme.bodyMedium
+                                                    ?.copyWith(
+                                                  color: colorGray04,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                              spaceH8,
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    const Divider(
+                                      color: colorGray03,
+                                      thickness: 2,
+                                      height: 2,
+                                    ),
+                                    TextFormField(
+                                      minLines: 4, // Set this
+                                      maxLines: 100, // and this
+                                      key: _formKey,
+                                      enabled: true,
+                                      decoration: const InputDecoration(
+                                          contentPadding: EdgeInsets.all(16),
+                                          hintText: "Để lại đánh giá chi tiết"),
+                                      onChanged: (value) {
+                                        bloc.onChangeComment(comment: value);
+                                      },
+                                      onFieldSubmitted: (value) {
+                                        bloc.onChangeComment(comment: value);
+                                      },
+                                    ),
                                   ],
                                 ),
-                              ),
-                              const Divider(
-                                color: colorGray03,
-                              ),
-                              Form(
-                                key: _formKey,
-                                child: CustomTextInput(
-                                  onChanged: (value) {
-                                    bloc.onChangeComment(comment: value);
-                                  },
-                                  focusNode: _focusNode,
-                                  isNotLabelText: true,
-                                  isNotValidate: true,
-                                  isNotPrefixIcon: true,
-                                  isCheckPadding: true,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 32),
-                                  textEditController: _nameController,
-                                  hintTextString: 'Hãy để lại nhận xét của bạn',
-                                  inputType: InputType.Default,
-                                  enableBorder: false,
-                                  cornerRadius: 0,
-                                  maxLength: 24,
-                                  textColor: Colors.black,
-                                  errorMessage: 'Vui lòng nhập đúng định dạng',
-                                ),
-                              ),
-                              const Divider(
-                                color: colorGray03,
-                              ),
-                            ],
+                                spaceH72,
+                              ],
+                            ),
                           ),
-                          spaceH72,
                         ],
                       ),
-                    ),
-                  ],
-                ),
                 bottomNavigationBar: BottomBarButton(
                   button1: AppSolidButton.medium(
-                    color: colorPrimary,
+                    color: colorMain,
                     'Gửi đánh giá',
                     onPressed: bloc.state.isValid
-                        //  final isValidForm = _formkey.currentState?.validate();
-                        // if (isValidForm == true) {
-                        //   bloc.onSignup();
-                        // } else {
-                        //   setState(() {
-                        //     autovalidateMode = AutovalidateMode.onUserInteraction;
-                        //   });
-                        // }
-
                         ? () {
                             bloc.onSubmitReview();
                           }
@@ -342,5 +335,23 @@ class _WriteReviewPageState extends State<WriteReviewPage> {
         ),
       ),
     );
+  }
+
+// rating case
+  String getRatingText(double rating) {
+    switch (rating.toInt()) {
+      case 0:
+        return 'Chạm vào để đánh giá';
+      case 1:
+        return 'Rất tệ';
+      case 2:
+        return 'Tệ';
+      case 3:
+        return 'Bình thường';
+      case 4:
+        return 'Tốt';
+      default:
+        return 'Rất tốt';
+    }
   }
 }

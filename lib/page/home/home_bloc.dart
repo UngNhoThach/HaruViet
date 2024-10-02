@@ -1,12 +1,9 @@
 import 'package:haruviet/api/services/products/models/get_list_product_request.dart';
 import 'package:haruviet/base/base_bloc.dart';
-import 'package:haruviet/component/help_basic/help_basic.dart';
 import 'package:haruviet/data/enum.dart';
 import 'package:haruviet/data/local/user_preferences.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_list_product/data_product_list.dart';
 import 'package:haruviet/data/reponsitory/product/product_repository.dart';
-import 'package:haruviet/database_local/products_recommendation/id_product_recommendation_database.dart';
-import 'package:haruviet/database_local/products_recommendation/models/id_products_recommendation_model.dart';
 import 'package:haruviet/helper/const.dart';
 import 'package:haruviet/page/home/home_state.dart';
 import 'package:flutter/foundation.dart';
@@ -16,10 +13,9 @@ import 'package:intl/intl.dart';
 class HomeBloc extends BaseBloc<HomeState> {
   HomeBloc() : super(const HomeState());
   final ProductRepository _productRepository = ProductRepository();
-  final help = HelpBasic();
 
   removeZeroDouble({required double value}) {
-    return help.formatDouble(value);
+    return formatDouble(value);
   }
 
   onChangeFirstTimeLoadinPage(bool firtTimeLoadingPage) {
@@ -31,16 +27,14 @@ class HomeBloc extends BaseBloc<HomeState> {
       isLoading: true,
     ));
     try {
-      final dbHelper = IdProductRecommendationDatabase();
-
-      final List<IdProductRecommendationModel> idProductListLocal;
-
-      idProductListLocal = await dbHelper.getAllProducts();
+//      final dbHelper = IdProductRecommendationDatabase();
+      //   final List<IdProductRecommendationModel> idProductListLocal;
+      //    idProductListLocal = await dbHelper.getAllProducts();
 
       final userInfoLogin = await Preference.getUserInfo();
 
       emit(state.copyWith(
-        idProductListLocal: idProductListLocal,
+        //    idProductListLocal: idProductListLocal,
         userInfoLogin: userInfoLogin,
       ));
       await onFetch(page: startPage);

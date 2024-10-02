@@ -121,7 +121,7 @@ class AddNewAddressBloc extends BaseBloc<AddNewAddressState> {
                 createdAt: DateTime.now(),
                 customerId: '',
                 firstNameKana: '',
-                lastName: '',
+                lastName: state.name,
                 id: '',
                 lastNameKana: '',
                 postcode: '',
@@ -155,31 +155,38 @@ class AddNewAddressBloc extends BaseBloc<AddNewAddressState> {
   updateAddressDefault({required String id}) async {
     var updateAddressDefaultResponse = await _customersRepository.updateInfoRP(
         request: UpdateUserInfoRequest(
-            address1: state.address1,
-            address2: state.address2,
-            address3: state.address3,
-            addressId: id,
-            agencyId: state.userInfoLogin?.agencyId ?? '',
-            agencyName: state.userInfoLogin?.agencyName ?? '',
-            avatar: state.userInfoLogin?.avatar ?? '',
-            idAddress:
-                "{${state.address1ID},${state.address2ID},${state.address3ID}}",
-            birthday: state.userInfoLogin?.birthDay ?? '',
-            company: state.userInfoLogin?.company ?? '',
-            country: state.userInfoLogin?.country ?? '',
-            firstName: state.name,
-            firstNameKana: state.userInfoLogin?.firstNameKana ?? '',
-            lastName: state.userInfoLogin?.lastName ?? '',
-            lastNameKana: state.userInfoLogin?.lastNameKana ?? '',
-            name: state.userInfoLogin?.birthDay ?? '',
-            pathologicaldetail: state.userInfoLogin?.pathologicaldetail,
-            phone: state.phone ?? '',
-            postcode: state.userInfoLogin?.postCode ?? '',
-            provider: state.userInfoLogin?.provider ?? '',
-            providerId: state.userInfoLogin?.providerId ?? '',
-            sex: state.userInfoLogin?.sex ?? 0,
-            userId: state.userInfoLogin?.userId ?? '',
-            userName: state.userInfoLogin?.userName ?? ''),
+          address1: state.address1,
+          address2: state.address2,
+          address3: state.address3,
+          addressId: id,
+          agencyId: state.userInfoLogin?.agencyId ?? '',
+          agencyName: state.userInfoLogin?.agencyName ?? '',
+          avatar: state.userInfoLogin?.avatar ?? '',
+          idAddress:
+              "{${state.address1ID},${state.address2ID},${state.address3ID}}",
+          birthday: state.userInfoLogin?.birthDay ?? '',
+          company: state.userInfoLogin?.company ?? '',
+          country: state.userInfoLogin?.country ?? '',
+          firstName: state.name,
+          firstNameKana: state.userInfoLogin?.firstNameKana ?? '',
+          lastName: (state.userInfoLogin?.lastName == '' ||
+                  state.userInfoLogin?.lastName == null)
+              ? state.name
+              : state.userInfoLogin?.lastName,
+          lastNameKana: state.userInfoLogin?.lastNameKana ?? '',
+          name: state.userInfoLogin?.birthDay ?? '',
+          pathologicaldetail: state.userInfoLogin?.pathologicaldetail,
+          phone: state.phone ?? '',
+          postcode: state.userInfoLogin?.postCode ?? '',
+          provider: state.userInfoLogin?.provider ?? '',
+          providerId: state.userInfoLogin?.providerId ?? '',
+          sex: state.userInfoLogin?.sex ?? 0,
+          userId: state.userInfoLogin?.userId ?? '',
+          userName: (state.userInfoLogin?.userName == '' ||
+                  state.userInfoLogin?.userName == null)
+              ? state.name
+              : state.userInfoLogin?.userName,
+        ),
         authorization: state.accessToken ?? '');
 
     Preference.updateUserInfo({

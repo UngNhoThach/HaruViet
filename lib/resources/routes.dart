@@ -30,8 +30,12 @@ class Routes {
 
   //CheckOutPage
   static const checkOutPage = "/checkOutPage";
+
   static const billInfoPage = "/billInfoPage";
+
   static const paymentMethodPage = "/paymentMethodPage";
+
+  static const orderDetailPage = "/orderDetailPage";
 
   // ADDRESS
   static const addnewaddressPage = "/addnewaddressPage";
@@ -62,4 +66,5 @@ class Routes {
   static const ordersPage = "ordersPage";
   static const historyOrderPage = "historyOrderPage";
   static const historyOrderTab = "historyOrderTab";
+  static const shipmentPage = "shipmentPage";
 }

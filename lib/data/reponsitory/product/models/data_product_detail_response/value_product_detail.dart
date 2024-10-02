@@ -13,6 +13,7 @@ class ValueOptionProduct {
   @JsonKey(name: 'title')
   String? title;
   String? descriptions;
+  String? note;
 
   ValueOptionProduct({
     this.id,
@@ -21,6 +22,7 @@ class ValueOptionProduct {
     this.descriptions,
     this.title,
     this.isSelected = false,
+    this.note,
   });
 
   factory ValueOptionProduct.fromJson(Map<String, dynamic> json) =>
@@ -35,8 +37,10 @@ class ValueOptionProduct {
     String? priceType,
     String? title,
     String? descriptions,
+    String? note,
   }) {
     return ValueOptionProduct(
+      note: note ?? this.note,
       descriptions: descriptions ?? this.descriptions,
       id: id ?? this.id,
       isSelected: isSelected ?? this.isSelected,

@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:haruviet/api/services/category/models/category_services.dart';
+import 'package:haruviet/api/services/products/models/get_list_product_request.dart';
 import 'package:haruviet/data/reponsitory/category/models/category_detail_response/category_detail_response.dart';
 import 'package:haruviet/data/reponsitory/respone_general.dart';
 
@@ -21,9 +22,11 @@ class CategoryRepository {
     return CategoryDetailResponse();
   }
 
-  Future<GeneralResponse> getCategoryRP() async {
+  Future<GeneralResponse> getCategoryRP({
+    required GetListProductRequest request,
+  }) async {
     try {
-      final response = await _categoryService.getCategorySV();
+      final response = await _categoryService.getCategorySV(request: request);
       final result = GeneralResponse.fromJson(response.data);
       return result;
     } catch (error, statckTrace) {

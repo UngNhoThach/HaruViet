@@ -6,5 +6,5 @@ class CheckoutParams {
   });
   final String? price;
   final int discountOrder;
-  final int weight;
+  final double weight;
 }

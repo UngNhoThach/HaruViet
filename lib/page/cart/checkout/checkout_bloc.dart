@@ -47,8 +47,6 @@ class CheckOutBloc extends BaseBloc<CheckOutState> {
       orElse: () => DataListAddress(),
     );
 
-    //
-
     // fee shipping method
 
     List<String> shippingAddress = List.from(state.shippingAddress);
@@ -107,7 +105,7 @@ class CheckOutBloc extends BaseBloc<CheckOutState> {
       ],
       transport: "road", //  or road or fly => fee
       value: totalPrice,
-      weight: params.weight,
+      weight: params.weight.toInt(),
     ));
 
     if (shipmentResponse.success == true) {

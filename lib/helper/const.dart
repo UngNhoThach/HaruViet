@@ -66,3 +66,19 @@ List<String> splitStringWithComma(String input) {
     return ['', ''];
   }
 }
+
+// convert to kilogram
+double convertToKilogram({required String unit, required double value}) {
+  switch (unit.toLowerCase()) {
+    case 'oz': // ounce
+      return value * 0.0283495;
+    case 'g': // gram
+      return value * 0.001;
+    case 'lb': // pound
+      return value * 0.453592;
+    case 'kg': // kilogram
+      return value;
+    default:
+      return 0.0;
+  }
+}

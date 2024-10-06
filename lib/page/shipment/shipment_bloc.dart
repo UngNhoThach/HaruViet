@@ -57,7 +57,7 @@ class ShipmentBloc extends BaseBloc<ShipmentState> {
         tags: [1],
         transport: deliverOption[i]['value'], //  or road or fly => fee
         value: params.totalPrice,
-        weight: params.weight,
+        weight: params.weight.toInt(),
       ));
       return shipmentResponse;
     }

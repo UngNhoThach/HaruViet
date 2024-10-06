@@ -104,6 +104,16 @@ class _CheckOutPageState extends State<CheckOutPage> {
                           physics: const BouncingScrollPhysics(),
                           child: Column(
                             children: <Widget>[
+                              standardCheckOutMethod(
+                                  indexShippingMethod:
+                                      state.indexShippingMethod,
+                                  valueShippingMethod:
+                                      state.valueShippingMethod!),
+                              const Divider(
+                                color: colorGray02,
+                                height: 1,
+                                thickness: 10,
+                              ),
                               _selectedAddressWidget(
                                   idAddressShipping: state.idAddressShipping!,
                                   addressShipping: state.addressShipping!),
@@ -115,16 +125,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                               standardDelivery(
                                 state: state,
                               ),
-                              const Divider(
-                                color: colorGray02,
-                                height: 1,
-                                thickness: 10,
-                              ),
-                              standardCheckOutMethod(
-                                  indexShippingMethod:
-                                      state.indexShippingMethod,
-                                  valueShippingMethod:
-                                      state.valueShippingMethod!),
+
                               const Divider(
                                 color: colorGray02,
                                 height: 1,

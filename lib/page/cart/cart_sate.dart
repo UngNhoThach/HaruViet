@@ -21,7 +21,7 @@ class CartState extends BaseState {
   final bool isFreeShipping;
   final int discountOrder;
   final int discountDetail;
-  final int weight;
+  final double weight;
   final bool isSubmitSuccess;
   final List<CartModelProduct> productsList;
   final UserInfoLogin? userInfoLogin;
@@ -45,7 +45,7 @@ class CartState extends BaseState {
     this.productsList = const [],
     this.isSubmitSuccess = false,
     this.totalItem,
-    this.weight = 0,
+    this.weight = 0.0,
     this.checkValue = false,
     this.isValueDefault = false,
     this.finalPrice,

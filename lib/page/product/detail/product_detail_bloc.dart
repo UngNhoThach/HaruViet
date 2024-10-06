@@ -95,7 +95,7 @@ class ProductDetailBloc extends BaseBloc<ProductDetailState> {
   }
 
   onReset() {
-    onFetch(page: startPage);
+    // onFetch(page: startPage);
   }
 
   // product list

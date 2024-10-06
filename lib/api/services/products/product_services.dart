@@ -37,7 +37,7 @@ class ProductService extends BaseService {
 
   Future<Response> searchDefaultSV({required String keyword}) async {
     final response = await get(
-      ProductApi.searchDefault.replaceAll(RegExp('{keyword}'), keyword!),
+      ProductApi.searchDefault.replaceAll(RegExp('{keyword}'), keyword),
     );
     return response;
   }

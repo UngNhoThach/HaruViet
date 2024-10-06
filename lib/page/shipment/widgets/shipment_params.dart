@@ -15,7 +15,7 @@ class ShipmentParams {
   final void Function(ShipmentResponse?, String)? shipmenFunc;
   final List<String> shippingAddress;
   final int totalPrice;
-  final int weight;
+  final double weight;
   final int selectedShipment;
   final String titleSelected;
   final void Function(int?)? selectShipmentFunc;

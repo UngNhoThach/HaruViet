@@ -106,7 +106,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
     _pagingController.addPageRequestListener((pageKey) {
       if (pageKey != startPage) {
-        bloc.onFetch(page: pageKey);
+        //   bloc.onFetch(page: pageKey);
       }
     });
     super.initState();

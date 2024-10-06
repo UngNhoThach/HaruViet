@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:haruviet/api/services/cart_orders/models/check_order_price_request/attribute_check_price.dart';
 import 'package:haruviet/api/services/cart_orders/models/check_order_price_request/cart_check_price.dart';
@@ -15,6 +14,7 @@ import 'package:haruviet/data/reponsitory/product/product_repository.dart';
 import 'package:haruviet/database_local/product/cart_database_v2.dart';
 import 'package:haruviet/database_local/product/cart_provider_v2.dart';
 import 'package:haruviet/database_local/product/models/cart_model_v2.dart';
+import 'package:haruviet/helper/const.dart';
 import 'package:haruviet/page/cart/cart_sate.dart';
 import 'package:haruviet/page/cart/models/cart_item_request.dart';
 import 'package:collection/collection.dart';
@@ -40,6 +40,11 @@ class CartBloc extends BaseBloc<CartState> {
     final userInfoLogin = await Preference.getUserInfo();
 
     productsList = (await CartDatabaseV2().readAllItems());
+
+    // count tax and weight
+    double weight = 0.0;
+    var tax = 0;
+
     // List<CartCheckPrice> cartCheckPricex = [
     //   CartCheckPrice(
     //       productId: "172624274120",
@@ -94,7 +99,15 @@ class CartBloc extends BaseBloc<CartState> {
             listAttributeCheckPrice.add(attributeCheckPrice);
           }
         } else {}
-        print(listAttributeCheckPrice);
+
+        // convertToKilogram
+        weight = coutWeightToDouble(
+            productsList[i].weight, productsList[i].totalQuantity);
+        weight = convertToKilogram(
+            unit: productsList[i].weightClass ?? '',
+            value: coutWeightToDouble(
+                productsList[i].weight, productsList[i].totalQuantity));
+        // tax = productsList[i].taxId;
         // after handle options and values, and it into cartCheckPrice
         cartCheckPrice.add(CartCheckPrice(
             productId: productsList[i].id,
@@ -162,7 +175,7 @@ class CartBloc extends BaseBloc<CartState> {
 
       emit(
         state.copyWith(
-            weight: totalItem,
+            weight: weight,
             listGiftProduct: listGiftProduct,
             discountOrder: discountOrder + discountDetail,
             productsList: productsList,
@@ -179,6 +192,13 @@ class CartBloc extends BaseBloc<CartState> {
         isLoading: false,
       ),
     );
+  }
+
+  // count weight products
+  double coutWeightToDouble(String weight, int quantity) {
+    final temp = double.parse(weight);
+    final value = quantity * temp;
+    return value;
   }
 
   Future<DataProductDetailResponse> onGetGift(

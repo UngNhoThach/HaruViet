@@ -195,17 +195,23 @@ class _CartPageState extends State<CartPage> {
 
             // state
             return Slidable(
-                key: ValueKey(state.totalItem),
+                key: ValueKey(item),
+                // key: ObjectKey(state.totalItem),
                 endActionPane: ActionPane(
-                  key: ValueKey(item),
                   motion: const ScrollMotion(),
-                  dismissible: DismissiblePane(onDismissed: () {
-                    bloc.onDeletaItems(index: index);
-                    const Duration(milliseconds: 200);
-                  }),
+                  dismissible: DismissiblePane(
+                    motion: spaceH12,
+                    key: ObjectKey(item),
+                    onDismissed: () {
+                      bloc.onDeletaItems(index: index);
+
+                      // setState(() {});
+                    },
+                    // closeOnCancel: true,
+                  ),
                   children: [
                     SlidableAction(
-                      key: ValueKey(item),
+                      //   key: ObjectKey(item),
                       onPressed: (context) {
                         bloc.onDeletaItems(index: index);
                       },
@@ -301,7 +307,6 @@ class _CartPageState extends State<CartPage> {
                                             defaultCurrencyVNDFormatter
                                                 .formatString((item.price.price
                                                     .toString())),
-                                            // "\$${defaultCurrencyFormatter.format((int.parse(value.priceProduct)).toStringAsFixed(0))}",
                                             style: textTheme.bodyLarge
                                                 ?.copyWith(
                                                     color: colorSuccess03,

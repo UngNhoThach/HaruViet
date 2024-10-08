@@ -1,7 +1,5 @@
-import 'package:flutter/widgets.dart';
 import 'package:haruviet/component/error/error_internet.dart';
 import 'package:haruviet/component/error/not_found_item.dart';
-import 'package:haruviet/component/input/custom_count_textfield.dart';
 import 'package:haruviet/component/loading/loading.dart';
 import 'package:haruviet/component/loading_scaffold.dart';
 import 'package:haruviet/data/data_local/user_bloc.dart';
@@ -16,6 +14,7 @@ import 'package:haruviet/page/cart/cart_bloc.dart';
 import 'package:haruviet/page/cart/cart_sate.dart';
 import 'package:haruviet/page/cart/checkout/widgets/checkout_params.dart';
 import 'package:haruviet/page/cart/models/cart_page_params.dart';
+import 'package:haruviet/page/product/detail/widgets/widgets/count_qualition.dart';
 import 'package:haruviet/resources/routes.dart';
 import 'package:haruviet/theme/typography.dart';
 import 'package:haruviet/utils/commons.dart';
@@ -36,6 +35,7 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
   // variables and functions
   late CartBloc bloc;
+
   late String domain;
   final TextStyle styleSubTitle = const TextStyle(
     color: colorGray04,
@@ -195,23 +195,23 @@ class _CartPageState extends State<CartPage> {
 
             // state
             return Slidable(
-                key: ValueKey(item),
+                key: UniqueKey(),
+
                 // key: ObjectKey(state.totalItem),
                 endActionPane: ActionPane(
+                  extentRatio: 0.4,
                   motion: const ScrollMotion(),
                   dismissible: DismissiblePane(
-                    motion: spaceH12,
-                    key: ObjectKey(item),
+                    resizeDuration: const Duration(microseconds: 500),
+                    dismissThreshold: 0.6,
                     onDismissed: () {
                       bloc.onDeletaItems(index: index);
-
-                      // setState(() {});
                     },
                     // closeOnCancel: true,
                   ),
                   children: [
                     SlidableAction(
-                      //   key: ObjectKey(item),
+                      spacing: 2,
                       onPressed: (context) {
                         bloc.onDeletaItems(index: index);
                       },
@@ -219,13 +219,6 @@ class _CartPageState extends State<CartPage> {
                       foregroundColor: colorWhite,
                       icon: Icons.delete,
                       label: 'Xoá',
-                    ),
-                    SlidableAction(
-                      onPressed: (context) {},
-                      backgroundColor: colorPrimary,
-                      foregroundColor: colorWhite,
-                      icon: Icons.share,
-                      label: 'Chia sẻ',
                     ),
                   ],
                 ),
@@ -312,34 +305,17 @@ class _CartPageState extends State<CartPage> {
                                                     color: colorSuccess03,
                                                     fontWeight:
                                                         FontWeight.w400)),
-                                        Consumer<CartProviderV2>(
-                                          builder: (context, provider, child) {
-                                            return SizedBox(
-                                              width: 110.w,
-                                              child: CustomCountTextFormField(
-                                                key: ObjectKey(
-                                                  state.checkValue,
-                                                ),
-                                                onChangedLeft: () {
-                                                  bloc.onChangeDecrementCounter(
-                                                      index);
-                                                },
-                                                onChangedRight: () {
-                                                  bloc.onChangeIncrementCounter(
-                                                      index);
-                                                },
-                                                initialValue: item.totalQuantity
-                                                    .toString(),
-                                                onChanged: (value) {
-                                                  bloc.onChangeValueDirec(
+                                        SizedBox(
+                                            width: 120.w,
+                                            child: CountQuality(
+                                              initialCounter:
+                                                  item.totalQuantity,
+                                              onCounterChanged: (newCounter) {
+                                                bloc.onChangeValueDirec(
                                                     index: index,
-                                                    value: int.parse(value),
-                                                  );
-                                                },
-                                              ),
-                                            );
-                                          },
-                                        ),
+                                                    value: newCounter);
+                                              },
+                                            )),
                                       ],
                                     ),
                                     if (itemCheck!.promotions != null &&
@@ -385,62 +361,57 @@ class _CartPageState extends State<CartPage> {
           // }
         },
         child: BlocBuilder<CartBloc, CartState>(builder: (context, state) {
-          return GestureDetector(
-            onTap: () {
-              FocusScope.of(context).unfocus();
-            },
-            child: Scaffold(
-                appBar: widget.params.isAppBar
-                    ? AppBar(
-                        centerTitle: true,
-                        title: Text(
-                          'Giỏ hàng',
-                          style: textTheme.titleMedium?.copyWith(
-                              color: colorWhite, fontWeight: FontWeight.bold),
-                        ),
-                        backgroundColor: colorMain,
-                      )
-                    : null,
-                resizeToAvoidBottomInset: false,
-                backgroundColor: Colors.grey.shade100,
-                body: ((state.totalItem == 0 || state.totalItem == null) &&
-                        state.isLoading)
-                    ? const LoadingLogo()
-                    : LoadingScaffold(
-                        isLoading: state.isLoading,
-                        child: Builder(builder: (context) {
-                          return !(state.totalItem == 0 ||
-                                  state.totalItem == null)
-                              ? Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 16.w, vertical: 12.h),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          createSubTitle(state),
-                                        ],
-                                      ),
+          return Scaffold(
+              appBar: widget.params.isAppBar
+                  ? AppBar(
+                      centerTitle: true,
+                      title: Text(
+                        'Giỏ hàng',
+                        style: textTheme.titleMedium?.copyWith(
+                            color: colorWhite, fontWeight: FontWeight.bold),
+                      ),
+                      backgroundColor: colorMain,
+                    )
+                  : null,
+              resizeToAvoidBottomInset: false,
+              backgroundColor: Colors.grey.shade100,
+              body: ((state.totalItem == 0 || state.totalItem == null) &&
+                      state.isLoading)
+                  ? const LoadingLogo()
+                  : LoadingScaffold(
+                      isLoading: state.isLoading,
+                      child: Builder(builder: (context) {
+                        return !(state.totalItem == 0 ||
+                                state.totalItem == null)
+                            ? Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 16.w, vertical: 12.h),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        createSubTitle(state),
+                                      ],
                                     ),
-                                    Expanded(
-                                      child: SingleChildScrollView(
-                                        physics: const BouncingScrollPhysics(),
-                                        child: createCartList(state, cart),
-                                      ),
+                                  ),
+                                  Expanded(
+                                    child: SingleChildScrollView(
+                                      physics: const BouncingScrollPhysics(),
+                                      child: createCartList(state, cart),
                                     ),
-                                    footer(context, state)
-                                  ],
-                                )
-                              : _didFoundItem(context);
-                        }),
-                      )),
-          );
+                                  ),
+                                  footer(context, state)
+                                ],
+                              )
+                            : _didFoundItem(context);
+                      }),
+                    ));
         }),
       ),
     );

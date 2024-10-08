@@ -8,17 +8,20 @@ part 'item_base_response.g.dart';
 class ItemBaseResponse {
   @JsonKey(name: 'id')
   int? id;
-  @JsonKey(name: 'Type')
-  int? type;
+  @JsonKey(name: 'morong')
+  String? morong;
   @JsonKey(name: 'code')
   String? code;
   @JsonKey(name: 'name')
   String? name;
+  @JsonKey(name: 'keyword')
+  String? keyword;
 
   ItemBaseResponse({
     this.id,
-    this.type,
+    this.morong,
     this.code,
+    this.keyword,
     this.name,
   });
 

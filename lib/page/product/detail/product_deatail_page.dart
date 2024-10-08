@@ -1651,6 +1651,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       state: state,
       bloc: bloc,
       widgetCountQuality: CountQuality(
+        widget: Text(
+          'Số lượng:',
+          style: textTheme.titleMedium,
+        ),
         initialCounter: state.currentCounter,
         onCounterChanged: (newCounter) {
           bloc.onHandleCounterChanged(newCounter);

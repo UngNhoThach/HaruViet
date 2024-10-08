@@ -189,51 +189,49 @@ class _HistoryOrderTabState extends State<HistoryOrderTab> {
 
                     // item here
                     Container(
-                      margin: const EdgeInsets.symmetric(vertical: 8.0),
-                      padding: const EdgeInsets.all(12.0),
-                      decoration: BoxDecoration(
-                        color: colorMainCover.withOpacity(0.04),
-                        borderRadius:
-                            BorderRadius.circular(8.0), // Tạo bo góc cho item
-                      ),
-                      child: Row(
-                        children: [
-                          // Tên sản phẩm
-                          Column(
-                            children: [
-                              Text(
-                                data.details?.itemProduct?.name ?? '',
-                                style: textTheme.bodyMedium?.copyWith(
-                                  color: context.appColor.colorBlack,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                        margin: const EdgeInsets.symmetric(vertical: 8.0),
+                        padding: const EdgeInsets.all(12.0),
+                        decoration: BoxDecoration(
+                          color: colorMainCover.withOpacity(0.04),
+                          borderRadius:
+                              BorderRadius.circular(8.0), // Tạo bo góc cho item
+                        ),
+                        child: Expanded(
+                            child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _rowItem(
+                              value: data.details?.itemProduct?.name ?? '',
+                            ),
+                            spaceH4,
+                            _rowItem(
+                              value: data.details?.itemProduct?.price ?? '',
+                              style: textTheme.bodyMedium?.copyWith(
+                                color: colorMain,
+                                fontWeight: FontWeight.bold,
                               ),
-                              const SizedBox(height: 8),
-
-                              // Giá sản phẩm
-                              Text(
-                                toPrice(
-                                    value:
-                                        data.details?.itemProduct?.price ?? ''),
-                                style: textTheme.bodyMedium?.copyWith(
-                                  color: colorMain,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                            ),
+                            spaceH4,
+                            _rowItem(
+                              value: data.shippingMethod ?? '',
+                              widget: Assets.icons.shipmentMethod.image(
+                                  height: 18, width: 18, color: colorSuccess03),
+                              style: textTheme.bodyMedium?.copyWith(
+                                color: colorSuccess03,
                               ),
-                            ],
-                          ),
-                          spaceW20,
-                          _subExpand(
-                            time: converDateToString(
-                                data.details?.createdAt ?? ''),
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            name: data.shippingMethod ?? '',
-                            widget: Assets.icons.shipmentMethod.image(
-                                height: 18, width: 18, color: colorSuccess03),
-                          ),
-                        ],
-                      ),
-                    ),
+                            ),
+                            spaceH4,
+                            _rowItem(
+                              style: textTheme.bodyMedium?.copyWith(
+                                color: colorSuccess03,
+                              ),
+                              value: converDateToString(
+                                  data.details?.createdAt ?? ''),
+                              widget: Assets.icons.time.image(
+                                  height: 18, width: 18, color: colorSuccess03),
+                            ),
+                          ],
+                        ))),
 
                     const Divider(
                       height: 1,
@@ -294,6 +292,31 @@ class _HistoryOrderTabState extends State<HistoryOrderTab> {
     );
   }
 
+  Widget _rowItem({
+    required String value,
+    Widget? widget,
+    TextStyle? style,
+  }) {
+    return Row(
+      children: [
+        widget ?? space0,
+        widget != null ? spaceW6 : space0,
+        Flexible(
+          child: Text(
+            value,
+            style: style ??
+                textTheme.bodyMedium?.copyWith(
+                  color: context.appColor.colorBlack,
+                  fontWeight: FontWeight.bold,
+                ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _subExpand(
       {required String name,
       Widget? widget,
@@ -307,9 +330,13 @@ class _HistoryOrderTabState extends State<HistoryOrderTab> {
             children: [
               widget ?? space0,
               spaceW4,
-              Text(
-                name,
-                style: textTheme.bodyMedium?.copyWith(color: colorSuccess03),
+              Flexible(
+                child: Text(
+                  name,
+                  style: textTheme.bodyMedium?.copyWith(color: colorSuccess03),
+                  maxLines: 2,
+                  overflow: TextOverflow.clip,
+                ),
               ),
             ],
           ),
@@ -323,14 +350,18 @@ class _HistoryOrderTabState extends State<HistoryOrderTab> {
                     children: [
                       const Icon(
                         Icons.av_timer_sharp,
-                        size: 24,
+                        size: 20,
                         color: colorSuccess03,
                       ),
                       spaceW2,
-                      Text(
-                        time,
-                        style: textTheme.bodyMedium
-                            ?.copyWith(color: colorSuccess03),
+                      Flexible(
+                        child: Text(
+                          time,
+                          style: textTheme.bodyMedium
+                              ?.copyWith(color: colorSuccess03),
+                          maxLines: 2,
+                          overflow: TextOverflow.clip,
+                        ),
                       ),
                     ],
                   ),

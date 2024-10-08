@@ -40,6 +40,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   final PagingController<int, DataProduct> _pagingController =
       PagingController(firstPageKey: startPage, invisibleItemsThreshold: 3);
+
   FocusNode focusNode = FocusNode();
   final ItemProductWidget itemProductWidgets = ItemProductWidget();
 
@@ -48,12 +49,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     super.initState();
 
     bloc = HomeBloc()..getData();
+
+    // data main
     _pagingController.addPageRequestListener((pageKey) {
       if (pageKey != startPage) {
         bloc.onFetch(page: pageKey);
       }
     });
+    // data sales
+
     domain = context.read<UserBloc>().state.subDomain ?? '';
+    // _scrollController = ScrollController();
+    // _scrollController.addListener(_scrollListener);
   }
 
   @override
@@ -97,54 +104,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           child: BlocBuilder<HomeBloc, HomeState>(
             builder: (context, state) {
               return RefreshIndicator(
-                onRefresh: () async {
-                  _pagingController.refresh();
-                  bloc.onFetch(page: startPage);
-                },
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8.w),
-                    child: Column(
-                      children: [
-                        _recommendedProductListView(
-                            context, state, _counterModel),
-                        spaceH16,
-                        _homeIcon(context),
-                        spaceH20,
-                        Column(
-                          children: [
-                            _topCategoriesHeader(context,
-                                title: "Siêu ưu đãi", isTimer: true),
-                            spaceH4,
-                            _flashDealsProductListView(context),
-                            // sản phẩm mới xem
-                            state.productListLocal.isNotEmpty
-                                ? Column(
-                                    children: [
-                                      _topCategoriesHeader(context,
-                                          title: "Sản phẩm mới xem",
-                                          isTimer: false),
-                                      spaceH4,
-                                    ],
-                                  )
-                                : space0,
-                            _topCategoriesHeader(context,
-                                title: "Sản phẩm mới", isTimer: false),
-                            Row(
-                              children: [
-                                Expanded(
-                                    child: _flashDealsProductGridView(context)),
-                              ],
-                            ),
-                          ],
-                        ),
-                        spaceH64,
-                      ],
-                    ),
-                  ),
-                ),
-              );
+                  onRefresh: () async {
+                    _pagingController.refresh();
+                    bloc.onFetch(page: startPage);
+                  },
+                  child: _body(context, state: state));
             },
           ),
         ),
@@ -164,18 +128,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         data: data, index: index, domain: domain);
   }
 
-  Widget _flashDealsProductListView(
-    BuildContext context,
-  ) {
-    childAspectRatio = MediaQuery.of(context).size.width /
-        (MediaQuery.of(context).size.height / 1.35.h);
+  Widget _flashDealsProduct() {
     return SizedBox(
-      height: 210.h,
+      height: 230,
       child: PagedListView.separated(
         scrollDirection: Axis.horizontal,
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         pagingController: _pagingController,
-        shrinkWrap: true,
         physics: const ClampingScrollPhysics(),
         builderDelegate: PagedChildBuilderDelegate<DataProduct>(
           noItemsFoundIndicatorBuilder: _empty,
@@ -189,32 +148,94 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _flashDealsProductGridView(BuildContext context) {
-    return Center(
-      child: CustomScrollView(
-        shrinkWrap: true,
-        physics: const BouncingScrollPhysics(),
-        slivers: [
-          PagedSliverGrid<int, DataProduct>(
-            // showNewPageProgressIndicatorAsGridChild: false,
-            // showNewPageErrorIndicatorAsGridChild: false,
-            // showNoMoreItemsIndicatorAsGridChild: false,
-            shrinkWrapFirstPageIndicators: true,
-            pagingController: _pagingController,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              //    mainAxisExtent: BorderSide.strokeAlignCenter,
-              crossAxisCount: 2, // Số cột là 2
-              mainAxisSpacing: 0,
-              crossAxisSpacing: 0,
-              childAspectRatio: childAspectRatio,
+  Widget _body(BuildContext context, {required HomeState state}) {
+    childAspectRatio = MediaQuery.of(context).size.width /
+        (MediaQuery.of(context).size.height / 1.35.h);
+
+    return CustomScrollView(
+      shrinkWrap: true,
+      physics: const BouncingScrollPhysics(),
+      slivers: [
+        _buildSliverAppBar(state),
+        _buildHeader(),
+        _buildPagedSliverGrid(),
+      ],
+    );
+  }
+
+  Widget _buildSliverAppBar(HomeState state) {
+    return SliverAppBar(
+      backgroundColor: colorBlueGray01,
+      expandedHeight: 196.h,
+      flexibleSpace: FlexibleSpaceBar(
+        background: Stack(
+          fit: StackFit.expand,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: _recommendedProductListView(context, state, _counterModel),
             ),
-            builderDelegate: PagedChildBuilderDelegate<DataProduct>(
-              noItemsFoundIndicatorBuilder: _empty,
-              itemBuilder: (context, item, index) => _itemGridView(context,
-                  index: index, data: item, domain: domain),
+            Align(
+              alignment: Alignment.bottomLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 16, bottom: 0),
+                child: TweenAnimationBuilder<double>(
+                  tween: Tween<double>(begin: 1.0, end: 0.0),
+                  duration: const Duration(milliseconds: 500),
+                  builder: (context, value, child) {
+                    return Transform.scale(scale: 1 + value);
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return SliverList(
+      delegate: SliverChildListDelegate(
+        [
+          const SizedBox(height: 16),
+          _homeIcon(context),
+          const SizedBox(height: 16),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                _topCategoriesHeader(context,
+                    title: "Siêu ưu đãi", isTimer: true),
+                const SizedBox(height: 16),
+                _flashDealsProduct(),
+              ],
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildPagedSliverGrid() {
+    return PagedSliverGrid<int, DataProduct>(
+      showNewPageProgressIndicatorAsGridChild: false,
+      showNewPageErrorIndicatorAsGridChild: false,
+      showNoMoreItemsIndicatorAsGridChild: false,
+      pagingController: _pagingController,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        mainAxisSpacing: 0,
+        crossAxisSpacing: 0,
+        childAspectRatio: childAspectRatio,
+      ),
+      builderDelegate: PagedChildBuilderDelegate<DataProduct>(
+        noItemsFoundIndicatorBuilder: _empty,
+        itemBuilder: (context, item, index) => AnimatedProductGridItem(
+          index: index,
+          child:
+              _itemGridView(context, index: index, data: item, domain: domain),
+        ),
       ),
     );
   }
@@ -222,74 +243,71 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
 Widget _recommendedProductListView(
     BuildContext context, HomeState state, _counterModel) {
-  return SizedBox(
-    height: 180.h,
-    child: ListView.builder(
-        padding: EdgeInsets.symmetric(vertical: 10.h),
-        shrinkWrap: true,
-        scrollDirection: Axis.horizontal,
-        itemCount: AppData.recommendedProducts.length,
-        itemBuilder: (_, index) {
-          return Padding(
-            padding: EdgeInsets.only(right: 16.w),
-            child: Container(
-              width: 300.w,
-              decoration: BoxDecoration(
-                color: AppData.recommendedProducts[index].cardBackgroundColor,
-                borderRadius: BorderRadius.circular(15.r),
-              ),
-              child: Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(left: 16.w),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Giảm giá 30%  \nCOVID 19',
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium
-                              ?.copyWith(color: Colors.white),
-                        ),
-                        spaceH8,
-                        ElevatedButton(
-                          onPressed: () {
-                            _counterModel.increment();
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppData.recommendedProducts[index]
-                                .buttonBackgroundColor,
-                            elevation: 0,
-                            padding: EdgeInsets.symmetric(horizontal: 16.w),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16.r),
-                            ),
-                          ),
-                          child: Text(
-                            "Xem ngay",
-                            style: TextStyle(
-                              color: AppData
-                                  .recommendedProducts[index].buttonTextColor!,
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  const Spacer(),
-                  Image.asset(
-                    'assets/images/shopping.png',
-                    height: 125.h,
-                    fit: BoxFit.cover,
-                  )
-                ],
-              ),
+  return ListView.builder(
+      padding: EdgeInsets.symmetric(vertical: 10.h),
+      shrinkWrap: true,
+      scrollDirection: Axis.horizontal,
+      itemCount: AppData.recommendedProducts.length,
+      itemBuilder: (_, index) {
+        return Padding(
+          padding: EdgeInsets.only(right: 16.w),
+          child: Container(
+            width: 300.w,
+            decoration: BoxDecoration(
+              color: AppData.recommendedProducts[index].cardBackgroundColor,
+              borderRadius: BorderRadius.circular(15.r),
             ),
-          );
-        }),
-  );
+            child: Row(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: 16.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Giảm giá 30%  \nCOVID 19',
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium
+                            ?.copyWith(color: Colors.white),
+                      ),
+                      spaceH8,
+                      ElevatedButton(
+                        onPressed: () {
+                          _counterModel.increment();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppData
+                              .recommendedProducts[index].buttonBackgroundColor,
+                          elevation: 0,
+                          padding: EdgeInsets.symmetric(horizontal: 16.w),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16.r),
+                          ),
+                        ),
+                        child: Text(
+                          "Xem ngay",
+                          style: TextStyle(
+                            color: AppData
+                                .recommendedProducts[index].buttonTextColor!,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                const Spacer(),
+                Image.asset(
+                  'assets/images/shopping.png',
+                  height: 125.h,
+                  fit: BoxFit.cover,
+                )
+              ],
+            ),
+          ),
+        );
+      });
 }
 
 Widget _empty(BuildContext context) {
@@ -414,4 +432,34 @@ Widget _homeIcon(BuildContext context) {
       ),
     ],
   );
+}
+
+class AnimatedProductGridItem extends StatelessWidget {
+  final Widget child;
+  final int index;
+
+  const AnimatedProductGridItem({
+    Key? key,
+    required this.child,
+    required this.index,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0.6, end: 1.0),
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeIn,
+      builder: (context, value, child) {
+        return Opacity(
+          opacity: value,
+          child: Transform.scale(
+            scale: value,
+            child: child,
+          ),
+        );
+      },
+      child: child,
+    );
+  }
 }

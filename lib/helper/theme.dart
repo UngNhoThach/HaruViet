@@ -5,7 +5,11 @@ import 'package:flutter/material.dart';
 final ThemeData myThemeData = ThemeData(
   useMaterial3: false,
   fontFamily: "SF PRO",
+//  colorScheme: myColorScheme,
+  primarySwatch:
+      Colors.blue, // Update this to your desired color (e.g., Colors.green)
   colorScheme: myColorScheme,
+
   textTheme: const TextTheme(
     displayLarge: TextStyle(
       color: colorText,

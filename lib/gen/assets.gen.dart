@@ -60,6 +60,9 @@ class $AssetsIconsGen {
   AssetGenImage get shipmentMethod =>
       const AssetGenImage('assets/icons/shipment_method.png');
 
+  /// File path: assets/icons/time.png
+  AssetGenImage get time => const AssetGenImage('assets/icons/time.png');
+
   /// List of all assets
   List<AssetGenImage> get values => [
         filterHigh,
@@ -73,7 +76,8 @@ class $AssetsIconsGen {
         icPayment,
         iconShare,
         paymentMethod,
-        shipmentMethod
+        shipmentMethod,
+        time
       ];
 }
 

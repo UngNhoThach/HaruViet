@@ -237,7 +237,7 @@ class ItemProductWidget {
                   boxShadow: const [
                     BoxShadow(
                       blurRadius: 4,
-                      color: Color(0x3600000F),
+                      color: colorBlueGray01,
                       offset: Offset(0, 2),
                     )
                   ],

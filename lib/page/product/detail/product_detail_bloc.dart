@@ -177,7 +177,11 @@ class ProductDetailBloc extends BaseBloc<ProductDetailState> {
 
 // popup check
   onHandleCounterChanged(int newCounter) {
-    emit(state.copyWith(currentCounter: newCounter));
+    if (newCounter >= 1) {
+      emit(state.copyWith(currentCounter: newCounter));
+    } else {
+      emit(state.copyWith(currentCounter: 1));
+    }
     onValidPopSelected();
   }
 

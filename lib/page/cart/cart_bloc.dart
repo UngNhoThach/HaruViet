@@ -271,27 +271,27 @@ class CartBloc extends BaseBloc<CartState> {
     required int index,
     required int value,
   }) {
-    final cart = Provider.of<CartProviderV2>(context, listen: false);
+    //   final cart = Provider.of<CartProviderV2>(context, listen: false);
     var productsList = List<CartModelProduct>.from(state.productsList);
     productsList = productsList.mapIndexed((i, element) {
-      double totalPriceItem = 0.0;
+      //   double totalPriceItem = 0.0;
       if (index == i) {
-        final valueDefault = element.totalQuantity;
-        if (value == valueDefault) {
-          return element;
-        } else if (value < valueDefault) {
-          if (valueDefault >= 1 && value >= 1) {
-            totalPriceItem = (valueDefault - value) *
-                double.parse(element.price.price.toString());
-            cart.removeTotalPrice((totalPriceItem));
-          }
-        } else {
-          if (valueDefault >= 1 && value >= 1) {
-            totalPriceItem = (value - valueDefault) *
-                double.parse(element.price.price.toString());
-            cart.addTotalPrice((totalPriceItem));
-          }
-        }
+        // final valueDefault = element.totalQuantity;
+        // if (value == valueDefault) {
+        //   return element;
+        // } else if (value < valueDefault) {
+        //   if (valueDefault >= 1 && value >= 1) {
+        //     // totalPriceItem = (valueDefault - value) *
+        //     //     double.parse(element.price.price.toString());
+        //     //        cart.removeTotalPrice((totalPriceItem));
+        //   }
+        // } else {
+        //   if (valueDefault >= 1 && value >= 1) {
+        //     // totalPriceItem = (value - valueDefault) *
+        //     //     double.parse(element.price.price.toString());
+        //     //           cart.addTotalPrice((totalPriceItem));
+        //   }
+        // }
         getDefaultPrice();
         return element.copy(
           totalQuantity: value,
@@ -301,11 +301,11 @@ class CartBloc extends BaseBloc<CartState> {
     }).toList();
     emit(state.copyWith(
       productsList: productsList,
-      // checkValue: !state.checkValue,
     ));
     onUpdate(index, productsList);
     // Debounce logic
-    fetchData();
+    getData();
+    //  fetchData();
   }
 
   onChangeDecrementCounter(int index) {

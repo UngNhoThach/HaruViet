@@ -113,7 +113,12 @@ class _OrderDetailState extends State<OrderDetailPage> {
                                       data: item, state: state);
                                 },
                               ),
-                              separatorBuilder: (context, index) => spaceH12,
+                              separatorBuilder: (context, index) =>
+                                  const Divider(
+                                color: colorBlueGray02,
+                                thickness: 1.5,
+                                height: 24,
+                              ),
                             ),
                           ),
                   ],
@@ -130,129 +135,107 @@ class _OrderDetailState extends State<OrderDetailPage> {
       {required DetailsCart data, required OrderDetailState state}) {
     return GestureDetector(
       onTap: () {},
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: colorMainCover),
-          color: const Color.fromARGB(255, 248, 249, 255),
-          borderRadius: BorderRadius.circular(16.0),
-        ),
-        padding: EdgeInsets.symmetric(
-          horizontal: 16.w,
-          vertical: 8.h,
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: GestureDetector(
-                onTap: () {
-                  // routeService.pushNamed(
-                  //   Routes.newDetailPage,
-                  // );
-                },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              InkWell(
+                  onTap: () {
+                    routeService.pushNamed(Routes.writeReviewPage,
+                        arguments: WriteReviewParams(
+                            onReload: () {}, idItem: data.productId));
+                  },
+                  child: Text(
+                    'Đánh giá',
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: colorMain,
+                    ),
+                  ))
+            ],
+          ),
+          Row(
+            children: [
+              Expanded(
+                flex: 3,
+                child: SizedBox(
+                  width: 60.w,
+                  //  height: 60.h,
+                  child: Image.network(
+                    '$domain${data.image ?? ''}',
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return const ErrorInternet();
+                    },
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 7,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        InkWell(
-                            onTap: () {
-                              routeService.pushNamed(Routes.writeReviewPage,
-                                  arguments: WriteReviewParams(
-                                      onReload: () {}, idItem: data.productId));
-                            },
-                            child: Text(
-                              'Đánh giá',
-                              style: textTheme.bodyMedium?.copyWith(
-                                color: colorMain,
-                              ),
-                            ))
-                      ],
+                    spaceH4,
+                    _itemNameRow(name: data.name ?? ''),
+                    spaceH4,
+                    _itemNameRow(
+                      name: toPrice(value: data.price ?? ''),
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: colorBlueGray03,
+                      ),
                     ),
                     spaceH4,
-                    const Divider(
-                      height: 1,
+                    _itemNameRow(
+                      name: 'Thuế: ${toPrice(value: data.tax ?? '')}',
+                      style: textTheme.bodyMedium
+                          ?.copyWith(color: colorBlueGray03),
                     ),
                     spaceH4,
-                    Row(
-                      children: [
-                        Expanded(
-                          flex: 3,
-                          child: SizedBox(
-                            width: 60.w,
-                            //  height: 60.h,
-                            child: Image.network(
-                              '$domain${data.image ?? ''}',
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return const ErrorInternet();
-                              },
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 7,
-                          child: Column(
-                            children: [
-                              spaceH4,
-                              _itemNameRow(name: data.name ?? ''),
-                              spaceH4,
-                              _itemNameRow(
-                                name: toPrice(value: data.price ?? ''),
-                                style: textTheme.bodyMedium?.copyWith(
-                                  color: colorMain,
-                                ),
-                              ),
-                              spaceH4,
-                              _itemNameRow(
-                                name: 'Thuế: ${toPrice(value: data.tax ?? '')}',
-                                style: textTheme.bodyMedium
-                                    ?.copyWith(color: colorBlueGray03),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                    _itemNameRow(
+                      name: '${data.qty ?? ''} sản phẩm',
+                      style: textTheme.bodyMedium
+                          ?.copyWith(color: colorBlueGray03),
                     ),
                     spaceH4,
-                    const Divider(
-                      height: 1,
+                    _itemNameRow(
+                      name:
+                          'Thành tiền: ${toPrice(value: data.totalPrice ?? '')}',
+                      style: textTheme.bodyMedium?.copyWith(color: colorMain),
                     ),
-                    spaceH4,
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            '${data.qty ?? ''} sản phẩm',
-                            style: textTheme.bodyMedium
-                                ?.copyWith(color: colorBlueGray03),
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              'Thành tiền: ',
-                              style: textTheme.titleMedium
-                                  ?.copyWith(color: colorBlueGray03),
-                            ),
-                            Text(
-                              toPrice(value: data.totalPrice ?? ''),
-                              style: textTheme.titleMedium
-                                  ?.copyWith(color: colorMain),
-                            ),
-                          ],
-                        )
-                        //
-                        //    Text('01-12-2023', style: textTheme.bodySmall),
-                      ],
-                    ),
+                    // Row(
+                    //   children: [
+                    //     Expanded(
+                    //       child: Text(
+                    //         'Thành tiền: ${toPrice(value: data.totalPrice ?? '')}',
+                    //         style: textTheme.bodyMedium
+                    //             ?.copyWith(color: colorBlueGray03),
+                    //       ),
+                    //     ),
+                    //     Row(
+                    //       children: [
+                    //         Text(
+                    //           'Thành tiền: ',
+                    //           style: textTheme.titleMedium
+                    //               ?.copyWith(color: colorBlueGray03),
+                    //         ),
+                    //         Text(
+                    //           toPrice(value: data.totalPrice ?? ''),
+                    //           style: textTheme.titleMedium
+                    //               ?.copyWith(color: colorMain),
+                    //         ),
+                    //       ],
+                    //     )
+                    //     //
+                    //     //    Text('01-12-2023', style: textTheme.bodySmall),
+                    //   ],
+                    // ),
                   ],
                 ),
               ),
-            )
-          ],
-        ),
+            ],
+          ),
+        ],
       ),
     );
   }

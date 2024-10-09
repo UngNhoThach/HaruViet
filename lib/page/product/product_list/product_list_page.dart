@@ -11,6 +11,7 @@ import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/const.dart';
 import 'package:haruviet/helper/spaces.dart';
 import 'package:haruviet/page/cart/models/cart_page_params.dart';
+import 'package:haruviet/page/home/home_page.dart';
 import 'package:haruviet/page/product/product_list/product_list_bloc.dart';
 import 'package:haruviet/page/product/product_list/product_list_state.dart';
 import 'package:haruviet/page/product/widgets/item_products_widget.dart';
@@ -125,7 +126,7 @@ class _ProductListPageState extends State<ProductListPage> {
 
   Widget _viewDefault(BuildContext context, {required ProductListState state}) {
     childAspectRatio = MediaQuery.of(context).size.width /
-        (MediaQuery.of(context).size.height / 1.35.h);
+        (MediaQuery.of(context).size.height / 1.40.h);
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -147,7 +148,7 @@ class _ProductListPageState extends State<ProductListPage> {
                       color: (state.currentTab != CurrentTab.priceHigh &&
                               state.currentTab != CurrentTab.priceLow)
                           ? colorBlack
-                          : colorMain),
+                          : Theme.of(context).primaryColor),
                 ),
                 spaceW4,
                 SizedBox(
@@ -198,11 +199,10 @@ class _ProductListPageState extends State<ProductListPage> {
                               PagedChildBuilderDelegate<DataProduct>(
                             noItemsFoundIndicatorBuilder: _empty,
                             itemBuilder: (context, item, index) {
-                              return _itemGridView(
-                                context,
+                              return AnimatedProductGridItem(
                                 index: index,
-                                data: item,
-                                domain: domain,
+                                child: _itemGridView(context,
+                                    index: index, data: item, domain: domain),
                               );
                             },
                           ),
@@ -258,7 +258,7 @@ class _ProductListPageState extends State<ProductListPage> {
   PreferredSizeWidget _appbarSearch(BuildContext context) {
     return AppBar(
       centerTitle: true,
-      backgroundColor: colorMain,
+      backgroundColor: Theme.of(context).primaryColor,
       title: AppSearchBarV2(
         hintText: 'Tìm kiếm sản phẩm',
         onTap: () {

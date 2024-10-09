@@ -40,7 +40,7 @@ class _BillInfoPageState extends State<BillInfoPage> {
         appBar: AppBar(
           centerTitle: true,
           title: const Text('Thông tin xuất hoá đơn'),
-          backgroundColor: colorMain,
+          backgroundColor: Theme.of(context).primaryColor,
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -158,7 +158,7 @@ class _BillInfoPageState extends State<BillInfoPage> {
                       child: Container(
                         height: 38.h,
                         decoration: BoxDecoration(
-                          color: colorMain,
+                          color: Theme.of(context).primaryColor,
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(color: colorGray02),
                         ),

@@ -1,8 +1,9 @@
+import 'dart:ui';
+
 import 'package:flutter/widgets.dart';
 import 'package:haruviet/component/input/search_barv2.dart';
 import 'package:haruviet/component/popup/popup.dart';
 import 'package:haruviet/data/data_local/user_bloc.dart';
-import 'package:haruviet/database_local/product/cart_provider.dart';
 import 'package:haruviet/database_local/product/cart_provider_v2.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/spaces.dart';
@@ -45,6 +46,7 @@ class MainScreenPage extends StatefulWidget {
 
 class _MainScreenPageState extends State<MainScreenPage> {
   // variables and functions
+
   TextEditingController searchController = TextEditingController();
   bool isFocused = false;
   final SearchWidgets searchWidgets = SearchWidgets();
@@ -90,7 +92,8 @@ class _MainScreenPageState extends State<MainScreenPage> {
     });
   }
 
-  List<PersistentBottomNavBarItem> _navBarsItems() {
+  List<PersistentBottomNavBarItem> _navBarsItems(
+      {required Color activeColorPrimary}) {
     return [
       PersistentBottomNavBarItem(
         iconSize: 24,
@@ -98,28 +101,28 @@ class _MainScreenPageState extends State<MainScreenPage> {
           Icons.home,
         ),
         title: ("Trang chủ"),
-        activeColorPrimary: colorMain,
+        activeColorPrimary: activeColorPrimary,
         inactiveColorPrimary: colorBlueGray03,
       ),
       PersistentBottomNavBarItem(
         iconSize: 24,
         icon: const Icon(Icons.notifications),
         title: ("Thông báo"),
-        activeColorPrimary: colorMain,
+        activeColorPrimary: activeColorPrimary,
         inactiveColorPrimary: colorBlueGray03,
       ),
       PersistentBottomNavBarItem(
         iconSize: 24,
         icon: const Icon(Icons.shopify_sharp),
         title: ("Danh mục"),
-        activeColorPrimary: colorMain,
+        activeColorPrimary: activeColorPrimary,
         inactiveColorPrimary: colorBlueGray03,
       ),
       PersistentBottomNavBarItem(
         iconSize: 24,
         icon: const Icon(Icons.person),
         title: ("Tài khoản"),
-        activeColorPrimary: colorMain,
+        activeColorPrimary: activeColorPrimary,
         inactiveColorPrimary: colorBlueGray03,
       ),
     ];
@@ -149,6 +152,9 @@ class _MainScreenPageState extends State<MainScreenPage> {
         ],
         child: BlocBuilder<MainScreenBloc, MainScreenState>(
             builder: (context, state) {
+          //define color
+          Color activeColorPrimary = Theme.of(context).primaryColor;
+
           return Scaffold(
             resizeToAvoidBottomInset: false,
             appBar: screenIndex == 0
@@ -159,7 +165,6 @@ class _MainScreenPageState extends State<MainScreenPage> {
                         title: Text('Thông báo', style: styleTitles),
                         // title: Text('${widget.cartDatabase.getCount()}',
                         //     style: styleTitles),
-                        backgroundColor: colorMain,
                       )
                     : screenIndex == 2
                         ? _appbarSearch()
@@ -172,12 +177,10 @@ class _MainScreenPageState extends State<MainScreenPage> {
                                       color: colorWhite,
                                       fontWeight: FontWeight.bold),
                                 ),
-                                backgroundColor: colorMain,
                               )
                             : AppBar(
                                 centerTitle: true,
                                 title: Text('Thông báo', style: styleTitles),
-                                backgroundColor: colorMain,
                               ),
             drawer: const DrawerListPage(),
             body: PersistentTabView(
@@ -185,7 +188,7 @@ class _MainScreenPageState extends State<MainScreenPage> {
               context,
               controller: _controller,
               screens: _buildScreens,
-              items: _navBarsItems(),
+              items: _navBarsItems(activeColorPrimary: activeColorPrimary),
               backgroundColor: colorBlueGray01,
               handleAndroidBackButtonPress: true,
               resizeToAvoidBottomInset: true,
@@ -202,56 +205,6 @@ class _MainScreenPageState extends State<MainScreenPage> {
                 context = context;
               },
             ),
-
-            // IndexedStack(
-            //   index: screenIndex,
-            //   children: _buildScreens,
-            // ),
-            // bottomNavigationBar: Theme(
-            //   data: ThemeData(
-            //     splashColor: Colors.transparent,
-            //   ),
-            //   child: BottomNavigationBar(
-            //     showSelectedLabels: true,
-            //     selectedFontSize: 12,
-            //     type: BottomNavigationBarType.fixed,
-            //     selectedItemColor: colorMain,
-            //     unselectedItemColor: const Color(0xFFADADAD),
-            //     showUnselectedLabels: true,
-            //     onTap: (index) {
-            //       setState(() {
-            //         screenIndex = index;
-            //       });
-            //     },
-            //     currentIndex: screenIndex,
-            //     items: [
-            //       _bottomNavigationBarItem(
-            //         context,
-            //         label: 'Trang chủ',
-            //         icon: Assets.icons.iconHome.image(),
-            //         iconActive: Assets.icons.iconHomeActive.image(),
-            //       ),
-            //       _bottomNavigationBarItem(
-            //         context,
-            //         label: 'Lịch sử',
-            //         icon: Assets.icons.icNotification.image(),
-            //         iconActive: Assets.icons.icNotification.image(),
-            //       ),
-            //       _bottomNavigationBarItem(
-            //         context,
-            //         label: 'Cài đặt',
-            //         icon: Assets.icons.iconSetting.image(),
-            //         iconActive: Assets.icons.iconSettingActive.image(),
-            //       ),
-            //       _bottomNavigationBarItem(
-            //         context,
-            //         label: 'Cá nhân',
-            //         icon: Assets.icons.icNotification.image(),
-            //         iconActive: Assets.icons.icNotification.image(),
-            //       )
-            //     ],
-            //   ),
-            // ),
           );
         }),
       ),
@@ -270,72 +223,9 @@ class _MainScreenPageState extends State<MainScreenPage> {
         searchController: searchController);
   }
 
-  BottomNavigationBarItem _bottomNavigationBarItem(
-    BuildContext context, {
-    required String label,
-    required Widget icon,
-    required Widget iconActive,
-    String? noti,
-  }) {
-    return BottomNavigationBarItem(
-      label: label,
-      icon: badges.Badge(
-        showBadge: noti == null || noti == '' || noti == 'error' ? false : true,
-        position: badges.BadgePosition.topEnd(top: -12, end: -14),
-        badgeAnimation: const badges.BadgeAnimation.slide(
-          disappearanceFadeAnimationDuration: Duration(milliseconds: 100),
-          curve: Curves.easeInCubic,
-        ),
-        ignorePointer: false,
-        badgeContent: noti == null
-            ? space0
-            : Text(
-                noti,
-                style: const TextStyle(color: Colors.white),
-              ),
-        child: Column(
-          children: [
-            SizedBox(
-              width: 20,
-              height: 20,
-              child: icon,
-            ),
-            spaceH2,
-          ],
-        ),
-      ),
-      activeIcon: badges.Badge(
-        position: badges.BadgePosition.topEnd(top: -12, end: -14),
-        badgeAnimation: const badges.BadgeAnimation.slide(
-          disappearanceFadeAnimationDuration: Duration(milliseconds: 100),
-          curve: Curves.easeInCubic,
-        ),
-        ignorePointer: false,
-        showBadge: noti == null || noti == '' || noti == 'error' ? false : true,
-        badgeContent: noti == null || noti == '' || noti == 'error'
-            ? space0
-            : Text(
-                noti,
-                style: const TextStyle(color: colorWhite),
-              ),
-        child: Column(
-          children: [
-            SizedBox(
-              width: 20.r,
-              height: 20.r,
-              child: iconActive,
-            ),
-            spaceH2,
-          ],
-        ),
-      ),
-    );
-  }
-
   PreferredSizeWidget _appbarSearch() {
     return AppBar(
       centerTitle: true,
-      backgroundColor: colorMain,
       title: AppSearchBarV2(
         hintText: 'Tìm kiếm sản phẩm',
         onTap: () {
@@ -372,9 +262,6 @@ class _MainScreenPageState extends State<MainScreenPage> {
           //.then((value) => bloc.onHideBottomBar());
         },
       ),
-
-      // .then((value) =>
-      //         WidgetsBinding.instance.focusManager.primaryFocus?.unfocus());
       actions: <Widget>[
         spaceW16,
         Consumer<CartProviderV2>(

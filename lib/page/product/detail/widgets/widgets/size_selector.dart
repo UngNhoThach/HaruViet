@@ -1,4 +1,3 @@
-import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/theme/typography.dart';
 import 'package:flutter/material.dart';
 
@@ -61,24 +60,28 @@ class _SizeSelectorState extends State<SizeSelector> {
                         const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
                       border: Border.all(
-                        color: isSelected ? colorMain : Colors.grey,
+                        color: isSelected
+                            ? Theme.of(context).primaryColor
+                            : Colors.grey,
                       ),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
                       size,
                       style: TextStyle(
-                        color: isSelected ? colorMain : Colors.black,
+                        color: isSelected
+                            ? Theme.of(context).primaryColor
+                            : Colors.black,
                       ),
                     ),
                   ),
                   if (isSelected)
-                    const Positioned(
+                    Positioned(
                       right: 4,
                       top: 4,
                       child: Icon(
                         Icons.check,
-                        color: colorMain,
+                        color: Theme.of(context).primaryColor,
                         size: 16,
                       ),
                     ),

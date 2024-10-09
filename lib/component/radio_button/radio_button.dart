@@ -1,3 +1,4 @@
+import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/context.dart';
 import 'package:haruviet/helper/spaces.dart';
 import 'package:haruviet/theme/typography.dart';
@@ -50,9 +51,7 @@ class RadioListSelect extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     width: isSelected ? 6.w : 1.w,
-                    color: isSelected && enabled
-                        ? context.appColor.colorBlue
-                        : context.appColor.colorGrey,
+                    color: isSelected && enabled ? colorBlue : colorGrey,
                   ),
                 ),
               ),

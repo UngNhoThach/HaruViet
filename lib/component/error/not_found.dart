@@ -1,5 +1,4 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/spaces.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -13,12 +12,12 @@ class DidntFound extends StatelessWidget {
       child: Column(
         children: [
           spaceH16,
-          const Text(
+          Text(
             'Đang tải',
-            style: TextStyle(color: colorMainCover),
+            style: TextStyle(color: Theme.of(context).primaryColorLight),
           ),
           LoadingAnimationWidget.horizontalRotatingDots(
-            color: colorMainCover,
+            color: Theme.of(context).primaryColorLight,
             size: 40.r,
           ),
         ],

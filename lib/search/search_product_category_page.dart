@@ -83,7 +83,7 @@ class _SearchScaffoldState extends State<SearchScaffold> {
                       size: 28,
                     ))
               ],
-              backgroundColor: colorMain,
+              backgroundColor: Theme.of(context).primaryColor,
             ),
             body: state.categorySearchList.isEmpty &&
                     state.productSearchList.isEmpty
@@ -109,7 +109,8 @@ class _SearchScaffoldState extends State<SearchScaffold> {
                                               .titleMedium
                                               ?.copyWith(
                                                   fontWeight: FontWeight.bold,
-                                                  color: colorMain,
+                                                  color: Theme.of(context)
+                                                      .primaryColor,
                                                   fontSize: 18)),
                                     ),
                                   ],
@@ -158,7 +159,8 @@ class _SearchScaffoldState extends State<SearchScaffold> {
                                               .titleMedium
                                               ?.copyWith(
                                                   fontWeight: FontWeight.bold,
-                                                  color: colorMain,
+                                                  color: Theme.of(context)
+                                                      .primaryColor,
                                                   fontSize: 18)),
                                     ),
                                   ],
@@ -236,7 +238,7 @@ class _SearchScaffoldState extends State<SearchScaffold> {
                       Text(
                         '${data.price?.finalSearchPriceStr}',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: colorMain,
+                              color: Theme.of(context).primaryColor,
                               fontWeight: FontWeight.bold,
                             ),
                       ),

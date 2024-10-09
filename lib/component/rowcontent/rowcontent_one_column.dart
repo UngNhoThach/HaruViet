@@ -147,7 +147,7 @@ class _RowContentOneColumnState extends State<RowContentOneColumn>
 
     return Container(
       decoration: BoxDecoration(
-        color: context.appColor.colorWhite,
+        color: colorWhite,
         borderRadius:
             widget.isBorderRadius ? BorderRadius.circular(12.r) : null,
       ),
@@ -304,11 +304,12 @@ class _RowContentOneColumnState extends State<RowContentOneColumn>
                                                       true;
                                                 });
                                               },
-                                              child: const Text(
+                                              child: Text(
                                                 'Xem tất cả',
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.w500,
-                                                  color: colorPrimary,
+                                                  color: Theme.of(context)
+                                                      .primaryColorLight,
                                                   fontSize: 14,
                                                 ),
                                               ),

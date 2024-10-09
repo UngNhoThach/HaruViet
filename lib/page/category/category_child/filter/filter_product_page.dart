@@ -97,9 +97,9 @@ class _FilterProductPageState extends State<FilterProductPage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 spaceW16,
-                                const Text('Bỏ chọn',
+                                Text('Bỏ chọn',
                                     style: TextStyle(
-                                        color: colorMain,
+                                        color: Theme.of(context).primaryColor,
                                         fontWeight: FontWeight.bold)),
                               ],
                             ),
@@ -268,7 +268,7 @@ class _FilterProductPageState extends State<FilterProductPage> {
                   width: 1,
                   color: const Color.fromARGB(255, 225, 223, 223),
                 ),
-          color: isClick ? colorMain : Colors.grey[200],
+          color: isClick ? Theme.of(context).primaryColor : Colors.grey[200],
           borderRadius: BorderRadius.circular(8.0),
         ),
         child: Row(

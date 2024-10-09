@@ -325,7 +325,9 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                     },
                                   ),
                                   spaceH20,
-                                  _button(context, color: colorMain, onTap: () {
+                                  _button(context,
+                                      color: Theme.of(context).primaryColor,
+                                      onTap: () {
                                     final isValidForm =
                                         _formkey.currentState?.validate();
                                     if (isValidForm == true) {
@@ -340,7 +342,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                       color: colorWhite,
                                       onTap: () {},
                                       title: 'XOÁ TÀI KHOẢN',
-                                      colorText: colorMain,
+                                      colorText: Theme.of(context).primaryColor,
                                       border: Border.all(color: colorGray04)),
                                   spaceH72,
                                 ],
@@ -379,7 +381,6 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
             title,
             style: textTheme.bodyMedium?.copyWith(
               color: colorText ?? colorWhite,
-              fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -476,7 +477,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         width: MediaQuery.of(context).size.width - 90,
         height: 60,
         decoration: BoxDecoration(
-          color: colorMain,
+          color: Theme.of(context).primaryColor,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Center(

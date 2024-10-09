@@ -69,7 +69,7 @@ class AppSolidButton extends StatelessWidget {
     return AppSolidButton._(
       key: key,
       onPressed: onPressed,
-      color: color,
+      color: color ?? Colors.green,
       onLongPress: onLongPress,
       onHighlightChanged: onHighlightChanged,
       focusNode: focusNode,
@@ -99,6 +99,7 @@ class AppSolidButton extends StatelessWidget {
   factory AppSolidButton.medium(
     String text, {
     Widget? leading,
+    required BuildContext context,
     AppSolidButtonRadius radiusType = AppSolidButtonRadius.circle,
     Widget? rear,
     Key? key,
@@ -128,7 +129,7 @@ class AppSolidButton extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(radius)),
       ),
-      color: color,
+      color: color ?? Colors.green,
       disabledColor: disabledColor,
       onPressed: onPressed,
       onLongPress: onLongPress,
@@ -239,8 +240,11 @@ class AppSolidButton extends StatelessWidget {
       textTheme: textTheme,
       textColor: textColor,
       disabledTextColor: disabledTextColor,
-      color: enabled ? colorMain : colorMain.withOpacity(0.5),
-      disabledColor: disabledColor ?? colorMain.withOpacity(0.5),
+      color: enabled
+          ? Theme.of(context).primaryColor
+          : Theme.of(context).primaryColor.withOpacity(0.5),
+      disabledColor:
+          disabledColor ?? Theme.of(context).primaryColor.withOpacity(0.5),
       focusColor: focusColor,
       hoverColor: hoverColor,
       highlightColor: highlightColor,

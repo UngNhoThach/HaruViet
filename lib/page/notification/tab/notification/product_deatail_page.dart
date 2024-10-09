@@ -1259,7 +1259,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                           child: Row(
                                                             children: [
                                                               Text(
-                                                                'Xem tất cả (119)',
+                                                                'HistoryOrderTabParams (119)',
                                                                 style:
                                                                     TextStyle(
                                                                   fontWeight:
@@ -1544,7 +1544,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                                                     child: Row(
                                                       children: [
                                                         Text(
-                                                          'Xem tất cả (123)',
+                                                          'HistoryOrderTabParams (123)',
                                                           style: TextStyle(
                                                             fontWeight:
                                                                 FontWeight.w500,
@@ -1634,8 +1634,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   controller: _hideBottomAppBarController,
                   child: BottomBarButton(
                     button1: AppSolidButton.medium(
-                      color: Theme.of(context).colorScheme.onBackground,
                       context: context,
+                      color: Theme.of(context).primaryColor,
                       'Gọi điện',
                       onPressed: () {},
                     ),
@@ -1643,6 +1643,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       builder: (context, provider, child) {
                         return AppSolidButton.medium(
                           context: context,
+                          color: colorPrimary,
                           'Mua hàng',
                           onPressed: () async {
                             bloc.onAddItemToCart(

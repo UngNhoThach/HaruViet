@@ -1,5 +1,5 @@
 import 'package:haruviet/component/required_label/string_extension.dart';
-import 'package:haruviet/helper/context.dart';
+import 'package:haruviet/helper/colors.dart';
 import 'package:flutter/cupertino.dart';
 
 class RequiredLabel extends StatelessWidget {
@@ -18,9 +18,9 @@ class RequiredLabel extends StatelessWidget {
             style: style,
           ),
         ),
-        Text(
+        const Text(
           ' *',
-          style: TextStyle(color: context.appColor.colorRed),
+          style: TextStyle(color: colorRed),
         )
       ],
     );

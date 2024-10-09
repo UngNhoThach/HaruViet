@@ -98,7 +98,7 @@ class _ReviewPageState extends State<ReviewPage> {
                 appBar: AppBar(
                   centerTitle: true,
                   title: const Text('Đánh giá'),
-                  backgroundColor: colorMain,
+                  backgroundColor: Theme.of(context).primaryColor,
                 ),
                 body: Stack(
                   children: [
@@ -115,11 +115,12 @@ class _ReviewPageState extends State<ReviewPage> {
                                   flex: 3,
                                   child: Column(
                                     children: [
-                                      const Text(
+                                      Text(
                                         '4.5',
                                         style: TextStyle(
                                             fontSize: 36,
-                                            color: colorMainCover,
+                                            color: Theme.of(context)
+                                                .primaryColorLight,
                                             fontWeight: FontWeight.bold),
                                       ),
                                       RatingBar.builder(
@@ -131,9 +132,10 @@ class _ReviewPageState extends State<ReviewPage> {
                                         itemCount: 5,
                                         itemPadding: const EdgeInsets.symmetric(
                                             horizontal: 2.0),
-                                        itemBuilder: (context, _) => const Icon(
+                                        itemBuilder: (context, _) => Icon(
                                           Icons.star,
-                                          color: colorMainCover,
+                                          color: Theme.of(context)
+                                              .primaryColorLight,
                                         ),
                                         onRatingUpdate: (rating) {
                                           print(rating);
@@ -167,10 +169,11 @@ class _ReviewPageState extends State<ReviewPage> {
                                               children: [
                                                 Text('${index + 1}'),
                                                 spaceW6,
-                                                const Icon(
+                                                Icon(
                                                   Icons.star,
                                                   size: 16,
-                                                  color: colorMainCover,
+                                                  color: Theme.of(context)
+                                                      .primaryColorLight,
                                                 ),
                                                 spaceW4,
                                                 LinearPercentIndicator(
@@ -179,7 +182,9 @@ class _ReviewPageState extends State<ReviewPage> {
                                                   width: 160.0,
                                                   lineHeight: 6.0,
                                                   percent: perCentReview! / 378,
-                                                  progressColor: colorMainCover,
+                                                  progressColor:
+                                                      Theme.of(context)
+                                                          .primaryColorLight,
                                                 ),
                                                 spaceW6,
                                                 formattedReview,
@@ -325,10 +330,10 @@ class _ReviewPageState extends State<ReviewPage> {
                                           itemCount: 5,
                                           // itemPadding: const EdgeInsets.symmetric(
                                           //     horizontal: 4.0),
-                                          itemBuilder: (context, _) =>
-                                              const Icon(
+                                          itemBuilder: (context, _) => Icon(
                                             Icons.star,
-                                            color: colorMainCover,
+                                            color: Theme.of(context)
+                                                .primaryColorLight,
                                           ),
                                           onRatingUpdate: (rating) {
                                             print(rating);
@@ -341,16 +346,18 @@ class _ReviewPageState extends State<ReviewPage> {
                                               ?.copyWith(color: colorSuccess03),
                                         ),
                                         spaceW8,
-                                        const Icon(
+                                        Icon(
                                           Icons.check_circle_rounded,
-                                          color: colorMainCover,
+                                          color: Theme.of(context)
+                                              .primaryColorLight,
                                           size: 16,
                                         ),
                                         spaceW2,
                                         Text(
                                           'Đã mua online',
-                                          style: textTheme.bodySmall
-                                              ?.copyWith(color: colorMainCover),
+                                          style: textTheme.bodySmall?.copyWith(
+                                              color: Theme.of(context)
+                                                  .primaryColorLight),
                                         ),
                                       ],
                                     ),

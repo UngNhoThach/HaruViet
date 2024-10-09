@@ -31,7 +31,7 @@ class ProductListState extends BaseState {
     this.firtTimeLoadingPage = true,
     this.currentTab = CurrentTab.latest,
     this.canLoadMore = false,
-    this.limit = 12, // perPage,
+    this.limit = 20, // perPage,
     this.currentPage = startPage,
     this.isSubmitSuccess = false,
     this.datatList = const [],

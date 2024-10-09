@@ -23,7 +23,7 @@ class BottomBarButton extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 16.w),
       decoration: BoxDecoration(
         boxShadow: shadowE1,
-        color: context.appColor.colorWhite,
+        color: Theme.of(context).colorScheme.onError,
       ),
       child: SafeArea(
         minimum: const EdgeInsets.symmetric(vertical: 2),
@@ -140,7 +140,7 @@ class _BottomBarButton2WidgetState extends State<BottomBarButton2Widget> {
       padding: EdgeInsets.symmetric(horizontal: 16.w),
       decoration: BoxDecoration(
         boxShadow: shadowE1,
-        color: context.appColor.colorWhite,
+        color: Theme.of(context).colorScheme.onError,
       ),
       child: SafeArea(
         minimum: EdgeInsets.symmetric(vertical: 8.h),

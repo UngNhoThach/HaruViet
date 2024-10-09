@@ -1,17 +1,13 @@
 // ignore_for_file: await_only_futures
 
-import 'package:haruviet/helper/colors.dart';
-import 'package:haruviet/theme/app_color.dart';
-import 'package:haruviet/theme/app_color_scheme.dart';
-import 'package:haruviet/theme/typography.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:haruviet/theme/app_color_scheme.dart';
 
 extension UIContext on BuildContext {
   ColorScheme get colorScheme => Theme.of(this).colorScheme;
-  //TextTheme get textTheme => Theme.of(this).textTheme;
+  TextTheme get textTheme => Theme.of(this).textTheme;
   ThemeData get theme => Theme.of(this);
-  AppColor get appColor => AppColor(this);
+  // AppColor get appColor => AppColor(this);
   AppColorScheme get appColorScheme => AppColorScheme(this);
 
   void hideKeyboard() => FocusScope.of(this).unfocus();

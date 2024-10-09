@@ -166,7 +166,8 @@ class _ForgetPassWordPageState extends State<ForgetPassWordPage> {
         width: 1.sw,
         height: 36.h,
         decoration: BoxDecoration(
-            color: colorMain, borderRadius: BorderRadius.circular(12.r)),
+            color: Theme.of(context).primaryColor,
+            borderRadius: BorderRadius.circular(12.r)),
         child: Center(
           child: Text(
             'TIẾP TỤC',
@@ -271,7 +272,7 @@ class _ForgetPassWordPageState extends State<ForgetPassWordPage> {
         height: 60,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: colorMain,
+          color: Theme.of(context).primaryColor,
         ),
         child: Center(
           child: Text(name,

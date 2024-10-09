@@ -21,11 +21,9 @@ const Color colorBackgroundPrimary = Color(0xFFf3f8fc);
 
 // MAIN
 const Color colorMain = Color(0xFFed1941);
-
 const Color colorTransparent = Colors.transparent;
 const Color colorMainCover = Color.fromARGB(222, 255, 86, 34);
 const Color colorMainCover1 = Color.fromARGB(222, 241, 92, 47);
-
 const Color colorItemCover = Color.fromRGBO(158, 158, 158, 1);
 const Color colorBlackTileItem = Color.fromARGB(255, 13, 13, 13);
 
@@ -104,6 +102,15 @@ const List<Color> gradientRadial01 = [
   Color(0xFF05B7FE),
   Color(0xFF0D54D9),
 ];
+
+// App color
+const Color colorPink = Colors.pink;
+const Color colorOrange = Colors.orange;
+const Color colorGrey = Colors.grey;
+const Color colorRed = Colors.red;
+const Color colorGreen = Colors.green;
+const Color colorBlue = Colors.blue;
+const Color textInput = const Color.fromRGBO(227, 242, 253, 1);
 
 const List<Color> gradientRadialBlack01 = [
   Color(0xFF32312A),

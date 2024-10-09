@@ -64,7 +64,6 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                     }),
                 centerTitle: true,
                 title: const Text('Phương thức thanh toán'),
-                backgroundColor: colorMain,
               ),
               body: SingleChildScrollView(
                 child: Padding(
@@ -91,9 +90,10 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
               ),
               bottomNavigationBar: BottomBarButton(
                 button1: AppSolidButton.medium(
+                  context: context,
                   'Xác nhận',
                   textStyle: textTheme.bodyLarge,
-                  color: colorMain,
+                  color: Theme.of(context).primaryColor,
                   onPressed: () {
                     widget.params.shippingMethodFuc!(
                         state.valueShipping, state.indexShippingMethod);

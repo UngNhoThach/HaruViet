@@ -69,7 +69,7 @@ class _WriteReviewPageState extends State<WriteReviewPage> {
                 appBar: AppBar(
                   centerTitle: true,
                   title: const Text('Viết đánh giá'),
-                  backgroundColor: colorMain,
+                  backgroundColor: Theme.of(context).primaryColor,
                 ),
                 body: state.isLoading
                     ? const LoadingLogo()
@@ -144,7 +144,9 @@ class _WriteReviewPageState extends State<WriteReviewPage> {
                                                           style: textTheme
                                                               .bodyLarge
                                                               ?.copyWith(
-                                                            color: colorMain,
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .primaryColor,
                                                             fontWeight:
                                                                 FontWeight.bold,
                                                           ),
@@ -245,7 +247,8 @@ class _WriteReviewPageState extends State<WriteReviewPage> {
                                             horizontal: 8),
                                         itemBuilder: (context, _) => Icon(
                                           _selectedIcon ?? Icons.star,
-                                          color: colorMainCover,
+                                          color: Theme.of(context)
+                                              .primaryColorLight,
                                         ),
                                         onRatingUpdate: (rating) {
                                           bloc.onChangeRating(rating: rating);
@@ -320,7 +323,8 @@ class _WriteReviewPageState extends State<WriteReviewPage> {
                       ),
                 bottomNavigationBar: BottomBarButton(
                   button1: AppSolidButton.medium(
-                    color: colorMain,
+                    context: context,
+                    color: Theme.of(context).primaryColor,
                     'Gửi đánh giá',
                     onPressed: bloc.state.isValid
                         ? () {

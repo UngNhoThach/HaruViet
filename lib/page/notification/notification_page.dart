@@ -44,7 +44,7 @@ class _NotificationTabPageState extends State<NotificationTabPage>
       //     style: textTheme.titleMedium
       //         ?.copyWith(color: colorWhite, fontWeight: FontWeight.bold),
       //   ),
-      //   backgroundColor: colorMain,
+      //   backgroundColor: Theme.of(context).primaryColor,
       // ),
       body: Container(
         padding: EdgeInsets.symmetric(

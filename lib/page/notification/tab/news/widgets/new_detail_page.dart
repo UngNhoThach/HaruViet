@@ -63,7 +63,7 @@ class _NewDetailPageState extends State<NewDetailPage> {
           //     context.justBack();
           //   },
           // ),
-          backgroundColor: colorMain,
+          backgroundColor: Theme.of(context).primaryColor,
           title: Text(
             'Tin tức',
             style: textTheme.titleMedium?.copyWith(

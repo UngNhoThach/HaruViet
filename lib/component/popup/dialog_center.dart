@@ -61,7 +61,7 @@ class _CustomAlertDialogState extends State<CustomAlertDialog> {
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 24.r, vertical: 12.r),
               decoration: BoxDecoration(
-                color: colorMain,
+                color: Theme.of(context).primaryColor,
                 borderRadius: BorderRadius.circular(6.r),
               ),
               child: Text(

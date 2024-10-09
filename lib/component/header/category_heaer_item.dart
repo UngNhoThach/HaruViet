@@ -44,7 +44,7 @@ class CategoryHeaderIteam extends StatelessWidget {
                 onSelect(e);
               }
             },
-            selectedColor: e.backgroundColor,
+            selectedColor: e.backgroundColor(context),
             backgroundColor: colorWhite,
             showCheckmark: false,
           );

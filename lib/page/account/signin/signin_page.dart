@@ -173,7 +173,8 @@ class _SignInPageState
                             },
                             child: Container(
                               decoration: BoxDecoration(
-                                  border: Border.all(color: colorMain),
+                                  border: Border.all(
+                                      color: Theme.of(context).primaryColor),
                                   borderRadius: BorderRadius.circular(12)),
                               padding: const EdgeInsets.all(8.0),
                               child: Image.asset('assets/images/facebook.png',
@@ -187,7 +188,8 @@ class _SignInPageState
                             },
                             child: Container(
                               decoration: BoxDecoration(
-                                  border: Border.all(color: colorMain),
+                                  border: Border.all(
+                                      color: Theme.of(context).primaryColor),
                                   borderRadius: BorderRadius.circular(12)),
                               padding: const EdgeInsets.all(8.0),
                               child: Image.asset('assets/images/google.png',
@@ -280,7 +282,8 @@ class _SignInPageState
         width: 1.sw,
         height: 36.h,
         decoration: BoxDecoration(
-            color: colorMain, borderRadius: BorderRadius.circular(12.r)),
+            color: Theme.of(context).primaryColor,
+            borderRadius: BorderRadius.circular(12.r)),
         child: Center(
           child: Text(
             'ĐĂNG NHẬP',
@@ -380,7 +383,7 @@ class _SignInPageState
         height: 60,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: colorMain,
+          color: Theme.of(context).primaryColor,
         ),
         child: Center(
           child: Text(name,

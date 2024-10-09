@@ -2,7 +2,6 @@ import 'package:haruviet/component/button/solid_button.dart';
 import 'package:haruviet/component/input/form_input.dart';
 import 'package:haruviet/component/popup/popup.dart';
 import 'package:haruviet/component/title_btottom/title_bottom_sheet_wrapper.dart';
-import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/context.dart';
 import 'package:haruviet/helper/spaces.dart';
 import 'package:flutter/material.dart';
@@ -58,8 +57,9 @@ class _PopupInputAddressState extends State<PopupInputAddress> {
             ),
             spaceH36,
             AppSolidButton.medium(
-              disabledColor: colorMain,
-              color: colorMain,
+              context: context,
+              disabledColor: Theme.of(context).primaryColor,
+              color: Theme.of(context).primaryColor,
               onPressed: widget.isRequired
                   ? (addressText.isNotEmpty
                       ? () {

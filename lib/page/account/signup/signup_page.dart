@@ -96,7 +96,8 @@ class _SignUpPageState
         width: 1.sw,
         height: 36.h,
         decoration: BoxDecoration(
-            color: colorMain, borderRadius: BorderRadius.circular(12.r)),
+            color: Theme.of(context).primaryColor,
+            borderRadius: BorderRadius.circular(12.r)),
         child: Center(
           child: Text(
             'ĐĂNG KÝ',
@@ -194,7 +195,7 @@ class _SignUpPageState
         width: MediaQuery.of(context).size.width - 90,
         height: 60,
         decoration: BoxDecoration(
-          color: colorMain,
+          color: Theme.of(context).primaryColor,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Center(
@@ -364,7 +365,8 @@ class _SignUpPageState
                             },
                             child: Container(
                               decoration: BoxDecoration(
-                                  border: Border.all(color: colorMain),
+                                  border: Border.all(
+                                      color: Theme.of(context).primaryColor),
                                   borderRadius: BorderRadius.circular(12.r)),
                               padding: const EdgeInsets.all(8.0),
                               child: Image.asset('assets/images/facebook.png',
@@ -378,7 +380,8 @@ class _SignUpPageState
                             },
                             child: Container(
                               decoration: BoxDecoration(
-                                  border: Border.all(color: colorMain),
+                                  border: Border.all(
+                                      color: Theme.of(context).primaryColor),
                                   borderRadius: BorderRadius.circular(12.r)),
                               padding: const EdgeInsets.all(8.0),
                               child: Image.asset('assets/images/google.png',

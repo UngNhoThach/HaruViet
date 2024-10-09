@@ -6,7 +6,7 @@ class CustomSnackBar {
   static void show(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        backgroundColor: colorMain,
+        backgroundColor: Theme.of(context).primaryColor,
         content: Text(
           message,
           style: const TextStyle(

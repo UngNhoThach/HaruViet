@@ -10,7 +10,7 @@ const bold = FontWeight.w700;
 const extraBold = FontWeight.w800;
 const ultraBold = FontWeight.w900;
 
-final textTheme = TextTheme(
+const textTheme = TextTheme(
   displayLarge: TextStyle(
     fontSize: 54,
   ),

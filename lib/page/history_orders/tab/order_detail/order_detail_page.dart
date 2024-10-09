@@ -8,7 +8,6 @@ import 'package:haruviet/data/data_local/user_bloc.dart';
 import 'package:haruviet/data/reponsitory/cart_orders/models/cart_order_response/details_cart.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/const.dart';
-import 'package:haruviet/helper/context.dart';
 import 'package:haruviet/helper/spaces.dart';
 import 'package:haruviet/page/history_orders/tab/widgets/order_detail_params.dart';
 import 'package:haruviet/page/review/write_review/widgets/write_review_params.dart';
@@ -38,6 +37,18 @@ class _OrderDetailState extends State<OrderDetailPage> {
   final PagingController<int, DetailsCart> _pagingController =
       PagingController(firstPageKey: startPage, invisibleItemsThreshold: 3);
 
+  Color? previousPrimaryColorColor;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    Color primaryColorCover = Theme.of(context).primaryColor;
+
+    if (primaryColorCover != previousPrimaryColorColor) {
+      previousPrimaryColorColor = primaryColorCover;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -62,7 +73,7 @@ class _OrderDetailState extends State<OrderDetailPage> {
       create: (_) => bloc,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: colorMain,
+          backgroundColor: Theme.of(context).primaryColor,
           title: const Text('Chi tiết đơn hàng'),
         ),
         backgroundColor: const Color(0xFFECECEE),
@@ -151,7 +162,7 @@ class _OrderDetailState extends State<OrderDetailPage> {
                   child: Text(
                     'Đánh giá',
                     style: textTheme.bodyMedium?.copyWith(
-                      color: colorMain,
+                      color: Theme.of(context).primaryColor,
                     ),
                   ))
             ],
@@ -201,35 +212,9 @@ class _OrderDetailState extends State<OrderDetailPage> {
                     _itemNameRow(
                       name:
                           'Thành tiền: ${toPrice(value: data.totalPrice ?? '')}',
-                      style: textTheme.bodyMedium?.copyWith(color: colorMain),
+                      style: textTheme.bodyMedium
+                          ?.copyWith(color: Theme.of(context).primaryColor),
                     ),
-                    // Row(
-                    //   children: [
-                    //     Expanded(
-                    //       child: Text(
-                    //         'Thành tiền: ${toPrice(value: data.totalPrice ?? '')}',
-                    //         style: textTheme.bodyMedium
-                    //             ?.copyWith(color: colorBlueGray03),
-                    //       ),
-                    //     ),
-                    //     Row(
-                    //       children: [
-                    //         Text(
-                    //           'Thành tiền: ',
-                    //           style: textTheme.titleMedium
-                    //               ?.copyWith(color: colorBlueGray03),
-                    //         ),
-                    //         Text(
-                    //           toPrice(value: data.totalPrice ?? ''),
-                    //           style: textTheme.titleMedium
-                    //               ?.copyWith(color: colorMain),
-                    //         ),
-                    //       ],
-                    //     )
-                    //     //
-                    //     //    Text('01-12-2023', style: textTheme.bodySmall),
-                    //   ],
-                    // ),
                   ],
                 ),
               ),
@@ -250,7 +235,7 @@ class _OrderDetailState extends State<OrderDetailPage> {
           child: Container(
             height: 100.h,
             decoration: BoxDecoration(
-              color: context.appColor.colorWhite,
+              color: colorWhite,
               borderRadius: BorderRadius.circular(16.0),
             ),
           ),
@@ -266,9 +251,9 @@ class _OrderDetailState extends State<OrderDetailPage> {
       widget: Column(
         children: [
           spaceH100,
-          const Text(
+          Text(
             'Không tìm thấy dữ liệu phù hợp',
-            style: TextStyle(color: colorMainCover),
+            style: TextStyle(color: previousPrimaryColorColor),
           )
         ],
       ),
@@ -288,7 +273,7 @@ class _OrderDetailState extends State<OrderDetailPage> {
             name,
             style: style ??
                 textTheme.titleMedium?.copyWith(
-                  color: context.appColor.colorBlack,
+                  color: colorBlack,
                 ),
           ),
         ),

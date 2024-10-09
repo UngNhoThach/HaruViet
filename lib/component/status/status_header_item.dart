@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:haruviet/helper/colors.dart';
 
 enum CurrentTab {
-//  'topsale','latest','pricelowtohigh','pricehightolow',
   hot('topsale'),
   topsale('topsale'),
   latest('latest'),
@@ -35,19 +33,15 @@ enum CurrentTab {
     }
   }
 
-  Color get backgroundColor {
+  Color backgroundColor(BuildContext context) {
     switch (this) {
       case CurrentTab.topsale:
         return const Color(0xFFFFF2CC);
       case CurrentTab.hot:
-        return colorMain;
-
       case CurrentTab.latest:
-        return colorMain;
       case CurrentTab.priceLow:
-        return colorMain;
       case CurrentTab.priceHigh:
-        return colorMain;
+        return Theme.of(context).primaryColor;
     }
   }
 

@@ -88,7 +88,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
               return Scaffold(
                 key: _scaffoldKey,
                 appBar: AppBar(
-                  backgroundColor: colorMain,
+                  backgroundColor: Theme.of(context).primaryColor,
                   title: const Text(
                     "Thanh toán",
                     style: TextStyle(
@@ -571,7 +571,8 @@ class _CheckOutPageState extends State<CheckOutPage> {
                     defaultCurrencyVNDFormatter
                         .formatString((total + fee).toString()),
                     style: textTheme.titleLarge?.copyWith(
-                        color: colorMain, fontWeight: FontWeight.bold),
+                        color: Theme.of(context).primaryColor,
+                        fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -585,7 +586,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
             child: Container(
               height: 38.h,
               decoration: BoxDecoration(
-                color: colorMain,
+                color: Theme.of(context).primaryColor,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: colorGray02),
               ),

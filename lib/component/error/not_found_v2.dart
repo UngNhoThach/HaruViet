@@ -1,4 +1,3 @@
-import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/spaces.dart';
 import 'package:flutter/material.dart';
 
@@ -11,9 +10,9 @@ class DidntFoundV2 extends StatelessWidget {
       child: Column(
         children: [
           spaceH16,
-          const Text(
+          Text(
             'Không tìm thấy dữ liệu phù hợp',
-            style: TextStyle(color: colorMainCover),
+            style: TextStyle(color: Theme.of(context).primaryColorLight),
           )
         ],
       ),

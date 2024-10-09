@@ -84,7 +84,7 @@ class _AddNewAddressPageState extends State<AddNewAddressPage> {
               return Scaffold(
                 resizeToAvoidBottomInset: false,
                 appBar: AppBar(
-                  backgroundColor: colorMain,
+                  backgroundColor: Theme.of(context).primaryColor,
                   title: Text(
                     widget.params.isUpdate
                         ? "Cập nhật địa chỉ"
@@ -114,7 +114,8 @@ class _AddNewAddressPageState extends State<AddNewAddressPage> {
                                       Text(
                                         'Liên hệ',
                                         style: textTheme.bodyMedium?.copyWith(
-                                            color: colorMain,
+                                            color:
+                                                Theme.of(context).primaryColor,
                                             fontWeight: FontWeight.w600),
                                       ),
                                     ],
@@ -163,7 +164,8 @@ class _AddNewAddressPageState extends State<AddNewAddressPage> {
                                       Text(
                                         'Địa chỉ nhận hàng',
                                         style: textTheme.bodyMedium?.copyWith(
-                                            color: colorMain,
+                                            color:
+                                                Theme.of(context).primaryColor,
                                             fontWeight: FontWeight.w600),
                                       ),
                                     ],
@@ -211,7 +213,8 @@ class _AddNewAddressPageState extends State<AddNewAddressPage> {
                                       Text(
                                         'Cài đặt',
                                         style: textTheme.bodyMedium?.copyWith(
-                                            color: colorMain,
+                                            color:
+                                                Theme.of(context).primaryColor,
                                             fontWeight: FontWeight.w600),
                                       ),
                                     ],
@@ -382,9 +385,12 @@ class _AddNewAddressPageState extends State<AddNewAddressPage> {
                 }),
                 bottomNavigationBar: BottomBarButton(
                   button1: AppSolidButton.medium(
+                    context: context,
                     widget.params.isUpdate ? 'Cập nhật' : 'Thêm',
                     textStyle: textTheme.bodyLarge,
-                    color: widget.params.isUpdate ? colorPrimary : colorMain,
+                    color: widget.params.isUpdate
+                        ? colorPrimary
+                        : Theme.of(context).primaryColor,
                     onPressed: () {
                       final isValidForm = _formkey.currentState?.validate();
                       if (isValidForm == true) {
@@ -398,9 +404,10 @@ class _AddNewAddressPageState extends State<AddNewAddressPage> {
                   ),
                   button2: widget.params.isUpdate
                       ? AppSolidButton.medium(
+                          context: context,
                           'Xoá',
                           textStyle: textTheme.bodyLarge,
-                          color: colorMain,
+                          color: Theme.of(context).primaryColor,
                           onPressed: () {
                             showConfirmActionSheet(
                               context,

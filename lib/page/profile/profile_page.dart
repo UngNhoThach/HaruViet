@@ -13,10 +13,12 @@ import 'package:haruviet/page/profile/widgets/order_item.dart';
 import 'package:haruviet/page/account/signin/widgets/signin_params.dart';
 import 'package:haruviet/resources/routes.dart';
 import 'package:haruviet/service/clearedStoredData.dart';
+import 'package:haruviet/theme/typography.dart';
 import 'package:haruviet/utils/commons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -32,21 +34,29 @@ class _ProfilePageState extends State<ProfilePage> {
 
   // variables and functions
   List<ListProfileSection> listSection = [];
+  Color? previousPrimaryColorColor;
 
   @override
   void initState() {
     bloc = ProfileBloc(context)..getData();
 
     super.initState();
-
-    createListItem();
   }
 
-  void createListItem(
-      // ProfileState state
-      ) {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    Color primaryColorCover = Theme.of(context).primaryColor;
+
+    if (primaryColorCover != previousPrimaryColorColor) {
+      previousPrimaryColorColor = primaryColorCover;
+      createListItem(previousPrimaryColorColor!);
+    }
+  }
+
+  void createListItem(Color primaryColor) {
     listSection.add(createSection(
-      "Thông báo",
+      "báo",
       const Image(
         image: AssetImage('assets/icons/ic_notification.png'),
         width: 20,
@@ -134,7 +144,7 @@ class _ProfilePageState extends State<ProfilePage> {
         Icons.location_on_rounded,
         color: colorGray03,
       ),
-      colorMain.withOpacity(0.7),
+      primaryColor.withOpacity(0.7),
       onTap: () {
         routeService.pushNamed(Routes.addressPage,
             arguments: AddressParams(
@@ -164,7 +174,7 @@ class _ProfilePageState extends State<ProfilePage> {
         Icons.change_circle_outlined,
         color: colorGray03,
       ),
-      colorMain.withOpacity(0.7),
+      primaryColor.withOpacity(0.7),
       onTap: () {
         routeService.pushNamed(Routes.forgetPassWordPage);
       },
@@ -178,7 +188,7 @@ class _ProfilePageState extends State<ProfilePage> {
         height: 20,
         color: colorGray03,
       ),
-      colorMain.withOpacity(0.7),
+      primaryColor.withOpacity(0.7),
       onTap: () {
         showConfirmActionSheet(
           context,
@@ -359,15 +369,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                     (state.userInfoLogin?.isLogin == false ||
                                             state.userInfoLogin == null)
                                         ? space0
-                                        : spaceH12,
+                                        : spaceH2,
                                     Text(
                                       state.userInfoLogin?.name ?? '',
                                       style: Theme.of(context)
                                           .textTheme
-                                          .titleMedium
+                                          .bodyMedium
                                           ?.copyWith(
-                                              color: colorPrimary,
-                                              fontWeight: FontWeight.w500),
+                                            color: colorPrimary,
+                                          ),
                                     ),
                                     (state.userInfoLogin?.isLogin == false ||
                                             state.userInfoLogin == null)
@@ -377,10 +387,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                       state.userInfoLogin?.email ?? '',
                                       style: Theme.of(context)
                                           .textTheme
-                                          .titleMedium
+                                          .bodyMedium
                                           ?.copyWith(
-                                              color: colorPrimary,
-                                              fontWeight: FontWeight.w500),
+                                            color: colorPrimary,
+                                          ),
                                     ),
                                     spaceH16,
                                     Container(
@@ -474,10 +484,9 @@ class _ProfilePageState extends State<ProfilePage> {
         children: [
           Text(
             "Đơn hàng",
-            style: Theme.of(context)
-                .textTheme
-                .titleMedium
-                ?.copyWith(color: colorBlack, fontWeight: FontWeight.w500),
+            style: textTheme.bodyMedium?.copyWith(
+              color: Theme.of(context).primaryColorLight,
+            ),
           ),
           InkWell(
             onTap: () {
@@ -489,10 +498,7 @@ class _ProfilePageState extends State<ProfilePage> {
               children: [
                 Text(
                   "Xem lịch sử mua hàng",
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleSmall
-                      ?.copyWith(color: colorGray03),
+                  style: textTheme.bodyMedium?.copyWith(color: colorGray03),
                 ),
                 const Icon(
                   Icons.navigate_next,
@@ -523,60 +529,6 @@ class _ProfilePageState extends State<ProfilePage> {
               : listSection.length,
     );
   }
-
-  // Widget _itemListProfile() {
-  //   return Container(
-  //     height: 60,
-  //     width: double.infinity,
-  //     child: Column(children: [
-  //       Expanded(
-  //         child: Container(
-  //           margin: const EdgeInsets.symmetric(horizontal: 16),
-  //           width: double.infinity,
-  //           height: double.infinity,
-  //           child: Row(children: [
-  //             Container(
-  //                 margin: const EdgeInsets.only(right: 16),
-  //                 width: 20,
-  //                 height: 20,
-  //                 child: Image.network(
-  //                   "https://raw.githubusercontent.com/coredxor/images/main/q8.png",
-  //                   fit: BoxFit.fill,
-  //                 )),
-  //             Text(
-  //               "Orders",
-  //               style: TextStyle(
-  //                 color: Color(0xFF181725),
-  //                 fontSize: 18,
-  //                 fontWeight: FontWeight.bold,
-  //               ),
-  //             ),
-  //             Expanded(
-  //               child: Container(
-  //                 width: double.infinity,
-  //                 height: double.infinity,
-  //                 child: SizedBox(),
-  //               ),
-  //             ),
-  //             Container(
-  //                 width: 12,
-  //                 height: 20,
-  //                 child: Image.network(
-  //                   "https://raw.githubusercontent.com/coredxor/images/main/q2.png",
-  //                   fit: BoxFit.fill,
-  //                 )),
-  //           ]),
-  //         ),
-  //       ),
-  //       Container(
-  //         color: Color(0xFFE2E2E2),
-  //         height: 1,
-  //         width: double.infinity,
-  //         child: SizedBox(),
-  //       ),
-  //     ]),
-  //   );
-  // }
 
   Widget _item(
     BuildContext context, {

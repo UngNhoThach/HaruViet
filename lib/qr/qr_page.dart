@@ -50,7 +50,7 @@ class _QrCodePagePageState extends State<QrCodePage> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text('Mã QR của tôi'),
-        backgroundColor: colorMain,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       extendBodyBehindAppBar: true,
       body: Container(

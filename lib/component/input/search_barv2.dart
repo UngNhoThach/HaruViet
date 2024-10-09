@@ -61,8 +61,8 @@ class _AppSearchBarV2State extends State<AppSearchBarV2> {
                     decoration: InputDecoration(
                       filled: true,
                       isDense: true,
-                      fillColor: context.appColor.colorWhite,
-                      focusColor: context.appColor.colorWhite,
+                      fillColor: colorWhite,
+                      focusColor: colorWhite,
                       enabledBorder: OutlineInputBorder(
                         borderSide: const BorderSide(
                           color: colorWhite,

@@ -278,7 +278,8 @@ class _ResetPassWordPageState extends State<ResetPassWordPage> {
         width: 1.sw,
         height: 36.h,
         decoration: BoxDecoration(
-            color: colorMain, borderRadius: BorderRadius.circular(12.r)),
+            color: Theme.of(context).primaryColor,
+            borderRadius: BorderRadius.circular(12.r)),
         child: Center(
           child: Text(
             'TIẾP TỤC',
@@ -400,7 +401,7 @@ class _ResetPassWordPageState extends State<ResetPassWordPage> {
         height: 60,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: colorMain,
+          color: Theme.of(context).primaryColor,
         ),
         child: Center(
           child: Text(name,

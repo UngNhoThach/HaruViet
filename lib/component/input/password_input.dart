@@ -1,6 +1,6 @@
-import 'package:haruviet/helper/context.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:haruviet/helper/colors.dart';
 
 class PasswordInputV2 extends StatefulWidget {
   const PasswordInputV2({
@@ -66,7 +66,7 @@ class _PasswordInputState extends State<PasswordInputV2> {
             _passwordVisible
                 ? Icons.visibility_outlined
                 : Icons.visibility_off_outlined,
-            color: context.appColor.colorBlack,
+            color: colorBlack,
           ),
           onTap: () {
             setState(() {

@@ -109,7 +109,7 @@ class _SelectAddressPageState extends State<SelectAddressPage> {
                     },
                   ),
                 ],
-                backgroundColor: colorMain,
+                backgroundColor: Theme.of(context).primaryColor,
               ),
               body: state.isLoading
                   ? const LoadingLogo()

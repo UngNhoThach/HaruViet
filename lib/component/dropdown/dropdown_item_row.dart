@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:haruviet/helper/context.dart';
+import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/theme/typography.dart';
 
 class AppDropDownFormFieldRow<T> extends StatelessWidget {
@@ -60,8 +60,8 @@ class AppDropDownFormFieldRow<T> extends StatelessWidget {
           focusedBorder: border,
           prefixIcon: prefixIcon,
           helperText: helperText,
-          helperStyle: TextStyle(
-            color: context.appColor.colorOrange,
+          helperStyle: const TextStyle(
+            color: colorOrange,
           ),
           labelStyle: textTheme.bodySmall,
           labelText: label,

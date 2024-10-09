@@ -1,7 +1,7 @@
 import 'package:haruviet/helper/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:haruviet/helper/context.dart';
+import 'package:haruviet/theme/typography.dart';
 
 class TextFiledInput extends StatefulWidget {
   const TextFiledInput({
@@ -68,9 +68,9 @@ class _TextFiledInputState extends State<TextFiledInput> {
         ),
         suffixIcon: _inputController.text.isNotEmpty
             ? GestureDetector(
-                child: Icon(
+                child: const Icon(
                   Icons.clear,
-                  color: context.appColor.colorBlack,
+                  color: colorBlack,
                 ),
                 onTap: () {
                   _inputController.clear();
@@ -156,6 +156,7 @@ class _TextFiledInputTextState extends State<TextFiledInputText> {
       readOnly: widget.readOnly,
       controller: _inputController,
       onChanged: widget.onChanged,
+      style: textTheme.bodyMedium,
       keyboardType: widget.keyboardType,
       decoration: InputDecoration(
         errorBorder: widget.isErrorBorder
@@ -174,10 +175,11 @@ class _TextFiledInputTextState extends State<TextFiledInputText> {
               )
             : null,
         hintText: widget.hintext,
+        hintStyle: textTheme.bodyMedium,
         border: widget.isBorder
             ? OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: context.appColor.colorGrey.withOpacity(0.5),
+                  color: colorGrey.withOpacity(0.5),
                 ),
                 borderRadius: BorderRadius.all(Radius.circular(8.r)),
               )
@@ -185,7 +187,7 @@ class _TextFiledInputTextState extends State<TextFiledInputText> {
         enabledBorder: widget.isBorder
             ? OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: context.appColor.colorGrey.withOpacity(0.5),
+                  color: colorGrey.withOpacity(0.5),
                 ),
                 borderRadius: BorderRadius.all(Radius.circular(8.r)),
               )
@@ -193,18 +195,18 @@ class _TextFiledInputTextState extends State<TextFiledInputText> {
         focusedBorder: widget.isBorder
             ? OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: context.appColor.colorGrey.withOpacity(0.5),
+                  color: colorGrey.withOpacity(0.5),
                 ),
                 borderRadius: BorderRadius.all(Radius.circular(8.r)),
               )
             : null,
         suffixIcon: _inputController.text.isNotEmpty
             ? GestureDetector(
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 16),
+                child: const Padding(
+                  padding: EdgeInsets.only(right: 16),
                   child: Icon(
                     Icons.clear,
-                    color: context.appColor.colorBlack,
+                    color: colorBlack,
                   ),
                 ),
                 onTap: () {

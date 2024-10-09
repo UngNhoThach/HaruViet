@@ -81,7 +81,7 @@ class CustomAlertDialog extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   decoration: BoxDecoration(
-                    color: colorMain,
+                    color: Theme.of(context).primaryColor,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Text(

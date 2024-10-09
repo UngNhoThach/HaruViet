@@ -1,4 +1,5 @@
 import 'package:haruviet/component/required_label/required_labal.dart';
+import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/context.dart';
 import 'package:haruviet/helper/spaces.dart';
 import 'package:haruviet/theme/typography.dart';
@@ -96,7 +97,7 @@ class FormInput extends StatelessWidget {
             labelText: isDisplayTitle ? null : (isRequired ? null : title),
             labelStyle: !enabled
                 ? textTheme.bodySmall?.copyWith(
-                    color: context.appColor.colorGrey,
+                    color: colorGrey,
                     fontWeight: FontWeight.w400,
                   )
                 : textTheme.bodySmall,
@@ -109,25 +110,25 @@ class FormInput extends StatelessWidget {
             ),
             border: OutlineInputBorder(
               borderSide: BorderSide(
-                color: context.appColor.colorGrey.withOpacity(0.5),
+                color: colorGrey.withOpacity(0.5),
               ),
               borderRadius: const BorderRadius.all(Radius.circular(8)),
             ),
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: context.appColor.colorGrey.withOpacity(0.5),
+                color: colorGrey.withOpacity(0.5),
               ),
               borderRadius: const BorderRadius.all(Radius.circular(8)),
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: context.appColor.colorGrey.withOpacity(0.5),
+                color: colorGrey.withOpacity(0.5),
               ),
               borderRadius: const BorderRadius.all(Radius.circular(8)),
             ),
             disabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: context.appColor.colorGrey.withOpacity(0.5),
+                color: colorGrey.withOpacity(0.5),
               ),
               borderRadius: const BorderRadius.all(Radius.circular(8)),
             ),
@@ -144,9 +145,9 @@ class FormInput extends StatelessWidget {
                   )
                 : (onClear != null && (initialText ?? '').isNotEmpty
                     ? GestureDetector(
-                        child: Icon(
+                        child: const Icon(
                           Icons.clear,
-                          color: context.appColor.colorBlack,
+                          color: colorBlack,
                         ),
                         onTap: () {
                           onClear?.call();

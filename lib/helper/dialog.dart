@@ -87,7 +87,9 @@ Future<void> showConfirmActionSheet(
           child: Text(
             confirmButtonLabel,
             style: textTheme.bodyMedium?.copyWith(
-              color: isDestructiveAction ? colorMain : colorBlack,
+              color: isDestructiveAction
+                  ? Theme.of(context).primaryColor
+                  : colorBlack,
             ),
           ),
         )

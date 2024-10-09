@@ -1,4 +1,3 @@
-import 'package:haruviet/component/loading_scaffold.dart';
 import 'package:haruviet/component/popup/alert/alert_cofirm.dart';
 import 'package:haruviet/component/popup/popup.dart';
 import 'package:haruviet/helper/colors.dart';
@@ -197,7 +196,7 @@ class _NewsPageState extends State<NewsPage> {
                   style: Theme.of(context)
                       .textTheme
                       .titleSmall
-                      ?.copyWith(color: colorGray03),
+                      ?.copyWith(color: Theme.of(context).primaryColorLight),
                 ),
                 const Icon(
                   Icons.navigate_next,

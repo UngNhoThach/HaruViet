@@ -61,7 +61,7 @@ class _CartPageState extends State<CartPage> {
     super.initState();
   }
 
-  footer(BuildContext context, CartState state) {
+  footer(BuildContext context, CartState state, Color colorPrimaryCover) {
     return Container(
       margin: EdgeInsets.only(top: 12.h),
       child: Column(
@@ -73,7 +73,7 @@ class _CartPageState extends State<CartPage> {
               child: Text(
                 'Miễn phí vận chuyển',
                 style: textTheme.titleLarge?.copyWith(
-                  color: colorMainCover,
+                  color: colorPrimaryCover,
                   fontWeight: FontWeight.w400,
                 ),
                 textAlign: TextAlign.start,
@@ -165,7 +165,8 @@ class _CartPageState extends State<CartPage> {
             ?.copyWith(color: colorGray04, fontWeight: FontWeight.w400));
   }
 
-  createCartList(CartState state, CartProviderV2 cart) {
+  createCartList(
+      CartState state, CartProviderV2 cart, Color colorPrimaryCover) {
     return BlocSelector<CartBloc, CartState, List<CartModelProduct>>(
       selector: (state) {
         return state.productsList;
@@ -323,7 +324,7 @@ class _CartPageState extends State<CartPage> {
                                       const Divider(),
                                       Text('${itemCheck.promotions?[0]}',
                                           style: textTheme.bodyMedium?.copyWith(
-                                              color: colorMainCover,
+                                              color: colorPrimaryCover,
                                               fontWeight: FontWeight.w400)),
                                       spaceH6,
                                     ],
@@ -335,7 +336,9 @@ class _CartPageState extends State<CartPage> {
                         ),
                         spaceH6,
                         if (matchedGift != null) ...[
-                          _giftItem(item: matchedGift)
+                          _giftItem(
+                              item: matchedGift,
+                              colorPrimaryCover: colorPrimaryCover)
                         ]
                       ],
                     ),
@@ -361,57 +364,62 @@ class _CartPageState extends State<CartPage> {
           // }
         },
         child: BlocBuilder<CartBloc, CartState>(builder: (context, state) {
-          return Scaffold(
-              appBar: widget.params.isAppBar
-                  ? AppBar(
-                      centerTitle: true,
-                      title: Text(
-                        'Giỏ hàng',
-                        style: textTheme.titleMedium?.copyWith(
-                            color: colorWhite, fontWeight: FontWeight.bold),
-                      ),
-                      backgroundColor: colorMain,
-                    )
-                  : null,
-              resizeToAvoidBottomInset: false,
-              backgroundColor: Colors.grey.shade100,
-              body: ((state.totalItem == 0 || state.totalItem == null) &&
-                      state.isLoading)
-                  ? const LoadingLogo()
-                  : LoadingScaffold(
-                      isLoading: state.isLoading,
-                      child: Builder(builder: (context) {
-                        return !(state.totalItem == 0 ||
-                                state.totalItem == null)
-                            ? Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 16.w, vertical: 12.h),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        createSubTitle(state),
-                                      ],
+          Color colorPrimaryCover = Theme.of(context).primaryColorLight;
+          return GestureDetector(
+            onTap: () => FocusScope.of(context).unfocus(),
+            child: Scaffold(
+                appBar: widget.params.isAppBar
+                    ? AppBar(
+                        centerTitle: true,
+                        title: Text(
+                          'Giỏ hàng',
+                          style: textTheme.titleMedium?.copyWith(
+                              color: colorWhite, fontWeight: FontWeight.bold),
+                        ),
+                        backgroundColor: colorMain,
+                      )
+                    : null,
+                resizeToAvoidBottomInset: false,
+                backgroundColor: Colors.grey.shade100,
+                body: ((state.totalItem == 0 || state.totalItem == null) &&
+                        state.isLoading)
+                    ? const LoadingLogo()
+                    : LoadingScaffold(
+                        isLoading: state.isLoading,
+                        child: Builder(builder: (context) {
+                          return !(state.totalItem == 0 ||
+                                  state.totalItem == null)
+                              ? Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 16.w, vertical: 12.h),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          createSubTitle(state),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  Expanded(
-                                    child: SingleChildScrollView(
-                                      physics: const BouncingScrollPhysics(),
-                                      child: createCartList(state, cart),
+                                    Expanded(
+                                      child: SingleChildScrollView(
+                                        physics: const BouncingScrollPhysics(),
+                                        child: createCartList(
+                                            state, cart, colorPrimaryCover),
+                                      ),
                                     ),
-                                  ),
-                                  footer(context, state)
-                                ],
-                              )
-                            : _didFoundItem(context);
-                      }),
-                    ));
+                                    footer(context, state, colorPrimaryCover)
+                                  ],
+                                )
+                              : _didFoundItem(context);
+                        }),
+                      )),
+          );
         }),
       ),
     );
@@ -423,9 +431,9 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
-  Widget _giftItem({
-    required DataProductDetailResponse item,
-  }) {
+  Widget _giftItem(
+      {required DataProductDetailResponse item,
+      required Color colorPrimaryCover}) {
     return Container(
       margin: const EdgeInsets.only(left: 16, right: 16, top: 0, bottom: 16),
       padding: const EdgeInsets.all(12), // Add padding for better spacing
@@ -434,14 +442,6 @@ class _CartPageState extends State<CartPage> {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
             color: colorSuccess03, width: 1.5), // Green border to highlight
-        // boxShadow: const [
-        //   BoxShadow(
-        //     color: Colors.black12,
-        //     blurRadius: 2,
-        //     offset: Offset(
-        //         0, 1), // Shadow for slight elevation
-        //   ),
-        // ],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -478,7 +478,7 @@ class _CartPageState extends State<CartPage> {
               Text(
                 item.descriptions?.name ?? '',
                 style: textTheme.bodyMedium?.copyWith(
-                  color: colorMainCover,
+                  color: colorPrimaryCover,
                   fontWeight: FontWeight.w500,
                 ),
                 overflow: TextOverflow.ellipsis,

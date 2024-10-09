@@ -95,8 +95,8 @@ class _AppSearchBarState extends State<AppSearchBar> {
                     decoration: InputDecoration(
                       filled: true,
                       isDense: true,
-                      fillColor: context.appColor.colorWhite,
-                      focusColor: context.appColor.colorWhite,
+                      fillColor: colorWhite,
+                      focusColor: colorWhite,
                       enabledBorder: OutlineInputBorder(
                         borderSide: const BorderSide(
                           color: colorWhite,
@@ -119,11 +119,11 @@ class _AppSearchBarState extends State<AppSearchBar> {
                       ),
                       suffixIcon: _inputController.text.isNotEmpty
                           ? GestureDetector(
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 16),
+                              child: const Padding(
+                                padding: EdgeInsets.only(right: 16),
                                 child: Icon(
                                   Icons.clear,
-                                  color: context.appColor.colorBlack,
+                                  color: colorBlack,
                                 ),
                               ),
                               onTap: () {

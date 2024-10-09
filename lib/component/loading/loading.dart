@@ -21,11 +21,12 @@ class LoadingLogo extends StatelessWidget {
                 height: 40,
                 width: 40,
               ),
-              const SizedBox(
+              SizedBox(
                 width: 60,
                 height: 60,
                 child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(colorMain),
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                      Theme.of(context).primaryColor),
                   strokeWidth: 0.5,
                 ),
               ),

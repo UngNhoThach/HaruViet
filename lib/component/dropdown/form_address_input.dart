@@ -4,6 +4,7 @@ import 'package:haruviet/component/always_disabled_focus_node.dart';
 import 'package:haruviet/component/required_label/required_labal.dart';
 import 'package:haruviet/component/select_address/models/select_address_params.dart';
 import 'package:haruviet/data/reponsitory/customers/models/address_response.dart';
+import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/context.dart';
 import 'package:haruviet/helper/spaces.dart';
 import 'package:haruviet/resources/routes.dart';
@@ -105,9 +106,7 @@ class FormAddressInput extends StatelessWidget {
                 maxLines: maxLines ?? 2,
                 minLines: minLines ?? 1,
                 maxLength: maxLength,
-                style: TextStyle(
-                  color: context.appColorScheme.colorExtendedTextTitleMedium,
-                ),
+                style: textTheme.bodyMedium,
                 decoration: InputDecoration(
                   //errorBorder: null,
                   icon: widget,
@@ -123,33 +122,29 @@ class FormAddressInput extends StatelessWidget {
                   hintText: hintText,
                   border: isBorder
                       ? OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color:
-                                  context.appColor.colorGrey.withOpacity(0.5)),
+                          borderSide:
+                              BorderSide(color: colorGrey.withOpacity(0.5)),
                           borderRadius: BorderRadius.all(Radius.circular(8.r)),
                         )
                       : InputBorder.none,
                   enabledBorder: isBorder
                       ? OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color:
-                                  context.appColor.colorGrey.withOpacity(0.5)),
+                          borderSide:
+                              BorderSide(color: colorGrey.withOpacity(0.5)),
                           borderRadius: BorderRadius.all(Radius.circular(8.r)),
                         )
                       : InputBorder.none,
                   focusedBorder: isBorder
                       ? OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color:
-                                  context.appColor.colorGrey.withOpacity(0.5)),
+                          borderSide:
+                              BorderSide(color: colorGrey.withOpacity(0.5)),
                           borderRadius: BorderRadius.all(Radius.circular(8.r)),
                         )
                       : InputBorder.none,
                   disabledBorder: isBorder
                       ? OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color:
-                                  context.appColor.colorGrey.withOpacity(0.5)),
+                          borderSide:
+                              BorderSide(color: colorGrey.withOpacity(0.5)),
                           borderRadius: BorderRadius.all(Radius.circular(8.r)),
                         )
                       : InputBorder.none,
@@ -161,9 +156,9 @@ class FormAddressInput extends StatelessWidget {
                   right: 8.w,
                   child: (initialText ?? '').isNotEmpty
                       ? GestureDetector(
-                          child: Icon(
+                          child: const Icon(
                             Icons.clear,
-                            color: context.appColor.colorBlack,
+                            color: colorBlack,
                             size: 20,
                           ),
                           onTap: () {
@@ -172,9 +167,9 @@ class FormAddressInput extends StatelessWidget {
                         )
                       : Transform.rotate(
                           angle: pi / 2, // Góc quay 90 độ
-                          child: Icon(
+                          child: const Icon(
                             Icons.chevron_right,
-                            color: context.appColor.colorBlack,
+                            color: colorBlack,
                             size: 20,
                           ),
                         )),

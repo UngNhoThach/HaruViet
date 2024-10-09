@@ -95,7 +95,7 @@ class _HistoryNotificationPageState extends State<HistoryNotificationPage> {
         Icons.location_on_rounded,
         color: colorGray03,
       ),
-      colorMain.withOpacity(0.7),
+      Theme.of(context).primaryColor.withOpacity(0.7),
       onTap: () {
         routeService.pushNamed(
           Routes.addressPage,
@@ -161,7 +161,7 @@ class _HistoryNotificationPageState extends State<HistoryNotificationPage> {
         Icons.change_circle_outlined,
         color: colorGray03,
       ),
-      colorMain.withOpacity(0.7),
+      Theme.of(context).primaryColor.withOpacity(0.7),
       onTap: () {
         routeService.pushNamed(Routes.resetPassWordPage);
       },
@@ -175,7 +175,7 @@ class _HistoryNotificationPageState extends State<HistoryNotificationPage> {
         height: 20,
         color: colorGray03,
       ),
-      colorMain.withOpacity(0.7),
+      Theme.of(context).primaryColor.withOpacity(0.7),
       onTap: () {
         showConfirmActionSheet(
           context,
@@ -220,7 +220,7 @@ class _HistoryNotificationPageState extends State<HistoryNotificationPage> {
                   style: textTheme.titleMedium?.copyWith(
                       color: colorWhite, fontWeight: FontWeight.bold),
                 ),
-                backgroundColor: colorMain,
+                backgroundColor: Theme.of(context).primaryColor,
               ),
               backgroundColor: Colors.grey.shade200,
               resizeToAvoidBottomInset: true,
@@ -476,7 +476,7 @@ class _HistoryNotificationPageState extends State<HistoryNotificationPage> {
                   style: Theme.of(context)
                       .textTheme
                       .titleSmall
-                      ?.copyWith(color: colorGray03),
+                      ?.copyWith(color: Theme.of(context).primaryColorLight),
                 ),
                 const Icon(
                   Icons.navigate_next,

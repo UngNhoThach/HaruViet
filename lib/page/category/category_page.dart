@@ -8,7 +8,6 @@ import 'package:haruviet/data/reponsitory/category/models/list_category_response
 import 'package:haruviet/data/reponsitory/category/models/list_category_response/subcategory.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/const.dart';
-import 'package:haruviet/helper/context.dart';
 import 'package:haruviet/helper/spaces.dart';
 import 'package:haruviet/page/category/category_bloc.dart';
 import 'package:haruviet/page/category/category_state.dart';
@@ -139,7 +138,9 @@ class _CategoryPageState extends State<CategoryPage> {
                                                         border: Border(
                                                           left: BorderSide(
                                                               width: 6.0.w,
-                                                              color: colorMain),
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .primaryColor),
                                                         ),
                                                         color: Colors.white,
                                                       )
@@ -213,7 +214,7 @@ class _CategoryPageState extends State<CategoryPage> {
           child: Container(
             height: 50.h,
             decoration: BoxDecoration(
-              color: context.appColor.colorWhite,
+              color: colorWhite,
               borderRadius: BorderRadius.circular(16.0),
             ),
           ),

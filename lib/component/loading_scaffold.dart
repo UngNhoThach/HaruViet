@@ -13,7 +13,7 @@ class LoadingScaffold extends StatelessWidget {
         isLoading: isLoading,
         overlayOpacity: 0.3,
         borderRadius: 0.2,
-        circularProgressColor: colorMain,
+        circularProgressColor: Theme.of(context).primaryColor,
         appIcon: Image.asset(
           'assets/images/logo_2.png',
           fit: BoxFit.cover,

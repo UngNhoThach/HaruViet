@@ -2,7 +2,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/spaces.dart';
 import 'package:flutter/material.dart';
-import 'package:haruviet/helper/theme.dart';
+import 'package:haruviet/theme/theme.dart';
 import 'package:haruviet/page/product/product_list/widgets/product_list_page_params.dart';
 import 'package:haruviet/resources/routes.dart';
 import 'package:haruviet/utils/commons.dart';
@@ -42,7 +42,7 @@ class DidntFoundItem extends StatelessWidget {
                   arguments: ProductListPageParams());
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: colorMain,
+              backgroundColor: Theme.of(context).primaryColor,
             ),
             child: Text(
               "Mua sắm",

@@ -79,7 +79,7 @@ class _AskQuesitonPageState extends State<AskQuesitonPage> {
         appBar: AppBar(
           centerTitle: true,
           title: const Text('Hỏi đáp'),
-          backgroundColor: colorMain,
+          backgroundColor: Theme.of(context).primaryColor,
         ),
         body: Column(
           children: [

@@ -58,7 +58,7 @@ class _HistoryOrderPageState extends State<HistoryOrderPage>
             return Scaffold(
                 backgroundColor: colorWhite,
                 appBar: AppBar(
-                    backgroundColor: colorMain,
+                    backgroundColor: Theme.of(context).primaryColor,
                     elevation: 0,
                     leading: const Padding(
                       padding: EdgeInsets.only(
@@ -119,7 +119,7 @@ class _HistoryOrderPageState extends State<HistoryOrderPage>
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: TabBar(
-          indicatorColor: colorMainCover,
+          indicatorColor: Theme.of(context).primaryColorLight,
           isScrollable: true, // Thêm dòng này
           onTap: (value) async {
             _pageController.jumpToPage(value);

@@ -127,7 +127,9 @@ class _WidgetValueSelectState extends State<WidgetValueSelect> {
         child: Text(
           selectedValue.title ?? '',
           style: TextStyle(
-            color: selectedValue.isSelected ? colorMain : colorBlack,
+            color: selectedValue.isSelected
+                ? Theme.of(context).primaryColor
+                : colorBlack,
           ),
         ),
       ),

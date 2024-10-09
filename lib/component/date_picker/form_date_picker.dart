@@ -1,7 +1,7 @@
 import 'package:haruviet/component/always_disabled_focus_node.dart';
 import 'package:haruviet/component/popup/popup.dart';
 import 'package:haruviet/component/required_label/required_labal.dart';
-import 'package:haruviet/helper/context.dart';
+import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/date_time.dart';
 import 'package:haruviet/theme/typography.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +33,7 @@ class FormDatePicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      style: textTheme.bodyMedium,
       validator: validator,
       initialValue: initialDate?.format(pattern: dd_mm_yyyy),
       controller: controller,
@@ -42,7 +43,7 @@ class FormDatePicker extends StatelessWidget {
         border: border ??
             OutlineInputBorder(
               borderSide: BorderSide(
-                color: context.appColor.colorGrey.withOpacity(0.5),
+                color: colorGray01.withOpacity(0.5),
               ),
               borderRadius: BorderRadius.all(Radius.circular(8.r)),
             ),
@@ -58,8 +59,8 @@ class FormDatePicker extends StatelessWidget {
             child: Icon(
               Icons.calendar_today,
               color: initialDate != null
-                  ? context.appColor.colorBlack
-                  : context.appColor.colorBlack.withOpacity(0.5),
+                  ? colorBlack
+                  : colorBlack.withOpacity(0.5),
             ),
           ),
         ),

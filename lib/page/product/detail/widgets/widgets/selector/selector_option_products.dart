@@ -25,6 +25,7 @@ class AttributeValueSelector extends StatelessWidget {
             children: item.values!
                 .map((itemSelected) => _buildItem(
                       selectedValue: itemSelected,
+                      context,
                       onTap: () {
                         onSelect(
                             itemSelected); // Gọi hàm onSelect khi chọn item
@@ -37,7 +38,8 @@ class AttributeValueSelector extends StatelessWidget {
     );
   }
 
-  Widget _buildItem({
+  Widget _buildItem(
+    BuildContext context, {
     required ValueOptionProduct selectedValue,
     required VoidCallback onTap,
   }) {
@@ -55,7 +57,9 @@ class AttributeValueSelector extends StatelessWidget {
         child: Text(
           selectedValue.title ?? '',
           style: TextStyle(
-            color: selectedValue.isSelected ? colorMain : colorBlack,
+            color: selectedValue.isSelected
+                ? Theme.of(context).primaryColor
+                : colorBlack,
           ),
         ),
       ),

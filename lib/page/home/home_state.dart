@@ -30,7 +30,7 @@ class HomeState extends BaseState {
     this.idProductListLocal = const [],
     this.firtTimeLoadingPage = true,
     this.canLoadMore = false,
-    this.limit = 12, // perPageHome,
+    this.limit = 20, // perPageHome,
     this.currentPage = startPage,
     this.isSubmitSuccess = false,
     this.datatList = const [],

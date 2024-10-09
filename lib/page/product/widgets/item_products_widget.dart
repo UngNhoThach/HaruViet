@@ -64,27 +64,24 @@ class ItemProductWidget {
                       children: [
                         Text(
                           data.discount == null
-                              ? '${data.price?.price} \$'
+                              ? '${data.price?.priceStr}'
                               : '${data.discount?.pricePromotion?.priceStr}',
                           style:
-                              Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                    color: colorMain,
+                              Theme.of(context).textTheme.labelLarge?.copyWith(
+                                    color: Theme.of(context).primaryColor,
                                     fontWeight: FontWeight.bold,
                                   ),
                         ),
-                        data.discount != null
-                            ? Text(
+                        data.discount == null
+                            ? space0
+                            : Text(
                                 '${data.price?.priceStr}',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(
-                                      color: colorItemCover,
-                                      fontWeight: FontWeight.bold,
-                                      decoration: TextDecoration.lineThrough,
-                                    ),
-                              )
-                            : space0,
+                                style: textTheme.bodySmall?.copyWith(
+                                  color: colorItemCover,
+                                  fontWeight: FontWeight.bold,
+                                  decoration: TextDecoration.lineThrough,
+                                ),
+                              ),
                       ],
                     ),
                     const SizedBox(height: 4),
@@ -98,16 +95,8 @@ class ItemProductWidget {
                     const SizedBox(height: 4),
                     (data.descriptions == null)
                         ? space0
-                        : Text(
-                            data.descriptions?.name ?? '',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleSmall
-                                ?.copyWith(
-                                  color: colorBlackTileItem,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                          ),
+                        : Text(data.descriptions?.name ?? '',
+                            style: Theme.of(context).textTheme.bodyMedium),
                     const SizedBox(height: 6),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -119,7 +108,7 @@ class ItemProductWidget {
                               width: 42.w,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(8),
-                                color: colorMainCover,
+                                color: Theme.of(context).primaryColorLight,
                               ),
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 4, vertical: 2),
@@ -191,7 +180,8 @@ class ItemProductWidget {
                                 child: Container(
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(8.r),
-                                      color: colorMainCover),
+                                      color:
+                                          Theme.of(context).primaryColorLight),
                                   padding: EdgeInsets.symmetric(
                                       horizontal: 4.w, vertical: 2.h),
                                   child: Padding(
@@ -296,7 +286,7 @@ class ItemProductWidget {
                                       .textTheme
                                       .labelLarge
                                       ?.copyWith(
-                                        color: colorMain,
+                                        color: Theme.of(context).primaryColor,
                                         fontWeight: FontWeight.bold,
                                       ),
                                 ),
@@ -343,7 +333,8 @@ class ItemProductWidget {
                                       decoration: BoxDecoration(
                                         borderRadius:
                                             BorderRadius.circular(8.r),
-                                        color: colorMainCover,
+                                        color:
+                                            Theme.of(context).primaryColorLight,
                                       ),
                                       padding: EdgeInsets.symmetric(
                                           horizontal: 4.w, vertical: 2.h),
@@ -419,7 +410,8 @@ class ItemProductWidget {
                                             decoration: BoxDecoration(
                                                 borderRadius:
                                                     BorderRadius.circular(8.r),
-                                                color: colorMainCover),
+                                                color: Theme.of(context)
+                                                    .primaryColorLight),
                                             //
                                             padding: EdgeInsets.symmetric(
                                                 horizontal: 4.w, vertical: 2),

@@ -3,6 +3,7 @@ import 'package:haruviet/component/required_label/required_labal.dart';
 import 'package:haruviet/data/reponsitory/setting/item_base_response.dart';
 import 'package:haruviet/data/reponsitory/setting/option_value_base_list_request.dart';
 import 'package:haruviet/data/reponsitory/setting/select_option_value_params.dart';
+import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/context.dart';
 import 'package:haruviet/helper/spaces.dart';
 import 'package:haruviet/resources/routes.dart';
@@ -112,30 +113,25 @@ class FormOptionValueInput extends StatelessWidget {
                   labelText:
                       isDisplayTitle ? null : (isRequired ? null : title),
                   labelStyle: readOnly
-                      ? textTheme.bodySmall
-                          ?.copyWith(color: context.appColor.colorGrey)
-                      : textTheme.bodySmall?.copyWith(
-                          color: context.appColor.colorBlack.withOpacity(0.55)),
+                      ? textTheme.bodySmall?.copyWith(color: colorGrey)
+                      : textTheme.bodySmall
+                          ?.copyWith(color: colorBlack.withOpacity(0.55)),
                   isDense: true,
                   hintText: hintText,
                   border: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: context.appColor.colorGrey.withOpacity(0.5)),
+                    borderSide: BorderSide(color: colorGrey.withOpacity(0.5)),
                     borderRadius: BorderRadius.all(Radius.circular(8.r)),
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: context.appColor.colorGrey.withOpacity(0.5)),
+                    borderSide: BorderSide(color: colorGrey.withOpacity(0.5)),
                     borderRadius: BorderRadius.all(Radius.circular(8.r)),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: context.appColor.colorGrey.withOpacity(0.5)),
+                    borderSide: BorderSide(color: colorGrey.withOpacity(0.5)),
                     borderRadius: BorderRadius.all(Radius.circular(8.r)),
                   ),
                   disabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: context.appColor.colorGrey.withOpacity(0.5)),
+                    borderSide: BorderSide(color: colorGrey.withOpacity(0.5)),
                     borderRadius: BorderRadius.all(Radius.circular(8.r)),
                   ),
                   suffixIcon: space0,
@@ -146,18 +142,18 @@ class FormOptionValueInput extends StatelessWidget {
                 right: 8.w,
                 child: (initialText ?? '').isNotEmpty && !readOnly
                     ? GestureDetector(
-                        child: Icon(
+                        child: const Icon(
                           Icons.clear,
-                          color: context.appColor.colorBlack,
+                          color: colorBlack,
                           size: 20,
                         ),
                         onTap: () {
                           onChanged(null);
                         },
                       )
-                    : Icon(
+                    : const Icon(
                         CupertinoIcons.chevron_down,
-                        color: context.appColor.colorBlack,
+                        color: colorBlack,
                         size: 20,
                       ),
               )

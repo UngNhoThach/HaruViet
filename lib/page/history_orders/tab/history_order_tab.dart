@@ -8,7 +8,6 @@ import 'package:haruviet/data/reponsitory/cart_orders/models/cart_order_response
 import 'package:haruviet/gen/assets.gen.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/const.dart';
-import 'package:haruviet/helper/context.dart';
 import 'package:haruviet/helper/date_time.dart';
 import 'package:haruviet/helper/spaces.dart';
 import 'package:haruviet/page/history_orders/tab/widgets/order_detail_params.dart';
@@ -38,6 +37,18 @@ class _HistoryOrderTabState extends State<HistoryOrderTab> {
   late String domain;
   final PagingController<int, DataCart> _pagingController =
       PagingController(firstPageKey: startPage, invisibleItemsThreshold: 3);
+
+  Color? previousPrimaryColorColor;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    Color primaryColorCover = Theme.of(context).primaryColor;
+
+    if (primaryColorCover != previousPrimaryColorColor) {
+      previousPrimaryColorColor = primaryColorCover;
+    }
+  }
 
   @override
   void initState() {
@@ -111,7 +122,10 @@ class _HistoryOrderTabState extends State<HistoryOrderTab> {
                                 noItemsFoundIndicatorBuilder: _didFoundItem,
                                 itemBuilder: (context, item, index) {
                                   return _item(context,
-                                      data: item, state: state);
+                                      previousPrimaryColorColor:
+                                          previousPrimaryColorColor!,
+                                      data: item,
+                                      state: state);
                                 },
                               ),
                               separatorBuilder: (context, index) => spaceH12,
@@ -128,13 +142,15 @@ class _HistoryOrderTabState extends State<HistoryOrderTab> {
   }
 
   Widget _item(BuildContext context,
-      {required DataCart data, required HistoryOrderTabState state}) {
+      {required DataCart data,
+      required HistoryOrderTabState state,
+      required Color previousPrimaryColorColor}) {
     return GestureDetector(
       onTap: () {},
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(
-            color: colorMainCover,
+            color: previousPrimaryColorColor,
           ),
           color: const Color.fromARGB(255, 248, 249, 255),
           borderRadius: BorderRadius.circular(16.0),
@@ -177,7 +193,7 @@ class _HistoryOrderTabState extends State<HistoryOrderTab> {
                             child: Text(
                               'xem chi tiết',
                               style: textTheme.bodyMedium?.copyWith(
-                                color: colorMain,
+                                color: Theme.of(context).primaryColor,
                               ),
                             ))
                       ],
@@ -192,12 +208,11 @@ class _HistoryOrderTabState extends State<HistoryOrderTab> {
                         margin: const EdgeInsets.symmetric(vertical: 8.0),
                         padding: const EdgeInsets.all(12.0),
                         decoration: BoxDecoration(
-                          color: colorMainCover.withOpacity(0.04),
+                          color: previousPrimaryColorColor.withOpacity(0.04),
                           borderRadius:
                               BorderRadius.circular(8.0), // Tạo bo góc cho item
                         ),
-                        child: Expanded(
-                            child: Column(
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             _rowItem(
@@ -205,9 +220,11 @@ class _HistoryOrderTabState extends State<HistoryOrderTab> {
                             ),
                             spaceH4,
                             _rowItem(
-                              value: data.details?.itemProduct?.price ?? '',
+                              value: toPrice(
+                                  value:
+                                      data.details?.itemProduct?.price ?? ''),
                               style: textTheme.bodyMedium?.copyWith(
-                                color: colorMain,
+                                color: Theme.of(context).primaryColor,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -215,23 +232,26 @@ class _HistoryOrderTabState extends State<HistoryOrderTab> {
                             _rowItem(
                               value: data.shippingMethod ?? '',
                               widget: Assets.icons.shipmentMethod.image(
-                                  height: 18, width: 18, color: colorSuccess03),
-                              style: textTheme.bodyMedium?.copyWith(
-                                color: colorSuccess03,
-                              ),
+                                  height: 18,
+                                  width: 18,
+                                  color: colorBlueGray03),
+                              style: textTheme.bodyMedium
+                                  ?.copyWith(color: colorBlueGray03),
                             ),
                             spaceH4,
                             _rowItem(
                               style: textTheme.bodyMedium?.copyWith(
-                                color: colorSuccess03,
+                                color: colorBlueGray03,
                               ),
                               value: converDateToString(
                                   data.details?.createdAt ?? ''),
                               widget: Assets.icons.time.image(
-                                  height: 18, width: 18, color: colorSuccess03),
+                                  height: 18,
+                                  width: 18,
+                                  color: colorBlueGray03),
                             ),
                           ],
-                        ))),
+                        )),
 
                     const Divider(
                       height: 1,
@@ -254,8 +274,8 @@ class _HistoryOrderTabState extends State<HistoryOrderTab> {
                             ),
                             Text(
                               toPrice(value: data.total ?? ''),
-                              style: textTheme.titleMedium
-                                  ?.copyWith(color: colorMain),
+                              style: textTheme.titleMedium?.copyWith(
+                                  color: Theme.of(context).primaryColor),
                             ),
                           ],
                         )
@@ -281,7 +301,7 @@ class _HistoryOrderTabState extends State<HistoryOrderTab> {
           child: Container(
             height: 100.h,
             decoration: BoxDecoration(
-              color: context.appColor.colorWhite,
+              color: colorWhite,
               borderRadius: BorderRadius.circular(16.0),
             ),
           ),
@@ -304,11 +324,7 @@ class _HistoryOrderTabState extends State<HistoryOrderTab> {
         Flexible(
           child: Text(
             value,
-            style: style ??
-                textTheme.bodyMedium?.copyWith(
-                  color: context.appColor.colorBlack,
-                  fontWeight: FontWeight.bold,
-                ),
+            style: style ?? textTheme.bodyLarge,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
@@ -371,14 +387,16 @@ class _HistoryOrderTabState extends State<HistoryOrderTab> {
     );
   }
 
-  Widget _didFoundItem(BuildContext context) {
+  Widget _didFoundItem(
+    BuildContext context,
+  ) {
     return DidntFoundItem(
       widget: Column(
         children: [
           spaceH100,
-          const Text(
+          Text(
             'Không tìm thấy dữ liệu phù hợp',
-            style: TextStyle(color: colorMainCover),
+            style: TextStyle(color: Theme.of(context).primaryColorLight),
           )
         ],
       ),

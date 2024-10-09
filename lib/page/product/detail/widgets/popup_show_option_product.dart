@@ -87,6 +87,7 @@ class _PopupChangePersonalInformationState
           return ConstrainedBox(
             constraints: BoxConstraints(maxHeight: 400.h),
             child: ListView(
+              physics: const BouncingScrollPhysics(),
               shrinkWrap: true,
               padding: const EdgeInsets.symmetric(horizontal: 16),
               children: [

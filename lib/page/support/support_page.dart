@@ -46,7 +46,7 @@ class _SupportPageState extends State<SupportPage> {
           builder: (context, state) {
             return Scaffold(
               appBar: AppBar(
-                backgroundColor: colorMain,
+                backgroundColor: Theme.of(context).primaryColor,
                 title: const Text('Hỗ trợ'),
               ),
               resizeToAvoidBottomInset: false,

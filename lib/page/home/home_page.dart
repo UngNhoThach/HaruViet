@@ -150,7 +150,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   Widget _body(BuildContext context, {required HomeState state}) {
     childAspectRatio = MediaQuery.of(context).size.width /
-        (MediaQuery.of(context).size.height / 1.35.h);
+        (MediaQuery.of(context).size.height / 1.4.h);
 
     return CustomScrollView(
       shrinkWrap: true,
@@ -218,23 +218,26 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget _buildPagedSliverGrid() {
-    return PagedSliverGrid<int, DataProduct>(
-      showNewPageProgressIndicatorAsGridChild: false,
-      showNewPageErrorIndicatorAsGridChild: false,
-      showNoMoreItemsIndicatorAsGridChild: false,
-      pagingController: _pagingController,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisSpacing: 0,
-        crossAxisSpacing: 0,
-        childAspectRatio: childAspectRatio,
-      ),
-      builderDelegate: PagedChildBuilderDelegate<DataProduct>(
-        noItemsFoundIndicatorBuilder: _empty,
-        itemBuilder: (context, item, index) => AnimatedProductGridItem(
-          index: index,
-          child:
-              _itemGridView(context, index: index, data: item, domain: domain),
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      sliver: PagedSliverGrid<int, DataProduct>(
+        showNewPageProgressIndicatorAsGridChild: false,
+        // showNewPageErrorIndicatorAsGridChild: false,
+        // showNoMoreItemsIndicatorAsGridChild: false,
+        pagingController: _pagingController,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          mainAxisSpacing: 0,
+          crossAxisSpacing: 0,
+          childAspectRatio: childAspectRatio,
+        ),
+        builderDelegate: PagedChildBuilderDelegate<DataProduct>(
+          noItemsFoundIndicatorBuilder: _empty,
+          itemBuilder: (context, item, index) => AnimatedProductGridItem(
+            index: index,
+            child: _itemGridView(context,
+                index: index, data: item, domain: domain),
+          ),
         ),
       ),
     );
@@ -339,8 +342,8 @@ Widget _topCategoriesHeader(
             "Xem tất cả",
             style: Theme.of(context)
                 .textTheme
-                .titleMedium
-                ?.copyWith(color: colorMainCover),
+                .bodyMedium
+                ?.copyWith(color: Theme.of(context).primaryColorLight),
           ),
         )
       ],

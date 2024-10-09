@@ -5,7 +5,7 @@ import 'package:haruviet/component/select_address/models/select_address_params.d
 import 'package:haruviet/component/select_address/select_address_page.dart';
 import 'package:haruviet/data/data_local/user_bloc.dart';
 import 'package:haruviet/database_local/product/cart_provider_v2.dart';
-import 'package:haruviet/helper/theme.dart';
+import 'package:haruviet/theme/theme.dart';
 import 'package:haruviet/page/about_us/about_us_page.dart';
 import 'package:haruviet/page/account/update_profile/widgets/update_profile_params.dart';
 import 'package:haruviet/page/add_address/add_address/add_address_page.dart';
@@ -20,7 +20,6 @@ import 'package:haruviet/page/category/widgets/category_paga_params.dart';
 import 'package:haruviet/page/chat/chat_page.dart';
 import 'package:haruviet/page/cart/bill/bill_info_page.dart';
 import 'package:haruviet/page/cart/payment_method/payment_method_page.dart';
-import 'package:haruviet/page/cart/voucher/voucher_page.dart';
 import 'package:haruviet/page/account/forget_password/forget_password_page.dart';
 import 'package:haruviet/page/history_orders/history_order_page.dart';
 import 'package:haruviet/page/history_orders/tab/history_order_tab.dart';
@@ -275,12 +274,6 @@ class _HomePageState extends State<HomePage> {
           builder: (_) => AddressPage(
             params: settings.arguments! as AddressParams,
           ),
-        );
-      // VoucherPage
-      case Routes.voucherPage:
-        return MaterialPageRoute(
-          settings: const RouteSettings(name: Routes.voucherPage),
-          builder: (_) => const VoucherPage(),
         );
 
       // NewDetailPage

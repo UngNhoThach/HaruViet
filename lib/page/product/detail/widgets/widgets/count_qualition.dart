@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/spaces.dart';
+import 'package:haruviet/theme/typography.dart';
 
 class CountQuality extends StatefulWidget {
   final int initialCounter;
@@ -65,7 +66,7 @@ class _CountQualityState extends State<CountQuality> {
     if (_debounce?.isActive ?? false) {
       _debounce?.cancel();
     }
-    _debounce = Timer(const Duration(milliseconds: 350), () {
+    _debounce = Timer(const Duration(milliseconds: 500), () {
       callback();
     });
   }

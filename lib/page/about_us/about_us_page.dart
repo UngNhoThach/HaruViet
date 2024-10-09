@@ -12,7 +12,7 @@ class _AboutPageState extends State<AboutPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: colorMain,
+        backgroundColor: Theme.of(context).primaryColor,
         title: const Text(
           "Về chúng tôi",
           style: TextStyle(

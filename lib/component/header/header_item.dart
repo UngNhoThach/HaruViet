@@ -69,7 +69,9 @@ class FilterProductList extends StatelessWidget {
                         Text(
                           e.name,
                           style: textTheme.bodyMedium?.copyWith(
-                            color: statusSelected == e ? colorMain : colorBlack,
+                            color: statusSelected == e
+                                ? Theme.of(context).primaryColor
+                                : colorBlack,
                             fontWeight: FontWeight.w500,
                           ),
                         ),

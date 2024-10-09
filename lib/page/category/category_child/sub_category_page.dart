@@ -9,7 +9,6 @@ import 'package:haruviet/data/reponsitory/category/models/atribute_category_resp
 import 'package:haruviet/data/reponsitory/category/models/atribute_category_response/value_attributes.dart';
 import 'package:haruviet/data/reponsitory/category/models/category_detail_response/subcategory.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_list_product/data_product_list.dart';
-import 'package:haruviet/database_local/product/cart_provider.dart';
 import 'package:haruviet/database_local/product/cart_provider_v2.dart';
 import 'package:haruviet/gen/assets.gen.dart';
 import 'package:haruviet/helper/colors.dart';
@@ -101,8 +100,10 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    Color primaryColor = Theme.of(context).primaryColor;
+
     childAspectRatio = MediaQuery.of(context).size.width /
-        (MediaQuery.of(context).size.height / 1.35.h);
+        (MediaQuery.of(context).size.height / 1.40.h);
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -134,12 +135,13 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
             return Scaffold(
               endDrawer: state.atributesCategoryData.isNotEmpty
                   ? _endDrawer(context,
+                      primaryColor: primaryColor,
                       atributesCategoryData: state.atributesCategoryData,
                       state: state)
                   : null,
               drawerEnableOpenDragGesture: false,
               key: _scaffoldKey,
-              appBar: _appbarSearch(context),
+              appBar: _appbarSearch(context, primaryColor: primaryColor),
               body: state.isLoading && state.isLoadingProduct
                   ? const LoadingLogo()
                   // _loadingData(context)
@@ -156,6 +158,7 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
                               ),
                         SliverToBoxAdapter(
                           child: _filter(
+                            primaryColor: primaryColor,
                             state: state,
                             context,
                             nameCategory: state.nameCategory,
@@ -197,7 +200,8 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
                                                       state.currentTab !=
                                                           CurrentTab.priceLow)
                                                   ? colorBlack
-                                                  : colorMain),
+                                                  : Theme.of(context)
+                                                      .primaryColor),
                                         ),
                                         spaceW4,
                                         SizedBox(
@@ -324,6 +328,7 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
 
   Widget _endDrawer(BuildContext context,
       {required List<AtributesCategoryResponse> atributesCategoryData,
+      required Color primaryColor,
       required SubCategoryState state}) {
     return Drawer(
       width: MediaQuery.of(context).size.width * 0.8,
@@ -352,6 +357,7 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
                                         CrossAxisAlignment.start,
                                     children: [
                               _listAttribute(
+                                primaryColor: primaryColor,
                                 context,
                                 atributesCategoryData: atributesCategoryData,
                               )
@@ -435,13 +441,13 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
     );
   }
 
-  Widget _listAttribute(
-    BuildContext context, {
-    required List<AtributesCategoryResponse> atributesCategoryData,
-  }) {
+  Widget _listAttribute(BuildContext context,
+      {required List<AtributesCategoryResponse> atributesCategoryData,
+      required Color primaryColor}) {
     return Column(
       children: atributesCategoryData
           .map((value) => _itemAttribute(
+                primaryColor: primaryColor,
                 context,
                 itemAttribute: value,
               ))
@@ -450,7 +456,8 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
   }
 
   Widget _itemAttribute(BuildContext context,
-      {required AtributesCategoryResponse itemAttribute}) {
+      {required AtributesCategoryResponse itemAttribute,
+      required Color primaryColor}) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -470,6 +477,7 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
         ),
         spaceH8,
         _itemValueAttribute(context,
+            primaryColor: primaryColor,
             idSubCategory: itemAttribute.slug ?? '',
             atributesValue: itemAttribute.values ?? [])
       ],
@@ -478,7 +486,8 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
 
   Widget _itemValueAttribute(BuildContext context,
       {required String idSubCategory,
-      required List<AtributesValue> atributesValue}) {
+      required List<AtributesValue> atributesValue,
+      required Color primaryColor}) {
     // fix here
     return Wrap(
       //  key: ObjectKey(checkResetFilter),
@@ -487,6 +496,7 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
       direction: Axis.horizontal,
       children: atributesValue
           .map((item) => _itemStatus(
+                primaryColor: primaryColor,
                 context,
                 item.value ?? '',
                 item.isFilter ?? false,
@@ -500,7 +510,8 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
   }
 
   Widget _itemStatus(
-      BuildContext context, String value, bool isClick, Function() onTap) {
+      BuildContext context, String value, bool isClick, Function() onTap,
+      {required Color primaryColor}) {
     return InkWell(
       onTap: onTap,
       child: Container(
@@ -515,7 +526,7 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
                   width: 1,
                   color: const Color.fromARGB(255, 225, 223, 223),
                 ),
-          color: isClick ? colorMain : Colors.grey[200],
+          color: isClick ? primaryColor : Colors.grey[200],
           borderRadius: BorderRadius.circular(8.0),
         ),
         child: Row(
@@ -580,10 +591,11 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
     );
   }
 
-  PreferredSizeWidget _appbarSearch(BuildContext context) {
+  PreferredSizeWidget _appbarSearch(BuildContext context,
+      {required Color primaryColor}) {
     return AppBar(
       centerTitle: true,
-      backgroundColor: colorMain,
+      backgroundColor: primaryColor,
       title: AppSearchBarV2(
         hintText: 'Tìm kiếm sản phẩm',
         onTap: () {
@@ -648,10 +660,13 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
     );
   }
 
-  List<Widget> _itemAddList(BuildContext context,
-      {required String title,
-      required String value,
-      required VoidCallback onTapCallback}) {
+  List<Widget> _itemAddList(
+    BuildContext context, {
+    required String title,
+    required String value,
+    required VoidCallback onTapCallback,
+    required Color primaryColor,
+  }) {
     return [
       Container(
         padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 6.w),
@@ -677,9 +692,9 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
                     AtributesValue(value: value, lang: title),
                     isDeleteAll: false);
               },
-              child: const Icon(
+              child: Icon(
                 Icons.close,
-                color: colorMain,
+                color: primaryColor,
                 size: 18,
               ),
             ),
@@ -715,6 +730,8 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
     required bool isFilter,
     required SubCategoryState state,
     required void Function() onTapCallback,
+    required Color primaryColor,
+
     //     required AtributesValue data
   }) {
     return BlocSelector<SubCategoryBloc, SubCategoryState, bool>(
@@ -773,6 +790,7 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
                         return _itemAddList(
                           context,
                           title: item.key,
+                          primaryColor: primaryColor,
                           value: item.value,
                           onTapCallback: () {},
                         );
@@ -828,7 +846,7 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
                               padding: EdgeInsets.symmetric(
                                   vertical: 4.h, horizontal: 6.w),
                               decoration: BoxDecoration(
-                                color: colorMain,
+                                color: primaryColor,
                                 borderRadius: BorderRadius.circular(8.r),
                               ),
                               child: Row(

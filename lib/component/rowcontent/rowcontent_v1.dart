@@ -1,3 +1,4 @@
+import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/context.dart';
 import 'package:haruviet/helper/spaces.dart';
 import 'package:haruviet/theme/typography.dart';
@@ -109,7 +110,7 @@ class _RowContentState extends State<RowContent> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.appColor.colorWhite,
+        color: colorWhite,
         borderRadius:
             widget.isBorderRadius ? BorderRadius.circular(12.r) : null,
       ),

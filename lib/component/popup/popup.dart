@@ -258,9 +258,9 @@ Future<void> showDialogYearPicker({
               bottom: MediaQuery.of(modal).viewInsets.bottom,
             ),
             child: Container(
-              decoration: BoxDecoration(
-                color: context.appColor.colorWhite,
-                borderRadius: const BorderRadius.only(
+              decoration: const BoxDecoration(
+                color: colorWhite,
+                borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(24),
                   topRight: Radius.circular(24),
                 ),
@@ -387,10 +387,10 @@ Future<void> showDialogDatePicker({
                         onPressed: () {
                           Navigator.pop(c);
                         },
-                        child: Text(
+                        child: const Text(
                           'Hủy',
                           style: TextStyle(
-                            color: context.appColor.colorRed,
+                            color: colorRed,
                           ),
                         ),
                       ),
@@ -405,10 +405,10 @@ Future<void> showDialogDatePicker({
                           Navigator.of(c).pop();
                           callback(date);
                         },
-                        child: Text(
+                        child: const Text(
                           'Xong',
                           style: TextStyle(
-                            color: context.appColor.colorBlue,
+                            color: colorBlue,
                           ),
                         ),
                       ),

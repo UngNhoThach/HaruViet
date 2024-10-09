@@ -65,7 +65,7 @@ class _AddressPageState extends State<AddressPage> {
                             Navigator.of(context).pop();
                           }
                         : () => Navigator.of(context).pop()),
-                backgroundColor: colorMain,
+                backgroundColor: Theme.of(context).primaryColor,
                 title: const Text(
                   "Địa chỉ của tôi",
                   style: TextStyle(
@@ -151,8 +151,9 @@ class _AddressPageState extends State<AddressPage> {
                                                                 addressShipping:
                                                                     item);
                                                           },
-                                                          activeColor:
-                                                              colorMainCover1,
+                                                          activeColor: Theme.of(
+                                                                  context)
+                                                              .primaryColorLight,
                                                         )
                                                       : space0,
                                                   spaceW8,
@@ -251,9 +252,10 @@ class _AddressPageState extends State<AddressPage> {
                                             child: SizedBox(
                                                 height: 40.h,
                                                 width: 36.w,
-                                                child: const Text(
+                                                child: Text(
                                                     style: TextStyle(
-                                                        color: colorMainCover1,
+                                                        color: Theme.of(context)
+                                                            .primaryColorLight,
                                                         fontSize: 16,
                                                         fontWeight:
                                                             FontWeight.w500),

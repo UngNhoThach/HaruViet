@@ -74,7 +74,7 @@ class _ShipmentPageState extends State<ShipmentPage> {
                           state.shipmentResponse!, state.titleSelected!);
                       Navigator.of(context).pop();
                     }),
-                backgroundColor: colorMain,
+                backgroundColor: Theme.of(context).primaryColor,
                 title: const Text(
                   "Phương thức vận chuyển",
                   style: TextStyle(
@@ -117,9 +117,10 @@ class _ShipmentPageState extends State<ShipmentPage> {
               }),
               bottomNavigationBar: BottomBarButton(
                 button1: AppSolidButton.medium(
+                  context: context,
                   'Xác nhận',
                   textStyle: textTheme.bodyLarge,
-                  color: colorMain,
+                  color: Theme.of(context).primaryColor,
                   onPressed: () {
                     widget.params.selectShipmentFunc!(state.selectedShipment);
                     widget.params.shipmenFunc!(

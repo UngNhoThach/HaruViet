@@ -10,7 +10,7 @@ abstract class BaseService {
   Future<dynamic> get(
     String path, {
     Map<String, dynamic>? params,
-    Map<String, dynamic>? headers,
+    // Map<String, dynamic>? headers,
     //  ignoreResultCode = false,
     //   String? dataKey
   }) async {
@@ -18,7 +18,7 @@ abstract class BaseService {
       final response = await RestClient.dio.get(
         path,
         queryParameters: params,
-        options: Options(headers: headers),
+        // options: Options(headers: headers),
       );
       _logger.i('path: $path \nparams: $params\nresponse: $response');
       return _handleResponse(response);
@@ -28,10 +28,41 @@ abstract class BaseService {
     }
   }
 
+  Future<Map<String, dynamic>?> getDefaultDomain(
+    String path, {
+    Map<String, dynamic>? params,
+    Map<String, dynamic>? headers,
+  }) async {
+    try {
+      final response = await RestClient.dio.get(path,
+          queryParameters: params,
+          options: Options(
+            headers: headers,
+          ));
+      _logger.i('path: $path \nparams: $params\nresponse: $response');
+
+      // Process the response datax
+      final data = _handleResponse(response);
+
+      // Extract headers from the response
+      final responseHeaders = response.headers.map;
+
+      // Return amap containing the data and headers
+      return {
+        'data': data,
+        'headers': responseHeaders,
+      };
+    } catch (error, stackTrace) {
+      print("$error + $stackTrace");
+      // _handleError(error.toString());
+      return null; // Return null in case of an error
+    }
+  }
+
   Future<dynamic> post(
     String path, {
     Map<String, dynamic>? data,
-    Map<String, dynamic>? headers,
+    // Map<String, dynamic>? headers,
     // ignoreResultCode = false,
     // String? dataKey
   }) async {
@@ -39,7 +70,7 @@ abstract class BaseService {
       final response = await RestClient.dio.post(
         path,
         data: data,
-        options: Options(headers: headers),
+        // options: Options(headers: headers),
       );
       _logger.i('path: $path \ndata: $data\nresponse: $response');
       return _handleResponse(response);

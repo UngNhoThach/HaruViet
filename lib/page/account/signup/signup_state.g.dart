@@ -39,7 +39,7 @@ abstract class _$SignupStateCWProxy {
 
   SignupState isLoading(bool isLoading);
 
-  SignupState dataUser(UserInfoLogin? dataUser);
+  SignupState dataUser(UserState? dataUser);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `SignupState(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -64,7 +64,7 @@ abstract class _$SignupStateCWProxy {
     String? passwordChange,
     String? rePasswordChange,
     bool? isLoading,
-    UserInfoLogin? dataUser,
+    UserState? dataUser,
   });
 }
 
@@ -131,7 +131,7 @@ class _$SignupStateCWProxyImpl implements _$SignupStateCWProxy {
   SignupState isLoading(bool isLoading) => this(isLoading: isLoading);
 
   @override
-  SignupState dataUser(UserInfoLogin? dataUser) => this(dataUser: dataUser);
+  SignupState dataUser(UserState? dataUser) => this(dataUser: dataUser);
 
   @override
 
@@ -229,7 +229,7 @@ class _$SignupStateCWProxyImpl implements _$SignupStateCWProxy {
       dataUser: dataUser == const $CopyWithPlaceholder()
           ? _value.dataUser
           // ignore: cast_nullable_to_non_nullable
-          : dataUser as UserInfoLogin?,
+          : dataUser as UserState?,
     );
   }
 }

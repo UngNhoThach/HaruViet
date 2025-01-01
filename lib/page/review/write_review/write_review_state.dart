@@ -1,6 +1,7 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:haruviet/base/base_bloc.dart';
 import 'package:haruviet/data/enum.dart';
+import 'package:haruviet/data/reponsitory/product/models/data_list_product/data_product_list.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_product_detail_response/data_product_detail_response.dart';
 
 import '../../../data/data_local/user_state.dart';
@@ -10,11 +11,11 @@ part 'write_review_state.g.dart';
 @CopyWith()
 class WriteReviewState extends BaseState {
   final bool isLoading;
-  final DataProductDetailResponse? dataProduct;
+  final DataProduct? dataProduct;
   final double rating;
   final String? comment;
   final String? messsage;
-  final UserInfoLogin? userInfoLogin;
+  final UserState? userInfoLogin;
   final bool isSuccess;
   final bool isSubmitted;
 

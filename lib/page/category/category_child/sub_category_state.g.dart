@@ -13,8 +13,12 @@ abstract class _$SubCategoryStateCWProxy {
 
   SubCategoryState nameCategory(String? nameCategory);
 
+  SubCategoryState hasLoadedRecommendations(bool hasLoadedRecommendations);
+
   SubCategoryState filteredCategories(
       Map<AtributesCategoryResponse, AtributesValue>? filteredCategories);
+
+  SubCategoryState isFilter(bool isFilter);
 
   SubCategoryState checkResetFilter(bool checkResetFilter);
 
@@ -63,7 +67,7 @@ abstract class _$SubCategoryStateCWProxy {
 
   SubCategoryState isLoading(bool isLoading);
 
-  SubCategoryState userInfoLogin(UserInfoLogin? userInfoLogin);
+  SubCategoryState userInfoLogin(UserState? userInfoLogin);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `SubCategoryState(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -75,7 +79,9 @@ abstract class _$SubCategoryStateCWProxy {
     ViewState? viewState,
     String? errorMsg,
     String? nameCategory,
+    bool? hasLoadedRecommendations,
     Map<AtributesCategoryResponse, AtributesValue>? filteredCategories,
+    bool? isFilter,
     bool? checkResetFilter,
     bool? checkIsChangeListItem,
     bool? checkFilterProductList,
@@ -98,7 +104,7 @@ abstract class _$SubCategoryStateCWProxy {
     List<DataProduct>? datatList,
     List<DataProduct>? newDataList,
     bool? isLoading,
-    UserInfoLogin? userInfoLogin,
+    UserState? userInfoLogin,
   });
 }
 
@@ -119,9 +125,16 @@ class _$SubCategoryStateCWProxyImpl implements _$SubCategoryStateCWProxy {
       this(nameCategory: nameCategory);
 
   @override
+  SubCategoryState hasLoadedRecommendations(bool hasLoadedRecommendations) =>
+      this(hasLoadedRecommendations: hasLoadedRecommendations);
+
+  @override
   SubCategoryState filteredCategories(
           Map<AtributesCategoryResponse, AtributesValue>? filteredCategories) =>
       this(filteredCategories: filteredCategories);
+
+  @override
+  SubCategoryState isFilter(bool isFilter) => this(isFilter: isFilter);
 
   @override
   SubCategoryState checkResetFilter(bool checkResetFilter) =>
@@ -214,7 +227,7 @@ class _$SubCategoryStateCWProxyImpl implements _$SubCategoryStateCWProxy {
   SubCategoryState isLoading(bool isLoading) => this(isLoading: isLoading);
 
   @override
-  SubCategoryState userInfoLogin(UserInfoLogin? userInfoLogin) =>
+  SubCategoryState userInfoLogin(UserState? userInfoLogin) =>
       this(userInfoLogin: userInfoLogin);
 
   @override
@@ -229,7 +242,9 @@ class _$SubCategoryStateCWProxyImpl implements _$SubCategoryStateCWProxy {
     Object? viewState = const $CopyWithPlaceholder(),
     Object? errorMsg = const $CopyWithPlaceholder(),
     Object? nameCategory = const $CopyWithPlaceholder(),
+    Object? hasLoadedRecommendations = const $CopyWithPlaceholder(),
     Object? filteredCategories = const $CopyWithPlaceholder(),
+    Object? isFilter = const $CopyWithPlaceholder(),
     Object? checkResetFilter = const $CopyWithPlaceholder(),
     Object? checkIsChangeListItem = const $CopyWithPlaceholder(),
     Object? checkFilterProductList = const $CopyWithPlaceholder(),
@@ -267,11 +282,21 @@ class _$SubCategoryStateCWProxyImpl implements _$SubCategoryStateCWProxy {
           ? _value.nameCategory
           // ignore: cast_nullable_to_non_nullable
           : nameCategory as String?,
+      hasLoadedRecommendations:
+          hasLoadedRecommendations == const $CopyWithPlaceholder() ||
+                  hasLoadedRecommendations == null
+              ? _value.hasLoadedRecommendations
+              // ignore: cast_nullable_to_non_nullable
+              : hasLoadedRecommendations as bool,
       filteredCategories: filteredCategories == const $CopyWithPlaceholder()
           ? _value.filteredCategories
           // ignore: cast_nullable_to_non_nullable
           : filteredCategories
               as Map<AtributesCategoryResponse, AtributesValue>?,
+      isFilter: isFilter == const $CopyWithPlaceholder() || isFilter == null
+          ? _value.isFilter
+          // ignore: cast_nullable_to_non_nullable
+          : isFilter as bool,
       checkResetFilter: checkResetFilter == const $CopyWithPlaceholder() ||
               checkResetFilter == null
           ? _value.checkResetFilter
@@ -386,7 +411,7 @@ class _$SubCategoryStateCWProxyImpl implements _$SubCategoryStateCWProxy {
       userInfoLogin: userInfoLogin == const $CopyWithPlaceholder()
           ? _value.userInfoLogin
           // ignore: cast_nullable_to_non_nullable
-          : userInfoLogin as UserInfoLogin?,
+          : userInfoLogin as UserState?,
     );
   }
 }

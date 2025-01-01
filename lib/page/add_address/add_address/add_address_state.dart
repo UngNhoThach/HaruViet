@@ -9,18 +9,18 @@ part 'add_address_state.g.dart';
 @CopyWith()
 class AddNewAddressState extends BaseState {
   final bool isLoading;
-  final UserInfoLogin? userInfoLogin;
+  final UserState? userInfoLogin;
   final bool isSubmitSuccess;
   final bool textBtnswitchState;
   final int? isLocationDefault;
-  final String? address;
-  final String? address1;
-  final String? address2;
-  final String? address3;
-  final String? address4;
-  final String? address1ID;
-  final String? address2ID;
-  final String? address3ID;
+  final String? house;
+  final String? ward;
+  final String? district;
+  final String? province;
+  final String? street;
+  final String? idProvince;
+  final String? idDistrict;
+  final String? idWard;
   final String? firstName;
   final String? lastName;
   final String? userName;
@@ -30,22 +30,26 @@ class AddNewAddressState extends BaseState {
   final String? accessToken;
   final String? message;
   final DataListAddress? dataListAddress;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   const AddNewAddressState({
     ViewState viewState = ViewState.loaded,
     String errorMsg = '',
+    this.createdAt,
+    this.updatedAt,
     this.dataListAddress,
     this.userInfoLogin,
     this.accessToken,
     this.message,
-    this.address,
-    this.address1,
-    this.address2,
-    this.address3,
-    this.address4,
-    this.address1ID,
-    this.address2ID,
-    this.address3ID,
+    this.house,
+    this.district,
+    this.province,
+    this.idWard,
+    this.idDistrict,
+    this.idProvince,
+    this.street,
+    this.ward,
     this.firstName,
     this.lastName,
     this.userName,
@@ -62,8 +66,9 @@ class AddNewAddressState extends BaseState {
     return name != null &&
         name!.isNotEmpty &&
         phone != null &&
-        phone!.isNotEmpty &&
-        address1 != null &&
-        address1!.isNotEmpty;
+        phone!.isNotEmpty;
+    //&&
+    // address1 != null &&
+    // address1!.isNotEmpty;
   }
 }

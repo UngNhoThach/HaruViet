@@ -1,10 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:haruviet/component/error/error_internet.dart';
 import 'package:haruviet/component/error/not_found_item.dart';
+import 'package:haruviet/component/shimer/image_product_shimer.dart';
 import 'package:haruviet/component/shimer/shimer.dart';
-import 'package:haruviet/data/data_local/user_bloc.dart';
+import 'package:haruviet/data/data_local/setting_app_bloc.dart';
 import 'package:haruviet/data/reponsitory/cart_orders/models/cart_order_response/details_cart.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/const.dart';
@@ -52,7 +53,7 @@ class _OrderDetailState extends State<OrderDetailPage> {
   @override
   void initState() {
     super.initState();
-    domain = context.read<UserBloc>().state.subDomain ?? '';
+    domain = context.read<SettingAppBloc>().state.xUrl ?? '';
     bloc = OrderDetailBloc(params: widget.params)..getData();
     _pagingController.addPageRequestListener((pageKey) {
       if (pageKey != startPage) {
@@ -174,13 +175,18 @@ class _OrderDetailState extends State<OrderDetailPage> {
                 child: SizedBox(
                   width: 60.w,
                   //  height: 60.h,
-                  child: Image.network(
-                    '$domain${data.image ?? ''}',
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return const ErrorInternet();
-                    },
+                  child: CachedNetworkImage(
+                    fadeOutDuration: const Duration(seconds: 3),
+                    imageUrl: '$domain${data.image ?? ''}',
+                    width: 60.w,
+                    // placeholder: (context, url) => ImageProductShimer(
+                    //   width: 60.w,
+                    //   height: 60.h,
+                    // ), // Use the custom shimmer component
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
                   ),
+                  // ErrorInternet();
                 ),
               ),
               Expanded(

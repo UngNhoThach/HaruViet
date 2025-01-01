@@ -15,9 +15,10 @@ class ReviewsService extends BaseService {
       {required GetListProductRequest request,
       required String idProduct}) async {
     final response = await get(
-        ReviewApi.getAllReviews.replaceAll(RegExp('{idProduct}'), idProduct),
-        params: request.toJson(),
-        headers: apiHeaders.appMobileHeaders);
+      ReviewApi.getAllReviews.replaceAll(RegExp('{idProduct}'), idProduct),
+      params: request.toJson(),
+      //  headers: apiHeaders.appMobileHeaders
+    );
     return response;
   }
 
@@ -27,7 +28,7 @@ class ReviewsService extends BaseService {
     final response = await post(
       ReviewApi.postReviewProduct,
       data: request.toJson(),
-      headers: apiHeaders.appMobileHeaders,
+      //   headers: apiHeaders.appMobileHeaders,
     );
     return response;
   }

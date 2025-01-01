@@ -7,7 +7,7 @@ part of 'data_address.dart';
 // **************************************************************************
 
 DataAddress _$DataAddressFromJson(Map<String, dynamic> json) => DataAddress(
-      status: json['status'] as int?,
+      status: (json['status'] as num?)?.toInt(),
       isStatus: json['is_status'] as bool?,
       message: json['message'] as String?,
       data: json['data'] == null

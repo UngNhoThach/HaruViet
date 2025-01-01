@@ -1,9 +1,15 @@
 import 'dart:convert';
 
+import 'package:haruviet/data/reponsitory/cart_orders/models/get_cart_order_response/get_cart_order_response.dart';
 import 'package:haruviet/data/reponsitory/product/models/brand.dart';
 import 'package:haruviet/data/reponsitory/product/models/category.dart';
-import 'package:haruviet/data/reponsitory/product/models/data_product_detail_response/data_product_detail_response.dart';
+import 'package:haruviet/data/reponsitory/product/models/data_list_product/data_product_list.dart';
+import 'package:haruviet/data/reponsitory/product/models/data_list_product/price_promotion_list.dart';
+import 'package:haruviet/data/reponsitory/product/models/data_list_product/product_promotion_price_list.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_product_detail_response/option_product_detail.dart';
+import 'package:haruviet/data/reponsitory/product/models/data_product_detail_response/promotiondetail_product_detail.dart';
+import 'package:haruviet/data/reponsitory/product/models/data_product_detail_response/reviews_response/ratings_count.dart';
+import 'package:haruviet/data/reponsitory/product/models/data_product_detail_response/reviews_response/reviews_response.dart';
 import 'package:haruviet/data/reponsitory/product/models/images_product.dart';
 import 'package:haruviet/data/reponsitory/product/models/price.dart';
 import 'package:haruviet/data/reponsitory/product/models/product_description.dart';
@@ -12,6 +18,9 @@ import 'package:haruviet/data/reponsitory/product/models/supplier.dart';
 const String cartTable = 'cartOrder';
 
 class CartModelProduct {
+  //start add the product with response data
+
+  //end add the product with response data
   final List<Option?>? options;
   final String id;
   final String sku;
@@ -37,11 +46,16 @@ class CartModelProduct {
   final ProductDescription descriptions;
   final List<Category> categories;
   final List<ImagesProduct> images;
-  //  final ProductPromotionPriceList? discount;
+  final List<Promotiondetail?>? promotiondetails;
+  final ReviewsResponse? reviews;
+  final ProductPromotionPriceList? discount;
 
   CartModelProduct({
+    this.discount,
     required this.id,
     this.options,
+    this.promotiondetails,
+    this.reviews,
     required this.totalPriceItem,
     required this.sku,
     required this.image,
@@ -80,6 +94,7 @@ class CartModelProduct {
     String? cost,
     int? stock,
     int? sold,
+    ProductPromotionPriceList? discount,
     int? discountDetail,
     int? totalQuantity,
     double? totalPriceItem,
@@ -96,8 +111,13 @@ class CartModelProduct {
     ProductDescription? descriptions,
     List<Category>? categories,
     List<ImagesProduct>? images,
+    List<Promotiondetail?>? promotiondetails,
+    ReviewsResponse? reviews,
   }) =>
       CartModelProduct(
+        discount: discount ?? this.discount,
+        promotiondetails: promotiondetails ?? this.promotiondetails,
+        reviews: reviews ?? this.reviews,
         options: options ?? this.options,
         id: id ?? this.id,
         totalPriceItem: totalPriceItem ?? this.totalPriceItem,
@@ -126,6 +146,12 @@ class CartModelProduct {
       );
   Map<String, dynamic> toMap() {
     return {
+      'discount': json.encode(discount?.toJson()),
+      'promotiondetails': json.encode(promotiondetails
+          ?.where((e) => e != null)
+          .map((e) => e!.toJson())
+          .toList()),
+      'reviews': json.encode(reviews?.toJson()),
       'options': json.encode(options?.map((e) => e?.toJson()).toList()),
       'id': id,
       'sku': sku,
@@ -151,12 +177,17 @@ class CartModelProduct {
       'descriptions': json.encode(descriptions.toJson()),
       'categories': json.encode(categories.map((c) => c.toJson()).toList()),
       'images': json.encode(images.map((c) => c.toJson()).toList()),
-      //   'promotionPrice': json.encode(discount?.toJson()),
     };
   }
 
   factory CartModelProduct.fromMap(Map<String, dynamic> map) {
     return CartModelProduct(
+      discount:
+          ProductPromotionPriceList.fromJson(json.decode(map['discount'])),
+      promotiondetails: List<Promotiondetail>.from(json
+          .decode(map['promotiondetails'])
+          .map((x) => Promotiondetail.fromJson(x))),
+      reviews: ReviewsResponse.fromJson(json.decode(map['reviews'])),
       totalPriceItem: map['totalPriceItem'],
       descriptions:
           ProductDescription.fromJson(json.decode(map['descriptions'])),
@@ -189,8 +220,32 @@ class CartModelProduct {
               x))), // List<ImagesProduct>.from(json.decode(map['images'])),
     );
   }
-  factory CartModelProduct.fromDataProduct(DataProductDetailResponse product) {
+
+  // start convert data from DataProduct to CartModelProduct STORED LOCAL
+  factory CartModelProduct.fromDataProduct(DataProduct product) {
     return CartModelProduct(
+      discount: product.discount ??
+          ProductPromotionPriceList(
+            dateEnd: '',
+            dateStart: '',
+            percent: 0.0,
+            pricePromotion: PricePromotion(
+                currency: '', exchangeRate: 0, price: 0, priceStr: ''),
+          ),
+      promotiondetails: product.promotiondetails ?? [],
+      reviews: product.reviews ??
+          ReviewsResponse(
+            averageRating: 0,
+            data: [],
+            ratingsCount: RatingsCount(
+              star1: 0,
+              star2: 0,
+              star3: 0,
+              star4: 0,
+              star5: 0,
+            ),
+            totalReviews: 0,
+          ),
       options: product.options ?? [],
       totalPriceItem: product.totalPriceItem ?? 0.0,
       descriptions: product.descriptions ??
@@ -210,6 +265,7 @@ class CartModelProduct {
       supplier: product.supplier ?? Supplier(id: '', name: ''),
       price: product.price ??
           Price(
+              totalQuantity: 0,
               price: 0,
               priceStr: '',
               exchangeRate: 0,
@@ -233,13 +289,16 @@ class CartModelProduct {
     );
   }
 
-  DataProductDetailResponse toDataProduct() {
-    return DataProductDetailResponse(
+  DataProduct toDataProduct() {
+    return DataProduct(
+      promotiondetails: promotiondetails,
+      reviews: reviews,
       options: options,
       id: id,
       totalQuantity: totalQuantity,
       sku: sku,
       image: image,
+      discount: discount,
       brand: brand,
       totalPriceItem: totalPriceItem,
       supplier: supplier,
@@ -260,7 +319,165 @@ class CartModelProduct {
       descriptions: descriptions,
       categories: categories,
       images: images,
-      //  discount: discount,
     );
   }
+  // end convert data from DataProduct to CartModelProduct STORED LOCAL
+
+  // start convert data from GetCartOrderResponse to CartModelProduct STORED LOCAL
+  factory CartModelProduct.fromCartOrderResponse(GetCartOrderResponse product) {
+    return CartModelProduct(
+      //  unknown data discount
+      discount: ProductPromotionPriceList(
+        dateEnd: '',
+        dateStart: '',
+        percent: 0.0,
+        pricePromotion: PricePromotion(
+            currency: '', exchangeRate: 0, price: 0, priceStr: ''),
+      ),
+
+      //  unknown data promotiondetails
+      promotiondetails: [],
+
+      //  unknown data reviews
+      reviews: ReviewsResponse(
+        averageRating: 0,
+        data: [],
+        ratingsCount: RatingsCount(
+          star1: 0,
+          star2: 0,
+          star3: 0,
+          star4: 0,
+          star5: 0,
+        ),
+        totalReviews: 0,
+      ),
+
+      //  unknown data options
+      options: [],
+
+      totalPriceItem: product.subtotal?.toDouble() ?? 0.0,
+
+      //  unknown data descriptions
+      descriptions: ProductDescription(
+          content: '',
+          description: '',
+          keyword: '',
+          lang: '',
+          name: '',
+          productId: '',
+          title: ''),
+
+      totalQuantity: product.qty ?? 1,
+      id: product.id ?? '',
+
+      //  unknown data sku
+      sku: '',
+      image: product.image ?? '',
+
+      //  unknown data brand
+      brand: Brand(id: '', name: ''),
+
+      //  unknown data supplier
+      supplier: Supplier(id: '', name: ''),
+      price: product.price != null
+          ? Price(
+              totalQuantity: product.qty,
+              price: product.price,
+              priceStr: '',
+              exchangeRate: 0,
+              currency: '',
+              discountDetail: product.attributes?.discountDetail)
+          : Price(
+              totalQuantity: 0,
+              price: 0,
+              priceStr: '',
+              exchangeRate: 0,
+              currency: '',
+              discountDetail: 0),
+
+      // unknown data cost
+      cost: '',
+
+      // unknown data stock
+      stock: 0,
+
+      // unknown data sold
+      sold: 0,
+
+      // unknown data minimum
+      minimum: 0,
+
+      // unknown data weightClass
+      weightClass: '',
+
+      // unknown data weight
+      weight: '',
+
+      // unknown data kind
+      kind: 0,
+
+      // unknown data taxId
+      taxId: '',
+
+      // unknown data approve
+      approve: 0,
+
+      // unknown data sort
+      sort: 0,
+
+      // unknown data view
+      view: 0,
+
+      // unknown data dateLastview
+      dateLastview: '',
+
+      // unknown data dateAvailable
+      dateAvailable: '',
+
+      // unknown data categories
+      categories: [],
+
+      // unknown data id image
+      images: product.image != null
+          ? [
+              ImagesProduct(
+                  id: '', image: product.image ?? '', productId: product.id)
+            ]
+          : [],
+    );
+  }
+
+  DataProduct toCartOrderResponse() {
+    return DataProduct(
+      promotiondetails: promotiondetails,
+      reviews: reviews,
+      options: options,
+      id: id,
+      totalQuantity: totalQuantity,
+      sku: sku,
+      image: image,
+      discount: discount,
+      brand: brand,
+      totalPriceItem: totalPriceItem,
+      supplier: supplier,
+      price: price,
+      cost: cost,
+      stock: stock,
+      sold: sold,
+      minimum: minimum,
+      weightClass: weightClass,
+      weight: weight,
+      kind: kind,
+      taxId: taxId,
+      approve: approve,
+      sort: sort,
+      view: view,
+      dateLastview: dateLastview,
+      dateAvailable: dateAvailable,
+      descriptions: descriptions,
+      categories: categories,
+      images: images,
+    );
+  }
+  // end convert data from GetCartOrderResponse to CartModelProduct STORED LOCAL
 }

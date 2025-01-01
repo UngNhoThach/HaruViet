@@ -9,7 +9,9 @@ part of 'main_screen_state.dart';
 abstract class _$MainScreenStateCWProxy {
   MainScreenState viewState(ViewState viewState);
 
-  MainScreenState dataUser(UserInfoLogin? dataUser);
+  MainScreenState dataUser(UserState? dataUser);
+
+  MainScreenState isLogin(bool isLogin);
 
   MainScreenState accessToken(String? accessToken);
 
@@ -49,7 +51,8 @@ abstract class _$MainScreenStateCWProxy {
   /// ````
   MainScreenState call({
     ViewState? viewState,
-    UserInfoLogin? dataUser,
+    UserState? dataUser,
+    bool? isLogin,
     String? accessToken,
     int? totalItemInCart,
     bool? hideBottomBar,
@@ -78,7 +81,10 @@ class _$MainScreenStateCWProxyImpl implements _$MainScreenStateCWProxy {
   MainScreenState viewState(ViewState viewState) => this(viewState: viewState);
 
   @override
-  MainScreenState dataUser(UserInfoLogin? dataUser) => this(dataUser: dataUser);
+  MainScreenState dataUser(UserState? dataUser) => this(dataUser: dataUser);
+
+  @override
+  MainScreenState isLogin(bool isLogin) => this(isLogin: isLogin);
 
   @override
   MainScreenState accessToken(String? accessToken) =>
@@ -145,6 +151,7 @@ class _$MainScreenStateCWProxyImpl implements _$MainScreenStateCWProxy {
   MainScreenState call({
     Object? viewState = const $CopyWithPlaceholder(),
     Object? dataUser = const $CopyWithPlaceholder(),
+    Object? isLogin = const $CopyWithPlaceholder(),
     Object? accessToken = const $CopyWithPlaceholder(),
     Object? totalItemInCart = const $CopyWithPlaceholder(),
     Object? hideBottomBar = const $CopyWithPlaceholder(),
@@ -169,7 +176,11 @@ class _$MainScreenStateCWProxyImpl implements _$MainScreenStateCWProxy {
       dataUser: dataUser == const $CopyWithPlaceholder()
           ? _value.dataUser
           // ignore: cast_nullable_to_non_nullable
-          : dataUser as UserInfoLogin?,
+          : dataUser as UserState?,
+      isLogin: isLogin == const $CopyWithPlaceholder() || isLogin == null
+          ? _value.isLogin
+          // ignore: cast_nullable_to_non_nullable
+          : isLogin as bool,
       accessToken: accessToken == const $CopyWithPlaceholder()
           ? _value.accessToken
           // ignore: cast_nullable_to_non_nullable

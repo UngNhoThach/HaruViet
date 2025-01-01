@@ -1,15 +1,10 @@
-import 'package:haruviet/component/popup/alert/alert_one_button.dart';
 import 'package:haruviet/component/snackbar/snackbar_bottom.dart';
-import 'package:haruviet/helper/base_status_response.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/spaces.dart';
 import 'package:haruviet/page/account/phone_authen/phone_authen_bloc.dart';
 import 'package:haruviet/page/account/phone_authen/phone_authen_state.dart';
 import 'package:haruviet/page/account/phone_authen/widgets/phone_authen_params.dart';
-import 'package:haruviet/page/account/signin/widgets/signin_params.dart';
 import 'package:haruviet/page/main_screen/main_screen_page.dart';
-import 'package:haruviet/resources/routes.dart';
-import 'package:haruviet/utils/commons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -279,7 +274,7 @@ class _PhoneAuthPageState extends State<PhoneAuthPage> {
       onTap: () {
         if (state.codeVerification == null ||
             state.codeVerification.toString().length != 6) {
-          CustomSnackBar.showTop(context, 'Vui lòng điền đúng 6 số OTP');
+          CustomSnackBar.showTop(context, 'Vui lòng điền đúng 6 số OTP', null);
         } else {
           // if (widget.params.isUpdatePassWord) {
           //   bloc.onSubmitUpdatePassWord();

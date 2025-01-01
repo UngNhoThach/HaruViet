@@ -8,7 +8,7 @@ part 'new_detail_state.g.dart';
 @CopyWith()
 class NewDetailState extends BaseState {
   final bool isSubmitSuccess;
-  final UserInfoLogin? userInfoLogin;
+  final UserState? userInfoLogin;
   final bool isLoading;
   const NewDetailState({
     ViewState viewState = ViewState.loaded,

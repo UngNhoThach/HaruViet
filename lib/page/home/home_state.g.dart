@@ -11,16 +11,14 @@ abstract class _$HomeStateCWProxy {
 
   HomeState errorMsg(String errorMsg);
 
-  HomeState productListLocal(List<ProductRecommendationModel> productListLocal);
-
   HomeState idProductListLocal(
       List<IdProductRecommendationModel> idProductListLocal);
 
   HomeState firtTimeLoadingPage(bool firtTimeLoadingPage);
 
-  HomeState productList(ListProduct? productList);
-
   HomeState canLoadMore(bool canLoadMore);
+
+  HomeState isViewMemberCard(bool isViewMemberCard);
 
   HomeState limit(int limit);
 
@@ -34,7 +32,7 @@ abstract class _$HomeStateCWProxy {
 
   HomeState isLoading(bool isLoading);
 
-  HomeState userInfoLogin(UserInfoLogin? userInfoLogin);
+  HomeState userInfoLogin(UserState? userInfoLogin);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `HomeState(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -45,18 +43,17 @@ abstract class _$HomeStateCWProxy {
   HomeState call({
     ViewState? viewState,
     String? errorMsg,
-    List<ProductRecommendationModel>? productListLocal,
     List<IdProductRecommendationModel>? idProductListLocal,
     bool? firtTimeLoadingPage,
-    ListProduct? productList,
     bool? canLoadMore,
+    bool? isViewMemberCard,
     int? limit,
     int? currentPage,
     bool? isSubmitSuccess,
     List<DataProduct>? datatList,
     List<DataProduct>? newDataList,
     bool? isLoading,
-    UserInfoLogin? userInfoLogin,
+    UserState? userInfoLogin,
   });
 }
 
@@ -73,11 +70,6 @@ class _$HomeStateCWProxyImpl implements _$HomeStateCWProxy {
   HomeState errorMsg(String errorMsg) => this(errorMsg: errorMsg);
 
   @override
-  HomeState productListLocal(
-          List<ProductRecommendationModel> productListLocal) =>
-      this(productListLocal: productListLocal);
-
-  @override
   HomeState idProductListLocal(
           List<IdProductRecommendationModel> idProductListLocal) =>
       this(idProductListLocal: idProductListLocal);
@@ -87,11 +79,11 @@ class _$HomeStateCWProxyImpl implements _$HomeStateCWProxy {
       this(firtTimeLoadingPage: firtTimeLoadingPage);
 
   @override
-  HomeState productList(ListProduct? productList) =>
-      this(productList: productList);
+  HomeState canLoadMore(bool canLoadMore) => this(canLoadMore: canLoadMore);
 
   @override
-  HomeState canLoadMore(bool canLoadMore) => this(canLoadMore: canLoadMore);
+  HomeState isViewMemberCard(bool isViewMemberCard) =>
+      this(isViewMemberCard: isViewMemberCard);
 
   @override
   HomeState limit(int limit) => this(limit: limit);
@@ -115,7 +107,7 @@ class _$HomeStateCWProxyImpl implements _$HomeStateCWProxy {
   HomeState isLoading(bool isLoading) => this(isLoading: isLoading);
 
   @override
-  HomeState userInfoLogin(UserInfoLogin? userInfoLogin) =>
+  HomeState userInfoLogin(UserState? userInfoLogin) =>
       this(userInfoLogin: userInfoLogin);
 
   @override
@@ -129,11 +121,10 @@ class _$HomeStateCWProxyImpl implements _$HomeStateCWProxy {
   HomeState call({
     Object? viewState = const $CopyWithPlaceholder(),
     Object? errorMsg = const $CopyWithPlaceholder(),
-    Object? productListLocal = const $CopyWithPlaceholder(),
     Object? idProductListLocal = const $CopyWithPlaceholder(),
     Object? firtTimeLoadingPage = const $CopyWithPlaceholder(),
-    Object? productList = const $CopyWithPlaceholder(),
     Object? canLoadMore = const $CopyWithPlaceholder(),
+    Object? isViewMemberCard = const $CopyWithPlaceholder(),
     Object? limit = const $CopyWithPlaceholder(),
     Object? currentPage = const $CopyWithPlaceholder(),
     Object? isSubmitSuccess = const $CopyWithPlaceholder(),
@@ -151,11 +142,6 @@ class _$HomeStateCWProxyImpl implements _$HomeStateCWProxy {
           ? _value.errorMsg
           // ignore: cast_nullable_to_non_nullable
           : errorMsg as String,
-      productListLocal: productListLocal == const $CopyWithPlaceholder() ||
-              productListLocal == null
-          ? _value.productListLocal
-          // ignore: cast_nullable_to_non_nullable
-          : productListLocal as List<ProductRecommendationModel>,
       idProductListLocal: idProductListLocal == const $CopyWithPlaceholder() ||
               idProductListLocal == null
           ? _value.idProductListLocal
@@ -167,15 +153,16 @@ class _$HomeStateCWProxyImpl implements _$HomeStateCWProxy {
               ? _value.firtTimeLoadingPage
               // ignore: cast_nullable_to_non_nullable
               : firtTimeLoadingPage as bool,
-      productList: productList == const $CopyWithPlaceholder()
-          ? _value.productList
-          // ignore: cast_nullable_to_non_nullable
-          : productList as ListProduct?,
       canLoadMore:
           canLoadMore == const $CopyWithPlaceholder() || canLoadMore == null
               ? _value.canLoadMore
               // ignore: cast_nullable_to_non_nullable
               : canLoadMore as bool,
+      isViewMemberCard: isViewMemberCard == const $CopyWithPlaceholder() ||
+              isViewMemberCard == null
+          ? _value.isViewMemberCard
+          // ignore: cast_nullable_to_non_nullable
+          : isViewMemberCard as bool,
       limit: limit == const $CopyWithPlaceholder() || limit == null
           ? _value.limit
           // ignore: cast_nullable_to_non_nullable
@@ -205,7 +192,7 @@ class _$HomeStateCWProxyImpl implements _$HomeStateCWProxy {
       userInfoLogin: userInfoLogin == const $CopyWithPlaceholder()
           ? _value.userInfoLogin
           // ignore: cast_nullable_to_non_nullable
-          : userInfoLogin as UserInfoLogin?,
+          : userInfoLogin as UserState?,
     );
   }
 }

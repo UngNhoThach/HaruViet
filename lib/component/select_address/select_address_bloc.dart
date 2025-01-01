@@ -1,4 +1,4 @@
-import 'package:haruviet/data/reponsitory/setting/item_base_response.dart';
+import 'package:haruviet/data/reponsitory/setting/models/item_base_response.dart';
 import 'package:haruviet/data/reponsitory/setting/setting_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'models/select_address_params.dart';
@@ -16,19 +16,21 @@ class SelectAddressBloc extends Cubit<SelectAddressState> {
     ));
 
     var dataList = <ItemBaseResponse>[];
-
     if (params?.step == SelectAddressStep.district &&
         params?.dataAddress != null &&
         params?.dataAddress?.city != null) {
-      dataList = await _settingRepository.getDistrictListRP(
+      final data = await _settingRepository.getDistrictListRP(
           idProvince: params?.dataAddress?.city?.id ?? 1);
+      dataList = data.data!;
     } else if (params?.step == SelectAddressStep.ward &&
         params?.dataAddress != null &&
         params?.dataAddress?.district != null) {
-      dataList = await _settingRepository.getWardListRP(
+      final data = await _settingRepository.getWardListRP(
           idDistrict: params?.dataAddress?.district?.id ?? 1);
+      dataList = data.data!;
     } else {
-      dataList = await _settingRepository.getCountryListRP(idCountry: 12);
+      final data = await _settingRepository.getCountryListRP(idCountry: 12);
+      dataList = data.data!;
     }
 
     emit(state.copyWith(

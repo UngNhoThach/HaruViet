@@ -1,3 +1,4 @@
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:haruviet/api/services/products/models/get_list_product_request.dart';
 import 'package:haruviet/base/base_bloc.dart';
 import 'package:haruviet/component/status/status_header_item.dart';
@@ -9,6 +10,7 @@ import 'package:haruviet/data/reponsitory/category/models/atribute_category_resp
 import 'package:haruviet/data/reponsitory/category/models/category_detail_response/subcategory.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_list_product/data_product_list.dart';
 import 'package:haruviet/data/reponsitory/product/product_repository.dart';
+import 'package:haruviet/database_local/products_recommendation/products_recommendation_database.dart';
 import 'package:haruviet/helper/const.dart';
 import 'package:haruviet/page/category/category_child/sub_category_state.dart';
 import 'package:flutter/foundation.dart';
@@ -16,7 +18,14 @@ import 'package:flutter/foundation.dart';
 // SubCategoryBloc
 class SubCategoryBloc extends BaseBloc<SubCategoryState> {
   final String idCategory;
-  SubCategoryBloc({required this.idCategory}) : super(const SubCategoryState());
+  final String idBrand;
+
+  final bool isProcuctRecommendation;
+  SubCategoryBloc(BuildContext context,
+      {required this.idCategory,
+      required this.idBrand,
+      required this.isProcuctRecommendation})
+      : super(const SubCategoryState());
   final CategoryRepository _categoryRepository = CategoryRepository();
 
   final ProductRepository _productRepository = ProductRepository();
@@ -42,8 +51,9 @@ class SubCategoryBloc extends BaseBloc<SubCategoryState> {
       final List<AtributesValue> attributesSelected = [];
 
       // attributesSelected
-      final categoryDetailData =
-          await _categoryRepository.getDetailCategoryRP(idCategory: idCategory);
+      final categoryDetailData = await _categoryRepository.getDetailCategoryRP(
+        idCategory: idCategory,
+      );
 
       subcategories.addAll(categoryDetailData.category?.subcategories ?? []);
       final userInfoLogin = await Preference.getUserInfo();
@@ -104,6 +114,18 @@ class SubCategoryBloc extends BaseBloc<SubCategoryState> {
         filterValues: {}, filterValuesName: {}, filteredCategories: {}));
   }
 
+  bool canLoadMore = false;
+  onGetProductRecommendations() async {
+    List<DataProduct> productsListRecommendations = [];
+    productsListRecommendations =
+        await ProductRecommendationDatabase().getAllProducts();
+    emit(state.copyWith(
+      newDataList: productsListRecommendations,
+      isLoading: false,
+      hasLoadedRecommendations: true,
+    ));
+  }
+
   onFetch({
     required int page,
   }) async {
@@ -113,42 +135,48 @@ class SubCategoryBloc extends BaseBloc<SubCategoryState> {
       emit(state.copyWith(
         isLoading: true,
       ));
-      List<DataProduct> updatedDataList = [];
 
-      if (page == startPage) {
-        emit(
-          state.copyWith(
-            newDataList: null,
-            canLoadMore: false,
-            datatList: updatedDataList,
-          ),
-        );
+      if (isProcuctRecommendation && !state.hasLoadedRecommendations) {
+        onGetProductRecommendations();
       } else {
-        updatedDataList = List<DataProduct>.from(state.datatList);
+        List<DataProduct> updatedDataList = [];
+
+        if (page == startPage) {
+          emit(
+            state.copyWith(
+              newDataList: null,
+              canLoadMore: false,
+              datatList: updatedDataList,
+            ),
+          );
+        } else {
+          updatedDataList = List<DataProduct>.from(state.datatList);
+        }
+        final productList = await _productRepository.getListProductsRP(
+          request: GetListProductRequest(
+              paegNumber: page,
+              pageSize: state.limit,
+              category: idCategory,
+              brand: idBrand,
+              sort: state.currentTab.value,
+              filters: state.filterValues),
+        );
+
+        updatedDataList.addAll(productList.parseDataProduct() ?? []);
+
+        final maxLoadMore = ((productList.total ?? 0) / state.limit).floor();
+        final canLoadMore = page <= maxLoadMore;
+        emit(state.copyWith(
+          datatList: updatedDataList,
+          newDataList: productList.parseDataProduct(),
+          currentPage: page,
+          canLoadMore: canLoadMore,
+        ));
+
+        emit(state.copyWith(
+          isLoading: false,
+        ));
       }
-      final productList = await _productRepository.getListProductsRP(
-        request: GetListProductRequest(
-            paegNumber: page,
-            pageSize: state.limit,
-            category: idCategory,
-            sort: state.currentTab.value,
-            filters: state.filterValues),
-      );
-
-      updatedDataList.addAll(productList.parseDataProduct() ?? []);
-
-      final maxLoadMore = ((productList.total ?? 0) / state.limit).floor();
-      final canLoadMore = page <= maxLoadMore;
-      emit(state.copyWith(
-        datatList: updatedDataList,
-        newDataList: productList.parseDataProduct(),
-        currentPage: page,
-        canLoadMore: canLoadMore,
-      ));
-
-      emit(state.copyWith(
-        isLoading: false,
-      ));
     } catch (error, statckTrace) {
       if (kDebugMode) {
         print("$error + $statckTrace");

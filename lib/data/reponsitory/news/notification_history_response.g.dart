@@ -87,7 +87,7 @@ extension $NotificationHistoryResponseCopyWith on NotificationHistoryResponse {
 NotificationHistoryResponse _$NotificationHistoryResponseFromJson(
         Map<String, dynamic> json) =>
     NotificationHistoryResponse(
-      id: json['Id'] as int?,
+      id: (json['Id'] as num?)?.toInt(),
       title: json['title'] as String?,
       description: json['description'] as String?,
     );

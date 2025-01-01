@@ -116,7 +116,7 @@ extension $NewsResponseCopyWith on NewsResponse {
 // **************************************************************************
 
 NewsResponse _$NewsResponseFromJson(Map<String, dynamic> json) => NewsResponse(
-      id: json['Id'] as int?,
+      id: (json['Id'] as num?)?.toInt(),
       title: json['title'] as String?,
       description: json['description'] as String?,
       location: json['location'] as String?,

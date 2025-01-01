@@ -1,11 +1,10 @@
-import 'package:haruviet/component/error/error_internet.dart';
 import 'package:haruviet/component/error/not_found_item.dart';
 import 'package:haruviet/component/loading/loading.dart';
 import 'package:haruviet/component/loading_scaffold.dart';
-import 'package:haruviet/data/data_local/user_bloc.dart';
-import 'package:haruviet/data/reponsitory/product/models/data_product_detail_response/data_product_detail_response.dart';
+import 'package:haruviet/component/snackbar/snackbar_bottom.dart';
+import 'package:haruviet/data/data_local/setting_app_bloc.dart';
+import 'package:haruviet/data/reponsitory/cart_orders/models/get_cart_order_response/get_cart_order_response.dart';
 import 'package:haruviet/database_local/product/cart_provider_v2.dart';
-import 'package:haruviet/database_local/product/models/cart_model_v2.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/const.dart';
 import 'package:haruviet/helper/spaces.dart';
@@ -14,14 +13,13 @@ import 'package:haruviet/page/cart/cart_bloc.dart';
 import 'package:haruviet/page/cart/cart_sate.dart';
 import 'package:haruviet/page/cart/checkout/widgets/checkout_params.dart';
 import 'package:haruviet/page/cart/models/cart_page_params.dart';
-import 'package:haruviet/page/product/detail/widgets/widgets/count_qualition.dart';
+import 'package:haruviet/page/cart/widgets/list_item.dart';
 import 'package:haruviet/resources/routes.dart';
 import 'package:haruviet/theme/typography.dart';
 import 'package:haruviet/utils/commons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
 
 class CartPage extends StatefulWidget {
@@ -56,7 +54,7 @@ class _CartPageState extends State<CartPage> {
 
   @override
   void initState() {
-    domain = context.read<UserBloc>().state.subDomain ?? '';
+    domain = context.read<SettingAppBloc>().state.xUrl ?? '';
     bloc = CartBloc(context)..getData();
     super.initState();
   }
@@ -136,11 +134,14 @@ class _CartPageState extends State<CartPage> {
                             arguments: SignInParams(typeDirec: 1),
                           )
                         }
-                      : routeService.pushNamed(Routes.checkOutPage,
-                          arguments: CheckoutParams(
-                              weight: state.weight,
-                              price: "",
-                              discountOrder: state.discountOrder));
+                      : state.isNextPage
+                          ? routeService.pushNamed(Routes.checkOutPage,
+                              arguments: CheckoutParams(
+                                  weight: state.weight,
+                                  price: "",
+                                  discountOrder: state.discountOrder))
+                          : CustomSnackBar.showTop(
+                              context, 'Vui lòng đợi cập nhật giỏ hàng!', null);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: colorMain,
@@ -160,194 +161,42 @@ class _CartPageState extends State<CartPage> {
   }
 
   createSubTitle(CartState state) {
-    return Text("Tổng (${state.totalItem ?? 0}) sản phẩm",
+    return Text("Tổng (${state.listItemsCartOrder.length ?? 0}) sản phẩm",
         style: textTheme.bodyLarge
             ?.copyWith(color: colorGray04, fontWeight: FontWeight.w400));
   }
 
-  createCartList(
-      CartState state, CartProviderV2 cart, Color colorPrimaryCover) {
-    return BlocSelector<CartBloc, CartState, List<CartModelProduct>>(
-      selector: (state) {
-        return state.productsList;
-      },
-      builder: (context, data) {
-        return ListView.separated(
-          separatorBuilder: (context, index) => const Divider(
-            color: colorGray01,
-            height: 1,
-            thickness: 10,
-          ),
-          shrinkWrap: true,
-          padding: EdgeInsets.zero,
-          physics: const NeverScrollableScrollPhysics(),
-          itemBuilder: (context, index) {
-            final item = data[index];
-            final itemCheck = state.checkOrderPriceResponse[index];
-            // Find the matching gift for the current product
-            DataProductDetailResponse? matchedGift;
-            if (itemCheck?.gift != null) {
-              matchedGift = state.listGiftProduct?.firstWhere(
-                (gift) =>
-                    gift?.id == itemCheck?.gift?.giftId, // Match the giftId
-                //    orElse: () => null, // Return null if no match is found
-              );
-            }
-
-            // state
-            return Slidable(
-                key: UniqueKey(),
-
-                // key: ObjectKey(state.totalItem),
-                endActionPane: ActionPane(
-                  extentRatio: 0.4,
-                  motion: const ScrollMotion(),
-                  dismissible: DismissiblePane(
-                    resizeDuration: const Duration(microseconds: 500),
-                    dismissThreshold: 0.6,
-                    onDismissed: () {
-                      bloc.onDeletaItems(index: index);
-                    },
-                    // closeOnCancel: true,
-                  ),
-                  children: [
-                    SlidableAction(
-                      spacing: 2,
-                      onPressed: (context) {
-                        bloc.onDeletaItems(index: index);
-                      },
-                      backgroundColor: colorMain,
-                      foregroundColor: colorWhite,
-                      icon: Icons.delete,
-                      label: 'Xoá',
-                    ),
-                  ],
-                ),
-                child: Stack(children: <Widget>[
-                  Container(
-                    decoration: const BoxDecoration(
-                        color: colorWhite,
-                        borderRadius: BorderRadius.all(Radius.circular(16))),
-                    child: Column(
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Container(
-                              margin: EdgeInsets.all(8.r),
-                              width: 60.w,
-                              height: 60.h,
-                              child: Image.network(
-                                '$domain${item.image}',
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                                errorBuilder: (BuildContext context,
-                                    Object exception, StackTrace? stackTrace) {
-                                  return const ErrorInternet();
-                                },
-                              ),
-                            ),
-                            Expanded(
-                              child: Container(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.max,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Container(
-                                      padding:
-                                          EdgeInsets.only(right: 8.w, top: 4.h),
-                                      child: Text(
-                                        item.descriptions.name ?? '',
-                                        maxLines: 2,
-                                        softWrap: true,
-                                        style: const TextStyle(
-                                            color: colorBlack,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                    spaceH6,
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Flexible(
-                                          child: Text(
-                                            "${item.descriptions.description} | ",
-                                            style: textTheme.labelMedium
-                                                ?.copyWith(color: colorGray03),
-                                            maxLines: 2,
-                                            overflow: TextOverflow.clip,
-                                          ),
-                                        ),
-                                        spaceW12,
-                                        Text(
-                                          item.brand.name ?? '',
-                                          style: textTheme.labelMedium
-                                              ?.copyWith(color: colorError03),
-                                        ),
-                                        spaceW6,
-                                      ],
-                                    ),
-                                    spaceH6,
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        Text(
-                                            defaultCurrencyVNDFormatter
-                                                .formatString((item.price.price
-                                                    .toString())),
-                                            style: textTheme.bodyLarge
-                                                ?.copyWith(
-                                                    color: colorSuccess03,
-                                                    fontWeight:
-                                                        FontWeight.w400)),
-                                        SizedBox(
-                                            width: 120.w,
-                                            child: CountQuality(
-                                              initialCounter:
-                                                  item.totalQuantity,
-                                              onCounterChanged: (newCounter) {
-                                                bloc.onChangeValueDirec(
-                                                    index: index,
-                                                    value: newCounter);
-                                              },
-                                            )),
-                                      ],
-                                    ),
-                                    if (itemCheck!.promotions != null &&
-                                        itemCheck.promotions!.isNotEmpty) ...[
-                                      const Divider(),
-                                      Text('${itemCheck.promotions?[0]}',
-                                          style: textTheme.bodyMedium?.copyWith(
-                                              color: colorPrimaryCover,
-                                              fontWeight: FontWeight.w400)),
-                                      spaceH6,
-                                    ],
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        spaceH6,
-                        if (matchedGift != null) ...[
-                          _giftItem(
-                              item: matchedGift,
-                              colorPrimaryCover: colorPrimaryCover)
-                        ]
-                      ],
-                    ),
-                  ),
-                ]));
+  createCartList(List<GetCartOrderResponse> listItemsCartOrder,
+      CartProviderV2 cart, Color colorPrimaryCover) {
+    return ListView.separated(
+      shrinkWrap: true,
+      // update list when over items
+      key: ObjectKey(bloc.state.isUpdateDone),
+      physics: const BouncingScrollPhysics(),
+      padding: EdgeInsets.zero,
+      itemCount: listItemsCartOrder.length,
+      itemBuilder: (context, index) {
+        final item = listItemsCartOrder[index];
+        return CartListItem(
+          //    key: ObjectKey(item),
+          item: item,
+          domain: domain,
+          index: index,
+          quantityNotifier: ValueNotifier<int>(item.qty ?? 1),
+          onCounterChanged: (newQty) {
+            bloc.onUpdateItemFromCartOrder(
+              rowId: item.rowId ?? '',
+              id: item.id ?? '',
+              newQty: newQty,
+            );
           },
-          itemCount: state.productsList.length,
+          onPressedDelete: (p0) => bloc.onDeleteItemFromCartOrder(
+              rowId: item.rowId ?? '', index: index, idProduct: item.id ?? ''),
+          onDismissed: () => bloc.onDeleteItemFromCartOrder(
+              rowId: item.rowId ?? '', index: index, idProduct: item.id ?? ''),
         );
       },
+      separatorBuilder: (context, index) => const Divider(height: 2),
     );
   }
 
@@ -359,67 +208,77 @@ class _CartPageState extends State<CartPage> {
       create: (context) => bloc,
       child: BlocListener<CartBloc, CartState>(
         listenWhen: (previous, current) =>
-            previous.isLoading != current.isLoading,
+            previous.isLoading != current.isLoading ||
+            previous.message != current.message,
         listener: (context, state) {
-          // }
+          //
+          if (state.message != null) {
+            CustomSnackBar.showTop(context, '${state.message}', 2);
+          }
         },
-        child: BlocBuilder<CartBloc, CartState>(builder: (context, state) {
+        child: BlocBuilder<CartBloc, CartState>(
+            // buildWhen: (previous, current) =>
+            //     previous.isUpdateDone != current.isUpdateDone,
+            builder: (context, state) {
           Color colorPrimaryCover = Theme.of(context).primaryColorLight;
-          return GestureDetector(
-            onTap: () => FocusScope.of(context).unfocus(),
-            child: Scaffold(
-                appBar: widget.params.isAppBar
-                    ? AppBar(
-                        centerTitle: true,
-                        title: Text(
-                          'Giỏ hàng',
-                          style: textTheme.titleMedium?.copyWith(
-                              color: colorWhite, fontWeight: FontWeight.bold),
-                        ),
-                        backgroundColor: colorMain,
-                      )
-                    : null,
-                resizeToAvoidBottomInset: false,
-                backgroundColor: Colors.grey.shade100,
-                body: ((state.totalItem == 0 || state.totalItem == null) &&
-                        state.isLoading)
-                    ? const LoadingLogo()
-                    : LoadingScaffold(
-                        isLoading: state.isLoading,
-                        child: Builder(builder: (context) {
-                          return !(state.totalItem == 0 ||
-                                  state.totalItem == null)
-                              ? Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 16.w, vertical: 12.h),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          createSubTitle(state),
+          return Scaffold(
+              appBar: widget.params.isAppBar
+                  ? AppBar(
+                      centerTitle: true,
+                      title: Text(
+                        'Giỏ hàng',
+                        style: textTheme.titleMedium?.copyWith(
+                            color: colorWhite, fontWeight: FontWeight.bold),
+                      ),
+                      backgroundColor: colorMain,
+                    )
+                  : null,
+              resizeToAvoidBottomInset: false,
+              backgroundColor: Colors.grey.shade100,
+              body: (state.isLoading &&
+                      (state.totalItem == 0 || state.totalItem == null))
+                  ? const LoadingLogo()
+                  : LoadingScaffold(
+                      isLoading: state.isLoading,
+                      child: Builder(builder: (context) {
+                        return !(state.totalItem == 0 ||
+                                state.totalItem == null)
+                            ? Column(
+                                children: [
+                                  Expanded(
+                                    child: RefreshIndicator(
+                                      onRefresh: () async {
+                                        await bloc.getData();
+                                      },
+                                      child: CustomScrollView(
+                                        slivers: [
+                                          SliverList(
+                                            delegate: SliverChildListDelegate(
+                                              [
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 16.w,
+                                                      vertical: 12.h),
+                                                  child: createSubTitle(state),
+                                                ),
+                                                createCartList(
+                                                  state.listItemsCartOrder,
+                                                  cart,
+                                                  colorPrimaryCover,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     ),
-                                    Expanded(
-                                      child: SingleChildScrollView(
-                                        physics: const BouncingScrollPhysics(),
-                                        child: createCartList(
-                                            state, cart, colorPrimaryCover),
-                                      ),
-                                    ),
-                                    footer(context, state, colorPrimaryCover)
-                                  ],
-                                )
-                              : _didFoundItem(context);
-                        }),
-                      )),
-          );
+                                  ),
+                                  footer(context, state, colorPrimaryCover),
+                                ],
+                              )
+                            : _didFoundItem(context);
+                      }),
+                    ));
         }),
       ),
     );
@@ -428,66 +287,6 @@ class _CartPageState extends State<CartPage> {
   Widget _didFoundItem(BuildContext context) {
     return const DidntFoundItem(
       isCartWidget: true,
-    );
-  }
-
-  Widget _giftItem(
-      {required DataProductDetailResponse item,
-      required Color colorPrimaryCover}) {
-    return Container(
-      margin: const EdgeInsets.only(left: 16, right: 16, top: 0, bottom: 16),
-      padding: const EdgeInsets.all(12), // Add padding for better spacing
-      decoration: BoxDecoration(
-        color: colorBlueGray01.withOpacity(0.5),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-            color: colorSuccess03, width: 1.5), // Green border to highlight
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          // Gift icon to highlight that this is a gifted product
-          Container(
-            margin: EdgeInsets.all(8.r),
-            width: 32.w,
-            height: 16.h,
-            child: Image.network(
-              '$domain${item.image}',
-              width: double.infinity,
-              fit: BoxFit.cover,
-              errorBuilder: (BuildContext context, Object exception,
-                  StackTrace? stackTrace) {
-                return const ErrorInternet();
-              },
-            ),
-          ),
-          const SizedBox(width: 4), // Add spacing between icon and text
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Tặng thêm',
-                style: textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.bold, // Bold to highlight the label
-                  color: colorSuccess03, // Color to match with the gift context
-                ),
-              ),
-              spaceH4,
-              // Add space between image and text
-              Text(
-                item.descriptions?.name ?? '',
-                style: textTheme.bodyMedium?.copyWith(
-                  color: colorPrimaryCover,
-                  fontWeight: FontWeight.w500,
-                ),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-              ),
-            ],
-          )
-        ],
-      ),
     );
   }
 }

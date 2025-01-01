@@ -11,13 +11,15 @@ Option _$OptionFromJson(Map<String, dynamic> json) => Option(
       type: json['type'] as String?,
       descriptions: json['descriptions'],
       values: (json['values'] as List<dynamic>?)
-          ?.map((e) => Value.fromJson(e as Map<String, dynamic>))
+          ?.map((e) => ValueOptionProduct.fromJson(e as Map<String, dynamic>))
           .toList(),
+      title: json['title'] as String?,
     );
 
 Map<String, dynamic> _$OptionToJson(Option instance) => <String, dynamic>{
       'id': instance.id,
       'type': instance.type,
       'descriptions': instance.descriptions,
+      'title': instance.title,
       'values': instance.values,
     };

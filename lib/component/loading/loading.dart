@@ -16,7 +16,7 @@ class LoadingLogo extends StatelessWidget {
             alignment: Alignment.center,
             children: [
               Image.asset(
-                'assets/images/logo_2.png',
+                'assets/logo/logo.png',
                 fit: BoxFit.cover,
                 height: 40,
                 width: 40,

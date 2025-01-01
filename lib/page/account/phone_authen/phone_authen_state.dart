@@ -27,7 +27,7 @@ class PhoneAuthState extends BaseState {
   final DataRegister? dataRegister;
 
   final bool isLoading;
-  final UserInfoLogin? dataUser;
+  final UserState? dataUser;
 
   const PhoneAuthState({
     ViewState viewState = ViewState.loaded,

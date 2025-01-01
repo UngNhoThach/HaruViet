@@ -1,20 +1,18 @@
 import 'dart:async';
 
 import 'package:haruviet/api/services/cart_orders/models/check_order_price_request/attribute_check_price.dart';
-import 'package:haruviet/api/services/cart_orders/models/check_order_price_request/cart_check_price.dart';
-import 'package:haruviet/api/services/cart_orders/models/check_order_price_request/check_order_price_request.dart';
+import 'package:haruviet/api/services/cart_orders/models/remove_item_from_cart_request/remove_item_from_cart_request.dart';
 import 'package:haruviet/base/base_bloc.dart';
 import 'package:haruviet/data/local/user_preferences.dart';
 import 'package:haruviet/data/reponsitory/cart_orders/cart_order_repository.dart';
-import 'package:haruviet/data/reponsitory/cart_orders/models/check_order_price_response/check_order_price_response.dart';
-import 'package:haruviet/data/reponsitory/product/models/data_product_detail_response/data_product_detail_response.dart';
-import 'package:haruviet/data/reponsitory/product/models/price.dart';
+import 'package:haruviet/data/reponsitory/cart_orders/models/get_cart_order_response/attributes.dart';
+import 'package:haruviet/data/reponsitory/cart_orders/models/get_cart_order_response/get_cart_order_response.dart';
+import 'package:haruviet/data/reponsitory/product/models/data_list_product/data_product_list.dart';
 import 'package:haruviet/data/reponsitory/product/models/product_response.dart';
 import 'package:haruviet/data/reponsitory/product/product_repository.dart';
 import 'package:haruviet/database_local/product/cart_database_v2.dart';
 import 'package:haruviet/database_local/product/cart_provider_v2.dart';
 import 'package:haruviet/database_local/product/models/cart_model_v2.dart';
-import 'package:haruviet/helper/const.dart';
 import 'package:haruviet/page/cart/cart_sate.dart';
 import 'package:haruviet/page/cart/models/cart_item_request.dart';
 import 'package:collection/collection.dart';
@@ -38,153 +36,163 @@ class CartBloc extends BaseBloc<CartState> {
     // checkOrderPriceRP
     final cart = Provider.of<CartProviderV2>(context, listen: false);
     final userInfoLogin = await Preference.getUserInfo();
-
-    productsList = (await CartDatabaseV2().readAllItems());
+//    cart.removeItem("172872031769");
+    //  productsList = (await CartDatabaseV2().readAllItems());
 
     // count tax and weight
     double weight = 0.0;
     var tax = 0;
 
-    // List<CartCheckPrice> cartCheckPricex = [
-    //   CartCheckPrice(
-    //       productId: "172624274120",
-    //       qty: 200,
-    //       attribute: AttributeCheckPrice(
-    //           options: ["9d0f7774-709d-40b8-8fb8-86f4581fd9d5"])),
-    //   CartCheckPrice(productId: "172624274115", qty: 2, attribute: null),
-    //   CartCheckPrice(
-    //       productId: "172624274138",
-    //       qty: 3,
-    //       attribute: AttributeCheckPrice(options: [
-    //         "9cffe0a8-1f1d-41c2-9346-75f84a6919f6",
-    //         "9cffff50-b565-4cba-9866-c679f770493b"
-    //       ])),
-    //   CartCheckPrice(productId: "172624274116", qty: 20, attribute: null),
-    //   CartCheckPrice(productId: "172624274139", qty: 2, attribute: null),
-    // ];
-
 // check price, gift product
-    if (productsList.isEmpty) {
-      cart.resetTotalPrice();
-    } else {
-      final List<CartCheckPrice> cartCheckPrice = [];
+    // if (productsList.isEmpty) {
+    //   cart.resetTotalPrice();
+    // } else {
+    // final List<CartCheckPrice> cartCheckPrice = [];
 
-      // use for check first time get listAttributeCheckPrice
-      List<AttributeCheckPrice?> listAttributeCheckPrice =
-          List.from(state.attributeCheckPrice);
-      for (var i = 0; i < productsList.length; i++) {
-        // define attribute price for check
-        AttributeCheckPrice? attributeCheckPrice;
-        attributeCheckPrice ??= AttributeCheckPrice(options: []);
-        // check if element have options empty or null
-        if (listAttributeCheckPrice.length != productsList.length) {
-          if (productsList[i].options == null ||
-              productsList[i].options!.isEmpty) {
-            // add the attribute into list attribute if options is empty
-            listAttributeCheckPrice.add(null);
+    // use for check first time get listAttributeCheckPrice
+    // List<AttributeCheckPrice?> listAttributeCheckPrice =
+    //     List.from(state.attributeCheckPrice);
+    // for (var i = 0; i < productsList.length; i++) {
+    //   // define attribute price for check
+    //   AttributeCheckPrice? attributeCheckPrice;
+    //   attributeCheckPrice ??= AttributeCheckPrice(options: []);
+    //   // check if element have options empty or null
+    //   if (listAttributeCheckPrice.length != productsList.length) {
+    //     if (productsList[i].options == null ||
+    //         productsList[i].options!.isEmpty) {
+    //       // add the attribute into list attribute if options is empty
+    //       listAttributeCheckPrice.add(null);
+    //     } else {
+    //       for (var option in productsList[i].options!) {
+    //         // check if values of option are empty or null
+    //         if (option!.values == null || option.values!.isEmpty) {
+    //         } else {
+    //           for (var value in option.values!) {
+    //             if (value.isSelected == true) {
+    //               attributeCheckPrice.options?.add(value.id);
+    //               print('${(value.id)}');
+    //             }
+    //           }
+    //         }
+    //       }
+    //       // add the attribute into list attribute if isselected is true
+    //       listAttributeCheckPrice.add(attributeCheckPrice);
+    //     }
+    //   } else {}
+
+    //   // convertToKilogram
+    //   weight = coutWeightToDouble(
+    //       productsList[i].weight, productsList[i].totalQuantity);
+    //   weight = convertToKilogram(
+    //       unit: productsList[i].weightClass ?? '',
+    //       value: coutWeightToDouble(
+    //           productsList[i].weight, productsList[i].totalQuantity));
+    //   // tax = productsList[i].taxId;
+    //   // after handle options and values, and it into cartCheckPrice
+    //   cartCheckPrice.add(CartCheckPrice(
+    //       productId: productsList[i].id,
+    //       qty: productsList[i].totalQuantity,
+    //       attribute: listAttributeCheckPrice[i]));
+    // }
+    // emit(
+    //   state.copyWith(attributeCheckPrice: listAttributeCheckPrice),
+    // );
+
+    // final checkOrderPriceResponse =
+    //     await _cartOrderRepository.checkOrderPriceRP(
+    //         request: CheckOrderPriceRequest(
+    //             customerType: "",
+    //             customerUsageCount: "",
+    //             inputCoupon: "",
+    //             paymentMethod: "",
+    //             cart: cartCheckPrice));
+
+    // start get user order from server
+    List<DataProduct> listGiftProduct = [];
+
+    final listItemsCartOrder = await _cartOrderRepository.getCartOrderRP();
+    // end get user order from server
+
+    var discountOrder = 0;
+    var totalItem = 0;
+    var discountDetail = 0;
+    var isFreeShipping = false;
+    double totalPriceItem = 0.0;
+
+    // start check is free shipping
+    isFreeShipping = listItemsCartOrder
+            .firstWhere(
+                (element) => element.attributes != null
+                    ? element.attributes?.freeShipping == false
+                    : false,
+                orElse: () => GetCartOrderResponse(
+                    attributes: AttributesGetCartOrder(freeShipping: true)))
+            .attributes!
+            .freeShipping ==
+        true;
+    // end check is free shipping
+
+    // start renew data from server
+    if (listItemsCartOrder != []) {
+      // List<Map<String, Price>> dataListUpdate = [];
+      for (var element in listItemsCartOrder) {
+        // count tax
+        tax += element.tax ?? 0;
+
+        if (element.attributes == null) {
+        } else {
+          discountOrder += element.attributes?.discountOrder ?? 0;
+          discountDetail += element.attributes?.discountDetail ?? 0;
+          if (element.attributes!.gift == null) {
           } else {
-            for (var option in productsList[i].options!) {
-              // check if values of option are empty or null
-              if (option!.values == null || option.values!.isEmpty) {
-              } else {
-                for (var value in option.values!) {
-                  if (value.isSelected == true) {
-                    attributeCheckPrice.options?.add(value.id);
-                    print('${(value.id)}');
-                  }
-                }
-              }
-            }
-            // add the attribute into list attribute if isselected is true
-            listAttributeCheckPrice.add(attributeCheckPrice);
-          }
-        } else {}
+            // add gift
 
-        // convertToKilogram
-        weight = coutWeightToDouble(
-            productsList[i].weight, productsList[i].totalQuantity);
-        weight = convertToKilogram(
-            unit: productsList[i].weightClass ?? '',
-            value: coutWeightToDouble(
-                productsList[i].weight, productsList[i].totalQuantity));
-        // tax = productsList[i].taxId;
-        // after handle options and values, and it into cartCheckPrice
-        cartCheckPrice.add(CartCheckPrice(
-            productId: productsList[i].id,
-            qty: productsList[i].totalQuantity,
-            attribute: listAttributeCheckPrice[i]));
-      }
-      emit(
-        state.copyWith(attributeCheckPrice: listAttributeCheckPrice),
-      );
-      List<DataProductDetailResponse> listGiftProduct = [];
-
-      final checkOrderPriceResponse =
-          await _cartOrderRepository.checkOrderPriceRP(
-              request: CheckOrderPriceRequest(
-                  customerType: "",
-                  customerUsageCount: "",
-                  inputCoupon: "",
-                  paymentMethod: "",
-                  cart: cartCheckPrice));
-      var discountOrder = 0;
-
-      var totalItem = 0;
-      var discountDetail = 0;
-      var isFreeShipping = false;
-      double totalPriceItem = 0.0;
-
-      // check is free shipping (done)
-      isFreeShipping = checkOrderPriceResponse
-              .firstWhere((element) => element.freeShipping == false,
-                  orElse: () => CheckOrderPriceResponse(freeShipping: true))
-              .freeShipping ==
-          true;
-
-      if (productsList != []) {
-        List<Map<String, Price>> dataListUpdate = [];
-
-        for (var element in checkOrderPriceResponse) {
-          discountOrder += element.discountOrder ?? 0;
-          discountDetail += element.discountDetail ?? 0;
-          totalItem += element.qty!;
-          totalPriceItem += element.totalPrice!.toDouble();
-          if (element.gift != null) {
-            final itemGift =
-                await onGetGift(idProduct: element.gift?.giftId ?? '');
+            final itemGift = await onGetGift(
+                idProduct: element.attributes?.gift?.giftId ?? '');
             listGiftProduct.add(itemGift);
-            //    listGiftProduct[id]
           }
-          dataListUpdate.add({
-            element.productId ?? "": Price(
-                price: splitCurrency(
-                  element.price.toString(),
-                ),
-                discountDetail: element.discountDetail,
-                discountOrder: element.discountOrder,
-                totalPriceItem: element.totalPrice)
-          });
         }
+        // count total quantity items
+        totalItem += element.qty!;
+        // count total price items
+        totalPriceItem += element.total!.toDouble();
 
-        cart.resetTotalPrice();
-        productsList = await CartDatabaseV2()
-            .updateProductsDescription(product: dataListUpdate);
-        cart.addTotalPrice(totalPriceItem);
-        cart.removeTotalPrice((discountOrder.toDouble() + discountDetail));
+        /// update data product to local
+
+        // dataListUpdate.add({
+        //   element.productId ?? "": Price(
+        //       price: splitCurrency(
+        //         element.price.toString(),
+        //       ),
+        //       totalQuantity: element.qty,
+        //       discountDetail: element.discountDetail,
+        //       discountOrder: element.discountOrder,
+        //       totalPriceItem: element.totalPrice)
+        // });
       }
 
-      emit(
-        state.copyWith(
-            weight: weight,
-            listGiftProduct: listGiftProduct,
-            discountOrder: discountOrder + discountDetail,
-            productsList: productsList,
-            isFreeShipping: isFreeShipping,
-            checkOrderPriceResponse: checkOrderPriceResponse,
-            totalItem: cart.getCounter(),
-            userInfoLogin: userInfoLogin),
-      );
+      cart.resetTotalPrice();
+      // productsList = await CartDatabaseV2()
+      //     .updateProductsDescription(product: dataListUpdate);
+      cart.addTotalPrice(totalPriceItem);
+      cart.removeTotalPrice((discountOrder.toDouble() + discountDetail));
     }
+    // end renew data from server
+
+    emit(
+      state.copyWith(
+          // get cart order
+          listItemsCartOrder: listItemsCartOrder,
+          weight: weight,
+          listGiftProduct: listGiftProduct,
+          discountOrder: discountOrder + discountDetail,
+          productsList: productsList,
+          isFreeShipping: isFreeShipping,
+          //  checkOrderPriceResponse: checkOrderPriceResponse,
+          totalItem: listItemsCartOrder.length, //cart.getCounter(),
+          userInfoLogin: userInfoLogin),
+    );
+    //   }
     getDefaultPrice();
 
     emit(
@@ -194,6 +202,62 @@ class CartBloc extends BaseBloc<CartState> {
     );
   }
 
+  // on update item from cart order
+  onUpdateItemFromCartOrder({
+    required String rowId,
+    required String id,
+    required int newQty,
+  }) async {
+    emit(state.copyWith(
+      isNextPage: false,
+    ));
+    final response = await _cartOrderRepository.updateCartOrderRP(
+        request: RemoveItemFromCartRequest(
+      id: id,
+      newQty: newQty,
+      rowId: rowId,
+    ));
+    if (response.success == null || !response.success!) {
+      emit(state.copyWith(
+          message: 'Sản phẩm không còn đủ số lượng',
+          isUpdateDone: !state.isUpdateDone));
+      print(response);
+    } else {
+      getData();
+    }
+    emit(state.copyWith(
+      message: null,
+    ));
+  }
+
+  // ondelete item from cart order
+  onDeleteItemFromCartOrder(
+      {required String rowId,
+      required int index,
+      required String idProduct}) async {
+    // remove item from cart order
+    final cart = Provider.of<CartProviderV2>(context, listen: false);
+    cart.removeCounter();
+    cart.removeItem(idProduct);
+    onDeleteBefoGetData(index: index);
+
+    final response = await _cartOrderRepository.removeItemFromCartRP(
+        request: RemoveItemFromCartRequest(rowId: rowId));
+    if (response.success == null || !response.success!) {
+    } else {
+      getData();
+    }
+  }
+
+  onDeleteBefoGetData({
+    required int index,
+  }) {
+    var listCategoriesCartItem =
+        List<GetCartOrderResponse>.from(state.listItemsCartOrder);
+    listCategoriesCartItem.removeAt(index);
+    emit(state.copyWith(listItemsCartOrder: listCategoriesCartItem));
+  }
+
   // count weight products
   double coutWeightToDouble(String weight, int quantity) {
     final temp = double.parse(weight);
@@ -201,8 +265,7 @@ class CartBloc extends BaseBloc<CartState> {
     return value;
   }
 
-  Future<DataProductDetailResponse> onGetGift(
-      {required String idProduct}) async {
+  Future<DataProduct> onGetGift({required String idProduct}) async {
     return await _productRepository.getProductDetailsRP(idProduct: idProduct);
   }
 
@@ -218,6 +281,7 @@ class CartBloc extends BaseBloc<CartState> {
     final cart = Provider.of<CartProviderV2>(context, listen: false);
     final product = state.productsList[index];
     cart.removeItem(product.id);
+
     //   cart.removeTotalPrice((totalPriceItem));
     List<AttributeCheckPrice?> listAttributeCheckPrice =
         List.from(state.attributeCheckPrice);
@@ -234,38 +298,19 @@ class CartBloc extends BaseBloc<CartState> {
   getDefaultPrice() {
     final cart = Provider.of<CartProviderV2>(context, listen: false);
     emit(state.copyWith(
-        finalPriceDefault: cart.getTotalPrice().toInt() // sum,
-        ,
+        isNextPage: true,
+        finalPriceDefault: cart.getTotalPrice().toInt(),
         isValueDefault: true));
-  }
+    // start update total products in local store
+    final tempTotalItems = cart.getCounter();
 
-  // change final value default of cart
-  //onChangeFinalPrice() {
-  // final cart = Provider.of<CartProviderV2>(context, listen: false);
-  //  var productsList = List<CartModelProduct>.from(state.productsList);
-  // int sum;
-  // int sumValue;
-  // int total;
-  // sum = state.finalPriceDefault!;
-  // sumValue = productsList.fold<int>(
-  //     0, (previousValue, element) => previousValue + element.price.price!);
-  // total = sumValue + sum;
-  //   emit(state.copyWith(finalPrice: cart.getTotalPrice().toInt() // total,
-  //       ));
-  // }
+    if (state.totalItem != tempTotalItems && state.totalItem != null) {
+      cart.addCounter(setCounter: state.totalItem ?? 0);
+    }
+    // end update total products in local store
+  }
 
   // update cart
-
-  Timer? _debounce;
-  fetchData() {
-    if (_debounce?.isActive ?? false) {
-      _debounce?.cancel();
-    } else {
-      _debounce = Timer(const Duration(milliseconds: 1800), () {
-        getData();
-      });
-    }
-  }
 
   onChangeValueDirec({
     required int index,
@@ -273,29 +318,36 @@ class CartBloc extends BaseBloc<CartState> {
   }) {
     //   final cart = Provider.of<CartProviderV2>(context, listen: false);
     var productsList = List<CartModelProduct>.from(state.productsList);
+    bool temp = false;
+
     productsList = productsList.mapIndexed((i, element) {
       //   double totalPriceItem = 0.0;
-      if (index == i) {
-        // final valueDefault = element.totalQuantity;
-        // if (value == valueDefault) {
-        //   return element;
-        // } else if (value < valueDefault) {
-        //   if (valueDefault >= 1 && value >= 1) {
-        //     // totalPriceItem = (valueDefault - value) *
-        //     //     double.parse(element.price.price.toString());
-        //     //        cart.removeTotalPrice((totalPriceItem));
-        //   }
-        // } else {
-        //   if (valueDefault >= 1 && value >= 1) {
-        //     // totalPriceItem = (value - valueDefault) *
-        //     //     double.parse(element.price.price.toString());
-        //     //           cart.addTotalPrice((totalPriceItem));
-        //   }
-        // }
-        getDefaultPrice();
-        return element.copy(
-          totalQuantity: value,
-        );
+      if (value == element.totalQuantity) {
+      } else {
+        if (index == i) {
+          temp = true;
+
+          // final valueDefault = element.totalQuantity;
+          // if (value == valueDefault) {
+          //   return element;
+          // } else if (value < valueDefault) {
+          //   if (valueDefault >= 1 && value >= 1) {
+          //     // totalPriceItem = (valueDefault - value) *
+          //     //     double.parse(element.price.price.toString());
+          //     //        cart.removeTotalPrice((totalPriceItem));
+          //   }
+          // } else {
+          //   if (valueDefault >= 1 && value >= 1) {
+          //     // totalPriceItem = (value - valueDefault) *
+          //     //     double.parse(element.price.price.toString());
+          //     //           cart.addTotalPrice((totalPriceItem));
+          //   }
+          // }
+          //   getDefaultPrice();
+          return element.copy(
+            totalQuantity: value,
+          );
+        }
       }
       return element;
     }).toList();
@@ -303,9 +355,12 @@ class CartBloc extends BaseBloc<CartState> {
       productsList: productsList,
     ));
     onUpdate(index, productsList);
-    // Debounce logic
-    getData();
-    //  fetchData();
+    if (temp) {
+      getData();
+      emit(state.copyWith(
+          // isReloadNewCart: !state.isReloadNewCart,
+          ));
+    }
   }
 
   onChangeDecrementCounter(int index) {
@@ -318,7 +373,6 @@ class CartBloc extends BaseBloc<CartState> {
           count = count - 1;
           cart.removeTotalPrice(double.parse(element.price.price.toString()));
           getDefaultPrice();
-
           return element.copy(
             totalQuantity: count,
             totalPriceItem: (count - 1) * element.price.price!.toDouble(),
@@ -334,7 +388,6 @@ class CartBloc extends BaseBloc<CartState> {
     onUpdate(index, productsList);
 
     // Debounce logic
-    fetchData();
   }
 
   onChangeIncrementCounter(int index) async {
@@ -361,7 +414,6 @@ class CartBloc extends BaseBloc<CartState> {
     await onUpdate(index, productsList);
 
     // Debounce logic
-    fetchData();
   }
 
   onUpdate(int index, productList) async {

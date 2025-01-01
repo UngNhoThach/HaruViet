@@ -1,8 +1,8 @@
 import 'package:haruviet/component/always_disabled_focus_node.dart';
 import 'package:haruviet/component/required_label/required_labal.dart';
-import 'package:haruviet/data/reponsitory/setting/item_base_response.dart';
-import 'package:haruviet/data/reponsitory/setting/option_value_base_list_request.dart';
-import 'package:haruviet/data/reponsitory/setting/select_option_value_params.dart';
+import 'package:haruviet/data/reponsitory/setting/models/item_base_response.dart';
+import 'package:haruviet/data/reponsitory/setting/models/option_value_base_list_request.dart';
+import 'package:haruviet/data/reponsitory/setting/models/select_option_value_params.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/context.dart';
 import 'package:haruviet/helper/spaces.dart';

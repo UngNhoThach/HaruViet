@@ -8,8 +8,8 @@ part of 'product_reviews.dart';
 
 ProductReview _$ProductReviewFromJson(Map<String, dynamic> json) =>
     ProductReview(
-      averageRating: json['average_rating'] as int?,
-      totalReviews: json['total_reviews'] as int?,
+      averageRating: (json['average_rating'] as num?)?.toDouble(),
+      totalReviews: (json['total_reviews'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$ProductReviewToJson(ProductReview instance) =>

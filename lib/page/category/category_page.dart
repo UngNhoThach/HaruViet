@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:haruviet/base/base_state.dart';
 import 'package:haruviet/component/shimer/image_product_shimer.dart';
 import 'package:haruviet/component/shimer/shimer.dart';
-import 'package:haruviet/data/data_local/user_bloc.dart';
+import 'package:haruviet/connection.dart';
+import 'package:haruviet/data/data_local/setting_app_bloc.dart';
 import 'package:haruviet/data/reponsitory/category/models/list_category_response/data_category.dart';
 import 'package:haruviet/data/reponsitory/category/models/list_category_response/subcategory.dart';
 import 'package:haruviet/helper/colors.dart';
@@ -33,8 +36,12 @@ class CategoryPage extends StatefulWidget {
 class _CategoryPageState extends State<CategoryPage> {
   // variables and functions
 
+  // check connection
+  late StreamSubscription connectionChangeStream;
+  bool isOffline = false;
+
   final PagingController<int, DataCategory> _pagingController =
-      PagingController(firstPageKey: startPage, invisibleItemsThreshold: 1);
+      PagingController(firstPageKey: startPage, invisibleItemsThreshold: 3);
   FocusNode focusNode = FocusNode();
 
   late CategoryBloc bloc;
@@ -44,13 +51,29 @@ class _CategoryPageState extends State<CategoryPage> {
   @override
   void initState() {
     super.initState();
+
+// check connection change
+    ConnectionStatusSingleton connectionStatus =
+        ConnectionStatusSingleton.getInstance();
+    connectionChangeStream =
+        connectionStatus.connectionChange.listen(connectionChanged);
+    if (!connectionStatus.hasConnection) {
+      isOffline = !connectionStatus.hasConnection;
+    } else {}
+
     bloc = CategoryBloc()..getData();
 
-    domain = context.read<UserBloc>().state.subDomain ?? '';
+    domain = context.read<SettingAppBloc>().state.xUrl ?? '';
     _pagingController.addPageRequestListener((pageKey) {
       if (pageKey != startPage) {
         bloc.onFetch(page: pageKey);
       }
+    });
+  }
+
+  void connectionChanged(dynamic hasConnection) {
+    setState(() {
+      isOffline = !hasConnection;
     });
   }
 
@@ -70,7 +93,13 @@ class _CategoryPageState extends State<CategoryPage> {
         ),
       ],
       child: Scaffold(
-        drawer: const DrawerListPage(),
+        drawer: DrawerListPage(
+          name: bloc.state.userInfoLogin?.name ?? "",
+          url: bloc.state.userInfoLogin?.avatar ?? "",
+          isLogin: bloc.state.userInfoLogin != null
+              ? bloc.state.userInfoLogin!.isLogin
+              : false,
+        ),
         body: BlocListener<CategoryBloc, CategoryState>(
           listenWhen: (previous, current) =>
               previous.newListCategory != current.newListCategory,
@@ -91,113 +120,100 @@ class _CategoryPageState extends State<CategoryPage> {
             builder: (context, state) {
               return state.isLoading
                   ? const LoadingWidget()
-                  : RefreshIndicator(
-                      onRefresh: () async {
-                        _pagingController.refresh();
-                        bloc.onFetch(page: startPage);
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Expanded(
-                            flex: 2,
-                            child: SingleChildScrollView(
-                              physics: const BouncingScrollPhysics(),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  PagedListView.separated(
-                                    scrollDirection: Axis.vertical,
-                                    keyboardDismissBehavior:
-                                        ScrollViewKeyboardDismissBehavior
-                                            .onDrag,
-                                    pagingController: _pagingController,
-                                    shrinkWrap: true,
-                                    physics: const ClampingScrollPhysics(),
-                                    builderDelegate:
-                                        PagedChildBuilderDelegate<DataCategory>(
-                                      noItemsFoundIndicatorBuilder: _shimmer,
-                                      itemBuilder: (context, item, index) {
-                                        return GestureDetector(
-                                          onTap: () {
-                                            bloc.onChangeSelecCategories(
-                                                selectedCategory: index);
-                                          },
-                                          child: Container(
-                                            padding: EdgeInsets.only(
-                                              left: 8.w,
-                                              right: 6.w,
-                                              top: 16.h,
-                                              bottom: 16.h,
-                                            ),
-                                            decoration:
-                                                state.selectedCategory == index
-                                                    ? BoxDecoration(
-                                                        border: Border(
-                                                          left: BorderSide(
-                                                              width: 6.0.w,
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .primaryColor),
-                                                        ),
-                                                        color: Colors.white,
-                                                      )
-                                                    : const BoxDecoration(
-                                                        color: colorBlueGray01,
-                                                      ),
-                                            child: Row(
-                                              children: [
-                                                Flexible(
-                                                  child: Text(
-                                                    item.descriptions?.title ??
-                                                        '',
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodySmall
-                                                        ?.copyWith(
-                                                          color:
-                                                              colorBlackTileItem,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                        ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
+                  : ((state.listCategory == null ||
+                              state.listCategory!.isEmpty) &&
+                          isOffline)
+                      ? const Center(
+                          child: Text('Kiểm tra kết nối!'),
+                        )
+                      : RefreshIndicator(
+                          onRefresh: () async {
+                            _pagingController.refresh();
+                            bloc.onFetch(page: startPage);
+                          },
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              // Wrapping the entire structure to constrain the width of the category list panel
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.3,
+                                color: Colors
+                                    .grey[200], // Optional background color
+                                child: PagedListView.separated(
+                                  padding: EdgeInsets.zero,
+                                  scrollDirection: Axis.vertical,
+                                  keyboardDismissBehavior:
+                                      ScrollViewKeyboardDismissBehavior.onDrag,
+                                  pagingController: _pagingController,
+                                  shrinkWrap: true,
+                                  physics: const ClampingScrollPhysics(),
+                                  builderDelegate:
+                                      PagedChildBuilderDelegate<DataCategory>(
+                                    noItemsFoundIndicatorBuilder: _shimmer,
+                                    itemBuilder: (context, item, index) {
+                                      return GestureDetector(
+                                        onTap: () {
+                                          bloc.onChangeSelecCategories(
+                                              selectedCategory: index);
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 8.w,
+                                            vertical: 16.h,
                                           ),
-                                        );
-                                      },
-                                    ),
-                                    separatorBuilder: (context, index) =>
-                                        const Divider(
-                                      color: colorBlueGray03,
-                                    ),
+                                          decoration: state.selectedCategory ==
+                                                  index
+                                              ? BoxDecoration(
+                                                  border: Border(
+                                                    left: BorderSide(
+                                                        width: 6.0.w,
+                                                        color: Theme.of(context)
+                                                            .primaryColor),
+                                                  ),
+                                                  color: Colors.white,
+                                                )
+                                              : const BoxDecoration(
+                                                  color: colorBlueGray01,
+                                                ),
+                                          child: Text(
+                                            item.descriptions?.title ?? '',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodySmall
+                                                ?.copyWith(
+                                                  color: colorBlackTileItem,
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   ),
-                                ],
+                                  separatorBuilder: (context, index) =>
+                                      const Divider(
+                                    height: 1,
+                                    color: colorBlueGray03,
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 7,
-                            child: Container(
-                              color: colorWhite,
-                              child: Column(
-                                children: [
-                                  _category(context,
-                                      subcategory: state
-                                              .listCategory?[
-                                                  state.selectedCategory]
-                                              .subcategories ??
-                                          []),
-                                ],
+
+                              // Right panel with Expanded
+                              Expanded(
+                                child: Container(
+                                  color: colorWhite,
+                                  child: _category(
+                                    context,
+                                    subcategory: state
+                                            .listCategory![
+                                                state.selectedCategory]
+                                            .subcategories ??
+                                        [],
+                                  ),
+                                ),
                               ),
-                            ),
+                            ],
                           ),
-                        ],
-                      ),
-                    );
+                        );
             },
           ),
         ),
@@ -206,22 +222,20 @@ class _CategoryPageState extends State<CategoryPage> {
   }
 
   Widget _shimmer(BuildContext context) {
-    return Expanded(
-      child: ListView.separated(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemBuilder: (context, index) => ShimmerEffect(
-          child: Container(
-            height: 50.h,
-            decoration: BoxDecoration(
-              color: colorWhite,
-              borderRadius: BorderRadius.circular(16.0),
-            ),
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) => ShimmerEffect(
+        child: Container(
+          height: 50.h,
+          decoration: BoxDecoration(
+            color: colorWhite,
+            borderRadius: BorderRadius.circular(16.0),
           ),
         ),
-        separatorBuilder: (context, index) => spaceH12,
-        itemCount: 12,
       ),
+      separatorBuilder: (context, index) => spaceH12,
+      itemCount: 12,
     );
   }
 
@@ -263,10 +277,6 @@ class _CategoryPageState extends State<CategoryPage> {
                       imageUrl: '$domain${subcategory[index].image ?? ''}',
                       width: 48.w,
                       height: 48.h,
-                      placeholder: (context, url) => ImageProductShimer(
-                        width: 48.w,
-                        height: 48.h,
-                      ),
                       errorWidget: (context, url, error) =>
                           const Icon(Icons.error),
                     ),

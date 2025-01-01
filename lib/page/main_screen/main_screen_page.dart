@@ -1,12 +1,12 @@
-import 'dart:ui';
+import 'dart:async';
 
-import 'package:flutter/widgets.dart';
 import 'package:haruviet/component/input/search_barv2.dart';
 import 'package:haruviet/component/popup/popup.dart';
-import 'package:haruviet/data/data_local/user_bloc.dart';
+import 'package:haruviet/connection.dart';
+import 'package:haruviet/data/data_local/setting_app_bloc.dart';
 import 'package:haruviet/database_local/product/cart_provider_v2.dart';
 import 'package:haruviet/helper/colors.dart';
-import 'package:haruviet/helper/spaces.dart';
+import 'package:haruviet/page/account/signin/widgets/signin_params.dart';
 import 'package:haruviet/page/cart/models/cart_page_params.dart';
 import 'package:haruviet/page/category/category_page.dart';
 import 'package:haruviet/page/category/widgets/category_paga_params.dart';
@@ -15,6 +15,7 @@ import 'package:haruviet/page/home/widgets/drawer_list_page.dart';
 import 'package:haruviet/page/main_screen/main_screen_state.dart';
 import 'package:haruviet/page/notification/notification_page.dart';
 import 'package:haruviet/page/profile/profile_page.dart';
+import 'package:haruviet/page/voucher/voucher_page.dart';
 import 'package:haruviet/resources/routes.dart';
 import 'package:haruviet/search/search_product_category_bloc.dart';
 import 'package:haruviet/search/search_product_category_page.dart';
@@ -52,6 +53,10 @@ class _MainScreenPageState extends State<MainScreenPage> {
   final SearchWidgets searchWidgets = SearchWidgets();
   late SearchProductCategoryBloc blocSearchProductCategory;
   late PersistentTabController _controller;
+  // check connection
+  // GlobalKey _persistentTabViewKey = GlobalKey();
+  late StreamSubscription connectionChangeStream;
+  bool isOffline = false;
 
   late MainScreenBloc bloc;
   String keywordText = '';
@@ -61,30 +66,54 @@ class _MainScreenPageState extends State<MainScreenPage> {
   late String domain;
 
   @override
+  initState() {
+    super.initState();
+// check connection change
+
+    // Get the instance of the singleton
+    ConnectionStatusSingleton connectionStatus =
+        ConnectionStatusSingleton.getInstance();
+    connectionChangeStream =
+        connectionStatus.connectionChange.listen(connectionChanged);
+    if (!connectionStatus.hasConnection) {
+      isOffline = !connectionStatus.hasConnection;
+    } else {}
+
+    _controller = PersistentTabController(initialIndex: screenIndex);
+
+    _controller.addListener(_onTabChanged);
+    domain = context.read<SettingAppBloc>().state.xUrl ?? '';
+    bloc = MainScreenBloc()..getData();
+  }
+
+  void connectionChanged(dynamic hasConnection) {
+    setState(() {
+      isOffline = !hasConnection;
+      // _persistentTabViewKey = GlobalKey();
+    });
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
-
+    connectionChangeStream.cancel();
     super.dispose();
   }
 
+  // if (!isOffline) {
+  //       setState(() {
+  //         _controller = PersistentTabController(initialIndex: screenIndex);
+  //       });
+  //     }
   final List<Widget> _buildScreens = [
     const HomePage(),
+    const VoucherPage(),
     const NotificationTabPage(),
     CategoryPage(
       params: CategoryPageParams(isAppBar: false),
     ),
     const ProfilePage()
   ];
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = PersistentTabController(initialIndex: screenIndex);
-    _controller.addListener(_onTabChanged);
-
-    domain = context.read<UserBloc>().state.subDomain ?? '';
-    bloc = MainScreenBloc()..getData();
-  }
 
   void _onTabChanged() {
     setState(() {
@@ -106,8 +135,17 @@ class _MainScreenPageState extends State<MainScreenPage> {
       ),
       PersistentBottomNavBarItem(
         iconSize: 24,
+        icon: const Icon(
+          Icons.home,
+        ),
+        title: ("Voucher"),
+        activeColorPrimary: activeColorPrimary,
+        inactiveColorPrimary: colorBlueGray03,
+      ),
+      PersistentBottomNavBarItem(
+        iconSize: 24,
         icon: const Icon(Icons.notifications),
-        title: ("Thông báo"),
+        title: ("Quà tặng"),
         activeColorPrimary: activeColorPrimary,
         inactiveColorPrimary: colorBlueGray03,
       ),
@@ -162,13 +200,11 @@ class _MainScreenPageState extends State<MainScreenPage> {
                 : screenIndex == 1
                     ? AppBar(
                         centerTitle: true,
-                        title: Text('Thông báo', style: styleTitles),
-                        // title: Text('${widget.cartDatabase.getCount()}',
-                        //     style: styleTitles),
+                        title: Text('Voucher', style: styleTitles),
                       )
-                    : screenIndex == 2
+                    : screenIndex == 3
                         ? _appbarSearch()
-                        : screenIndex == 3
+                        : screenIndex == 4
                             ? AppBar(
                                 centerTitle: true,
                                 title: Text(
@@ -180,10 +216,16 @@ class _MainScreenPageState extends State<MainScreenPage> {
                               )
                             : AppBar(
                                 centerTitle: true,
-                                title: Text('Thông báo', style: styleTitles),
+                                title: Text('Quà tặng', style: styleTitles),
                               ),
-            drawer: const DrawerListPage(),
+            drawer: DrawerListPage(
+              isLogin: state.isLogin,
+              name: state.dataUser?.name ?? "",
+              url: state.dataUser?.avatar ?? "",
+            ),
             body: PersistentTabView(
+              //   key: _persistentTabViewKey, // Add the key here
+
               confineInSafeArea: true,
               context,
               controller: _controller,
@@ -192,6 +234,7 @@ class _MainScreenPageState extends State<MainScreenPage> {
               backgroundColor: colorBlueGray01,
               handleAndroidBackButtonPress: true,
               resizeToAvoidBottomInset: true,
+              stateManagement: true,
               hideNavigationBarWhenKeyboardShows: true,
               popAllScreensOnTapOfSelectedTab: true,
               popActionScreens: PopActionScreensType.all,
@@ -225,12 +268,14 @@ class _MainScreenPageState extends State<MainScreenPage> {
 
   PreferredSizeWidget _appbarSearch() {
     return AppBar(
+      titleSpacing: 0,
       centerTitle: true,
       title: AppSearchBarV2(
         hintText: 'Tìm kiếm sản phẩm',
         onTap: () {
           Navigator.push(
             context,
+            // navigation with animation
             PageRouteBuilder(
               pageBuilder: (context, animation, secondaryAnimation) {
                 const begin = Offset(0.8, 0.0);
@@ -263,7 +308,6 @@ class _MainScreenPageState extends State<MainScreenPage> {
         },
       ),
       actions: <Widget>[
-        spaceW16,
         Consumer<CartProviderV2>(
           builder: (BuildContext context, CartProviderV2 value, Widget? child) {
             return badges.Badge(
@@ -274,8 +318,11 @@ class _MainScreenPageState extends State<MainScreenPage> {
               badgeContent: Text('${value.counter}'),
               child: IconButton(
                 onPressed: () {
-                  routeService.pushNamed(Routes.cartPage,
-                      arguments: CartPageParams(isAppBar: true));
+                  !bloc.state.isLogin
+                      ? routeService.pushNamed(Routes.login,
+                          arguments: SignInParams(typeDirec: 1))
+                      : routeService.pushNamed(Routes.cartPage,
+                          arguments: CartPageParams(isAppBar: true));
                 },
                 icon: Icon(
                   Icons.shopping_cart_outlined,

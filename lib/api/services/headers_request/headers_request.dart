@@ -6,7 +6,7 @@ class ApiHeaders {
   Map<String, String> get appMobileHeaders {
     return {
       "apiconnection": "appmobile",
-      "apikey": "9d003889-89c7-4319-9be0-0796a6c76b00",
+      "apikey": "03e82b195ca2ec3399eee0532116f999",
       "authorization": "Bearer $authorization",
     };
   }
@@ -18,4 +18,14 @@ class ApiHeaders {
       "Content-Type": "application/json",
     };
   }
+}
+
+Map<String, String> appDefaultHeader({
+  required String name,
+  required String apiKey,
+}) {
+  return {
+    "name": name,
+    "apiKey": apiKey,
+  };
 }

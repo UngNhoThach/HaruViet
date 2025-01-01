@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/spaces.dart';
-import 'package:haruviet/theme/typography.dart';
 
 class CountQuality extends StatefulWidget {
   final int initialCounter;
@@ -22,7 +21,7 @@ class CountQuality extends StatefulWidget {
 
 class _CountQualityState extends State<CountQuality> {
   late int _counter;
-  late FocusNode _focusNode;
+  final FocusNode _focusNode = FocusNode();
   late TextEditingController _controller;
   Timer? _debounce;
 
@@ -30,7 +29,7 @@ class _CountQualityState extends State<CountQuality> {
   void initState() {
     super.initState();
     _counter = widget.initialCounter;
-    _focusNode = FocusNode();
+
     _controller = TextEditingController(text: '$_counter');
 
     // Listener to update counter when focus is lost
@@ -39,6 +38,16 @@ class _CountQualityState extends State<CountQuality> {
         _updateCounterFromTextField();
       }
     });
+  }
+
+  @override
+  void didUpdateWidget(covariant CountQuality oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Update the counter if the initialCounter has changed
+    if (widget.initialCounter != oldWidget.initialCounter) {
+      _counter = widget.initialCounter;
+      _controller.text = '$_counter';
+    }
   }
 
   @override
@@ -51,10 +60,9 @@ class _CountQualityState extends State<CountQuality> {
 
   void _updateCounterFromTextField() {
     final newValue = int.tryParse(_controller.text);
-    if (newValue != null) {
-      setState(() {
-        _counter = newValue;
-      });
+    // newValue != widget.initialCounter check if the initialCounter has changed
+    if (newValue != null && newValue != widget.initialCounter) {
+      _counter = newValue;
       widget.onCounterChanged(_counter);
     } else {
       // Reset to the last valid counter value if input is invalid
@@ -62,33 +70,32 @@ class _CountQualityState extends State<CountQuality> {
     }
   }
 
-  void _handleDebounce(Function callback) {
+  void _handleDebounce(Future<void> Function() callback) {
     if (_debounce?.isActive ?? false) {
       _debounce?.cancel();
     }
-    _debounce = Timer(const Duration(milliseconds: 500), () {
-      callback();
+    _debounce = Timer(const Duration(milliseconds: 300), () async {
+      await callback();
     });
   }
 
   void _incrementCounter() {
-    setState(() {
-      _counter++;
-      _controller.text = '$_counter';
-    });
-    _handleDebounce(() {
-      widget.onCounterChanged(_counter);
+    //   setState(() {
+    _counter++;
+    _controller.text = '$_counter';
+    //   });
+    _handleDebounce(() async {
+      await widget.onCounterChanged(_counter);
     });
   }
 
   void _decrementCounter() {
     if (_counter > 1) {
-      setState(() {
-        _counter--;
-        _controller.text = '$_counter';
-      });
-      _handleDebounce(() {
-        widget.onCounterChanged(_counter);
+      _counter--;
+      _controller.text = '$_counter';
+      //   });
+      _handleDebounce(() async {
+        await widget.onCounterChanged(_counter);
       });
     }
   }
@@ -104,6 +111,7 @@ class _CountQualityState extends State<CountQuality> {
             GestureDetector(
               onTap: _decrementCounter,
               child: const Icon(
+                size: 30,
                 Icons.remove,
                 color: colorGray05,
               ),
@@ -111,14 +119,21 @@ class _CountQualityState extends State<CountQuality> {
             spaceW8,
             SizedBox(
               width: 60,
-              height: 30,
-              child: TextField(
+              height: 40,
+              child: TextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                textInputAction: TextInputAction.done,
+                // keyboardType: TextInputType.number,
+                keyboardType: const TextInputType.numberWithOptions(
+                    signed: true, decimal: true),
                 focusNode: _focusNode,
                 textAlign: TextAlign.center,
                 decoration: const InputDecoration(
+                  //contentPadding: fix error don't show all values
+                  contentPadding: EdgeInsets.symmetric(horizontal: 8),
                   border: OutlineInputBorder(),
                 ),
-                keyboardType: TextInputType.number,
+
                 controller: _controller,
                 onChanged: (newValue) {
                   final value = int.tryParse(newValue);
@@ -126,12 +141,16 @@ class _CountQualityState extends State<CountQuality> {
                     _counter = value;
                   }
                 },
+                // onFieldSubmitted: (newValue) {
+                //   _updateCounterFromTextField();
+                // },
               ),
             ),
             spaceW8,
             GestureDetector(
               onTap: _incrementCounter,
               child: const Icon(
+                size: 30,
                 Icons.add,
                 color: colorGray05,
               ),

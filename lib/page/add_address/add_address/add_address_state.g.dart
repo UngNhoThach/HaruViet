@@ -11,29 +11,33 @@ abstract class _$AddNewAddressStateCWProxy {
 
   AddNewAddressState errorMsg(String errorMsg);
 
+  AddNewAddressState createdAt(DateTime? createdAt);
+
+  AddNewAddressState updatedAt(DateTime? updatedAt);
+
   AddNewAddressState dataListAddress(DataListAddress? dataListAddress);
 
-  AddNewAddressState userInfoLogin(UserInfoLogin? userInfoLogin);
+  AddNewAddressState userInfoLogin(UserState? userInfoLogin);
 
   AddNewAddressState accessToken(String? accessToken);
 
   AddNewAddressState message(String? message);
 
-  AddNewAddressState address(String? address);
+  AddNewAddressState house(String? house);
 
-  AddNewAddressState address1(String? address1);
+  AddNewAddressState district(String? district);
 
-  AddNewAddressState address2(String? address2);
+  AddNewAddressState province(String? province);
 
-  AddNewAddressState address3(String? address3);
+  AddNewAddressState idWard(String? idWard);
 
-  AddNewAddressState address4(String? address4);
+  AddNewAddressState idDistrict(String? idDistrict);
 
-  AddNewAddressState address1ID(String? address1ID);
+  AddNewAddressState idProvince(String? idProvince);
 
-  AddNewAddressState address2ID(String? address2ID);
+  AddNewAddressState street(String? street);
 
-  AddNewAddressState address3ID(String? address3ID);
+  AddNewAddressState ward(String? ward);
 
   AddNewAddressState firstName(String? firstName);
 
@@ -64,18 +68,20 @@ abstract class _$AddNewAddressStateCWProxy {
   AddNewAddressState call({
     ViewState? viewState,
     String? errorMsg,
+    DateTime? createdAt,
+    DateTime? updatedAt,
     DataListAddress? dataListAddress,
-    UserInfoLogin? userInfoLogin,
+    UserState? userInfoLogin,
     String? accessToken,
     String? message,
-    String? address,
-    String? address1,
-    String? address2,
-    String? address3,
-    String? address4,
-    String? address1ID,
-    String? address2ID,
-    String? address3ID,
+    String? house,
+    String? district,
+    String? province,
+    String? idWard,
+    String? idDistrict,
+    String? idProvince,
+    String? street,
+    String? ward,
     String? firstName,
     String? lastName,
     String? userName,
@@ -103,11 +109,19 @@ class _$AddNewAddressStateCWProxyImpl implements _$AddNewAddressStateCWProxy {
   AddNewAddressState errorMsg(String errorMsg) => this(errorMsg: errorMsg);
 
   @override
+  AddNewAddressState createdAt(DateTime? createdAt) =>
+      this(createdAt: createdAt);
+
+  @override
+  AddNewAddressState updatedAt(DateTime? updatedAt) =>
+      this(updatedAt: updatedAt);
+
+  @override
   AddNewAddressState dataListAddress(DataListAddress? dataListAddress) =>
       this(dataListAddress: dataListAddress);
 
   @override
-  AddNewAddressState userInfoLogin(UserInfoLogin? userInfoLogin) =>
+  AddNewAddressState userInfoLogin(UserState? userInfoLogin) =>
       this(userInfoLogin: userInfoLogin);
 
   @override
@@ -118,31 +132,30 @@ class _$AddNewAddressStateCWProxyImpl implements _$AddNewAddressStateCWProxy {
   AddNewAddressState message(String? message) => this(message: message);
 
   @override
-  AddNewAddressState address(String? address) => this(address: address);
+  AddNewAddressState house(String? house) => this(house: house);
 
   @override
-  AddNewAddressState address1(String? address1) => this(address1: address1);
+  AddNewAddressState district(String? district) => this(district: district);
 
   @override
-  AddNewAddressState address2(String? address2) => this(address2: address2);
+  AddNewAddressState province(String? province) => this(province: province);
 
   @override
-  AddNewAddressState address3(String? address3) => this(address3: address3);
+  AddNewAddressState idWard(String? idWard) => this(idWard: idWard);
 
   @override
-  AddNewAddressState address4(String? address4) => this(address4: address4);
+  AddNewAddressState idDistrict(String? idDistrict) =>
+      this(idDistrict: idDistrict);
 
   @override
-  AddNewAddressState address1ID(String? address1ID) =>
-      this(address1ID: address1ID);
+  AddNewAddressState idProvince(String? idProvince) =>
+      this(idProvince: idProvince);
 
   @override
-  AddNewAddressState address2ID(String? address2ID) =>
-      this(address2ID: address2ID);
+  AddNewAddressState street(String? street) => this(street: street);
 
   @override
-  AddNewAddressState address3ID(String? address3ID) =>
-      this(address3ID: address3ID);
+  AddNewAddressState ward(String? ward) => this(ward: ward);
 
   @override
   AddNewAddressState firstName(String? firstName) => this(firstName: firstName);
@@ -188,18 +201,20 @@ class _$AddNewAddressStateCWProxyImpl implements _$AddNewAddressStateCWProxy {
   AddNewAddressState call({
     Object? viewState = const $CopyWithPlaceholder(),
     Object? errorMsg = const $CopyWithPlaceholder(),
+    Object? createdAt = const $CopyWithPlaceholder(),
+    Object? updatedAt = const $CopyWithPlaceholder(),
     Object? dataListAddress = const $CopyWithPlaceholder(),
     Object? userInfoLogin = const $CopyWithPlaceholder(),
     Object? accessToken = const $CopyWithPlaceholder(),
     Object? message = const $CopyWithPlaceholder(),
-    Object? address = const $CopyWithPlaceholder(),
-    Object? address1 = const $CopyWithPlaceholder(),
-    Object? address2 = const $CopyWithPlaceholder(),
-    Object? address3 = const $CopyWithPlaceholder(),
-    Object? address4 = const $CopyWithPlaceholder(),
-    Object? address1ID = const $CopyWithPlaceholder(),
-    Object? address2ID = const $CopyWithPlaceholder(),
-    Object? address3ID = const $CopyWithPlaceholder(),
+    Object? house = const $CopyWithPlaceholder(),
+    Object? district = const $CopyWithPlaceholder(),
+    Object? province = const $CopyWithPlaceholder(),
+    Object? idWard = const $CopyWithPlaceholder(),
+    Object? idDistrict = const $CopyWithPlaceholder(),
+    Object? idProvince = const $CopyWithPlaceholder(),
+    Object? street = const $CopyWithPlaceholder(),
+    Object? ward = const $CopyWithPlaceholder(),
     Object? firstName = const $CopyWithPlaceholder(),
     Object? lastName = const $CopyWithPlaceholder(),
     Object? userName = const $CopyWithPlaceholder(),
@@ -220,6 +235,14 @@ class _$AddNewAddressStateCWProxyImpl implements _$AddNewAddressStateCWProxy {
           ? _value.errorMsg
           // ignore: cast_nullable_to_non_nullable
           : errorMsg as String,
+      createdAt: createdAt == const $CopyWithPlaceholder()
+          ? _value.createdAt
+          // ignore: cast_nullable_to_non_nullable
+          : createdAt as DateTime?,
+      updatedAt: updatedAt == const $CopyWithPlaceholder()
+          ? _value.updatedAt
+          // ignore: cast_nullable_to_non_nullable
+          : updatedAt as DateTime?,
       dataListAddress: dataListAddress == const $CopyWithPlaceholder()
           ? _value.dataListAddress
           // ignore: cast_nullable_to_non_nullable
@@ -227,7 +250,7 @@ class _$AddNewAddressStateCWProxyImpl implements _$AddNewAddressStateCWProxy {
       userInfoLogin: userInfoLogin == const $CopyWithPlaceholder()
           ? _value.userInfoLogin
           // ignore: cast_nullable_to_non_nullable
-          : userInfoLogin as UserInfoLogin?,
+          : userInfoLogin as UserState?,
       accessToken: accessToken == const $CopyWithPlaceholder()
           ? _value.accessToken
           // ignore: cast_nullable_to_non_nullable
@@ -236,38 +259,38 @@ class _$AddNewAddressStateCWProxyImpl implements _$AddNewAddressStateCWProxy {
           ? _value.message
           // ignore: cast_nullable_to_non_nullable
           : message as String?,
-      address: address == const $CopyWithPlaceholder()
-          ? _value.address
+      house: house == const $CopyWithPlaceholder()
+          ? _value.house
           // ignore: cast_nullable_to_non_nullable
-          : address as String?,
-      address1: address1 == const $CopyWithPlaceholder()
-          ? _value.address1
+          : house as String?,
+      district: district == const $CopyWithPlaceholder()
+          ? _value.district
           // ignore: cast_nullable_to_non_nullable
-          : address1 as String?,
-      address2: address2 == const $CopyWithPlaceholder()
-          ? _value.address2
+          : district as String?,
+      province: province == const $CopyWithPlaceholder()
+          ? _value.province
           // ignore: cast_nullable_to_non_nullable
-          : address2 as String?,
-      address3: address3 == const $CopyWithPlaceholder()
-          ? _value.address3
+          : province as String?,
+      idWard: idWard == const $CopyWithPlaceholder()
+          ? _value.idWard
           // ignore: cast_nullable_to_non_nullable
-          : address3 as String?,
-      address4: address4 == const $CopyWithPlaceholder()
-          ? _value.address4
+          : idWard as String?,
+      idDistrict: idDistrict == const $CopyWithPlaceholder()
+          ? _value.idDistrict
           // ignore: cast_nullable_to_non_nullable
-          : address4 as String?,
-      address1ID: address1ID == const $CopyWithPlaceholder()
-          ? _value.address1ID
+          : idDistrict as String?,
+      idProvince: idProvince == const $CopyWithPlaceholder()
+          ? _value.idProvince
           // ignore: cast_nullable_to_non_nullable
-          : address1ID as String?,
-      address2ID: address2ID == const $CopyWithPlaceholder()
-          ? _value.address2ID
+          : idProvince as String?,
+      street: street == const $CopyWithPlaceholder()
+          ? _value.street
           // ignore: cast_nullable_to_non_nullable
-          : address2ID as String?,
-      address3ID: address3ID == const $CopyWithPlaceholder()
-          ? _value.address3ID
+          : street as String?,
+      ward: ward == const $CopyWithPlaceholder()
+          ? _value.ward
           // ignore: cast_nullable_to_non_nullable
-          : address3ID as String?,
+          : ward as String?,
       firstName: firstName == const $CopyWithPlaceholder()
           ? _value.firstName
           // ignore: cast_nullable_to_non_nullable

@@ -33,7 +33,7 @@ abstract class _$ProductListStateCWProxy {
 
   ProductListState isLoading(bool isLoading);
 
-  ProductListState userInfoLogin(UserInfoLogin? userInfoLogin);
+  ProductListState userInfoLogin(UserState? userInfoLogin);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `ProductListState(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -55,7 +55,7 @@ abstract class _$ProductListStateCWProxy {
     List<DataProduct>? datatList,
     List<DataProduct>? newDataList,
     bool? isLoading,
-    UserInfoLogin? userInfoLogin,
+    UserState? userInfoLogin,
   });
 }
 
@@ -114,7 +114,7 @@ class _$ProductListStateCWProxyImpl implements _$ProductListStateCWProxy {
   ProductListState isLoading(bool isLoading) => this(isLoading: isLoading);
 
   @override
-  ProductListState userInfoLogin(UserInfoLogin? userInfoLogin) =>
+  ProductListState userInfoLogin(UserState? userInfoLogin) =>
       this(userInfoLogin: userInfoLogin);
 
   @override
@@ -207,7 +207,7 @@ class _$ProductListStateCWProxyImpl implements _$ProductListStateCWProxy {
       userInfoLogin: userInfoLogin == const $CopyWithPlaceholder()
           ? _value.userInfoLogin
           // ignore: cast_nullable_to_non_nullable
-          : userInfoLogin as UserInfoLogin?,
+          : userInfoLogin as UserState?,
     );
   }
 }

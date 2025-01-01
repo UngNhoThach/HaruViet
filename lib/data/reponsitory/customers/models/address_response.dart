@@ -1,4 +1,4 @@
-import 'package:haruviet/data/reponsitory/setting/item_base_response.dart';
+import 'package:haruviet/data/reponsitory/setting/models/item_base_response.dart';
 
 class AddressResponse {
   const AddressResponse({

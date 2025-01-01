@@ -2,7 +2,8 @@
 
 import 'dart:convert';
 
-import 'package:haruviet/data/reponsitory/product/models/data_product_detail_response/data_product_detail_response.dart';
+import 'package:haruviet/data/reponsitory/cart_orders/models/get_cart_order_response/get_cart_order_response.dart';
+import 'package:haruviet/data/reponsitory/product/models/data_list_product/data_product_list.dart';
 import 'package:haruviet/data/reponsitory/product/models/price.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -27,21 +28,8 @@ class CartDatabaseV2 {
     return _database!;
   }
 
-  Future<List<CartModelProduct>> readAllItems() async {
-    final db = await _instance.database;
-
-    final result = await db.query(
-      cartTable,
-    );
-
-    return result
-        .map((productData) => CartModelProduct.fromMap(productData))
-        .toList();
-  }
-
   Future<Database> _initDatabase() async {
     final String path = join(await getDatabasesPath(), _databaseName);
-
     return await openDatabase(
       path,
       version: _databaseVersion,
@@ -49,25 +37,37 @@ class CartDatabaseV2 {
     );
   }
 
-  Future<List<DataProductDetailResponse>> getAllProducts() async {
-    final db = await _instance.database;
-
-    // Lấy tất cả dữ liệu từ bảng products
-    final result = await db.query(
-      cartTable,
-    );
-
-    // Chuyển đổi danh sách CartModelProduct thành DataProductDetailResponse
-    return result
-        .map((productData) =>
-            CartModelProduct.fromMap(productData).toDataProduct())
-        .toList();
-  }
+  // start update database from user login
+  // Future<void> _updateDatabaseUserLogin(
+  //     {List<GetCartOrderResponse?>? listCartOrder}) async {
+  //   final db = await _instance.database;
+  //   try {
+  //     if (listCartOrder == null) {
+  //       return;
+  //     } else {
+  //       for (var element in listCartOrder) {
+  //         await db.update(
+  //           cartTable,
+  //           product.toMap(),
+  //           where: 'id = ?',
+  //           whereArgs: [product.id],
+  //         );
+  //       }
+  //     }
+  //     // print('Product inserted: ${product.id}');
+  //   } catch (e) {
+  //     print('Error inserting product: $e');
+  //   }
+  // }
+  // end update database from user login
 
   Future<void> _onCreate(Database db, int version) async {
     await db.execute('''
       CREATE TABLE $cartTable(
         id TEXT PRIMARY KEY,
+        promotiondetails TEXT,
+        reviews TEXT,
+        discount TEXT,
         totalQuantity INTEGER,
         options TEXT,
         sku TEXT,
@@ -97,14 +97,28 @@ class CartDatabaseV2 {
     ''');
   }
 
-  //  not done
-  // Phương thức insert mới từ DataProductDetailResponse
-  Future<void> insertProductFromDataProduct(
-      DataProductDetailResponse product) async {
-    // Chuyển đổi từ DataProductDetailResponse sang CartModelProduct
+  // convert from DataProduct to CartModelProduct
+  Future<void> insertProductFromDataProduct(DataProduct product) async {
+    // Chuyển đổi từ DataProduct sang CartModelProduct
     CartModelProduct cartProduct = CartModelProduct.fromDataProduct(product);
     // Insert vào database như bình thường
     await insertProduct(cartProduct);
+  }
+
+// convert from GetCartOrderResponse to CartModelProduct
+  Future<void> insertProductFromDataGetCartOrderResponse(
+      {required List<GetCartOrderResponse?>? listProduct}) async {
+    if (listProduct == null || listProduct.isEmpty) {
+      return;
+    } else {
+      for (var element in listProduct) {
+        // Chuyển đổi từ GetCartOrderResponse sang CartModelProduct
+        CartModelProduct cartProduct =
+            CartModelProduct.fromCartOrderResponse(element!);
+        // Insert vào database như bình thường
+        await insertProduct(cartProduct);
+      }
+    }
   }
 
   Future<void> insertProduct(
@@ -154,6 +168,7 @@ class CartDatabaseV2 {
         {
           'price': json.encode(price.toJson()),
           'totalPriceItem': price.totalPriceItem,
+          'totalQuantity': price.totalQuantity,
         },
         where: 'id = ?',
         whereArgs: [id],
@@ -163,6 +178,35 @@ class CartDatabaseV2 {
     // Trả về danh sách các sản phẩm đã được cập nhật
     return updatedProducts;
   }
+
+// start read data from local storage
+  Future<List<CartModelProduct>> readAllItems() async {
+    final db = await _instance.database;
+
+    final result = await db.query(
+      cartTable,
+    );
+
+    return result
+        .map((productData) => CartModelProduct.fromMap(productData))
+        .toList();
+  }
+
+  // Future<List<DataProduct>> getAllProducts() async {
+  //   final db = await _instance.database;
+
+  //   // Lấy tất cả dữ liệu từ bảng products
+  //   final result = await db.query(
+  //     cartTable,
+  //   );
+
+  //   // Chuyển đổi danh sách CartModelProduct thành DataProduct
+  //   return result
+  //       .map((productData) =>
+  //           CartModelProduct.fromMap(productData).toDataProduct())
+  //       .toList();
+  // }
+// end read data from local storage
 
   Future<List<CartModelProduct>> products() async {
     final db = await _instance.database;

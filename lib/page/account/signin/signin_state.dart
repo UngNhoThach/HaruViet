@@ -19,7 +19,7 @@ class SignInState extends BaseState {
   final String? password;
   final bool isLoading;
   final String? accessToken;
-  final UserInfoLogin? dataUser;
+  final UserState? dataUser;
   final DataLogin? dataLogin;
   final String? message;
   const SignInState({

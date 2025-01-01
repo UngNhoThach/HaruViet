@@ -24,7 +24,7 @@ abstract class _$FilterProductStateCWProxy {
   FilterProductState atributesCategoryData(
       List<AtributesCategoryResponse> atributesCategoryData);
 
-  FilterProductState userInfoLogin(UserInfoLogin? userInfoLogin);
+  FilterProductState userInfoLogin(UserState? userInfoLogin);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `FilterProductState(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -40,7 +40,7 @@ abstract class _$FilterProductStateCWProxy {
     Map<AtributesCategoryResponse, AtributesValue>? filteredCategories,
     List<AtributesValue>? attributesSelected,
     List<AtributesCategoryResponse>? atributesCategoryData,
-    UserInfoLogin? userInfoLogin,
+    UserState? userInfoLogin,
   });
 }
 
@@ -80,7 +80,7 @@ class _$FilterProductStateCWProxyImpl implements _$FilterProductStateCWProxy {
       this(atributesCategoryData: atributesCategoryData);
 
   @override
-  FilterProductState userInfoLogin(UserInfoLogin? userInfoLogin) =>
+  FilterProductState userInfoLogin(UserState? userInfoLogin) =>
       this(userInfoLogin: userInfoLogin);
 
   @override
@@ -138,7 +138,7 @@ class _$FilterProductStateCWProxyImpl implements _$FilterProductStateCWProxy {
       userInfoLogin: userInfoLogin == const $CopyWithPlaceholder()
           ? _value.userInfoLogin
           // ignore: cast_nullable_to_non_nullable
-          : userInfoLogin as UserInfoLogin?,
+          : userInfoLogin as UserState?,
     );
   }
 }

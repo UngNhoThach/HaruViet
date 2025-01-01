@@ -82,7 +82,7 @@ class _AppSearchBarState extends State<AppSearchBar> {
           children: [
             Expanded(
               child: SizedBox(
-                height: 45.h,
+                height: 32.h,
                 child: Center(
                   child: AppTextFormField(
                     autovalidateMode: AutovalidateMode.onUserInteraction,

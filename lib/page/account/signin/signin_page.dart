@@ -74,7 +74,7 @@ class _SignInPageState
               MaterialPageRoute(builder: (context) => const MainScreenPage()),
               (route) => false);
         } else if (state.sigupStatus == SigupStatus.sigupFailure) {
-          CustomSnackBar.showTop(context, '${state.message}');
+          CustomSnackBar.showTop(context, '${state.message}', null);
         }
       },
       child: Scaffold(
@@ -111,7 +111,7 @@ class _SignInPageState
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Image.asset('assets/images/logo_2.png',
+                      Image.asset('assets/logo/logo.png',
                           height: 120.r, width: 120.r, fit: BoxFit.cover),
                       spaceH36,
                       TextFiledInput(
@@ -398,6 +398,6 @@ class _SignInPageState
 
   @override
   SignInBloc createState() {
-    return bloc = SignInBloc();
+    return bloc = SignInBloc(context);
   }
 }

@@ -15,7 +15,13 @@ abstract class _$ProfileStateCWProxy {
 
   ProfileState isLoading(bool isLoading);
 
-  ProfileState userInfoLogin(UserInfoLogin? userInfoLogin);
+  ProfileState indexShippingMethod(int indexShippingMethod);
+
+  ProfileState listStatusOrder(List<DataStatusOrder> listStatusOrder);
+
+  ProfileState isLoginSuccess(bool isLoginSuccess);
+
+  ProfileState userInfoLogin(UserState? userInfoLogin);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `ProfileState(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -28,7 +34,10 @@ abstract class _$ProfileStateCWProxy {
     String? errorMsg,
     bool? isSubmitSuccess,
     bool? isLoading,
-    UserInfoLogin? userInfoLogin,
+    int? indexShippingMethod,
+    List<DataStatusOrder>? listStatusOrder,
+    bool? isLoginSuccess,
+    UserState? userInfoLogin,
   });
 }
 
@@ -52,7 +61,19 @@ class _$ProfileStateCWProxyImpl implements _$ProfileStateCWProxy {
   ProfileState isLoading(bool isLoading) => this(isLoading: isLoading);
 
   @override
-  ProfileState userInfoLogin(UserInfoLogin? userInfoLogin) =>
+  ProfileState indexShippingMethod(int indexShippingMethod) =>
+      this(indexShippingMethod: indexShippingMethod);
+
+  @override
+  ProfileState listStatusOrder(List<DataStatusOrder> listStatusOrder) =>
+      this(listStatusOrder: listStatusOrder);
+
+  @override
+  ProfileState isLoginSuccess(bool isLoginSuccess) =>
+      this(isLoginSuccess: isLoginSuccess);
+
+  @override
+  ProfileState userInfoLogin(UserState? userInfoLogin) =>
       this(userInfoLogin: userInfoLogin);
 
   @override
@@ -68,6 +89,9 @@ class _$ProfileStateCWProxyImpl implements _$ProfileStateCWProxy {
     Object? errorMsg = const $CopyWithPlaceholder(),
     Object? isSubmitSuccess = const $CopyWithPlaceholder(),
     Object? isLoading = const $CopyWithPlaceholder(),
+    Object? indexShippingMethod = const $CopyWithPlaceholder(),
+    Object? listStatusOrder = const $CopyWithPlaceholder(),
+    Object? isLoginSuccess = const $CopyWithPlaceholder(),
     Object? userInfoLogin = const $CopyWithPlaceholder(),
   }) {
     return ProfileState(
@@ -88,10 +112,26 @@ class _$ProfileStateCWProxyImpl implements _$ProfileStateCWProxy {
           ? _value.isLoading
           // ignore: cast_nullable_to_non_nullable
           : isLoading as bool,
+      indexShippingMethod:
+          indexShippingMethod == const $CopyWithPlaceholder() ||
+                  indexShippingMethod == null
+              ? _value.indexShippingMethod
+              // ignore: cast_nullable_to_non_nullable
+              : indexShippingMethod as int,
+      listStatusOrder: listStatusOrder == const $CopyWithPlaceholder() ||
+              listStatusOrder == null
+          ? _value.listStatusOrder
+          // ignore: cast_nullable_to_non_nullable
+          : listStatusOrder as List<DataStatusOrder>,
+      isLoginSuccess: isLoginSuccess == const $CopyWithPlaceholder() ||
+              isLoginSuccess == null
+          ? _value.isLoginSuccess
+          // ignore: cast_nullable_to_non_nullable
+          : isLoginSuccess as bool,
       userInfoLogin: userInfoLogin == const $CopyWithPlaceholder()
           ? _value.userInfoLogin
           // ignore: cast_nullable_to_non_nullable
-          : userInfoLogin as UserInfoLogin?,
+          : userInfoLogin as UserState?,
     );
   }
 }

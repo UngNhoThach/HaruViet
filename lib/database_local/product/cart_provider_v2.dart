@@ -45,17 +45,21 @@ class CartProviderV2 extends ChangeNotifier {
     _totalPrice = prefs.getDouble('total_price') ?? 0;
   }
 
-  void addCounter() {
-    _counter++;
+  void addCounter({
+    required int setCounter,
+  }) {
+    if (setCounter == 0) {
+      _counter++;
+    } else {
+      _counter = setCounter;
+    }
     _setPrefsItems();
     notifyListeners();
   }
 
   void removeCounter() {
-    if (_counter == 0) {
-    } else {
-      _counter--;
-    }
+    _counter--;
+
     _setPrefsItems();
     notifyListeners();
   }
@@ -89,8 +93,11 @@ class CartProviderV2 extends ChangeNotifier {
     await getData();
     final index = cart.indexWhere((element) => element.id.contains(idProduct));
     cart.removeAt(index);
+
+    CartDatabaseV2().deleteProduct(idProduct);
     _setPrefsItems();
     notifyListeners();
+    print('delete product successfully');
   }
 
   int getQuantity(int quantity) {

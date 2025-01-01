@@ -1,14 +1,19 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:haruviet/component/shimer/image_product_shimer.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_list_product/data_product_list.dart';
+import 'package:haruviet/database_local/products_recommendation/products_recommendation_database.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/const.dart';
 import 'package:haruviet/helper/spaces.dart';
 import 'package:haruviet/page/home/widgets/count_dount.dart';
 import 'package:haruviet/page/product/detail/product_deatail_page.dart';
 import 'package:haruviet/page/product/detail/widgets/product_detail_params.dart';
+import 'package:haruviet/page/product/widgets/dot_border_product.dart';
+import 'package:haruviet/page/product/widgets/text_with_minline.dart';
 import 'package:haruviet/resources/routes.dart';
 import 'package:haruviet/theme/typography.dart';
 import 'package:haruviet/utils/commons.dart';
@@ -16,10 +21,16 @@ import 'package:haruviet/utils/commons.dart';
 class ItemProductWidget {
   ItemProductWidget();
 
-  Widget itemRow(BuildContext context,
-      {required DataProduct data, required int index, required String domain}) {
+  //  productsList = await CartDatabaseV2().getAllProducts();
+
+  Widget itemRow(
+    BuildContext context, {
+    required DataProduct data,
+    required int index,
+    required String domain,
+  }) {
     return InkWell(
-      onTap: () {
+      onTap: () async {
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -43,10 +54,10 @@ class ItemProductWidget {
                 child: CachedNetworkImage(
                   fadeOutDuration: const Duration(seconds: 3),
                   imageUrl: '$domain${data.image}',
-                  width: 100,
-                  height: 90,
-                  placeholder: (context, url) =>
-                      const ImageProductShimer(height: 90, width: 100),
+                  width: 100.w,
+                  height: 90.h,
+                  // placeholder: (context, url) =>
+                  //     ImageProductShimer(height: 90.h, width: 100.h),
                   errorWidget: (context, url, error) => const Icon(Icons.error),
                 ),
               ),
@@ -85,18 +96,22 @@ class ItemProductWidget {
                       ],
                     ),
                     const SizedBox(height: 4),
+                    (data.descriptions == null)
+                        ? space0
+                        : Text(data.descriptions?.name ?? '',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.bodyMedium),
+                    const SizedBox(height: 4),
                     Text(
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       data.brand?.name ?? '',
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: colorSecondary04,
                             fontWeight: FontWeight.w500,
                           ),
                     ),
-                    const SizedBox(height: 4),
-                    (data.descriptions == null)
-                        ? space0
-                        : Text(data.descriptions?.name ?? '',
-                            style: Theme.of(context).textTheme.bodyMedium),
                     const SizedBox(height: 6),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -198,6 +213,15 @@ class ItemProductWidget {
                             ],
                           )
                         : space0,
+                    // start dot borders
+                    (data.promotiondetails == null ||
+                            data.promotiondetails!.isEmpty ||
+                            data.promotiondetails![0] == null)
+                        ? space0
+                        : DotBorderProduct(
+                            value: data.promotiondetails?[0]?.description ?? '',
+                          ),
+                    // end dot borders
                   ],
                 ),
               ),
@@ -209,32 +233,41 @@ class ItemProductWidget {
   }
 
   Widget itemGridView(BuildContext context,
-      {required DataProduct data, required int index, required String domain}) {
+      {required DataProduct data,
+      required int index,
+      required String domain,
+      double? height}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         GestureDetector(
-          onTap: () {
+          onTap: () async {
             routeService.pushNamed(Routes.productDetailPage,
                 arguments: ProductDetailParams(idProduct: data.id ?? ''));
+
+            // insert to product recommendations list
+            await ProductRecommendationDatabase()
+                .insertProductFromDataProductRecommen(product: data);
           },
           child: Stack(
             children: [
               Container(
+                height: height,
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 decoration: BoxDecoration(
                   color: colorWhite,
                   boxShadow: const [
                     BoxShadow(
-                      blurRadius: 4,
-                      color: colorBlueGray01,
-                      offset: Offset(0, 2),
+                      blurRadius: 6,
+                      color:
+                          colorGray02, // Theme.of(context).primaryColorLight,
+                      offset: Offset(1, 2),
                     )
                   ],
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.455,
+                  width: MediaQuery.of(context).size.width * 0.45,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -255,13 +288,13 @@ class ItemProductWidget {
                                 fadeOutDuration: const Duration(seconds: 3),
                                 //  const Duration(seconds: 3),
                                 imageUrl: '$domain${data.image}',
-                                width: 72.w,
-                                height: 72.h,
-                                placeholder: (context, url) =>
-                                    ImageProductShimer(
-                                  width: 72.w,
-                                  height: 72.h,
-                                ), // Use the custom shimmer component
+                                width: 72,
+                                height: 72,
+                                // placeholder: (context, url) =>
+                                //     const ImageProductShimer(
+                                //   width: 72,
+                                //   height: 72,
+                                // ), // Use the custom shimmer component
                                 errorWidget: (context, url, error) =>
                                     const Icon(Icons.error),
                               ),
@@ -284,7 +317,7 @@ class ItemProductWidget {
                                       : '${data.discount?.pricePromotion?.priceStr}',
                                   style: Theme.of(context)
                                       .textTheme
-                                      .labelLarge
+                                      .bodyMedium
                                       ?.copyWith(
                                         color: Theme.of(context).primaryColor,
                                         fontWeight: FontWeight.bold,
@@ -304,23 +337,28 @@ class ItemProductWidget {
                               ],
                             ),
                             spaceH4,
-                            Text(
-                              data.brand?.name ?? '',
-                              style: textTheme.labelMedium?.copyWith(
-                                color: colorSecondary04,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            spaceH4,
                             (data.descriptions == null)
                                 ? space0
-                                : Text(
+                                : TextWithMinLines(
+                                    minLines: 2,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
                                     data.descriptions?.name ?? '',
                                     style: textTheme.labelMedium?.copyWith(
                                       color: colorBlackTileItem,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
+                            spaceH4,
+                            Text(
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              data.brand?.name ?? '',
+                              style: textTheme.labelMedium?.copyWith(
+                                color: colorSecondary04,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
                             spaceH4,
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -329,15 +367,15 @@ class ItemProductWidget {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Container(
-                                      width: 42.w,
+                                      width: 40.w,
                                       decoration: BoxDecoration(
                                         borderRadius:
-                                            BorderRadius.circular(8.r),
+                                            BorderRadius.circular(4.r),
                                         color:
                                             Theme.of(context).primaryColorLight,
                                       ),
                                       padding: EdgeInsets.symmetric(
-                                          horizontal: 4.w, vertical: 2.h),
+                                          horizontal: 2.w, vertical: 2.h),
                                       child: Row(
                                         children: [
                                           Text(
@@ -355,7 +393,7 @@ class ItemProductWidget {
                                           spaceW2,
                                           Icon(
                                             Icons.star,
-                                            size: 12.sp,
+                                            size: 10.sp,
                                             color: colorBackgroundWhite,
                                           ),
                                         ],
@@ -363,7 +401,10 @@ class ItemProductWidget {
                                     ),
                                     spaceW2,
                                     Text(
-                                      '(${data.reviews?.averageRating.toString() ?? ''})',
+                                      data.sold == null
+                                          ? '0'
+                                          : formattedNumber(
+                                              data.reviews?.averageRating),
                                       style: Theme.of(context)
                                           .textTheme
                                           .labelSmall
@@ -384,7 +425,9 @@ class ItemProductWidget {
                                     ),
                                     spaceW2,
                                     Text(
-                                      '${data.sold} mua',
+                                      data.sold == null
+                                          ? '0'
+                                          : formattedNumber(data.sold),
                                       style: Theme.of(context)
                                           .textTheme
                                           .labelSmall
@@ -397,10 +440,11 @@ class ItemProductWidget {
                                 ),
                               ],
                             ),
-                            spaceH6,
-                            (data.discount != null &&
-                                    data.discount?.dateEnd != null)
-                                ? Row(
+                            (data.discount == null ||
+                                    (data.discount?.dateStart == '') ||
+                                    data.discount?.dateEnd == null)
+                                ? space0
+                                : Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     mainAxisSize: MainAxisSize.min,
@@ -412,13 +456,14 @@ class ItemProductWidget {
                                                     BorderRadius.circular(8.r),
                                                 color: Theme.of(context)
                                                     .primaryColorLight),
-                                            //
+                                            margin:
+                                                const EdgeInsets.only(top: 6),
                                             padding: EdgeInsets.symmetric(
                                                 horizontal: 4.w, vertical: 2),
                                             child: Padding(
                                               padding:
                                                   const EdgeInsets.symmetric(
-                                                      horizontal: 8),
+                                                      horizontal: 4),
                                               child: CountdownTimer(
                                                   dateStart: data.discount
                                                           ?.dateStart ??
@@ -430,10 +475,19 @@ class ItemProductWidget {
                                       ),
                                       spaceW4,
                                     ],
-                                  )
-                                : const SizedBox(
-                                    height: 16,
                                   ),
+                            // start dot borders
+                            (data.promotiondetails == null ||
+                                    data.promotiondetails!.isEmpty ||
+                                    data.promotiondetails![0] == null)
+                                ? space0
+                                : DotBorderProduct(
+                                    value: data.promotiondetails?[0]
+                                            ?.description ??
+                                        '',
+                                  ),
+
+                            // end dot borders
                           ],
                         ),
                       ),
@@ -456,7 +510,13 @@ class ItemProductWidget {
                               bottomRight: Radius.circular(8.r),
                             ),
                           ),
-                          child: Text(
+                          child:
+                              // Image.asset(
+                              //   Assets.icons.filterHotDeal.path,
+                              //   scale: 2,
+                              //   fit: BoxFit.fill,
+                              // )
+                              Text(
                             'Flash Sale',
                             style: Theme.of(context)
                                 .textTheme
@@ -508,4 +568,11 @@ class ItemProductWidget {
   removeZeroDouble({required double value}) {
     return formatDouble(value);
   }
+
+  Path customPath = Path()
+    ..moveTo(20, 20)
+    ..lineTo(20, 20)
+    ..lineTo(20, 20)
+    ..lineTo(20, 20)
+    ..lineTo(20, 20);
 }

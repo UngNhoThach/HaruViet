@@ -1,5 +1,5 @@
-import 'package:haruviet/api/services/customers/models/update_user_info_request/update_user_info_request.dart';
 import 'package:haruviet/base/base_bloc.dart';
+import 'package:haruviet/data/data_local/user_state.dart';
 import 'package:haruviet/data/enum.dart';
 import 'package:haruviet/data/local/user_preferences.dart';
 import 'package:haruviet/data/reponsitory/address/address_repository.dart';
@@ -26,11 +26,15 @@ class AddNewAddressBloc extends BaseBloc<AddNewAddressState> {
         dataListAddress: params.dataListAddress,
         name: params.dataListAddress?.firstName ?? '',
         phone: params.dataListAddress?.phone ?? '',
-        address1: params.dataListAddress?.address1 ?? '',
-        address2: params.dataListAddress?.address2 ??
-            '', //' ${params.dataListAddress?.address3 ?? ''},
-        address3: params.dataListAddress?.address3 ?? '',
-        address: params.dataListAddress?.address3 ?? '',
+        idProvince: params.dataListAddress?.idProvince.toString() ?? '',
+        idDistrict: params.dataListAddress?.idDistrict.toString() ?? '',
+        idWard: params.dataListAddress?.idWard.toString() ?? '',
+        district: params.dataListAddress?.district ?? '',
+        ward: params.dataListAddress?.ward ?? '',
+        province: params.dataListAddress?.province ?? '',
+        house: params.dataListAddress?.house ?? '',
+        street: params.dataListAddress?.street ?? '',
+        lastName: params.dataListAddress?.lastName,
       ));
     }
 
@@ -53,14 +57,13 @@ class AddNewAddressBloc extends BaseBloc<AddNewAddressState> {
     AddressResponse? temporaryResidenceAddress,
   }) {
     emit(state.copyWith(
-      address: temporaryResidenceAddress?.fullAddress,
-      address1: temporaryResidenceAddress?.city?.name,
-      address2:
-          '${temporaryResidenceAddress?.ward?.name}, ${temporaryResidenceAddress?.district?.name}',
-      address3: temporaryResidenceAddress?.address ?? '',
-      address1ID: temporaryResidenceAddress?.city?.id.toString(),
-      address2ID: temporaryResidenceAddress?.district?.id.toString(),
-      address3ID: temporaryResidenceAddress?.ward?.id.toString(),
+      house: temporaryResidenceAddress?.address,
+      province: temporaryResidenceAddress?.city?.name,
+      district: temporaryResidenceAddress?.district?.name,
+      ward: temporaryResidenceAddress?.address ?? '',
+      idProvince: temporaryResidenceAddress?.city?.id.toString(),
+      idDistrict: temporaryResidenceAddress?.district?.id.toString(),
+      idWard: temporaryResidenceAddress?.ward?.id.toString(),
     ));
   }
 
@@ -85,50 +88,66 @@ class AddNewAddressBloc extends BaseBloc<AddNewAddressState> {
   onSubmit(bool isUpdate) async {
     emit(state.copyWith(isSubmitSuccess: false));
     try {
-      // editAddressRP
       var verifyResponse = isUpdate
           ? await _addressRepository.editAddressRP(
               idAddress: state.dataListAddress?.id ?? '',
-              authorization: state.accessToken ?? '',
               request: DataListAddress(
+                idDistrict: state.idDistrict != null
+                    ? int.parse(state.idDistrict.toString())
+                    : null,
+                idProvince: state.idProvince != null
+                    ? int.parse(state.idProvince.toString())
+                    : null,
+                idWard: state.idWard != null
+                    ? int.parse(state.idWard.toString())
+                    : null,
                 firstName: state.name,
-                address1: state.address1,
-                address2: state.address2,
-                address3: state.address3,
-                idAddress:
-                    "{${state.address1ID},${state.address2ID},${state.address3ID}}",
+                province: state.province,
+                district: state.district,
+                ward: state.ward,
+                house: state.house,
                 country: 'VN',
                 createdAt: DateTime.now(),
                 customerId: '',
                 firstNameKana: '',
-                lastName: '',
+                lastName: state.lastName,
                 id: '',
+                street: state.house,
                 lastNameKana: '',
                 postcode: '',
                 updatedAt: DateTime.now(),
                 phone: state.phone,
               ))
           : await _addressRepository.addAddressRP(
-              authorization: state.accessToken ?? '',
               request: DataListAddress(
-                firstName: state.name,
-                address1: state.address1,
-                address2: state.address2,
-                address3: state.address3,
-                idAddress:
-                    "{${state.address1ID},${state.address2ID},${state.address3ID}}",
-                country: 'VN',
-                createdAt: DateTime.now(),
-                customerId: '',
-                firstNameKana: '',
-                lastName: state.name,
-                id: '',
-                lastNameKana: '',
-                postcode: '',
-                updatedAt: DateTime.now(),
-                phone: state.phone,
-              ));
+              idDistrict: state.idDistrict != null
+                  ? int.parse(state.idDistrict.toString())
+                  : null,
+              idProvince: state.idProvince != null
+                  ? int.parse(state.idProvince.toString())
+                  : null,
+              idWard: state.idWard != null
+                  ? int.parse(state.idWard.toString())
+                  : null,
+              firstName: state.name,
+              street: state.house,
+              province: state.province,
+              district: state.district,
+              ward: state.ward,
+              house: state.house,
+              country: 'VN',
+              createdAt: DateTime.now(),
+              customerId: '',
+              firstNameKana: '',
+              lastName: state.name,
+              id: '',
+              lastNameKana: '',
+              postcode: '',
+              updatedAt: DateTime.now(),
+              phone: state.phone,
+            ));
       if (verifyResponse.status == 200 && verifyResponse.isStatus == true) {
+        // set default address
         if (state.textBtnswitchState) {
           await updateAddressDefault(id: verifyResponse.data?.id ?? '');
         }
@@ -154,17 +173,15 @@ class AddNewAddressBloc extends BaseBloc<AddNewAddressState> {
 
   updateAddressDefault({required String id}) async {
     var updateAddressDefaultResponse = await _customersRepository.updateInfoRP(
-        request: UpdateUserInfoRequest(
-          address1: state.address1,
-          address2: state.address2,
-          address3: state.address3,
+        request: UserState(
           addressId: id,
           agencyId: state.userInfoLogin?.agencyId ?? '',
           agencyName: state.userInfoLogin?.agencyName ?? '',
           avatar: state.userInfoLogin?.avatar ?? '',
-          idAddress:
-              "{${state.address1ID},${state.address2ID},${state.address3ID}}",
-          birthday: state.userInfoLogin?.birthDay ?? '',
+          idProvince: state.idProvince,
+          idDistrict: state.idDistrict,
+          idWard: state.idWard,
+          birthday: state.userInfoLogin?.birthday ?? '',
           company: state.userInfoLogin?.company ?? '',
           country: state.userInfoLogin?.country ?? '',
           firstName: state.name,
@@ -174,10 +191,10 @@ class AddNewAddressBloc extends BaseBloc<AddNewAddressState> {
               ? state.name
               : state.userInfoLogin?.lastName,
           lastNameKana: state.userInfoLogin?.lastNameKana ?? '',
-          name: state.userInfoLogin?.birthDay ?? '',
+          name: state.userInfoLogin?.birthday ?? '',
           pathologicaldetail: state.userInfoLogin?.pathologicaldetail,
           phone: state.phone ?? '',
-          postcode: state.userInfoLogin?.postCode ?? '',
+          postcode: state.userInfoLogin?.postcode ?? '',
           provider: state.userInfoLogin?.provider ?? '',
           providerId: state.userInfoLogin?.providerId ?? '',
           sex: state.userInfoLogin?.sex ?? 0,
@@ -193,9 +210,13 @@ class AddNewAddressBloc extends BaseBloc<AddNewAddressState> {
       'address_id': updateAddressDefaultResponse.data?.addressId ?? '',
       'phone': updateAddressDefaultResponse.data?.phone ?? '',
       'first_name': updateAddressDefaultResponse.data?.firstName ?? '',
-      'address1': updateAddressDefaultResponse.data?.address1 ?? '',
-      'address2': updateAddressDefaultResponse.data?.address2 ?? '',
-      'address3': updateAddressDefaultResponse.data?.address3 ?? '',
+      'id_province': updateAddressDefaultResponse.data?.idProvince ?? '',
+      'id_district': updateAddressDefaultResponse.data?.idDistrict ?? '',
+      'id_ward': updateAddressDefaultResponse.data?.idWard ?? '',
+      'ward': updateAddressDefaultResponse.data?.ward ?? '',
+      'district': updateAddressDefaultResponse.data?.district ?? '',
+      'province': updateAddressDefaultResponse.data?.province ?? '',
+      'house': updateAddressDefaultResponse.data?.house ?? '',
     });
   }
 
@@ -203,7 +224,6 @@ class AddNewAddressBloc extends BaseBloc<AddNewAddressState> {
     emit(state.copyWith(isSubmitSuccess: false));
     try {
       var verifyResponse = await _addressRepository.deleteAddressSVRP(
-        authorization: state.accessToken ?? '',
         idAddress: state.dataListAddress?.id ?? '',
       );
       if (verifyResponse.status == 200 && verifyResponse.isStatus == true) {

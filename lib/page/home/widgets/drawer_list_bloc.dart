@@ -10,13 +10,16 @@ class DrawerListBloc extends Cubit<DrawerListState> {
   DrawerListBloc() : super(const DrawerListState());
   final CartOrderRepository _cartOrderRepository = CartOrderRepository();
 
-  getData() async {
+  getData({
+    required bool isLogin,
+  }) async {
     emit(state.copyWith(viewState: ViewState.loading, isLoading: true));
     try {
-      final data = await Preference.getUserInfo();
+      // final data = await Preference.getUserInfo();
       final order = await _cartOrderRepository.getStatusOrderRP();
       emit(state.copyWith(
-          dataUser: data,
+          isLogin: isLogin,
+          // dataUser: data,
           listStatusOrder: order.parseDataStatusOrder(),
           viewState: ViewState.loaded));
     } catch (error, statckTrace) {

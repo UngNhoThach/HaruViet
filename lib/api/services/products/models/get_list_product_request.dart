@@ -14,6 +14,8 @@ class GetListProductRequest {
   String? language;
   @JsonKey(name: 'category')
   String? category;
+  @JsonKey(name: 'brand')
+  String? brand;
   Map<String, String>? filters;
 
   GetListProductRequest({
@@ -22,6 +24,7 @@ class GetListProductRequest {
     this.sort,
     this.language,
     this.category,
+    this.brand,
     this.filters,
   });
 

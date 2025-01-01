@@ -1,10 +1,11 @@
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:haruviet/component/error/not_found.dart';
 import 'package:haruviet/component/error/not_found_v2.dart';
 import 'package:haruviet/component/header/header_item.dart';
 import 'package:haruviet/component/input/search_barv2.dart';
 import 'package:haruviet/component/loading/loading.dart';
 import 'package:haruviet/component/status/status_header_item.dart';
-import 'package:haruviet/data/data_local/user_bloc.dart';
+import 'package:haruviet/data/data_local/setting_app_bloc.dart';
 import 'package:haruviet/data/reponsitory/category/models/atribute_category_response/attributes_category_response.dart';
 import 'package:haruviet/data/reponsitory/category/models/atribute_category_response/value_attributes.dart';
 import 'package:haruviet/data/reponsitory/category/models/category_detail_response/subcategory.dart';
@@ -49,6 +50,7 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
   // variables and functions
   bool isInteger(num value) => (value % 1) == 0;
   final ItemProductWidget itemProductWidgets = ItemProductWidget();
+  final ScrollController _scrollController = ScrollController();
 
   final PagingController<int, DataProduct> _pagingController =
       PagingController(firstPageKey: startPage, invisibleItemsThreshold: 3);
@@ -56,6 +58,8 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
   FocusNode focusNode = FocusNode();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   late double childAspectRatio;
+  late double _scrollThreshold; // Ngưỡng cuộn 200px
+  double _previousScrollPosition = 0;
 
   bool isFocused = false;
   late SubCategoryBloc bloc;
@@ -78,8 +82,13 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
     super.initState();
     focusNode.addListener(_onFocusChange);
     bloc = SubCategoryBloc(
+      context,
+      idBrand: widget.params.idBrand ?? '',
+      isProcuctRecommendation: widget.params.isProcuctRecommendation,
       idCategory: widget.params.idCategory,
     )..getData();
+
+// check is recommendation products
 
     _pagingController.addPageRequestListener((pageKey) {
       if (pageKey != startPage) {
@@ -87,12 +96,52 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
       }
     });
 
-    domain = context.read<UserBloc>().state.subDomain ?? '';
+    // build widget first
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final screenHeight = MediaQuery.of(context).size.height;
+      setState(() {
+        _scrollThreshold =
+            screenHeight; // Gán chiều cao màn hình vào _scrollThreshold
+      });
+    });
+    _onScroll();
+
+    domain = context.read<SettingAppBloc>().state.xUrl ?? '';
+  }
+
+  void _onScroll() {
+    _scrollController.addListener(() {
+      if (bloc.canLoadMore &&
+          _scrollController.position.pixels - _previousScrollPosition >=
+              _scrollThreshold * 2) {
+        bool isFetchingData = false;
+        if (!isFetchingData) {
+          final nextPageKey = _pagingController.nextPageKey;
+          if (nextPageKey != startPage) {
+            isFetchingData = true; // Set the flag to true
+            _pagingController.notifyPageRequestListeners(nextPageKey!);
+
+            // Listen to the bloc's state to reset the fetching flag
+            bloc.stream.listen((state) {
+              if (!state.isLoading) {
+                isFetchingData =
+                    false; // Reset the flag when loading is complete
+              }
+            });
+            //}
+          }
+        }
+        // Người dùng đã cuộn ít nhất 200px kể từ lần tải trước
+        _previousScrollPosition = _scrollController
+            .position.pixels; // Cập nhật lại vị trí cuộn trước đó
+      }
+    });
   }
 
   @override
   void dispose() {
     _pagingController.dispose();
+    _scrollController.dispose();
 
     focusNode.removeListener(_onFocusChange);
     super.dispose();
@@ -116,16 +165,18 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
             listenWhen: (previous, current) =>
                 previous.newDataList != current.newDataList,
             listener: (context, state) {
-              if (state.currentPage == startPage) {
-                _pagingController.refresh();
-              }
-              if (state.canLoadMore) {
-                _pagingController.appendPage(
-                  state.newDataList ?? [],
-                  state.currentPage + 1,
-                );
-              } else {
-                _pagingController.appendLastPage(state.newDataList ?? []);
+              {
+                if (state.currentPage == startPage) {
+                  _pagingController.refresh();
+                }
+                if (state.canLoadMore) {
+                  _pagingController.appendPage(
+                    state.newDataList ?? [],
+                    state.currentPage + 1,
+                  );
+                } else {
+                  _pagingController.appendLastPage(state.newDataList ?? []);
+                }
               }
             },
           ),
@@ -251,39 +302,28 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
                             : state.newDataList!.isEmpty
                                 ? _emptyData(context)
                                 : state.checkIsChangeListItem
-                                    ? Padding(
+                                    ? MasonryGridView.count(
+                                        physics: const BouncingScrollPhysics(),
+                                        controller: _scrollController,
                                         padding: const EdgeInsets.symmetric(
-                                            horizontal: 8, vertical: 8),
-                                        child: CustomScrollView(
-                                          slivers: [
-                                            PagedSliverGrid(
-                                              shrinkWrapFirstPageIndicators:
-                                                  true,
-                                              pagingController:
-                                                  _pagingController,
-                                              gridDelegate:
-                                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                                crossAxisCount: 2,
-                                                mainAxisSpacing: 0,
-                                                crossAxisSpacing: 0,
-                                                childAspectRatio:
-                                                    childAspectRatio,
-                                              ),
-                                              builderDelegate:
-                                                  PagedChildBuilderDelegate<
-                                                      DataProduct>(
-                                                noItemsFoundIndicatorBuilder:
-                                                    _emptyData,
-                                                itemBuilder:
-                                                    (context, item, index) =>
-                                                        _itemGridView(context,
-                                                            index: index,
-                                                            data: item,
-                                                            domain: domain),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
+                                            vertical: 20, horizontal: 12),
+                                        shrinkWrap: true,
+                                        crossAxisCount: 2,
+                                        mainAxisSpacing: 12,
+                                        crossAxisSpacing: 6,
+                                        itemCount: _pagingController
+                                                .itemList?.length ??
+                                            0,
+                                        itemBuilder: (context, index) {
+                                          final item = _pagingController
+                                              .itemList?[index];
+                                          return _itemGridView(
+                                            context,
+                                            index: index,
+                                            data: item!,
+                                            domain: domain,
+                                          );
+                                        },
                                       )
                                     : PagedListView.separated(
                                         scrollDirection: Axis.vertical,
@@ -292,7 +332,7 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
                                                 .onDrag,
                                         pagingController: _pagingController,
                                         shrinkWrap: true,
-                                        physics: const ClampingScrollPhysics(),
+                                        physics: const BouncingScrollPhysics(),
                                         builderDelegate:
                                             PagedChildBuilderDelegate<
                                                 DataProduct>(
@@ -570,7 +610,7 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
             padding: const EdgeInsets.symmetric(
               horizontal: 12,
             ),
-            height: 80.h, // Adjust height based on the number of items
+            height: 82.h, // Adjust height based on the number of items
             child: GridView.builder(
               physics: categories.length > 4
                   ? const AlwaysScrollableScrollPhysics()
@@ -742,153 +782,161 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
         return Row(
           key: ObjectKey(checkFilterProductList),
           children: [
-            Expanded(
-              child: FilterSubCategory(
-                onTapFilter: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => FilterProductPage(
-                              params: FilterProductParams(
-                                onReturnAtributesCategoryData:
-                                    (atributesCategoryDataSave) {
-                                  if (atributesCategoryDataSave == null ||
-                                      atributesCategoryDataSave.isEmpty) {
-                                  } else {
-                                    bloc.onSaveDataReturn(
-                                        atributesCategoryDataSave:
-                                            atributesCategoryDataSave);
-                                  }
-                                },
-                                filteredCategories: state.filteredCategories,
-                                onReturnResult: (result) {
-                                  if (result == null ||
-                                      result == {} ||
-                                      result.isEmpty) {
-                                    bloc.onDeleteItemFilter(
-                                        isDeleteAll: true, AtributesValue());
-                                  } else {
-                                    bloc.onSaveResult(
-                                        filteredCategories: result);
-                                  }
-                                },
-                                atributesCategoryData:
-                                    state.atributesCategoryDataSave,
-                                onReload: () {},
-                              ),
-                            )),
-                  );
-                },
-                widget: Padding(
-                  padding: EdgeInsets.symmetric(
-                      vertical: state.filterValuesName.isEmpty ? 0 : 12),
-                  child: Builder(
-                    builder: (context) {
-                      // Tạo danh sách các widget từ _itemAddList
-                      List<Widget> itemWidgets =
-                          state.filterValuesName.entries.expand((item) {
-                        return _itemAddList(
+            nameCategory == '' || nameCategory == null
+                ? space0
+                : Expanded(
+                    child: FilterSubCategory(
+                      onTapFilter: () {
+                        Navigator.push(
                           context,
-                          title: item.key,
-                          primaryColor: primaryColor,
-                          value: item.value,
-                          onTapCallback: () {},
+                          MaterialPageRoute(
+                              builder: (context) => FilterProductPage(
+                                    params: FilterProductParams(
+                                      onReturnAtributesCategoryData:
+                                          (atributesCategoryDataSave) {
+                                        if (atributesCategoryDataSave == null ||
+                                            atributesCategoryDataSave.isEmpty) {
+                                        } else {
+                                          bloc.onSaveDataReturn(
+                                              atributesCategoryDataSave:
+                                                  atributesCategoryDataSave);
+                                        }
+                                      },
+                                      filteredCategories:
+                                          state.filteredCategories,
+                                      onReturnResult: (result) {
+                                        if (result == null ||
+                                            result == {} ||
+                                            result.isEmpty) {
+                                          bloc.onDeleteItemFilter(
+                                              isDeleteAll: true,
+                                              AtributesValue());
+                                        } else {
+                                          bloc.onSaveResult(
+                                              filteredCategories: result);
+                                        }
+                                      },
+                                      atributesCategoryData:
+                                          state.atributesCategoryDataSave,
+                                      onReload: () {},
+                                    ),
+                                  )),
                         );
-                      }).toList();
+                      },
+                      widget: Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: state.filterValuesName.isEmpty ? 0 : 12),
+                        child: Builder(
+                          builder: (context) {
+                            // Tạo danh sách các widget từ _itemAddList
+                            List<Widget> itemWidgets =
+                                state.filterValuesName.entries.expand((item) {
+                              return _itemAddList(
+                                context,
+                                title: item.key,
+                                primaryColor: primaryColor,
+                                value: item.value,
+                                onTapCallback: () {},
+                              );
+                            }).toList();
 
-                      // Kiểm tra nếu số lượng widget >= 5
-                      if (itemWidgets.length >= 5) {
-                        // Cắt bớt số lượng widget hiển thị xuống còn 5
-                        itemWidgets = itemWidgets.take(5).toList();
+                            // Kiểm tra nếu số lượng widget >= 5
+                            if (itemWidgets.length >= 5) {
+                              // Cắt bớt số lượng widget hiển thị xuống còn 5
+                              itemWidgets = itemWidgets.take(5).toList();
 
-                        // Thêm nút "Xem thêm"
-                        itemWidgets.add(
-                          GestureDetector(
-                            onTap: () {
-                              // Thực hiện hành động xem thêm
-                            },
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 4.h, horizontal: 6.w),
-                              decoration: BoxDecoration(
-                                color: context.colorScheme.primary,
-                                borderRadius: BorderRadius.circular(8.r),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    "Xem thêm",
-                                    style: textTheme.bodySmall?.copyWith(
-                                        color: colorWhite,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  spaceW4,
-                                  const Icon(
-                                    Icons.arrow_drop_down,
-                                    color: colorWhite,
-                                    size: 18,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      } else if (itemWidgets.length >= 2) {
-                        // Nếu số lượng widget >= 2, thêm nút "Xoá tất cả"
-                        itemWidgets.add(
-                          GestureDetector(
-                            onTap: () {
-                              bloc.onDeleteItemFilter(AtributesValue(),
-                                  isDeleteAll: true);
-                            },
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 4.h, horizontal: 6.w),
-                              decoration: BoxDecoration(
-                                color: primaryColor,
-                                borderRadius: BorderRadius.circular(8.r),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Flexible(
-                                    child: Text(
-                                      "Xoá tất cả",
-                                      style: textTheme.bodySmall?.copyWith(
+                              // Thêm nút "Xem thêm"
+                              itemWidgets.add(
+                                GestureDetector(
+                                  onTap: () {
+                                    // Thực hiện hành động xem thêm
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 4.h, horizontal: 6.w),
+                                    decoration: BoxDecoration(
+                                      color: context.colorScheme.primary,
+                                      borderRadius: BorderRadius.circular(8.r),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          "Xem thêm",
+                                          style: textTheme.bodySmall?.copyWith(
+                                              color: colorWhite,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        spaceW4,
+                                        const Icon(
+                                          Icons.arrow_drop_down,
                                           color: colorWhite,
-                                          fontWeight: FontWeight.bold),
+                                          size: 18,
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  spaceW4,
-                                  const Icon(
-                                    Icons.close,
-                                    color: colorWhite,
-                                    size: 18,
+                                ),
+                              );
+                            } else if (itemWidgets.length >= 2) {
+                              // Nếu số lượng widget >= 2, thêm nút "Xoá tất cả"
+                              itemWidgets.add(
+                                GestureDetector(
+                                  onTap: () {
+                                    bloc.onDeleteItemFilter(AtributesValue(),
+                                        isDeleteAll: true);
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 4.h, horizontal: 6.w),
+                                    decoration: BoxDecoration(
+                                      color: primaryColor,
+                                      borderRadius: BorderRadius.circular(8.r),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            "Xoá tất cả",
+                                            style: textTheme.bodySmall
+                                                ?.copyWith(
+                                                    color: colorWhite,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                          ),
+                                        ),
+                                        spaceW4,
+                                        const Icon(
+                                          Icons.close,
+                                          color: colorWhite,
+                                          size: 18,
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      }
+                                ),
+                              );
+                            }
 
-                      return Wrap(
-                        spacing: 12.w, // Khoảng cách giữa các widget
-                        runSpacing: 12.h, // Khoảng cách giữa các hàng
-                        children: itemWidgets,
-                      );
-                    },
+                            return Wrap(
+                              spacing: 12.w, // Khoảng cách giữa các widget
+                              runSpacing: 12.h, // Khoảng cách giữa các hàng
+                              children: itemWidgets,
+                            );
+                          },
+                        ),
+                      ),
+                      // fix here
+                      isFilter: state.isFilter,
+                      nameCategory: widget.params.isProcuctRecommendation
+                          ? 'Sản phẩm vừa xem'
+                          : nameCategory,
+                      onTap: () {
+                        _openDrawer();
+                      },
+                    ),
                   ),
-                ),
-                // fix here
-                isFilter: state.isFilter,
-                nameCategory: nameCategory,
-                onTap: () {
-                  _openDrawer();
-                },
-              ),
-            ),
           ],
         );
       },

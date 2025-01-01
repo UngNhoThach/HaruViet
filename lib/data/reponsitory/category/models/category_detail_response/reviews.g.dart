@@ -7,8 +7,8 @@ part of 'reviews.dart';
 // **************************************************************************
 
 Reviews _$ReviewsFromJson(Map<String, dynamic> json) => Reviews(
-      averageRating: json['average_rating'] as int?,
-      totalReviews: json['total_reviews'] as int?,
+      averageRating: (json['average_rating'] as num?)?.toInt(),
+      totalReviews: (json['total_reviews'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$ReviewsToJson(Reviews instance) => <String, dynamic>{

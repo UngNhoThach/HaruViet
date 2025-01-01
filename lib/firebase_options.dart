@@ -54,10 +54,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '441828524688',
     projectId: 'haruviet-809ef',
     storageBucket: 'haruviet-809ef.appspot.com',
-    androidClientId:
-        '441828524688-7uji4ar0islsihrv6uj8v88cp8l1huce.apps.googleusercontent.com',
-    iosClientId:
-        '441828524688-o4fufjgofptnpmqbribbvjf4g0qtense.apps.googleusercontent.com',
+    androidClientId: '441828524688-7uji4ar0islsihrv6uj8v88cp8l1huce.apps.googleusercontent.com',
+    iosClientId: '441828524688-o4fufjgofptnpmqbribbvjf4g0qtense.apps.googleusercontent.com',
     iosBundleId: 'com.example.ecoApp',
   );
 

@@ -49,7 +49,7 @@ class _AppSearchBarV2State extends State<AppSearchBarV2> {
           children: [
             Expanded(
               child: SizedBox(
-                height: 45.h,
+                height: 32.h,
                 child: Center(
                   child: AppTextFormField(
                     readOnly: true,

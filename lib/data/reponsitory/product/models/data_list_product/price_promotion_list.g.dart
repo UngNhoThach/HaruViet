@@ -8,9 +8,9 @@ part of 'price_promotion_list.dart';
 
 PricePromotion _$PricePromotionFromJson(Map<String, dynamic> json) =>
     PricePromotion(
-      price: json['price'] as int?,
+      price: (json['price'] as num?)?.toInt(),
       priceStr: json['price_str'] as String?,
-      exchangeRate: json['exchange_rate'] as int?,
+      exchangeRate: (json['exchange_rate'] as num?)?.toInt(),
       currency: json['currency'] as String?,
     );
 

@@ -8,8 +8,10 @@ class MainScreenBloc extends Cubit<MainScreenState> {
   getData() async {
     final data = await Preference.getUserInfo();
     int totalItemInCart = (CartProviderV2().getCounter());
+    final userInfoLogin = await Preference.getUserInfo();
 
     emit(state.copyWith(
+      isLogin: userInfoLogin != null ? userInfoLogin.isLogin : false,
       fullName: data?.name,
       dataUser: data,
       totalItemInCart: totalItemInCart,

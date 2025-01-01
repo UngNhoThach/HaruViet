@@ -36,16 +36,6 @@ class _NotificationTabPageState extends State<NotificationTabPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //  appBar:
-      // AppBar(
-      //   centerTitle: true,
-      //   title: Text(
-      //     'Thông báo',
-      //     style: textTheme.titleMedium
-      //         ?.copyWith(color: colorWhite, fontWeight: FontWeight.bold),
-      //   ),
-      //   backgroundColor: Theme.of(context).primaryColor,
-      // ),
       body: Container(
         padding: EdgeInsets.symmetric(
           horizontal: 16.w,

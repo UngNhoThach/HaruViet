@@ -9,7 +9,7 @@ part 'news_state.g.dart';
 @CopyWith()
 class NewsState extends BaseState {
   final bool isSubmitSuccess;
-  final UserInfoLogin? userInfoLogin;
+  final UserState? userInfoLogin;
   final List<NewsResponse>? listNews;
   final bool isLoading;
   const NewsState({

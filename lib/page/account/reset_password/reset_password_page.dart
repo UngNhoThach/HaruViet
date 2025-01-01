@@ -5,10 +5,8 @@ import 'package:haruviet/helper/base_status_response.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/context.dart';
 import 'package:haruviet/helper/spaces.dart';
-import 'package:haruviet/page/account/phone_authen/widgets/phone_authen_params.dart';
 import 'package:haruviet/page/account/reset_password/widgets/reset_password_params.dart';
 import 'package:haruviet/page/account/signin/widgets/signin_params.dart';
-import 'package:haruviet/page/account/signup/widgets/verify_status.dart';
 import 'package:haruviet/page/main_screen/main_screen_page.dart';
 import 'package:haruviet/resources/routes.dart';
 import 'package:haruviet/theme/typography.dart';
@@ -51,7 +49,7 @@ class _ResetPassWordPageState extends State<ResetPassWordPage> {
             previous.baseStatusResponse != current.baseStatusResponse,
         listener: (context, state) {
           if (state.baseStatusResponse == BaseStatusResponse.failure) {
-            CustomSnackBar.showTop(context, '${state.message}');
+            CustomSnackBar.showTop(context, '${state.message}', null);
             // Future.delayed(const Duration(seconds: 1), () {});
           }
           if (state.isSubmitSuccessUpdate) {
@@ -268,7 +266,7 @@ class _ResetPassWordPageState extends State<ResetPassWordPage> {
         if (isValidForm == true) {
           if (state.codeVerification == null ||
               state.codeVerification.toString().length != 6) {
-            CustomSnackBar.showTop(context, 'Vui lòng điền mã OTP');
+            CustomSnackBar.showTop(context, 'Vui lòng điền mã OTP', null);
           } else {
             bloc.onSubmitUpdatePassWord();
           }

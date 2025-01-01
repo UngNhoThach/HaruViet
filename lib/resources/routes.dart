@@ -7,7 +7,7 @@ class Routes {
   static const login = "/login";
   static const verifyPhone = "/verifyPhone";
   static const selectOptionValue = "/selectOptionValue";
-  static const aboutPage = "/aboutPage";
+  static const viewDataWeb = "/viewDataWeb";
   static const profilePage = "/profilePage";
   static const historyPaymentPage = "/historyPaymentPage";
   static const cartPage = "/cartPage";
@@ -50,9 +50,6 @@ class Routes {
 
   // Category
   static const subCategoryPage = "/subCategoryPage";
-
-  // NOTI
-  static const notificationPage = "/notificationPage";
 
   // ACCOUNT
   static const forgetPassWordPage = "forgetPassWordPage";

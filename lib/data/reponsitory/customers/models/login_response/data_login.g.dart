@@ -14,7 +14,7 @@ DataLogin _$DataLoginFromJson(Map<String, dynamic> json) => DataLogin(
       expiresAt: json['expires_at'] as String?,
       user: json['user'] == null
           ? null
-          : UserLogin.fromJson(json['user'] as Map<String, dynamic>),
+          : UserState.fromJson(json['user'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$DataLoginToJson(DataLogin instance) => <String, dynamic>{

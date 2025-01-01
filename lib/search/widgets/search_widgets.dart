@@ -160,10 +160,10 @@ class SearchWidgets {
                 imageUrl: '$domain${data.image}',
                 width: 40,
                 height: 40,
-                placeholder: (context, url) => const ImageProductShimer(
-                  width: 40,
-                  height: 40,
-                ),
+                // placeholder: (context, url) => const ImageProductShimer(
+                //   width: 40,
+                //   height: 40,
+                // ),
                 errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
             ),

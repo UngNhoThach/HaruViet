@@ -14,7 +14,7 @@ ProductPromotionPrice _$ProductPromotionPriceFromJson(
       dateStart: json['date_start'] as String?,
       percent: (json['percent'] as num?)?.toDouble(),
       dateEnd: json['date_end'] as String?,
-      statusPromotion: json['status_promotion'] as int?,
+      statusPromotion: (json['status_promotion'] as num?)?.toInt(),
       createdAt: json['created_at'] as String?,
       updatedAt: json['updated_at'] as String?,
     );

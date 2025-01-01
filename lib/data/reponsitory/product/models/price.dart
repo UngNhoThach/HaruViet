@@ -13,12 +13,14 @@ class Price {
   int? totalPriceItem;
   String? currency;
   int? discountOrder;
+  int? totalQuantity;
 
   Price(
       {this.price,
       this.priceStr,
       this.exchangeRate,
       this.totalPriceItem,
+      this.totalQuantity,
       this.currency,
       this.discountOrder,
       this.discountDetail});

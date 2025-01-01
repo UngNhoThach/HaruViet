@@ -3,7 +3,7 @@ import 'package:haruviet/base/base_bloc.dart';
 import 'package:haruviet/data/enum.dart';
 import 'package:haruviet/data/reponsitory/cart_orders/models/cart_order_response/data_cart_response.dart';
 import 'package:haruviet/data/reponsitory/cart_orders/models/cart_order_status_response/data_status_order.dart';
-import 'package:haruviet/data/reponsitory/product/models/data_product_detail_response/data_product_detail_response.dart';
+import 'package:haruviet/data/reponsitory/product/models/data_list_product/data_product_list.dart';
 import 'package:haruviet/helper/const.dart';
 
 part 'history_order_tab_state.g.dart';
@@ -11,10 +11,11 @@ part 'history_order_tab_state.g.dart';
 @CopyWith()
 class HistoryOrderTabState extends BaseState {
   final int tab;
+  final bool isLoading;
   final bool isLoadingProductDetails;
   final List<DataCart>? newDataList;
   final List<DataStatusOrder>? listStatusOrder;
-  final DataProductDetailResponse? productDetail;
+  final DataProduct? productDetail;
   final int currentPage;
   final int limit;
   final bool canLoadMore;
@@ -27,6 +28,7 @@ class HistoryOrderTabState extends BaseState {
     this.newDataList,
     this.idUser,
     this.productDetail,
+    this.isLoading = false,
     this.isLoadingProductDetails = false,
     this.listStatusOrder = const [],
     this.currentPage = startPage,

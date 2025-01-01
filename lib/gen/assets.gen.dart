@@ -12,6 +12,14 @@ import 'package:flutter/widgets.dart';
 class $AssetsIconsGen {
   const $AssetsIconsGen();
 
+  /// File path: assets/icons/delivery.png
+  AssetGenImage get delivery =>
+      const AssetGenImage('assets/icons/delivery.png');
+
+  /// File path: assets/icons/doitramienphi.png
+  AssetGenImage get doitramienphi =>
+      const AssetGenImage('assets/icons/doitramienphi.png');
+
   /// File path: assets/icons/filter_high.png
   AssetGenImage get filterHigh =>
       const AssetGenImage('assets/icons/filter_high.png');
@@ -27,6 +35,10 @@ class $AssetsIconsGen {
   /// File path: assets/icons/filter_price.png
   AssetGenImage get filterPrice =>
       const AssetGenImage('assets/icons/filter_price.png');
+
+  /// File path: assets/icons/freeship.png
+  AssetGenImage get freeship =>
+      const AssetGenImage('assets/icons/freeship.png');
 
   /// File path: assets/icons/ic_about_us.png
   AssetGenImage get icAboutUs =>
@@ -65,10 +77,13 @@ class $AssetsIconsGen {
 
   /// List of all assets
   List<AssetGenImage> get values => [
+        delivery,
+        doitramienphi,
         filterHigh,
         filterHotDeal,
         filterLow,
         filterPrice,
+        freeship,
         icAboutUs,
         icInviteFriends,
         icLogout,
@@ -95,12 +110,6 @@ class $AssetsImagesGen {
   /// File path: assets/images/google.png
   AssetGenImage get google => const AssetGenImage('assets/images/google.png');
 
-  /// File path: assets/images/logo.png
-  AssetGenImage get logo => const AssetGenImage('assets/images/logo.png');
-
-  /// File path: assets/images/logo_2.png
-  AssetGenImage get logo2 => const AssetGenImage('assets/images/logo_2.png');
-
   /// File path: assets/images/maneuver.png
   AssetGenImage get maneuver =>
       const AssetGenImage('assets/images/maneuver.png');
@@ -125,8 +134,6 @@ class $AssetsImagesGen {
         education,
         facebook,
         google,
-        logo,
-        logo2,
         maneuver,
         qrPng,
         recruitment,
@@ -135,11 +142,34 @@ class $AssetsImagesGen {
       ];
 }
 
+class $AssetsLogoGen {
+  const $AssetsLogoGen();
+
+  /// File path: assets/logo/logo.png
+  AssetGenImage get logo => const AssetGenImage('assets/logo/logo.png');
+
+  /// File path: assets/logo/logo_android.png
+  AssetGenImage get logoAndroid =>
+      const AssetGenImage('assets/logo/logo_android.png');
+
+  /// File path: assets/logo/logo_ios.png
+  AssetGenImage get logoIos => const AssetGenImage('assets/logo/logo_ios.png');
+
+  /// File path: assets/logo/logo_snap_screen.png
+  AssetGenImage get logoSnapScreen =>
+      const AssetGenImage('assets/logo/logo_snap_screen.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values =>
+      [logo, logoAndroid, logoIos, logoSnapScreen];
+}
+
 class Assets {
   Assets._();
 
   static const $AssetsIconsGen icons = $AssetsIconsGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
+  static const $AssetsLogoGen logo = $AssetsLogoGen();
 }
 
 class AssetGenImage {

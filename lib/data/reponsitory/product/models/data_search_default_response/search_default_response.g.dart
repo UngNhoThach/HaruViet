@@ -15,7 +15,7 @@ SearchDefaultResponse _$SearchDefaultResponseFromJson(
       products: (json['products'] as List<dynamic>?)
           ?.map((e) => SearchProduct.fromJson(e as Map<String, dynamic>))
           .toList(),
-      remaining: json['remaining'] as int?,
+      remaining: (json['remaining'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$SearchDefaultResponseToJson(

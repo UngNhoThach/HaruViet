@@ -8,9 +8,10 @@ class CategoryService extends BaseService {
   ApiHeaders apiHeaders = ApiHeaders('');
   Future<Response> getDetailCategorySV({required String idCategory}) async {
     final response = await get(
-        CategoryApi.getDetailCategory
-            .replaceAll(RegExp('{idCategory}'), idCategory),
-        headers: apiHeaders.appMobileHeaders);
+      CategoryApi.getDetailCategory
+          .replaceAll(RegExp('{idCategory}'), idCategory),
+      // headers: apiHeaders.appMobileHeaders
+    );
     return response;
   }
 
@@ -18,8 +19,10 @@ class CategoryService extends BaseService {
   Future<Response> getCategorySV({
     required GetListProductRequest request,
   }) async {
-    final response = await get(CategoryApi.getCategory,
-        headers: apiHeaders.appMobileHeaders, params: request.toJson());
+    final response = await get(
+      CategoryApi.getCategory,
+      //      headers: apiHeaders.appMobileHeaders, params: request.toJson()
+    );
     return response;
   }
 }

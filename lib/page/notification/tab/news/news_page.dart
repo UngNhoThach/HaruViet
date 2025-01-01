@@ -5,7 +5,6 @@ import 'package:haruviet/helper/context.dart';
 import 'package:haruviet/helper/spaces.dart';
 import 'package:haruviet/page/notification/tab/news/news_bloc.dart';
 import 'package:haruviet/page/notification/tab/news/news_state.dart';
-import 'package:haruviet/page/profile/models/list_profile_selection.dart';
 import 'package:haruviet/page/profile/widgets/order_item.dart';
 import 'package:haruviet/resources/routes.dart';
 import 'package:haruviet/service/clearedStoredData.dart';
@@ -26,18 +25,11 @@ class _NewsPageState extends State<NewsPage> {
   late NewsBloc bloc;
 
   // variables and functions
-  List<ListProfileSection> listSection = [];
 
   @override
   void initState() {
     super.initState();
     bloc = NewsBloc()..getData();
-  }
-
-  createSection(String title, Widget icon, Color color,
-      {required void Function() onTap}) {
-    return ListProfileSection(
-        title: title, icon: icon, color: color, onTap: onTap);
   }
 
   @override
@@ -207,23 +199,6 @@ class _NewsPageState extends State<NewsPage> {
           )
         ],
       ),
-    );
-  }
-
-  ListView buildListView(NewsState state) {
-    return ListView.builder(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemBuilder: (context, index) {
-        return _item(context,
-            onTap: listSection[index].onTap,
-            child: listSection[index].icon,
-            title: listSection[index].title);
-      },
-      itemCount:
-          (state.userInfoLogin?.isLogin == false || state.userInfoLogin == null)
-              ? listSection.length - 1
-              : listSection.length,
     );
   }
 

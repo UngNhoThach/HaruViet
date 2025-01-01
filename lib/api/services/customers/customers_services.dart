@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:haruviet/api/exception/api_endpoints.dart';
 import 'package:haruviet/api/services/customers/models/register_request.dart';
-import 'package:haruviet/api/services/customers/models/update_user_info_request/update_user_info_request.dart';
 import 'package:haruviet/api/services/headers_request/headers_request.dart';
 import 'package:haruviet/base/base_service.dart';
+import 'package:haruviet/data/data_local/user_state.dart';
 
 import 'models/update_password_phone_number_request/update_password_phone_number_request.dart';
 
@@ -14,7 +14,7 @@ class CustomersService extends BaseService {
     final response = await post(
       CustomersApi.register,
       data: request.toJson(),
-      headers: apiHeaders.appMobileHeaders,
+      // headers: apiHeaders.appMobileHeaders,
     );
     return response;
   }
@@ -25,7 +25,7 @@ class CustomersService extends BaseService {
       data: {
         'username': username,
       },
-      headers: apiHeaders.appMobileHeaders,
+      // headers: apiHeaders.appMobileHeaders,
     );
     return response;
   }
@@ -36,7 +36,7 @@ class CustomersService extends BaseService {
     final response = await post(
       CustomersApi.login,
       data: {'username': username, 'password': password},
-      headers: apiHeaders.appMobileHeaders,
+      // headers: apiHeaders.appMobileHeaders,
     );
     return response;
   }
@@ -48,19 +48,16 @@ class CustomersService extends BaseService {
       data: {
         'token': token,
       },
-      headers: apiHeaders.appMobileHeaders,
     );
     return response;
   }
 
   // updateInfo
   Future<Response> updateInfoSV(
-      {required UpdateUserInfoRequest request,
-      required String authorization}) async {
+      {required UserState request, required String authorization}) async {
     final response = await post(
       CustomersApi.updateInfo,
       data: request.toJson(),
-      headers: ApiHeaders(authorization).appMobileHeaders,
     );
     return response;
   }
@@ -71,7 +68,7 @@ class CustomersService extends BaseService {
     final response = await post(
       CustomersApi.updatePassWord,
       data: request.toJson(),
-      headers: apiHeaders.appMobileHeaders,
+      // headers: apiHeaders.appMobileHeaders,
     );
     return response;
   }
@@ -82,14 +79,16 @@ class CustomersService extends BaseService {
       data: {
         'username': username,
       },
-      headers: apiHeaders.appMobileHeaders,
+      // headers: apiHeaders.appMobileHeaders,
     );
     return response;
   }
 
   Future<Response> getInfoUserSV({required String authorization}) async {
-    final response = await get(CustomersApi.getInfoUser,
-        headers: ApiHeaders(authorization).appMobileHeaders);
+    final response = await get(
+      CustomersApi.getInfoUser,
+      // headers: ApiHeaders(authorization).appMobileHeaders
+    );
     return response;
   }
 }

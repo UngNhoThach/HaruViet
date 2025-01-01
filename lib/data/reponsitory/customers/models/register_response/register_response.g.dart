@@ -8,7 +8,7 @@ part of 'register_response.dart';
 
 RegisterResponse _$RegisterResponseFromJson(Map<String, dynamic> json) =>
     RegisterResponse(
-      status: json['status'] as int?,
+      status: (json['status'] as num?)?.toInt(),
       isStatus: json['is_status'] as bool?,
       message: json['message'] as String?,
       data: json['data'] == null

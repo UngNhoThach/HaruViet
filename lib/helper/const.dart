@@ -1,4 +1,5 @@
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
+import "package:intl/intl.dart";
 
 const startPage = 1;
 const perPage = 10;
@@ -81,4 +82,9 @@ double convertToKilogram({required String unit, required double value}) {
     default:
       return 0.0;
   }
+}
+
+String formattedNumber(dynamic numberToFormat) {
+  var formattedNumber = NumberFormat.compact().format(numberToFormat);
+  return formattedNumber;
 }

@@ -9,17 +9,42 @@ part of 'cart_sate.dart';
 abstract class _$CartStateCWProxy {
   CartState viewState(ViewState viewState);
 
+  CartState isUpdateDone(bool isUpdateDone);
+
+  CartState isNextPage(bool isNextPage);
+
+  CartState message(String? message);
+
+  CartState listItemsCartOrder(List<GetCartOrderResponse> listItemsCartOrder);
+
+  CartState attributeCheckPrice(List<AttributeCheckPrice?> attributeCheckPrice);
+
+  CartState isReloadNewCart(bool isReloadNewCart);
+
+  CartState discountOrder(int discountOrder);
+
+  CartState discountDetail(int discountDetail);
+
   CartState cartItemsRequest(List<CartItemRequest> cartItemsRequest);
 
-  CartState userInfoLogin(UserInfoLogin? userInfoLogin);
+  CartState isFreeShipping(bool isFreeShipping);
+
+  CartState userInfoLogin(UserState? userInfoLogin);
 
   CartState errorMsg(String errorMsg);
 
-  CartState productsList(List<Products> productsList);
+  CartState listGiftProduct(List<DataProduct?>? listGiftProduct);
+
+  CartState checkOrderPriceResponse(
+      List<CheckOrderPriceResponse?> checkOrderPriceResponse);
+
+  CartState productsList(List<CartModelProduct> productsList);
 
   CartState isSubmitSuccess(bool isSubmitSuccess);
 
   CartState totalItem(int? totalItem);
+
+  CartState weight(double weight);
 
   CartState checkValue(bool checkValue);
 
@@ -41,12 +66,24 @@ abstract class _$CartStateCWProxy {
   /// ````
   CartState call({
     ViewState? viewState,
+    bool? isUpdateDone,
+    bool? isNextPage,
+    String? message,
+    List<GetCartOrderResponse>? listItemsCartOrder,
+    List<AttributeCheckPrice?>? attributeCheckPrice,
+    bool? isReloadNewCart,
+    int? discountOrder,
+    int? discountDetail,
     List<CartItemRequest>? cartItemsRequest,
-    UserInfoLogin? userInfoLogin,
+    bool? isFreeShipping,
+    UserState? userInfoLogin,
     String? errorMsg,
-    List<Products>? productsList,
+    List<DataProduct?>? listGiftProduct,
+    List<CheckOrderPriceResponse?>? checkOrderPriceResponse,
+    List<CartModelProduct>? productsList,
     bool? isSubmitSuccess,
     int? totalItem,
+    double? weight,
     bool? checkValue,
     bool? isValueDefault,
     int? finalPrice,
@@ -66,18 +103,61 @@ class _$CartStateCWProxyImpl implements _$CartStateCWProxy {
   CartState viewState(ViewState viewState) => this(viewState: viewState);
 
   @override
+  CartState isUpdateDone(bool isUpdateDone) => this(isUpdateDone: isUpdateDone);
+
+  @override
+  CartState isNextPage(bool isNextPage) => this(isNextPage: isNextPage);
+
+  @override
+  CartState message(String? message) => this(message: message);
+
+  @override
+  CartState listItemsCartOrder(List<GetCartOrderResponse> listItemsCartOrder) =>
+      this(listItemsCartOrder: listItemsCartOrder);
+
+  @override
+  CartState attributeCheckPrice(
+          List<AttributeCheckPrice?> attributeCheckPrice) =>
+      this(attributeCheckPrice: attributeCheckPrice);
+
+  @override
+  CartState isReloadNewCart(bool isReloadNewCart) =>
+      this(isReloadNewCart: isReloadNewCart);
+
+  @override
+  CartState discountOrder(int discountOrder) =>
+      this(discountOrder: discountOrder);
+
+  @override
+  CartState discountDetail(int discountDetail) =>
+      this(discountDetail: discountDetail);
+
+  @override
   CartState cartItemsRequest(List<CartItemRequest> cartItemsRequest) =>
       this(cartItemsRequest: cartItemsRequest);
 
   @override
-  CartState userInfoLogin(UserInfoLogin? userInfoLogin) =>
+  CartState isFreeShipping(bool isFreeShipping) =>
+      this(isFreeShipping: isFreeShipping);
+
+  @override
+  CartState userInfoLogin(UserState? userInfoLogin) =>
       this(userInfoLogin: userInfoLogin);
 
   @override
   CartState errorMsg(String errorMsg) => this(errorMsg: errorMsg);
 
   @override
-  CartState productsList(List<Products> productsList) =>
+  CartState listGiftProduct(List<DataProduct?>? listGiftProduct) =>
+      this(listGiftProduct: listGiftProduct);
+
+  @override
+  CartState checkOrderPriceResponse(
+          List<CheckOrderPriceResponse?> checkOrderPriceResponse) =>
+      this(checkOrderPriceResponse: checkOrderPriceResponse);
+
+  @override
+  CartState productsList(List<CartModelProduct> productsList) =>
       this(productsList: productsList);
 
   @override
@@ -86,6 +166,9 @@ class _$CartStateCWProxyImpl implements _$CartStateCWProxy {
 
   @override
   CartState totalItem(int? totalItem) => this(totalItem: totalItem);
+
+  @override
+  CartState weight(double weight) => this(weight: weight);
 
   @override
   CartState checkValue(bool checkValue) => this(checkValue: checkValue);
@@ -118,12 +201,24 @@ class _$CartStateCWProxyImpl implements _$CartStateCWProxy {
   /// ````
   CartState call({
     Object? viewState = const $CopyWithPlaceholder(),
+    Object? isUpdateDone = const $CopyWithPlaceholder(),
+    Object? isNextPage = const $CopyWithPlaceholder(),
+    Object? message = const $CopyWithPlaceholder(),
+    Object? listItemsCartOrder = const $CopyWithPlaceholder(),
+    Object? attributeCheckPrice = const $CopyWithPlaceholder(),
+    Object? isReloadNewCart = const $CopyWithPlaceholder(),
+    Object? discountOrder = const $CopyWithPlaceholder(),
+    Object? discountDetail = const $CopyWithPlaceholder(),
     Object? cartItemsRequest = const $CopyWithPlaceholder(),
+    Object? isFreeShipping = const $CopyWithPlaceholder(),
     Object? userInfoLogin = const $CopyWithPlaceholder(),
     Object? errorMsg = const $CopyWithPlaceholder(),
+    Object? listGiftProduct = const $CopyWithPlaceholder(),
+    Object? checkOrderPriceResponse = const $CopyWithPlaceholder(),
     Object? productsList = const $CopyWithPlaceholder(),
     Object? isSubmitSuccess = const $CopyWithPlaceholder(),
     Object? totalItem = const $CopyWithPlaceholder(),
+    Object? weight = const $CopyWithPlaceholder(),
     Object? checkValue = const $CopyWithPlaceholder(),
     Object? isValueDefault = const $CopyWithPlaceholder(),
     Object? finalPrice = const $CopyWithPlaceholder(),
@@ -136,24 +231,79 @@ class _$CartStateCWProxyImpl implements _$CartStateCWProxy {
           ? _value.viewState
           // ignore: cast_nullable_to_non_nullable
           : viewState as ViewState,
+      isUpdateDone:
+          isUpdateDone == const $CopyWithPlaceholder() || isUpdateDone == null
+              ? _value.isUpdateDone
+              // ignore: cast_nullable_to_non_nullable
+              : isUpdateDone as bool,
+      isNextPage:
+          isNextPage == const $CopyWithPlaceholder() || isNextPage == null
+              ? _value.isNextPage
+              // ignore: cast_nullable_to_non_nullable
+              : isNextPage as bool,
+      message: message == const $CopyWithPlaceholder()
+          ? _value.message
+          // ignore: cast_nullable_to_non_nullable
+          : message as String?,
+      listItemsCartOrder: listItemsCartOrder == const $CopyWithPlaceholder() ||
+              listItemsCartOrder == null
+          ? _value.listItemsCartOrder
+          // ignore: cast_nullable_to_non_nullable
+          : listItemsCartOrder as List<GetCartOrderResponse>,
+      attributeCheckPrice:
+          attributeCheckPrice == const $CopyWithPlaceholder() ||
+                  attributeCheckPrice == null
+              ? _value.attributeCheckPrice
+              // ignore: cast_nullable_to_non_nullable
+              : attributeCheckPrice as List<AttributeCheckPrice?>,
+      isReloadNewCart: isReloadNewCart == const $CopyWithPlaceholder() ||
+              isReloadNewCart == null
+          ? _value.isReloadNewCart
+          // ignore: cast_nullable_to_non_nullable
+          : isReloadNewCart as bool,
+      discountOrder:
+          discountOrder == const $CopyWithPlaceholder() || discountOrder == null
+              ? _value.discountOrder
+              // ignore: cast_nullable_to_non_nullable
+              : discountOrder as int,
+      discountDetail: discountDetail == const $CopyWithPlaceholder() ||
+              discountDetail == null
+          ? _value.discountDetail
+          // ignore: cast_nullable_to_non_nullable
+          : discountDetail as int,
       cartItemsRequest: cartItemsRequest == const $CopyWithPlaceholder() ||
               cartItemsRequest == null
           ? _value.cartItemsRequest
           // ignore: cast_nullable_to_non_nullable
           : cartItemsRequest as List<CartItemRequest>,
+      isFreeShipping: isFreeShipping == const $CopyWithPlaceholder() ||
+              isFreeShipping == null
+          ? _value.isFreeShipping
+          // ignore: cast_nullable_to_non_nullable
+          : isFreeShipping as bool,
       userInfoLogin: userInfoLogin == const $CopyWithPlaceholder()
           ? _value.userInfoLogin
           // ignore: cast_nullable_to_non_nullable
-          : userInfoLogin as UserInfoLogin?,
+          : userInfoLogin as UserState?,
       errorMsg: errorMsg == const $CopyWithPlaceholder() || errorMsg == null
           ? _value.errorMsg
           // ignore: cast_nullable_to_non_nullable
           : errorMsg as String,
+      listGiftProduct: listGiftProduct == const $CopyWithPlaceholder()
+          ? _value.listGiftProduct
+          // ignore: cast_nullable_to_non_nullable
+          : listGiftProduct as List<DataProduct?>?,
+      checkOrderPriceResponse:
+          checkOrderPriceResponse == const $CopyWithPlaceholder() ||
+                  checkOrderPriceResponse == null
+              ? _value.checkOrderPriceResponse
+              // ignore: cast_nullable_to_non_nullable
+              : checkOrderPriceResponse as List<CheckOrderPriceResponse?>,
       productsList:
           productsList == const $CopyWithPlaceholder() || productsList == null
               ? _value.productsList
               // ignore: cast_nullable_to_non_nullable
-              : productsList as List<Products>,
+              : productsList as List<CartModelProduct>,
       isSubmitSuccess: isSubmitSuccess == const $CopyWithPlaceholder() ||
               isSubmitSuccess == null
           ? _value.isSubmitSuccess
@@ -163,6 +313,10 @@ class _$CartStateCWProxyImpl implements _$CartStateCWProxy {
           ? _value.totalItem
           // ignore: cast_nullable_to_non_nullable
           : totalItem as int?,
+      weight: weight == const $CopyWithPlaceholder() || weight == null
+          ? _value.weight
+          // ignore: cast_nullable_to_non_nullable
+          : weight as double,
       checkValue:
           checkValue == const $CopyWithPlaceholder() || checkValue == null
               ? _value.checkValue

@@ -127,7 +127,7 @@ extension $ProductResponseCopyWith on ProductResponse {
 
 ProductResponse _$ProductResponseFromJson(Map<String, dynamic> json) =>
     ProductResponse(
-      id: json['Id'] as int?,
+      id: (json['Id'] as num?)?.toInt(),
       amount: json['Amount'] as String?,
       code: json['Code'] as String?,
       image: json['Image'] as String?,

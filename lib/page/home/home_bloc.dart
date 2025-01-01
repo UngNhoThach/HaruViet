@@ -22,17 +22,20 @@ class HomeBloc extends BaseBloc<HomeState> {
     emit(state.copyWith(firtTimeLoadingPage: firtTimeLoadingPage));
   }
 
+  onChangeViewMember() {
+    emit(state.copyWith(isViewMemberCard: !state.isViewMemberCard));
+  }
+
   getData() async {
     emit(state.copyWith(
       isLoading: true,
     ));
     try {
-//      final dbHelper = IdProductRecommendationDatabase();
+      //   final dbHelper = IdProductRecommendationDatabase();
       //   final List<IdProductRecommendationModel> idProductListLocal;
       //    idProductListLocal = await dbHelper.getAllProducts();
 
       final userInfoLogin = await Preference.getUserInfo();
-
       emit(state.copyWith(
         //    idProductListLocal: idProductListLocal,
         userInfoLogin: userInfoLogin,

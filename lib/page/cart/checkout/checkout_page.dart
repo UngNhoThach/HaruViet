@@ -1,9 +1,9 @@
 import 'package:haruviet/component/input/text_filed_icon.dart';
 import 'package:haruviet/component/loading/loading.dart';
 import 'package:haruviet/component/snackbar/snackbar_bottom.dart';
-import 'package:haruviet/data/data_local/user_bloc.dart';
+import 'package:haruviet/data/data_local/setting_app_bloc.dart';
 import 'package:haruviet/data/reponsitory/address/model/list_address/data_list_address.dart';
-import 'package:haruviet/database_local/product/models/cart_model_v2.dart';
+import 'package:haruviet/data/reponsitory/cart_orders/models/get_cart_order_response/get_cart_order_response.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/const.dart';
 import 'package:haruviet/helper/spaces.dart';
@@ -11,6 +11,7 @@ import 'package:haruviet/page/add_address/add_address/widgets/address_params.dar
 import 'package:haruviet/page/cart/checkout/checkout_bloc.dart';
 import 'package:haruviet/page/cart/checkout/checkout_state.dart';
 import 'package:haruviet/page/cart/checkout/widgets/checkout_params.dart';
+import 'package:haruviet/page/cart/checkout/widgets/render_body_product.dart';
 import 'package:haruviet/page/cart/payment_method/widgets/payment_method_params.dart';
 import 'package:haruviet/page/shipment/widgets/shipment_params.dart';
 import 'package:haruviet/resources/routes.dart';
@@ -57,7 +58,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
   @override
   void initState() {
     super.initState();
-    domain = context.read<UserBloc>().state.subDomain ?? '';
+    domain = context.read<SettingAppBloc>().state.xUrl ?? '';
 
     bloc = CheckOutBloc(context)..getData(widget.params);
   }
@@ -131,8 +132,15 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                 height: 1,
                                 thickness: 10,
                               ),
-                              renderBody(context,
-                                  productList: state.productsList),
+                              ProductListWidgetViewMore(
+                                productList: state.productsList,
+                                domain: domain,
+                                styleSubPrice: styleSubTitle,
+                                styleSubTitle: styleSubTitle,
+                              ),
+
+                              // renderBody(context,
+                              //     productList: state.productsList),
                               // _checkoutWidget(context,
                               //     productList: state.productsList),
                               const Divider(
@@ -147,8 +155,10 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                 thickness: 10,
                               ),
                               standardFinal(
-                                  total: state.totalPrice ?? 0,
-                                  fee: state.shipmentResponse?.fee?.fee ?? 0),
+                                total: state.totalPrice ?? 0,
+                                fee: 1000,
+                                // state.shipmentResponse?.fee?.fee ?? 0
+                              ),
                               spaceH100,
                             ],
                           ),
@@ -228,7 +238,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                     children: [
                       Expanded(
                         child: Text(
-                            '${addressShipping.address3 ?? ''}, ${addressShipping.address2 ?? ''},${addressShipping.address1 ?? ''}',
+                            '${addressShipping.house ?? ''}, ${addressShipping.ward ?? ''}, ${addressShipping.district ?? ''},${addressShipping.province ?? ''}',
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: styleSubPrice),
@@ -254,24 +264,24 @@ class _CheckOutPageState extends State<CheckOutPage> {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
-        routeService.pushNamed(Routes.shipmentPage,
-            arguments: ShipmentParams(
-              selectedShipment: state.selectedShipment,
-              selectShipmentFunc: (selectedShipment) {
-                bloc.onChangeSelectedShipment(
-                    selectedShipment: selectedShipment!);
-              },
-              titleSelected: state.titleSelected ?? '',
-              weight: widget.params.weight,
-              shippingAddress: state.shippingAddress,
-              totalPrice: state.totalPrice ?? 0,
-              shipmentResponse: state.shipmentResponse!,
-              shipmenFunc: (shipmentResponse, titleSelected) {
-                bloc.onChangeShipmentMethod(
-                    titleSelected: titleSelected,
-                    shipmentResponse: shipmentResponse!);
-              },
-            ));
+        // routeService.pushNamed(Routes.shipmentPage,
+        //     arguments: ShipmentParams(
+        //       selectedShipment: state.selectedShipment,
+        //       selectShipmentFunc: (selectedShipment) {
+        //         bloc.onChangeSelectedShipment(
+        //             selectedShipment: selectedShipment!);
+        //       },
+        //       titleSelected: state.titleSelected ?? '',
+        //       weight: widget.params.weight,
+        //       shippingAddress: state.shippingAddress,
+        //       totalPrice: state.totalPrice ?? 0,
+        //       shipmentResponse: state.shipmentResponse!,
+        //       shipmenFunc: (shipmentResponse, titleSelected) {
+        //         bloc.onChangeShipmentMethod(
+        //             titleSelected: titleSelected,
+        //             shipmentResponse: shipmentResponse!);
+        //       },
+        //     ));
       },
       child: Container(
         decoration:
@@ -306,11 +316,12 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                   //   text: "17 tháng 2 - 2024  |  ",
                                   style: styleSubPrice),
                               TextSpan(
-                                  text:
-                                      defaultCurrencyVNDFormatter.formatString(
-                                          state.shipmentResponse?.fee?.fee
-                                                  .toString() ??
-                                              "0"),
+                                  text: "100",
+                                  // defaultCurrencyVNDFormatter.formatString(
+                                  //     state.shipmentResponse?.fee?.fee
+                                  //             .toString() ??
+                                  //         "0"
+                                  //            ),
                                   style: styleSubPrice)
                             ]),
                           ),
@@ -504,11 +515,12 @@ class _CheckOutPageState extends State<CheckOutPage> {
         maxLines: 100, // and this
         key: _formKey,
         enabled: true,
-        decoration: const InputDecoration(
-            contentPadding: EdgeInsets.all(16),
+        decoration: InputDecoration(
+            contentPadding: const EdgeInsets.all(16),
+            hintStyle: textTheme.bodyMedium,
             hintText: "Để lại ghi chú (nếu có)"),
-        onChanged: (value) {
-          // bloc.onChangeComment(comment: value);
+        onChanged: (comment) {
+          bloc.onChangeComment(comment: comment);
         },
         onFieldSubmitted: (value) {
           //  bloc.onChangeComment(comment: value);
@@ -556,12 +568,12 @@ class _CheckOutPageState extends State<CheckOutPage> {
                   spaceH8,
                   Text(
                       defaultCurrencyVNDFormatter.formatString(
-                          (total + widget.params.discountOrder).toString()),
+                          (total + bloc.state.discoutTotal).toString()),
                       style: styleSubPrice),
                   spaceH8,
                   Text(
                       defaultCurrencyVNDFormatter
-                          .formatString(widget.params.discountOrder.toString()),
+                          .formatString(bloc.state.discoutTotal.toString()),
                       style: styleSubPrice),
                   spaceH8,
                   Text(defaultCurrencyVNDFormatter.formatString(fee.toString()),
@@ -581,7 +593,8 @@ class _CheckOutPageState extends State<CheckOutPage> {
           spaceH20,
           GestureDetector(
             onTap: () {
-              CustomSnackBar.showTop(context, 'Chức năng đang được phát triển');
+              bloc.onGetShippingMethods();
+              //  CustomSnackBar.showTop(context, 'Chức năng đang được phát triển');
             },
             child: Container(
               height: 38.h,
@@ -607,109 +620,24 @@ class _CheckOutPageState extends State<CheckOutPage> {
     );
   }
 
-  Widget renderBody(
-    BuildContext context, {
-    required List<CartModelProduct> productList,
-  }) {
-    return Container(
-        color: const Color(0xFFFFFFFF),
-        child: Column(
-            children: List.generate(productList.length * 2 - 1, (index) {
-          if (!index.isEven) {
-            return Container(
-              color: colorGray02,
-              height: 1,
-              width: double.infinity,
-              child: const SizedBox(),
-            );
-          } else {
-            return _itemProductRender(context, item: productList[index ~/ 2]);
-          }
-        })));
-  }
-
-  Widget _itemProductRender(
-    BuildContext context, {
-    required CartModelProduct item,
-  }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 6),
-      height: 82.h,
-      width: double.infinity,
-      child: Column(children: [
-        Expanded(
-          child: InkWell(
-            onTap: () {},
-            child: Container(
-              padding: const EdgeInsets.all(12),
-              width: double.infinity,
-              height: double.infinity,
-              child: Row(children: [
-                Container(
-                  margin: const EdgeInsets.only(right: 12),
-                  width: 56.w,
-                  height: 56.h,
-                  child: Image.network(
-                    '$domain${item.image}',
-                    height: MediaQuery.of(context).size.height * 0.1,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                Expanded(
-                  child: Row(children: [
-                    Expanded(
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                                margin: const EdgeInsets.only(bottom: 8),
-                                child: Text(
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  item.descriptions.name ?? '',
-                                  style: textTheme.bodyMedium?.copyWith(
-                                    color: colorBlack,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                )),
-                            Text("Số lượng: ${item.totalQuantity}",
-                                style: styleSubTitle),
-                            spaceH4,
-                            Text(
-                                defaultCurrencyVNDFormatter
-                                    .formatString(item.price.price.toString()),
-                                style: styleSubTitle),
-                          ]),
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                            defaultCurrencyVNDFormatter.formatString(
-                                (item.price.price! * item.totalQuantity)
-                                    .toString()),
-                            style: styleSubPrice
-                            //
-                            ),
-                        if (item.price.discountDetail != 0) ...[
-                          spaceH4,
-                          Text(
-                            '- ${defaultCurrencyVNDFormatter.formatString((item.price.discountDetail).toString())}',
-                            style: textTheme.bodyMedium?.copyWith(
-                              color: colorGray03,
-                            ),
-                          ),
-                        ]
-                      ],
-                    ),
-                  ]),
-                ),
-              ]),
-            ),
-          ),
-        ),
-      ]),
-    );
-  }
+  // Widget renderBody(
+  //   BuildContext context, {
+  //   required List<GetCartOrderResponse> productList,
+  // }) {
+  //   return Container(
+  //       color: const Color(0xFFFFFFFF),
+  //       child: Column(
+  //           children: List.generate(productList.length * 2 - 1, (index) {
+  //         if (!index.isEven) {
+  //           return Container(
+  //             color: colorGray02,
+  //             height: 1,
+  //             width: double.infinity,
+  //             child: const SizedBox(),
+  //           );
+  //         } else {
+  //           return _itemProductRender(context, item: productList[index ~/ 2]);
+  //         }
+  //       })));
+  // }
 }

@@ -15,7 +15,7 @@ SearchProduct _$SearchProductFromJson(Map<String, dynamic> json) =>
           ? null
           : SearchPrice.fromJson(json['price'] as Map<String, dynamic>),
       image: json['image'] as String?,
-      isOutOfStock: json['is_out_of_stock'] as int?,
+      isOutOfStock: (json['is_out_of_stock'] as num?)?.toInt(),
       url: json['url'] as String?,
     );
 

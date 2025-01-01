@@ -57,7 +57,7 @@ String calculateRemainingTime(String endDate) {
   Duration difference = end.difference(now);
 
   if (difference.isNegative) {
-    return 'Còn  0d  0h : 0m  :  0s';
+    return '0d  0h : 0m  :  0s';
   }
 
   int days = difference.inDays;
@@ -65,5 +65,5 @@ String calculateRemainingTime(String endDate) {
   int minutes = difference.inMinutes.remainder(60);
   int seconds = difference.inSeconds.remainder(60);
 
-  return 'Còn  ${days}d   ${hours}h : ${minutes}m : ${seconds}s';
+  return '${days}d   ${hours}h : ${minutes}m : ${seconds}s';
 }

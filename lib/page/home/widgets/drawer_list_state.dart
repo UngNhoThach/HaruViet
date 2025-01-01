@@ -9,13 +9,15 @@ part 'drawer_list_state.g.dart';
 class DrawerListState extends BaseState {
   final bool isLoading;
   final List<DataStatusOrder> listStatusOrder;
+  final bool isLogin;
 
-  final UserInfoLogin? dataUser;
+  final UserState? dataUser;
 
   const DrawerListState({
     ViewState viewState = ViewState.initial,
     String errorMsg = '',
     this.listStatusOrder = const [],
+    this.isLogin = false,
     this.dataUser,
     this.isLoading = false,
   }) : super(viewState, errorMsg);

@@ -1,130 +1,121 @@
-import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
+
 part 'user_state.g.dart';
 
 @JsonSerializable()
-@CopyWith()
-class UserInfoLogin {
-  bool isLogin;
-  String? subDomain;
-  @JsonKey(name: "user_name")
-  String? userName;
-  @JsonKey(name: "pathologicaldetail")
-  dynamic pathologicaldetail;
-  @JsonKey(name: "id")
+class UserState {
   String? id;
+  String? avatar;
+  String? sku;
+  String? pathologicaldetail;
+  @JsonKey(name: 'agency_id')
+  String? agencyId;
+  @JsonKey(name: 'user_id')
+  String? userId;
+  @JsonKey(name: 'address_id')
+  String? addressId;
+  @JsonKey(name: 'agency_name')
+  String? agencyName;
+  @JsonKey(name: 'user_name')
+  String? userName;
+  @JsonKey(name: 'first_name')
+  String? firstName;
+  @JsonKey(name: 'last_name')
+  String? lastName;
+  @JsonKey(name: 'first_name_kana')
+  String? firstNameKana;
+  @JsonKey(name: 'last_name_kana')
+  String? lastNameKana;
+  String? email;
+  String? phone;
+  int? sex;
+  dynamic birthday;
+  String? house;
+  String? street;
+  String? ward;
+  String? district;
+  String? province;
+  String? postcode;
+  @JsonKey(name: 'id_province')
+  String? idProvince;
+  @JsonKey(name: 'id_district')
+  String? idDistrict;
+  @JsonKey(name: 'id_ward')
+  String? idWard;
+  String? company;
+  String? country;
+  @JsonKey(name: 'store_id')
+  String? storeId;
+  int? status;
+  int? group;
+  @JsonKey(name: 'email_verified_at')
+  String? emailVerifiedAt;
+  @JsonKey(name: 'phone_verified_at')
+  String? phoneVerifiedAt;
+  @JsonKey(name: 'otp_verified')
+  int? otpVerified;
+  @JsonKey(name: 'created_at')
+  DateTime? createdAt;
+  @JsonKey(name: 'updated_at')
+  DateTime? updatedAt;
+  String? provider;
+  @JsonKey(name: 'provider_id')
+  String? providerId;
+  String? name;
+  bool isLogin;
   @JsonKey(name: "access_token")
   String? accessToken;
   @JsonKey(name: "token_type")
   String? tokenType;
-  @JsonKey(name: "emai")
-  String? email;
-  @JsonKey(name: "email_verified_at")
-  String? emailVerifiedAt;
-  @JsonKey(name: "name")
-  String? name;
-  @JsonKey(name: "first_name")
-  String? firstName;
-  @JsonKey(name: "last_name")
-  String? lastName;
-  @JsonKey(name: "first_name_kana")
-  String? firstNameKana;
-  @JsonKey(name: "last_name_kana")
-  String? lastNameKana;
-  @JsonKey(name: "sex")
-  int? sex;
-  @JsonKey(name: "birthday")
-  String? birthDay;
-  @JsonKey(name: "address_id")
-  String? addressId;
-  @JsonKey(name: "postcode")
-  String? postCode;
-  @JsonKey(name: "address1")
-  String? address1;
-  @JsonKey(name: "address1ID")
-  String? address1ID;
 
-  @JsonKey(name: "address2")
-  String? address2;
-  @JsonKey(name: "address2ID")
-  String? address2ID;
-  @JsonKey(name: "address3")
-  String? address3;
-  @JsonKey(name: "address3ID")
-  String? address3ID;
-  @JsonKey(name: "company")
-  String? company;
-  @JsonKey(name: "country")
-  String? country;
-  @JsonKey(name: "phone")
-  String? phone;
-  @JsonKey(name: "store_id")
-  String? storeId;
-  @JsonKey(name: "status")
-  int? status;
-  @JsonKey(name: "group")
-  int? group;
-  @JsonKey(name: "agency_id")
-  String? agencyId;
-  @JsonKey(name: "user_id")
-  String? userId;
-  @JsonKey(name: "agency_name")
-  String? agencyName;
-  @JsonKey(name: "avatar")
-  String? avatar;
-  @JsonKey(name: "provider")
-  String? provider;
-  @JsonKey(name: "provider_id")
-  String? providerId;
-  @JsonKey(name: "id_shipping")
-  String? idShipping;
+  UserState({
+    this.tokenType,
+    this.accessToken,
+    this.isLogin = false,
+    this.id,
+    this.avatar,
+    this.sku,
+    this.pathologicaldetail,
+    this.agencyId,
+    this.userId,
+    this.addressId,
+    this.agencyName,
+    this.userName,
+    this.firstName,
+    this.lastName,
+    this.firstNameKana,
+    this.lastNameKana,
+    this.email,
+    this.phone,
+    this.sex,
+    this.birthday,
+    this.house,
+    this.street,
+    this.ward,
+    this.district,
+    this.province,
+    this.postcode,
+    this.idProvince,
+    this.idDistrict,
+    this.idWard,
+    this.company,
+    this.country,
+    this.storeId,
+    this.status,
+    this.group,
+    this.emailVerifiedAt,
+    this.phoneVerifiedAt,
+    this.otpVerified,
+    this.createdAt,
+    this.updatedAt,
+    this.provider,
+    this.providerId,
+    this.name,
+  });
 
-  UserInfoLogin(
-      {this.isLogin = false,
-      this.subDomain = 'https://dev.sni.vn',
-      this.provider,
-      this.userName,
-      this.idShipping,
-      this.providerId,
-      this.id,
-      this.pathologicaldetail,
-      this.agencyId,
-      this.accessToken,
-      this.tokenType,
-      this.email,
-      this.emailVerifiedAt,
-      this.name,
-      this.firstName,
-      this.lastName,
-      this.firstNameKana,
-      this.lastNameKana,
-      this.sex,
-      this.birthDay,
-      this.addressId,
-      this.address1,
-      this.address1ID,
-      this.postCode,
-      this.address2,
-      this.address2ID,
-      this.address3,
-      this.address3ID,
-      this.company,
-      this.country,
-      this.phone,
-      this.storeId,
-      this.status,
-      this.group,
-      this.userId,
-      this.agencyName,
-      this.avatar});
-
-  @override
-  String toString() {
-    return 'avatar: $avatar,id_shipping: $idShipping,  id: $id, access_token: $accessToken, token_type: $tokenType, emai: $email, email_verified_at: $emailVerifiedAt,  name: $name, first_name: $firstName, last_name: $lastName , first_name_kana $firstNameKana,  last_name_kana $lastNameKana, sex $sex, birthday $birthDay, address_id $addressId, postcode $postCode, address1 $address1, address2 $address2, address3 $address3, company $company, country $company, phone $phone, store_id $storeId, status $status, group $group, user_id $userId, agency_name $agencyName';
+  factory UserState.fromJson(Map<String, dynamic> json) {
+    return _$UserStateFromJson(json);
   }
 
-  factory UserInfoLogin.fromJson(Map<String, dynamic> json) =>
-      _$UserInfoLoginFromJson(json);
-
-  Map<String, dynamic> toJson() => _$UserInfoLoginToJson(this);
+  Map<String, dynamic> toJson() => _$UserStateToJson(this);
 }

@@ -11,13 +11,29 @@ abstract class _$UpdateProfileStateCWProxy {
 
   UpdateProfileState errorMsg(String errorMsg);
 
-  UpdateProfileState userInfo(DataUserUpdateInfo? userInfo);
+  UpdateProfileState userInfo(UserState? userInfo);
+
+  UpdateProfileState addressId(String? addressId);
+
+  UpdateProfileState house(String? house);
+
+  UpdateProfileState district(String? district);
+
+  UpdateProfileState province(String? province);
+
+  UpdateProfileState idWard(String? idWard);
+
+  UpdateProfileState idDistrict(String? idDistrict);
+
+  UpdateProfileState idProvince(String? idProvince);
+
+  UpdateProfileState street(String? street);
+
+  UpdateProfileState ward(String? ward);
 
   UpdateProfileState email(String? email);
 
   UpdateProfileState baseStatusResponse(BaseStatusResponse baseStatusResponse);
-
-  UpdateProfileState dataUpdate(DataUserUpdateInfo? dataUpdate);
 
   UpdateProfileState userName(String? userName);
 
@@ -26,20 +42,6 @@ abstract class _$UpdateProfileStateCWProxy {
   UpdateProfileState lastName(String? lastName);
 
   UpdateProfileState message(String? message);
-
-  UpdateProfileState address(String? address);
-
-  UpdateProfileState address1(String? address1);
-
-  UpdateProfileState address1ID(String? address1ID);
-
-  UpdateProfileState address2(String? address2);
-
-  UpdateProfileState address2ID(String? address2ID);
-
-  UpdateProfileState address3(String? address3);
-
-  UpdateProfileState address3ID(String? address3ID);
 
   UpdateProfileState addressUserData(AddressUser addressUserData);
 
@@ -55,7 +57,7 @@ abstract class _$UpdateProfileStateCWProxy {
 
   UpdateProfileState birthDay(DateTime? birthDay);
 
-  UpdateProfileState userInfoLogin(UserInfoLogin? userInfoLogin);
+  UpdateProfileState userInfoLogin(UserState? userInfoLogin);
 
   UpdateProfileState isSubmitSuccess(bool isSubmitSuccess);
 
@@ -68,21 +70,22 @@ abstract class _$UpdateProfileStateCWProxy {
   UpdateProfileState call({
     ViewState? viewState,
     String? errorMsg,
-    DataUserUpdateInfo? userInfo,
+    UserState? userInfo,
+    String? addressId,
+    String? house,
+    String? district,
+    String? province,
+    String? idWard,
+    String? idDistrict,
+    String? idProvince,
+    String? street,
+    String? ward,
     String? email,
     BaseStatusResponse? baseStatusResponse,
-    DataUserUpdateInfo? dataUpdate,
     String? userName,
     String? firstName,
     String? lastName,
     String? message,
-    String? address,
-    String? address1,
-    String? address1ID,
-    String? address2,
-    String? address2ID,
-    String? address3,
-    String? address3ID,
     AddressUser? addressUserData,
     bool? isLoading,
     int? typeSex,
@@ -90,7 +93,7 @@ abstract class _$UpdateProfileStateCWProxy {
     String? name,
     String? sex,
     DateTime? birthDay,
-    UserInfoLogin? userInfoLogin,
+    UserState? userInfoLogin,
     bool? isSubmitSuccess,
   });
 }
@@ -109,8 +112,36 @@ class _$UpdateProfileStateCWProxyImpl implements _$UpdateProfileStateCWProxy {
   UpdateProfileState errorMsg(String errorMsg) => this(errorMsg: errorMsg);
 
   @override
-  UpdateProfileState userInfo(DataUserUpdateInfo? userInfo) =>
-      this(userInfo: userInfo);
+  UpdateProfileState userInfo(UserState? userInfo) => this(userInfo: userInfo);
+
+  @override
+  UpdateProfileState addressId(String? addressId) => this(addressId: addressId);
+
+  @override
+  UpdateProfileState house(String? house) => this(house: house);
+
+  @override
+  UpdateProfileState district(String? district) => this(district: district);
+
+  @override
+  UpdateProfileState province(String? province) => this(province: province);
+
+  @override
+  UpdateProfileState idWard(String? idWard) => this(idWard: idWard);
+
+  @override
+  UpdateProfileState idDistrict(String? idDistrict) =>
+      this(idDistrict: idDistrict);
+
+  @override
+  UpdateProfileState idProvince(String? idProvince) =>
+      this(idProvince: idProvince);
+
+  @override
+  UpdateProfileState street(String? street) => this(street: street);
+
+  @override
+  UpdateProfileState ward(String? ward) => this(ward: ward);
 
   @override
   UpdateProfileState email(String? email) => this(email: email);
@@ -119,10 +150,6 @@ class _$UpdateProfileStateCWProxyImpl implements _$UpdateProfileStateCWProxy {
   UpdateProfileState baseStatusResponse(
           BaseStatusResponse baseStatusResponse) =>
       this(baseStatusResponse: baseStatusResponse);
-
-  @override
-  UpdateProfileState dataUpdate(DataUserUpdateInfo? dataUpdate) =>
-      this(dataUpdate: dataUpdate);
 
   @override
   UpdateProfileState userName(String? userName) => this(userName: userName);
@@ -135,30 +162,6 @@ class _$UpdateProfileStateCWProxyImpl implements _$UpdateProfileStateCWProxy {
 
   @override
   UpdateProfileState message(String? message) => this(message: message);
-
-  @override
-  UpdateProfileState address(String? address) => this(address: address);
-
-  @override
-  UpdateProfileState address1(String? address1) => this(address1: address1);
-
-  @override
-  UpdateProfileState address1ID(String? address1ID) =>
-      this(address1ID: address1ID);
-
-  @override
-  UpdateProfileState address2(String? address2) => this(address2: address2);
-
-  @override
-  UpdateProfileState address2ID(String? address2ID) =>
-      this(address2ID: address2ID);
-
-  @override
-  UpdateProfileState address3(String? address3) => this(address3: address3);
-
-  @override
-  UpdateProfileState address3ID(String? address3ID) =>
-      this(address3ID: address3ID);
 
   @override
   UpdateProfileState addressUserData(AddressUser addressUserData) =>
@@ -183,7 +186,7 @@ class _$UpdateProfileStateCWProxyImpl implements _$UpdateProfileStateCWProxy {
   UpdateProfileState birthDay(DateTime? birthDay) => this(birthDay: birthDay);
 
   @override
-  UpdateProfileState userInfoLogin(UserInfoLogin? userInfoLogin) =>
+  UpdateProfileState userInfoLogin(UserState? userInfoLogin) =>
       this(userInfoLogin: userInfoLogin);
 
   @override
@@ -202,20 +205,21 @@ class _$UpdateProfileStateCWProxyImpl implements _$UpdateProfileStateCWProxy {
     Object? viewState = const $CopyWithPlaceholder(),
     Object? errorMsg = const $CopyWithPlaceholder(),
     Object? userInfo = const $CopyWithPlaceholder(),
+    Object? addressId = const $CopyWithPlaceholder(),
+    Object? house = const $CopyWithPlaceholder(),
+    Object? district = const $CopyWithPlaceholder(),
+    Object? province = const $CopyWithPlaceholder(),
+    Object? idWard = const $CopyWithPlaceholder(),
+    Object? idDistrict = const $CopyWithPlaceholder(),
+    Object? idProvince = const $CopyWithPlaceholder(),
+    Object? street = const $CopyWithPlaceholder(),
+    Object? ward = const $CopyWithPlaceholder(),
     Object? email = const $CopyWithPlaceholder(),
     Object? baseStatusResponse = const $CopyWithPlaceholder(),
-    Object? dataUpdate = const $CopyWithPlaceholder(),
     Object? userName = const $CopyWithPlaceholder(),
     Object? firstName = const $CopyWithPlaceholder(),
     Object? lastName = const $CopyWithPlaceholder(),
     Object? message = const $CopyWithPlaceholder(),
-    Object? address = const $CopyWithPlaceholder(),
-    Object? address1 = const $CopyWithPlaceholder(),
-    Object? address1ID = const $CopyWithPlaceholder(),
-    Object? address2 = const $CopyWithPlaceholder(),
-    Object? address2ID = const $CopyWithPlaceholder(),
-    Object? address3 = const $CopyWithPlaceholder(),
-    Object? address3ID = const $CopyWithPlaceholder(),
     Object? addressUserData = const $CopyWithPlaceholder(),
     Object? isLoading = const $CopyWithPlaceholder(),
     Object? typeSex = const $CopyWithPlaceholder(),
@@ -238,7 +242,43 @@ class _$UpdateProfileStateCWProxyImpl implements _$UpdateProfileStateCWProxy {
       userInfo: userInfo == const $CopyWithPlaceholder()
           ? _value.userInfo
           // ignore: cast_nullable_to_non_nullable
-          : userInfo as DataUserUpdateInfo?,
+          : userInfo as UserState?,
+      addressId: addressId == const $CopyWithPlaceholder()
+          ? _value.addressId
+          // ignore: cast_nullable_to_non_nullable
+          : addressId as String?,
+      house: house == const $CopyWithPlaceholder()
+          ? _value.house
+          // ignore: cast_nullable_to_non_nullable
+          : house as String?,
+      district: district == const $CopyWithPlaceholder()
+          ? _value.district
+          // ignore: cast_nullable_to_non_nullable
+          : district as String?,
+      province: province == const $CopyWithPlaceholder()
+          ? _value.province
+          // ignore: cast_nullable_to_non_nullable
+          : province as String?,
+      idWard: idWard == const $CopyWithPlaceholder()
+          ? _value.idWard
+          // ignore: cast_nullable_to_non_nullable
+          : idWard as String?,
+      idDistrict: idDistrict == const $CopyWithPlaceholder()
+          ? _value.idDistrict
+          // ignore: cast_nullable_to_non_nullable
+          : idDistrict as String?,
+      idProvince: idProvince == const $CopyWithPlaceholder()
+          ? _value.idProvince
+          // ignore: cast_nullable_to_non_nullable
+          : idProvince as String?,
+      street: street == const $CopyWithPlaceholder()
+          ? _value.street
+          // ignore: cast_nullable_to_non_nullable
+          : street as String?,
+      ward: ward == const $CopyWithPlaceholder()
+          ? _value.ward
+          // ignore: cast_nullable_to_non_nullable
+          : ward as String?,
       email: email == const $CopyWithPlaceholder()
           ? _value.email
           // ignore: cast_nullable_to_non_nullable
@@ -248,10 +288,6 @@ class _$UpdateProfileStateCWProxyImpl implements _$UpdateProfileStateCWProxy {
           ? _value.baseStatusResponse
           // ignore: cast_nullable_to_non_nullable
           : baseStatusResponse as BaseStatusResponse,
-      dataUpdate: dataUpdate == const $CopyWithPlaceholder()
-          ? _value.dataUpdate
-          // ignore: cast_nullable_to_non_nullable
-          : dataUpdate as DataUserUpdateInfo?,
       userName: userName == const $CopyWithPlaceholder()
           ? _value.userName
           // ignore: cast_nullable_to_non_nullable
@@ -268,34 +304,6 @@ class _$UpdateProfileStateCWProxyImpl implements _$UpdateProfileStateCWProxy {
           ? _value.message
           // ignore: cast_nullable_to_non_nullable
           : message as String?,
-      address: address == const $CopyWithPlaceholder()
-          ? _value.address
-          // ignore: cast_nullable_to_non_nullable
-          : address as String?,
-      address1: address1 == const $CopyWithPlaceholder()
-          ? _value.address1
-          // ignore: cast_nullable_to_non_nullable
-          : address1 as String?,
-      address1ID: address1ID == const $CopyWithPlaceholder()
-          ? _value.address1ID
-          // ignore: cast_nullable_to_non_nullable
-          : address1ID as String?,
-      address2: address2 == const $CopyWithPlaceholder()
-          ? _value.address2
-          // ignore: cast_nullable_to_non_nullable
-          : address2 as String?,
-      address2ID: address2ID == const $CopyWithPlaceholder()
-          ? _value.address2ID
-          // ignore: cast_nullable_to_non_nullable
-          : address2ID as String?,
-      address3: address3 == const $CopyWithPlaceholder()
-          ? _value.address3
-          // ignore: cast_nullable_to_non_nullable
-          : address3 as String?,
-      address3ID: address3ID == const $CopyWithPlaceholder()
-          ? _value.address3ID
-          // ignore: cast_nullable_to_non_nullable
-          : address3ID as String?,
       addressUserData: addressUserData == const $CopyWithPlaceholder() ||
               addressUserData == null
           ? _value.addressUserData
@@ -328,7 +336,7 @@ class _$UpdateProfileStateCWProxyImpl implements _$UpdateProfileStateCWProxy {
       userInfoLogin: userInfoLogin == const $CopyWithPlaceholder()
           ? _value.userInfoLogin
           // ignore: cast_nullable_to_non_nullable
-          : userInfoLogin as UserInfoLogin?,
+          : userInfoLogin as UserState?,
       isSubmitSuccess: isSubmitSuccess == const $CopyWithPlaceholder() ||
               isSubmitSuccess == null
           ? _value.isSubmitSuccess

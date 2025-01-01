@@ -29,7 +29,7 @@ abstract class _$SignInStateCWProxy {
 
   SignInState isSubmitSuccess(bool isSubmitSuccess);
 
-  SignInState dataUser(UserInfoLogin? dataUser);
+  SignInState dataUser(UserState? dataUser);
 
   SignInState message(String? message);
 
@@ -51,7 +51,7 @@ abstract class _$SignInStateCWProxy {
     bool? isLoading,
     DataLogin? dataLogin,
     bool? isSubmitSuccess,
-    UserInfoLogin? dataUser,
+    UserState? dataUser,
     String? message,
   });
 }
@@ -101,7 +101,7 @@ class _$SignInStateCWProxyImpl implements _$SignInStateCWProxy {
       this(isSubmitSuccess: isSubmitSuccess);
 
   @override
-  SignInState dataUser(UserInfoLogin? dataUser) => this(dataUser: dataUser);
+  SignInState dataUser(UserState? dataUser) => this(dataUser: dataUser);
 
   @override
   SignInState message(String? message) => this(message: message);
@@ -178,7 +178,7 @@ class _$SignInStateCWProxyImpl implements _$SignInStateCWProxy {
       dataUser: dataUser == const $CopyWithPlaceholder()
           ? _value.dataUser
           // ignore: cast_nullable_to_non_nullable
-          : dataUser as UserInfoLogin?,
+          : dataUser as UserState?,
       message: message == const $CopyWithPlaceholder()
           ? _value.message
           // ignore: cast_nullable_to_non_nullable

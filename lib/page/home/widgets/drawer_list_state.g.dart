@@ -11,7 +11,11 @@ abstract class _$DrawerListStateCWProxy {
 
   DrawerListState errorMsg(String errorMsg);
 
-  DrawerListState dataUser(UserInfoLogin? dataUser);
+  DrawerListState listStatusOrder(List<DataStatusOrder> listStatusOrder);
+
+  DrawerListState isLogin(bool isLogin);
+
+  DrawerListState dataUser(UserState? dataUser);
 
   DrawerListState isLoading(bool isLoading);
 
@@ -24,7 +28,9 @@ abstract class _$DrawerListStateCWProxy {
   DrawerListState call({
     ViewState? viewState,
     String? errorMsg,
-    UserInfoLogin? dataUser,
+    List<DataStatusOrder>? listStatusOrder,
+    bool? isLogin,
+    UserState? dataUser,
     bool? isLoading,
   });
 }
@@ -42,7 +48,14 @@ class _$DrawerListStateCWProxyImpl implements _$DrawerListStateCWProxy {
   DrawerListState errorMsg(String errorMsg) => this(errorMsg: errorMsg);
 
   @override
-  DrawerListState dataUser(UserInfoLogin? dataUser) => this(dataUser: dataUser);
+  DrawerListState listStatusOrder(List<DataStatusOrder> listStatusOrder) =>
+      this(listStatusOrder: listStatusOrder);
+
+  @override
+  DrawerListState isLogin(bool isLogin) => this(isLogin: isLogin);
+
+  @override
+  DrawerListState dataUser(UserState? dataUser) => this(dataUser: dataUser);
 
   @override
   DrawerListState isLoading(bool isLoading) => this(isLoading: isLoading);
@@ -58,6 +71,8 @@ class _$DrawerListStateCWProxyImpl implements _$DrawerListStateCWProxy {
   DrawerListState call({
     Object? viewState = const $CopyWithPlaceholder(),
     Object? errorMsg = const $CopyWithPlaceholder(),
+    Object? listStatusOrder = const $CopyWithPlaceholder(),
+    Object? isLogin = const $CopyWithPlaceholder(),
     Object? dataUser = const $CopyWithPlaceholder(),
     Object? isLoading = const $CopyWithPlaceholder(),
   }) {
@@ -70,10 +85,19 @@ class _$DrawerListStateCWProxyImpl implements _$DrawerListStateCWProxy {
           ? _value.errorMsg
           // ignore: cast_nullable_to_non_nullable
           : errorMsg as String,
+      listStatusOrder: listStatusOrder == const $CopyWithPlaceholder() ||
+              listStatusOrder == null
+          ? _value.listStatusOrder
+          // ignore: cast_nullable_to_non_nullable
+          : listStatusOrder as List<DataStatusOrder>,
+      isLogin: isLogin == const $CopyWithPlaceholder() || isLogin == null
+          ? _value.isLogin
+          // ignore: cast_nullable_to_non_nullable
+          : isLogin as bool,
       dataUser: dataUser == const $CopyWithPlaceholder()
           ? _value.dataUser
           // ignore: cast_nullable_to_non_nullable
-          : dataUser as UserInfoLogin?,
+          : dataUser as UserState?,
       isLoading: isLoading == const $CopyWithPlaceholder() || isLoading == null
           ? _value.isLoading
           // ignore: cast_nullable_to_non_nullable

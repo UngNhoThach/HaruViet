@@ -7,7 +7,7 @@ import 'package:haruviet/data/data_local/user_state.dart';
 @CopyWith()
 class NotificationTabState extends BaseState {
   final bool isSubmitSuccess;
-  final UserInfoLogin? userInfoLogin;
+  final UserState? userInfoLogin;
   final List<NewsResponse>? listNews;
   final bool isLoading;
   const NotificationTabState({

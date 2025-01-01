@@ -20,9 +20,11 @@ const Color colorPrimary01 = Color.fromRGBO(100, 181, 246, 1);
 const Color colorBackgroundPrimary = Color(0xFFf3f8fc);
 
 // MAIN
-const Color colorMain = Color(0xFFed1941);
+const Color colorMain = Color(0xFFed1941); // Color.fromARGB(255, 16, 158, 40);
 const Color colorTransparent = Colors.transparent;
 const Color colorMainCover = Color.fromARGB(222, 255, 86, 34);
+const Color colorFlashDeals = Color.fromARGB(222, 242, 117, 72);
+
 const Color colorMainCover1 = Color.fromARGB(222, 241, 92, 47);
 const Color colorItemCover = Color.fromRGBO(158, 158, 158, 1);
 const Color colorBlackTileItem = Color.fromARGB(255, 13, 13, 13);
@@ -82,7 +84,6 @@ const Color colorGray03 = Color(0xFFA3A8AD);
 const Color colorGray04 = Color(0xFF606366);
 const Color colorGray05 = Color(0xFF2F3133);
 const Color colorGray06 = Color(0xFF18191A);
-const Color tesst = Color(0xFFed1941);
 
 // BLUE GRAY
 const Color colorBlueGray01 = Color(0xFFEBF0F5);

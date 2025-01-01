@@ -18,7 +18,6 @@ class HistoryOrderTabBloc extends Cubit<HistoryOrderTabState> {
   }) : super(HistoryOrderTabState(
           tab: tab,
         ));
-
   getData({
     required String idUser,
     required int status,
@@ -31,7 +30,7 @@ class HistoryOrderTabBloc extends Cubit<HistoryOrderTabState> {
 
   onReset() {
     emit(state.copyWith(
-      status: null,
+      status: state.status,
     ));
     onFetch(page: startPage);
   }

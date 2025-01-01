@@ -1,6 +1,5 @@
+import 'package:haruviet/data/data_local/user_state.dart';
 import 'package:json_annotation/json_annotation.dart';
-
-import 'user_register.dart';
 
 part 'data_register.g.dart';
 
@@ -13,7 +12,7 @@ class DataRegister {
   List<String>? scopes;
   @JsonKey(name: 'expires_at')
   String? expiresAt;
-  List<UserRegister>? user;
+  List<UserState>? user;
 
   DataRegister({
     this.accessToken,

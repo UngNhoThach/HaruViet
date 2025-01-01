@@ -1,15 +1,14 @@
 import 'package:haruviet/api/services/customers/models/register_request.dart';
 import 'package:haruviet/base/base_bloc.dart';
+import 'package:haruviet/data/data_local/user_state.dart';
 import 'package:haruviet/data/enum.dart';
 import 'package:haruviet/data/local/user_preferences.dart';
 import 'package:haruviet/data/reponsitory/customers/customers_repository.dart';
-import 'package:haruviet/data/data_local/user_state.dart';
 import 'package:haruviet/helper/base_status_response.dart';
 import 'package:haruviet/page/account/phone_authen/phone_authen_state.dart';
 import 'package:haruviet/page/account/phone_authen/widgets/phone_authen_params.dart';
 import 'package:haruviet/page/account/signup/widgets/verify_status.dart';
 import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 // PhoneAuthBloc
 class PhoneAuthBloc extends BaseBloc<PhoneAuthState> {
@@ -74,7 +73,7 @@ class PhoneAuthBloc extends BaseBloc<PhoneAuthState> {
             dataRegister: registerResponse.data,
             message: registerResponse.message ?? '',
             isSubmitSuccess: true));
-        UserInfoLogin dataUser = UserInfoLogin(
+        UserState dataUser = UserState(
           avatar: state.dataRegister?.user?[0].avatar ?? "",
           id: state.dataRegister?.user?[0].id ?? "",
           accessToken: state.dataRegister?.accessToken ?? "",
@@ -86,56 +85,40 @@ class PhoneAuthBloc extends BaseBloc<PhoneAuthState> {
           lastName: state.dataRegister?.user?[0].lastName ?? "",
           firstNameKana: state.dataRegister?.user?[0].firstNameKana ?? "",
           lastNameKana: state.dataRegister?.user?[0].lastNameKana ?? "",
-          sex: state.dataRegister?.user?[0].sex ?? "",
-          birthDay: state.dataRegister?.user?[0].birthday ?? "",
+          sex: state.dataRegister?.user?[0].sex,
+          birthday: state.dataRegister?.user?[0].birthday ?? "",
           addressId: state.dataRegister?.user?[0].addressId ?? "",
-          postCode: state.dataRegister?.user?[0].postcode ?? "",
-          address1: state.dataRegister?.user?[0].address1 ?? "",
-          address2: state.dataRegister?.user?[0].address2 ?? "",
-          address3: state.dataRegister?.user?[0].address3 ?? "",
+          postcode: state.dataRegister?.user?[0].postcode ?? "",
+          province: state.dataRegister?.user?[0].province ?? "",
+          district: state.dataRegister?.user?[0].district ?? "",
+          ward: state.dataRegister?.user?[0].ward ?? "",
           company: state.dataRegister?.user?[0].company ?? "",
           country: state.dataRegister?.user?[0].country ?? "",
+          idProvince: state.dataRegister?.user?[0].idProvince ?? "",
+          idDistrict: state.dataRegister?.user?[0].idDistrict ?? "",
+          idWard: state.dataRegister?.user?[0].idWard ?? "",
+          agencyId: state.dataRegister?.user?[0].agencyId ?? "",
+          createdAt: state.dataRegister?.user?[0].createdAt,
+          house: state.dataRegister?.user?[0].house,
+          userName: state.dataRegister?.user?[0].userName,
+          providerId: state.dataRegister?.user?[0].providerId,
+          pathologicaldetail: state.dataRegister?.user?[0].pathologicaldetail,
+          phoneVerifiedAt: state.dataRegister?.user?[0].phoneVerifiedAt,
+          provider: state.dataRegister?.user?[0].provider,
+          sku: state.dataRegister?.user?[0].sku,
+          updatedAt: state.dataRegister?.user?[0].updatedAt,
           phone: state.dataRegister?.user?[0].phone ?? "",
           storeId: state.dataRegister?.user?[0].storeId ?? "",
           status: state.dataRegister?.user?[0].status ?? 0,
           group: state.dataRegister?.user?[0].group ?? 0,
+          street: state.dataRegister?.user?[0].street ?? '',
           userId: state.dataRegister?.user?[0].userId ?? "",
           agencyName: state.dataRegister?.user?[0].agencyName ?? "",
           isLogin: true,
         );
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        // avatar
-        await prefs.setString('avatar', dataUser.avatar ?? '');
-        await prefs.setString('id', dataUser.id ?? '');
-        await prefs.setString('access_token', dataUser.accessToken ?? '');
-        await prefs.setString('token_type', dataUser.tokenType ?? '');
-        await prefs.setString('emai', dataUser.email ?? '');
-        await prefs.setString(
-            'email_verified_at', dataUser.emailVerifiedAt ?? '');
-        await prefs.setString('name', dataUser.name ?? '');
-        await prefs.setString('first_name', dataUser.firstName ?? '');
-        await prefs.setString('last_name', dataUser.lastName ?? '');
-        await prefs.setString('first_name_kana', dataUser.firstNameKana ?? '');
-        await prefs.setString('last_name_kana', dataUser.lastNameKana ?? '');
-        await prefs.setString(
-            'sex', (dataUser.sex != null) ? dataUser.sex.toString() : '');
-        await prefs.setString('birthday', dataUser.birthDay ?? '');
-        await prefs.setString('address_id', dataUser.addressId ?? '');
-        await prefs.setString('postcode', dataUser.postCode ?? '');
-        await prefs.setString('address1', dataUser.address1 ?? '');
-        await prefs.setString('address2', dataUser.address2 ?? '');
-        await prefs.setString('address3', dataUser.address3 ?? '');
-        await prefs.setString('company', dataUser.company ?? '');
-        await prefs.setString('country', dataUser.country ?? '');
-        await prefs.setString('phone', dataUser.phone ?? '');
-        await prefs.setString('store_id', dataUser.storeId ?? '');
-        await prefs.setString('status',
-            dataUser.status != null ? dataUser.status.toString() : '');
-        await prefs.setString(
-            'group', dataUser.group != null ? dataUser.group.toString() : '');
-        await prefs.setString('user_id', dataUser.userId ?? '');
-        await prefs.setString('agency_name', dataUser.agencyName ?? '');
-        Preference.setUserInfo(dataUser);
+        // SharedPreferences prefs = await SharedPreferences.getInstance();
+
+        await Preference.setUserInfo(dataUser);
       } else if (registerResponse.status == 200 &&
           registerResponse.isStatus != true) {
         emit(state.copyWith(

@@ -1,20 +1,30 @@
+import 'dart:async';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:haruviet/component/error/not_found.dart';
-import 'package:haruviet/data/data_local/user_bloc.dart';
+import 'package:haruviet/connection.dart';
+import 'package:haruviet/data/data_local/setting_app_bloc.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_list_product/data_product_list.dart';
 import 'package:haruviet/database_local/product/models/count_model.dart';
 import 'package:haruviet/database_local/products_recommendation/id_product_recommendation_database.dart';
+import 'package:haruviet/firebase_api.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/const.dart';
 import 'package:haruviet/helper/spaces.dart';
 import 'package:haruviet/page/core/product_data.dart';
 import 'package:haruviet/page/home/home_bloc.dart';
 import 'package:haruviet/page/home/home_state.dart';
-import 'package:haruviet/page/home/widgets/flash_deals.dart';
+import 'package:haruviet/page/product/widgets/header_top_widget.dart';
+import 'package:haruviet/page/home/widgets/card_widget.dart';
 import 'package:haruviet/page/home/widgets/home_icon.dart';
-import 'package:haruviet/page/product/product_list/widgets/product_list_page_params.dart';
+import 'package:haruviet/page/home/widgets/scroll_to_top_widget.dart';
 import 'package:haruviet/page/product/widgets/item_products_widget.dart';
+import 'package:haruviet/page/product/widgets/widget_products_one_row_loading.dart';
 import 'package:haruviet/qr/qr_page.dart';
 import 'package:haruviet/resources/routes.dart';
+import 'package:haruviet/theme/typography.dart';
 import 'package:haruviet/utils/commons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,40 +42,100 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   // variables and functions
+
   late String domain;
   final IdProductRecommendationDatabase getIdProductRecommendation =
       IdProductRecommendationDatabase();
   late HomeBloc bloc;
   late double childAspectRatio;
-
+  double _previousScrollPosition = 0;
+  late double _scrollThreshold; // Ngưỡng cuộn 200px
+  bool isQR = false;
   final PagingController<int, DataProduct> _pagingController =
       PagingController(firstPageKey: startPage, invisibleItemsThreshold: 3);
+  final ScrollController _scrollController = ScrollController();
+  bool isLoading = true;
 
   FocusNode focusNode = FocusNode();
   final ItemProductWidget itemProductWidgets = ItemProductWidget();
 
+  // check connection
+  late StreamSubscription connectionChangeStream;
+  bool isOffline = false;
   @override
   void initState() {
     super.initState();
 
-    bloc = HomeBloc()..getData();
+    // build widget first
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final screenHeight = MediaQuery.of(context).size.height;
+      // allow notifications
+      FireBaseApi().settingNotification();
+      setState(() {
+        _scrollThreshold =
+            screenHeight; // Gán chiều cao màn hình vào _scrollThreshold
+      });
+    });
+// check connection change
+    ConnectionStatusSingleton connectionStatus =
+        ConnectionStatusSingleton.getInstance();
+    connectionChangeStream =
+        connectionStatus.connectionChange.listen(connectionChanged);
+    if (!connectionStatus.hasConnection) {
+      isOffline = !connectionStatus.hasConnection;
+    } else {}
 
-    // data main
+    bloc = HomeBloc()..getData();
     _pagingController.addPageRequestListener((pageKey) {
       if (pageKey != startPage) {
         bloc.onFetch(page: pageKey);
       }
     });
-    // data sales
+    // handle scroll
+    _onScroll();
+    domain = context.read<SettingAppBloc>().state.xUrl ?? '';
+  }
 
-    domain = context.read<UserBloc>().state.subDomain ?? '';
-    // _scrollController = ScrollController();
-    // _scrollController.addListener(_scrollListener);
+  void _onScroll() {
+    _scrollController.addListener(() {
+      if (bloc.canLoadMore &&
+          _scrollController.position.pixels - _previousScrollPosition >=
+              _scrollThreshold * 2) {
+        bool isFetchingData = false;
+        if (!isFetchingData) {
+          final nextPageKey = _pagingController.nextPageKey;
+          if (nextPageKey != startPage) {
+            isFetchingData = true; // Set the flag to true
+            _pagingController.notifyPageRequestListeners(nextPageKey!);
+
+            // Listen to the bloc's state to reset the fetching flag
+            bloc.stream.listen((state) {
+              if (!state.isLoading) {
+                isFetchingData =
+                    false; // Reset the flag when loading is complete
+              }
+            });
+            //}
+          }
+        }
+        // Người dùng đã cuộn ít nhất 200px kể từ lần tải trước
+        _previousScrollPosition = _scrollController
+            .position.pixels; // Cập nhật lại vị trí cuộn trước đó
+      }
+    });
+  }
+
+  void connectionChanged(dynamic hasConnection) {
+    setState(() {
+      isOffline = !hasConnection;
+    });
   }
 
   @override
   void dispose() {
     _pagingController.dispose();
+    _scrollController.dispose();
+
     _counterModel.dispose();
     super.dispose();
   }
@@ -74,44 +144,66 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    // void _scrollListener() {
+    //   if (_scrollController.position.extentAfter < 900) {
+    //     if (bloc.state.canLoadMore) {
+    //     }
+    //   }
+    // }
+
     return MultiBlocProvider(
+      key: ObjectKey(isOffline),
       providers: [
         BlocProvider(
           create: (context) => bloc,
         ),
       ],
       child: Scaffold(
-        body: MultiBlocListener(
-          listeners: [
-            BlocListener<HomeBloc, HomeState>(
-              listenWhen: (previous, current) =>
-                  previous.newDataList != current.newDataList,
-              listener: (context, state) {
-                if (state.currentPage == startPage) {
-                  _pagingController.refresh();
-                }
-                if (state.canLoadMore) {
-                  _pagingController.appendPage(
-                    state.newDataList ?? [],
-                    state.currentPage + 1,
-                  );
-                } else {
-                  _pagingController.appendLastPage(state.newDataList ?? []);
-                }
-              },
-            ),
-          ],
-          child: BlocBuilder<HomeBloc, HomeState>(
-            builder: (context, state) {
-              return RefreshIndicator(
-                  onRefresh: () async {
-                    _pagingController.refresh();
-                    bloc.onFetch(page: startPage);
-                  },
-                  child: _body(context, state: state));
-            },
-          ),
+        floatingActionButton: ScrollToTopButton(
+          showOffset: 200,
+          scrollController: _scrollController,
+          backgroundColor: colorGray04.withOpacity(0.3),
+          iconColor: colorWhite,
         ),
+        floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
+        body: isOffline
+            ? const Center(
+                child: Text(
+                'Kiểm tra kết nối!',
+              ))
+            : MultiBlocListener(
+                listeners: [
+                  BlocListener<HomeBloc, HomeState>(
+                    listenWhen: (previous, current) =>
+                        previous.newDataList != current.newDataList,
+                    listener: (context, state) {
+                      if (state.currentPage == startPage) {
+                        _pagingController.refresh();
+                      }
+                      if (state.canLoadMore) {
+                        _pagingController.appendPage(
+                          state.newDataList ?? [],
+                          state.currentPage + 1,
+                        );
+                      } else {
+                        _pagingController
+                            .appendLastPage(state.newDataList ?? []);
+                      }
+                    },
+                  ),
+                ],
+                child: BlocBuilder<HomeBloc, HomeState>(
+                  builder: (context, state) {
+                    return RefreshIndicator(
+                        onRefresh: () async {
+                          _pagingController.refresh();
+                          _previousScrollPosition = 0;
+                          bloc.onFetch(page: startPage);
+                        },
+                        child: _body(context, state: state));
+                  },
+                ),
+              ),
       ),
     );
   }
@@ -124,121 +216,130 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     required int index,
     required String domain,
   }) {
-    return itemProductWidgets.itemGridView(context,
-        data: data, index: index, domain: domain);
+    return itemProductWidgets.itemGridView(
+      context,
+      data: data,
+      index: index,
+      domain: domain,
+    );
   }
 
-  Widget _flashDealsProduct() {
-    return SizedBox(
-      height: 230,
-      child: PagedListView.separated(
-        scrollDirection: Axis.horizontal,
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        pagingController: _pagingController,
-        physics: const ClampingScrollPhysics(),
-        builderDelegate: PagedChildBuilderDelegate<DataProduct>(
-          noItemsFoundIndicatorBuilder: _empty,
-          itemBuilder: (context, item, index) {
-            return itemProductWidgets.itemGridView(context,
-                data: item, index: index, domain: domain);
-          },
-        ),
-        separatorBuilder: (context, index) => spaceW12,
-      ),
+  Widget _flashDealsWidget() {
+    return WidgetProductOneRowLoading(
+      height: 280,
+      gradientColor: colorMainCover, // Custom color if needed
+      pagingController: _pagingController,
+      itemBuilder: (context, item, index) {
+        return itemProductWidgets.itemGridView(
+          height: 260,
+          context,
+          data: item,
+          index: index,
+          domain: domain,
+        );
+      },
+      noItemsFoundIndicatorBuilder: _empty,
     );
   }
 
   Widget _body(BuildContext context, {required HomeState state}) {
     childAspectRatio = MediaQuery.of(context).size.width /
-        (MediaQuery.of(context).size.height / 1.4.h);
+        (MediaQuery.of(context).size.height / 1.3.h);
 
     return CustomScrollView(
-      shrinkWrap: true,
+      controller: _scrollController, // Sử dụng chung ScrollController
       physics: const BouncingScrollPhysics(),
       slivers: [
-        _buildSliverAppBar(state),
-        _buildHeader(),
-        _buildPagedSliverGrid(),
+        SliverList(
+          delegate: SliverChildListDelegate([
+            const SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+              child: _recommendedProductListView(context, state, _counterModel),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 30),
+              child: _homeIcon(context, bloc: bloc),
+            ),
+            Column(
+              children: [
+                const TopCategoriesHeader(
+                    colorText: colorWhite,
+                    backgroundColor: colorMainCover,
+                    isBorder: true,
+                    title: "Siêu ưu đãi",
+                    isTimer: false),
+                // widget products flash deal
+                _flashDealsWidget(),
+              ],
+            ),
+            const TopCategoriesHeader(
+                isBorder: true, title: "Sản phẩm mới", isTimer: false),
+            spaceH10,
+          ]),
+        ),
+
+        _buildPagedSliverGrid(), // Thay thế phần grid bằng SliverGrid hoặc PagedSliverGrid
       ],
     );
   }
 
-  Widget _buildSliverAppBar(HomeState state) {
-    return SliverAppBar(
-      backgroundColor: colorBlueGray01,
-      expandedHeight: 196.h,
-      flexibleSpace: FlexibleSpaceBar(
-        background: Stack(
-          fit: StackFit.expand,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: _recommendedProductListView(context, state, _counterModel),
-            ),
-            Align(
-              alignment: Alignment.bottomLeft,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 16, bottom: 0),
-                child: TweenAnimationBuilder<double>(
-                  tween: Tween<double>(begin: 1.0, end: 0.0),
-                  duration: const Duration(milliseconds: 500),
-                  builder: (context, value, child) {
-                    return Transform.scale(scale: 1 + value);
-                  },
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  // Widget _buildSliverAppBar(HomeState state) {
+  //   return SliverAppBar(
+  //     backgroundColor: colorBlueGray01,
+  //     expandedHeight: 196.h,
+  //     flexibleSpace: FlexibleSpaceBar(
+  //       background: Stack(
+  //         fit: StackFit.expand,
+  //         children: <Widget>[
+  //           // Align(
+  //           //   alignment: Alignment.bottomLeft,
+  //           //   child: Padding(
+  //           //     padding: const EdgeInsets.only(left: 16, bottom: 0),
+  //           //     child: TweenAnimationBuilder<double>(
+  //           //       tween: Tween<double>(begin: 1.0, end: 0.0),
+  //           //       duration: const Duration(milliseconds: 500),
+  //           //       builder: (context, value, child) {
+  //           //         return Transform.scale(scale: 1 + value, child: child);
+  //           //       },
+  //           //     ),
+  //           //   ),
+  //           // ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
-  Widget _buildHeader() {
-    return SliverList(
-      delegate: SliverChildListDelegate(
-        [
-          const SizedBox(height: 16),
-          _homeIcon(context),
-          const SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                _topCategoriesHeader(context,
-                    title: "Siêu ưu đãi", isTimer: true),
-                const SizedBox(height: 16),
-                _flashDealsProduct(),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _buildHeader() {
+  //   return Column(
+  //     children: [
+
+  //     ],
+  //   );
+  // }
 
   Widget _buildPagedSliverGrid() {
-    return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-      sliver: PagedSliverGrid<int, DataProduct>(
-        showNewPageProgressIndicatorAsGridChild: false,
-        // showNewPageErrorIndicatorAsGridChild: false,
-        // showNoMoreItemsIndicatorAsGridChild: false,
-        pagingController: _pagingController,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          mainAxisSpacing: 0,
-          crossAxisSpacing: 0,
-          childAspectRatio: childAspectRatio,
-        ),
-        builderDelegate: PagedChildBuilderDelegate<DataProduct>(
-          noItemsFoundIndicatorBuilder: _empty,
-          itemBuilder: (context, item, index) => AnimatedProductGridItem(
+    return SliverToBoxAdapter(
+      child: MasonryGridView.count(
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        crossAxisCount: 2,
+        mainAxisSpacing: 12,
+        crossAxisSpacing: 12,
+        itemCount: _pagingController.itemList?.length ?? 0,
+        itemBuilder: (context, index) {
+          final item = _pagingController.itemList?[index];
+          return _itemGridView(
+            context,
             index: index,
-            child: _itemGridView(context,
-                index: index, data: item, domain: domain),
-          ),
-        ),
+            data: item!,
+            domain: domain,
+          );
+        },
       ),
     );
   }
@@ -246,194 +347,189 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
 Widget _recommendedProductListView(
     BuildContext context, HomeState state, _counterModel) {
-  return ListView.builder(
-      padding: EdgeInsets.symmetric(vertical: 10.h),
-      shrinkWrap: true,
-      scrollDirection: Axis.horizontal,
-      itemCount: AppData.recommendedProducts.length,
-      itemBuilder: (_, index) {
-        return Padding(
-          padding: EdgeInsets.only(right: 16.w),
-          child: Container(
-            width: 300.w,
-            decoration: BoxDecoration(
-              color: AppData.recommendedProducts[index].cardBackgroundColor,
-              borderRadius: BorderRadius.circular(15.r),
-            ),
-            child: Row(
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(left: 16.w),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Giảm giá 30%  \nCOVID 19',
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleMedium
-                            ?.copyWith(color: Colors.white),
-                      ),
-                      spaceH8,
-                      ElevatedButton(
-                        onPressed: () {
-                          _counterModel.increment();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppData
-                              .recommendedProducts[index].buttonBackgroundColor,
-                          elevation: 0,
-                          padding: EdgeInsets.symmetric(horizontal: 16.w),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16.r),
-                          ),
+  return SizedBox(
+    height: 200,
+    child: ListView.builder(
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+        itemCount: AppData.recommendedProducts.length,
+        itemBuilder: (_, index) {
+          return Padding(
+            padding: EdgeInsets.only(right: 16.w),
+            child: Container(
+              width: 300.w,
+              decoration: BoxDecoration(
+                color: AppData.recommendedProducts[index].cardBackgroundColor,
+                borderRadius: BorderRadius.circular(15.r),
+              ),
+              child: Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: 16.w),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Giảm giá 30%  \nCOVID 19',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(color: Colors.white),
                         ),
-                        child: Text(
-                          "Xem ngay",
-                          style: TextStyle(
-                            color: AppData
-                                .recommendedProducts[index].buttonTextColor!,
+                        spaceH8,
+                        ElevatedButton(
+                          onPressed: () {
+                            _counterModel.increment();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppData.recommendedProducts[index]
+                                .buttonBackgroundColor,
+                            elevation: 0,
+                            padding: EdgeInsets.symmetric(horizontal: 16.w),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16.r),
+                            ),
                           ),
-                        ),
-                      )
-                    ],
+                          child: Text(
+                            "Xem ngay",
+                            style: TextStyle(
+                              color: AppData
+                                  .recommendedProducts[index].buttonTextColor!,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
-                ),
-                const Spacer(),
-                Image.asset(
-                  'assets/images/shopping.png',
-                  height: 125.h,
-                  fit: BoxFit.cover,
-                )
-              ],
+                  const Spacer(),
+                  Image.asset(
+                    'assets/images/shopping.png',
+                    height: 125.h,
+                    fit: BoxFit.cover,
+                  )
+                ],
+              ),
             ),
-          ),
-        );
-      });
+          );
+        }),
+  );
 }
 
 Widget _empty(BuildContext context) {
   return const DidntFound();
 }
 
-Widget _topCategoriesHeader(
-  BuildContext context, {
-  required final String title,
-  required bool isTimer,
-}) {
-  return Padding(
-    padding: const EdgeInsets.only(top: 10),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(title,
-            style: Theme.of(context)
-                .textTheme
-                .titleMedium
-                ?.copyWith(fontWeight: FontWeight.bold)),
-        isTimer ? const FlashDealsTimer() : const SizedBox(),
-        TextButton(
-          onPressed: () {
-            routeService.pushNamed(Routes.productListPage,
-                arguments: ProductListPageParams());
-          },
-          child: Text(
-            "Xem tất cả",
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(color: Theme.of(context).primaryColorLight),
+Widget _homeIcon(BuildContext context, {required HomeBloc bloc}) {
+  return AnimatedSwitcher(
+    duration: const Duration(milliseconds: 400),
+    transitionBuilder: (Widget child, Animation<double> animation) {
+      // Bạn có thể tùy chỉnh transition ở đây
+      return FadeTransition(opacity: animation, child: child);
+    },
+    child: bloc.state.isViewMemberCard
+        ? Column(
+            key: ValueKey(1), // Mỗi widget cần có một key khác nhau
+            children: [
+              GestureDetector(
+                onTap: () => bloc.onChangeViewMember(),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      'Đóng',
+                      style:
+                          textTheme.bodyLarge?.copyWith(color: colorMainCover),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 6),
+              CreditCardsPage(),
+            ],
+          )
+        : Column(
+            key: ValueKey(2), // Key khác cho widget khác
+            children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: 80,
+                child: Wrap(
+                  alignment: WrapAlignment.spaceBetween,
+                  children: [
+                    HomePageIcon(
+                      onTap: () {
+                        bloc.onChangeViewMember();
+                      },
+                      assetImageString: 'assets/images/qr_png.png',
+                      itemString: "Xem đối tác",
+                      destinationWidget: const QrCodePage(),
+                      notifyNumber: "0",
+                    ),
+                    const HomePageIcon(
+                      assetImageString: 'assets/images/recruitment.png',
+                      itemString: "Hàng mới về",
+                      destinationWidget: QrCodePage(),
+                      notifyNumber: "0",
+                    ),
+                    const HomePageIcon(
+                      assetImageString: 'assets/images/maneuver.png',
+                      itemString: "Giao 2h",
+                      destinationWidget: null,
+                      notifyNumber: "0",
+                    ),
+                    const HomePageIcon(
+                      assetImageString: 'assets/images/education.png',
+                      itemString: "Bảng giá",
+                      destinationWidget: null,
+                      notifyNumber: "0",
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 24,
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: 80,
+                child: Wrap(
+                  alignment: WrapAlignment.spaceBetween,
+                  children: [
+                    HomePageIcon(
+                      assetImageString: 'assets/images/user_information.png',
+                      itemString: "Tra cứu đơn hàng",
+                      onTap: () {
+                        routeService.pushNamed(
+                          Routes.ordersPage,
+                        );
+                      },
+                      destinationWidget: null, // OrdersPage(),
+                      notifyNumber: "0",
+                    ),
+                    const HomePageIcon(
+                      assetImageString: 'assets/images/recruitment.png',
+                      itemString: "Mua 1 tặng 1",
+                      destinationWidget: null,
+                      notifyNumber: "0",
+                    ),
+                    const HomePageIcon(
+                      assetImageString: 'assets/images/maneuver.png',
+                      itemString: "Cẩm nang",
+                      destinationWidget: null,
+                      notifyNumber: "0",
+                    ),
+                    const HomePageIcon(
+                      assetImageString: 'assets/images/education.png',
+                      itemString: "Thông báo",
+                      destinationWidget: null,
+                      notifyNumber: "0",
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        )
-      ],
-    ),
-  );
-}
-
-Widget _homeIcon(BuildContext context) {
-  return Column(
-    children: [
-      Container(
-        padding: const EdgeInsets.only(left: 15, right: 15),
-        width: MediaQuery.of(context).size.width,
-        height: 80,
-        child: const Wrap(
-          alignment: WrapAlignment.spaceBetween,
-          children: [
-            HomePageIcon(
-              assetImageString: 'assets/images/qr_png.png',
-              itemString: "Mã QR của tôi",
-              destinationWidget: QrCodePage(),
-              notifyNumber: "0",
-            ),
-            HomePageIcon(
-              assetImageString: 'assets/images/recruitment.png',
-              itemString: "Hàng mới về",
-              destinationWidget: QrCodePage(),
-              notifyNumber: "0",
-            ),
-            HomePageIcon(
-              assetImageString: 'assets/images/maneuver.png',
-              itemString: "Giao 2h",
-              destinationWidget: null,
-              notifyNumber: "0",
-            ),
-            HomePageIcon(
-              assetImageString: 'assets/images/education.png',
-              itemString: "Bảng giá",
-              destinationWidget: null,
-              notifyNumber: "0",
-            ),
-          ],
-        ),
-      ),
-      const SizedBox(
-        height: 32,
-      ),
-      Container(
-        padding: const EdgeInsets.only(
-          left: 15,
-          right: 15,
-        ),
-        width: MediaQuery.of(context).size.width,
-        height: 80,
-        child: Wrap(
-          alignment: WrapAlignment.spaceBetween,
-          children: [
-            HomePageIcon(
-              assetImageString: 'assets/images/user_information.png',
-              itemString: "Tra cứu đơn hàng",
-              onTap: () {
-                routeService.pushNamed(
-                  Routes.ordersPage,
-                );
-              },
-              destinationWidget: null, // OrdersPage(),
-              notifyNumber: "0",
-            ),
-            const HomePageIcon(
-              assetImageString: 'assets/images/recruitment.png',
-              itemString: "Mua 1 tặng 1",
-              destinationWidget: null,
-              notifyNumber: "0",
-            ),
-            const HomePageIcon(
-              assetImageString: 'assets/images/maneuver.png',
-              itemString: "Cẩm nang",
-              destinationWidget: null,
-              notifyNumber: "0",
-            ),
-            const HomePageIcon(
-              assetImageString: 'assets/images/education.png',
-              itemString: "Thông báo",
-              destinationWidget: null,
-              notifyNumber: "0",
-            ),
-          ],
-        ),
-      ),
-    ],
   );
 }
 

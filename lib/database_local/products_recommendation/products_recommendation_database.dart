@@ -1,4 +1,5 @@
-import 'package:haruviet/database_local/products_recommendation/models/products_recommendation_model.dart';
+import 'package:haruviet/data/reponsitory/product/models/data_list_product/data_product_list.dart';
+import 'package:haruviet/database_local/product/models/cart_model_v2.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -7,11 +8,11 @@ class ProductRecommendationDatabase {
       ProductRecommendationDatabase._internal();
 
   factory ProductRecommendationDatabase() => _instance;
-  static const String _databaseName = 'products.db';
-
+  static const String _databaseName = 'productsrecommen.db';
+  String productsTable = 'productsrecommen';
   static Database? _database;
   static const int _databaseVersion = 1;
-  static const int _maxItems = 20;
+  static const int _maxItems = 12;
 
   ProductRecommendationDatabase._internal();
 
@@ -32,23 +33,29 @@ class ProductRecommendationDatabase {
     );
   }
 
-  Future<List<ProductRecommendationModel>> getAllProducts() async {
+  Future<List<DataProduct>> getAllProducts({int? limit}) async {
     final db = await _instance.database;
 
     final result = await db.query(
       productsTable,
-      //    orderBy: '${CartModel.idProduct} ASC',
+      limit: limit,
     );
-
     return result
-        .map((productData) => ProductRecommendationModel.fromMap(productData))
+        .map((productData) =>
+            CartModelProduct.fromMap(productData).toDataProduct())
         .toList();
+    // return result.map((json) => DataProduct.fromJson(json)).toList();
   }
 
   Future<void> _onCreate(Database db, int version) async {
     await db.execute('''
       CREATE TABLE $productsTable(
         id TEXT PRIMARY KEY,
+        totalQuantity INTEGER,
+        options TEXT,
+        discount TEXT,
+        promotiondetails TEXT,
+        reviews TEXT,
         sku TEXT,
         image TEXT,
         brand TEXT,
@@ -64,6 +71,7 @@ class ProductRecommendationDatabase {
         taxId TEXT,
         approve INTEGER,
         sort INTEGER,
+        totalPriceItem DOUBLE,
         view INTEGER,
         dateLastview TEXT,
         dateAvailable TEXT,
@@ -89,7 +97,16 @@ class ProductRecommendationDatabase {
   //   }
   // }
 
-  Future<void> insertProduct(ProductRecommendationModel product) async {
+  // Phương thức insert mới từ DataProduct
+  Future<void> insertProductFromDataProductRecommen(
+      {required DataProduct product}) async {
+    // Chuyển đổi từ DataProduct sang CartModelProduct
+    CartModelProduct cartProduct = CartModelProduct.fromDataProduct(product);
+    // Insert vào database như bình thường
+    await insertProductRecommen(cartProduct);
+  }
+
+  Future<void> insertProductRecommen(CartModelProduct product) async {
     final db = await _instance.database;
     try {
       // Check the current number of items in the database
@@ -114,15 +131,15 @@ class ProductRecommendationDatabase {
     }
   }
 
-  Future<List<ProductRecommendationModel>> products() async {
+  Future<List<CartModelProduct>> products() async {
     final db = await _instance.database;
     final List<Map<String, dynamic>> maps = await db.query(productsTable);
     return List.generate(maps.length, (i) {
-      return ProductRecommendationModel.fromMap(maps[i]);
+      return CartModelProduct.fromMap(maps[i]);
     });
   }
 
-  Future<void> updateProduct(ProductRecommendationModel product) async {
+  Future<void> updateProduct(CartModelProduct product) async {
     final db = await _instance.database;
     await db.update(
       productsTable,

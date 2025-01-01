@@ -13,7 +13,7 @@ DataRegister _$DataRegisterFromJson(Map<String, dynamic> json) => DataRegister(
           (json['scopes'] as List<dynamic>?)?.map((e) => e as String).toList(),
       expiresAt: json['expires_at'] as String?,
       user: (json['user'] as List<dynamic>?)
-          ?.map((e) => UserRegister.fromJson(e as Map<String, dynamic>))
+          ?.map((e) => UserState.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 

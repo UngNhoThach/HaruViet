@@ -41,7 +41,7 @@ abstract class _$PhoneAuthStateCWProxy {
 
   PhoneAuthState isLoading(bool isLoading);
 
-  PhoneAuthState dataUser(UserInfoLogin? dataUser);
+  PhoneAuthState dataUser(UserState? dataUser);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `PhoneAuthState(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -67,7 +67,7 @@ abstract class _$PhoneAuthStateCWProxy {
     String? passwordChange,
     String? rePasswordChange,
     bool? isLoading,
-    UserInfoLogin? dataUser,
+    UserState? dataUser,
   });
 }
 
@@ -139,7 +139,7 @@ class _$PhoneAuthStateCWProxyImpl implements _$PhoneAuthStateCWProxy {
   PhoneAuthState isLoading(bool isLoading) => this(isLoading: isLoading);
 
   @override
-  PhoneAuthState dataUser(UserInfoLogin? dataUser) => this(dataUser: dataUser);
+  PhoneAuthState dataUser(UserState? dataUser) => this(dataUser: dataUser);
 
   @override
 
@@ -246,7 +246,7 @@ class _$PhoneAuthStateCWProxyImpl implements _$PhoneAuthStateCWProxy {
       dataUser: dataUser == const $CopyWithPlaceholder()
           ? _value.dataUser
           // ignore: cast_nullable_to_non_nullable
-          : dataUser as UserInfoLogin?,
+          : dataUser as UserState?,
     );
   }
 }

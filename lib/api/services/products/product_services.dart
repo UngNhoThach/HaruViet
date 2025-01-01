@@ -10,26 +10,31 @@ class ProductService extends BaseService {
 
   Future<Response> getListProductsSV(
       {required GetListProductRequest request}) async {
-    final response = await get(ProductApi.getListProducts,
-        // .replaceAll(RegExp('{size}'), size)
-        // .replaceAll(RegExp('{totalproduct}'), totalproduct,
-        params: request.toJson(),
-        headers: apiHeaders.appMobileHeaders);
+    final response = await get(
+      ProductApi.getListProducts,
+      // .replaceAll(RegExp('{size}'), size)
+      // .replaceAll(RegExp('{totalproduct}'), totalproduct,
+      params: request.toJson(),
+      // headers: apiHeaders.appMobileHeaders
+    );
     return response;
   }
 
   Future<Response> getProductFlashSaleSV(
       {required GetListProductRequest request}) async {
-    final response = await get(ProductApi.productFlashsale,
-        params: request.toJson(), headers: apiHeaders.appMobileHeaders);
+    final response = await get(
+      ProductApi.productFlashsale,
+      params: request.toJson(),
+      // headers: apiHeaders.appMobileHeaders
+    );
     return response;
   }
 
   Future<Response> getProductDetailsSV({required String idProduct}) async {
     final response = await get(
-        ProductApi.getProductDetails
-            .replaceAll(RegExp('{idProduct}'), idProduct),
-        headers: apiHeaders.appMobileHeaders);
+      ProductApi.getProductDetails.replaceAll(RegExp('{idProduct}'), idProduct),
+      //  headers: apiHeaders.appMobileHeaders
+    );
     return response;
   }
 

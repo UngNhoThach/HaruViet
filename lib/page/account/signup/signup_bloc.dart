@@ -1,3 +1,4 @@
+import 'package:haruviet/api/rest_client.dart';
 import 'package:haruviet/base/base_bloc.dart';
 import 'package:haruviet/data/enum.dart';
 import 'package:haruviet/data/local/user_preferences.dart';
@@ -9,7 +10,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SignupBloc extends BaseBloc<SignupState> {
   SignupBloc() : super(const SignupState());
@@ -154,7 +154,7 @@ class SignupBloc extends BaseBloc<SignupState> {
               dataLogin: loginResponse.data,
               message: loginResponse.message ?? '',
             ));
-            UserInfoLogin dataUser = UserInfoLogin(
+            UserState dataUser = UserState(
               avatar: state.dataLogin?.user?.avatar ?? "",
               id: state.dataLogin?.user?.id ?? "",
               accessToken: state.dataLogin?.accessToken ?? "",
@@ -166,57 +166,45 @@ class SignupBloc extends BaseBloc<SignupState> {
               lastName: state.dataLogin?.user?.lastName ?? "",
               firstNameKana: state.dataLogin?.user?.firstNameKana ?? "",
               lastNameKana: state.dataLogin?.user?.lastNameKana ?? "",
-              sex: state.dataLogin?.user?.sex ?? "",
-              birthDay: state.dataLogin?.user?.birthday ?? "",
+              sex: state.dataLogin?.user?.sex,
+              birthday: state.dataLogin?.user?.birthday ?? "",
               addressId: state.dataLogin?.user?.addressId ?? "",
-              postCode: state.dataLogin?.user?.postcode ?? "",
-              address1: state.dataLogin?.user?.address1 ?? "",
-              address2: state.dataLogin?.user?.address2 ?? "",
-              address3: state.dataLogin?.user?.address3 ?? "",
+              postcode: state.dataLogin?.user?.postcode ?? "",
+              province: state.dataLogin?.user?.province ?? "",
+              district: state.dataLogin?.user?.district ?? "",
+              ward: state.dataLogin?.user?.ward ?? "",
               company: state.dataLogin?.user?.company ?? "",
               country: state.dataLogin?.user?.country ?? "",
+              idProvince: state.dataLogin?.user?.idProvince ?? "",
+              idDistrict: state.dataLogin?.user?.idDistrict ?? "",
+              idWard: state.dataLogin?.user?.idWard ?? "",
+              agencyId: state.dataLogin?.user?.agencyId ?? "",
+              createdAt: state.dataLogin?.user?.createdAt,
+              house: state.dataLogin?.user?.house,
+              userName: state.dataLogin?.user?.userName,
+              providerId: state.dataLogin?.user?.providerId,
+              pathologicaldetail: state.dataLogin?.user?.pathologicaldetail,
+              phoneVerifiedAt: state.dataLogin?.user?.phoneVerifiedAt,
+              provider: state.dataLogin?.user?.provider,
+              sku: state.dataLogin?.user?.sku,
+              updatedAt: state.dataLogin?.user?.updatedAt,
               phone: state.dataLogin?.user?.phone ?? "",
               storeId: state.dataLogin?.user?.storeId ?? "",
               status: state.dataLogin?.user?.status ?? 0,
               group: state.dataLogin?.user?.group ?? 0,
+              street: state.dataLogin?.user?.street ?? '',
               userId: state.dataLogin?.user?.userId ?? "",
               agencyName: state.dataLogin?.user?.agencyName ?? "",
               isLogin: true,
             );
-            SharedPreferences prefs = await SharedPreferences.getInstance();
-            // avatar
-            await prefs.setString('avatar', dataUser.avatar ?? '');
-            await prefs.setString('id', dataUser.id ?? '');
-            await prefs.setString('access_token', dataUser.accessToken ?? '');
-            await prefs.setString('token_type', dataUser.tokenType ?? '');
-            await prefs.setString('emai', dataUser.email ?? '');
-            await prefs.setString(
-                'email_verified_at', dataUser.emailVerifiedAt ?? '');
-            await prefs.setString('name', dataUser.name ?? '');
-            await prefs.setString('first_name', dataUser.firstName ?? '');
-            await prefs.setString('last_name', dataUser.lastName ?? '');
-            await prefs.setString(
-                'first_name_kana', dataUser.firstNameKana ?? '');
-            await prefs.setString(
-                'last_name_kana', dataUser.lastNameKana ?? '');
-            await prefs.setString(
-                'sex', (dataUser.sex != null) ? dataUser.sex.toString() : '');
-            await prefs.setString('birthday', dataUser.birthDay ?? '');
-            await prefs.setString('address_id', dataUser.addressId ?? '');
-            await prefs.setString('postcode', dataUser.postCode ?? '');
-            await prefs.setString('address1', dataUser.address1 ?? '');
-            await prefs.setString('address2', dataUser.address2 ?? '');
-            await prefs.setString('address3', dataUser.address3 ?? '');
-            await prefs.setString('company', dataUser.company ?? '');
-            await prefs.setString('country', dataUser.country ?? '');
-            await prefs.setString('phone', dataUser.phone ?? '');
-            await prefs.setString('store_id', dataUser.storeId ?? '');
-            await prefs.setString('status',
-                dataUser.status != null ? dataUser.status.toString() : '');
-            await prefs.setString('group',
-                dataUser.group != null ? dataUser.group.toString() : '');
-            await prefs.setString('user_id', dataUser.userId ?? '');
-            await prefs.setString('agency_name', dataUser.agencyName ?? '');
+
+            // reset client
+            final appconfig = await Preference.getAppConfig();
+            RestClient().init(
+              appconfig?.xUrl ?? "",
+              accessToken: appconfig?.xApiKey,
+              authorization: state.dataLogin?.accessToken ?? "",
+            );
             Preference.setUserInfo(dataUser);
           } else if (loginResponse.status == 200 &&
               loginResponse.isStatus != true) {

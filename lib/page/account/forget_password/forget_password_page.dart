@@ -7,7 +7,6 @@ import 'package:haruviet/helper/context.dart';
 import 'package:haruviet/helper/spaces.dart';
 import 'package:haruviet/page/account/forget_password/forget_password_bloc.dart';
 import 'package:haruviet/page/account/forget_password/forget_password_state.dart';
-import 'package:haruviet/page/account/reset_password/reset_password_page.dart';
 import 'package:haruviet/page/account/reset_password/widgets/reset_password_params.dart';
 import 'package:haruviet/page/account/signin/widgets/signin_params.dart';
 import 'package:haruviet/page/account/signup/widgets/sigup_type.dart';
@@ -73,7 +72,7 @@ class _ForgetPassWordPageState extends State<ForgetPassWordPage> {
             previous.verifyStatus != current.verifyStatus,
         listener: (context, state) {
           if (state.verifyStatus == VerifyStatus.verifyFailure) {
-            CustomSnackBar.showTop(context, '${state.message}');
+            CustomSnackBar.showTop(context, '${state.message}', null);
             Future.delayed(const Duration(seconds: 1), () {});
           }
           if (state.verifyStatus == VerifyStatus.wattingCheck &&

@@ -1,7 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
 import 'data_register.dart';
-import 'user_register.dart';
 
 part 'register_response.g.dart';
 

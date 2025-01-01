@@ -11,7 +11,13 @@ abstract class _$CategoryStateCWProxy {
 
   CategoryState errorMsg(String errorMsg);
 
+  CategoryState selectedCategory(int selectedCategory);
+
   CategoryState firtTimeLoadingPage(bool firtTimeLoadingPage);
+
+  CategoryState listCategory(List<DataCategory>? listCategory);
+
+  CategoryState newListCategory(List<DataCategory>? newListCategory);
 
   CategoryState currentTab(CurrentTab currentTab);
 
@@ -25,7 +31,7 @@ abstract class _$CategoryStateCWProxy {
 
   CategoryState isLoading(bool isLoading);
 
-  CategoryState userInfoLogin(UserInfoLogin? userInfoLogin);
+  CategoryState userInfoLogin(UserState? userInfoLogin);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `CategoryState(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -36,14 +42,17 @@ abstract class _$CategoryStateCWProxy {
   CategoryState call({
     ViewState? viewState,
     String? errorMsg,
+    int? selectedCategory,
     bool? firtTimeLoadingPage,
+    List<DataCategory>? listCategory,
+    List<DataCategory>? newListCategory,
     CurrentTab? currentTab,
     bool? canLoadMore,
     int? limit,
     int? currentPage,
     bool? isSubmitSuccess,
     bool? isLoading,
-    UserInfoLogin? userInfoLogin,
+    UserState? userInfoLogin,
   });
 }
 
@@ -60,8 +69,20 @@ class _$CategoryStateCWProxyImpl implements _$CategoryStateCWProxy {
   CategoryState errorMsg(String errorMsg) => this(errorMsg: errorMsg);
 
   @override
+  CategoryState selectedCategory(int selectedCategory) =>
+      this(selectedCategory: selectedCategory);
+
+  @override
   CategoryState firtTimeLoadingPage(bool firtTimeLoadingPage) =>
       this(firtTimeLoadingPage: firtTimeLoadingPage);
+
+  @override
+  CategoryState listCategory(List<DataCategory>? listCategory) =>
+      this(listCategory: listCategory);
+
+  @override
+  CategoryState newListCategory(List<DataCategory>? newListCategory) =>
+      this(newListCategory: newListCategory);
 
   @override
   CategoryState currentTab(CurrentTab currentTab) =>
@@ -84,7 +105,7 @@ class _$CategoryStateCWProxyImpl implements _$CategoryStateCWProxy {
   CategoryState isLoading(bool isLoading) => this(isLoading: isLoading);
 
   @override
-  CategoryState userInfoLogin(UserInfoLogin? userInfoLogin) =>
+  CategoryState userInfoLogin(UserState? userInfoLogin) =>
       this(userInfoLogin: userInfoLogin);
 
   @override
@@ -98,7 +119,10 @@ class _$CategoryStateCWProxyImpl implements _$CategoryStateCWProxy {
   CategoryState call({
     Object? viewState = const $CopyWithPlaceholder(),
     Object? errorMsg = const $CopyWithPlaceholder(),
+    Object? selectedCategory = const $CopyWithPlaceholder(),
     Object? firtTimeLoadingPage = const $CopyWithPlaceholder(),
+    Object? listCategory = const $CopyWithPlaceholder(),
+    Object? newListCategory = const $CopyWithPlaceholder(),
     Object? currentTab = const $CopyWithPlaceholder(),
     Object? canLoadMore = const $CopyWithPlaceholder(),
     Object? limit = const $CopyWithPlaceholder(),
@@ -116,12 +140,25 @@ class _$CategoryStateCWProxyImpl implements _$CategoryStateCWProxy {
           ? _value.errorMsg
           // ignore: cast_nullable_to_non_nullable
           : errorMsg as String,
+      selectedCategory: selectedCategory == const $CopyWithPlaceholder() ||
+              selectedCategory == null
+          ? _value.selectedCategory
+          // ignore: cast_nullable_to_non_nullable
+          : selectedCategory as int,
       firtTimeLoadingPage:
           firtTimeLoadingPage == const $CopyWithPlaceholder() ||
                   firtTimeLoadingPage == null
               ? _value.firtTimeLoadingPage
               // ignore: cast_nullable_to_non_nullable
               : firtTimeLoadingPage as bool,
+      listCategory: listCategory == const $CopyWithPlaceholder()
+          ? _value.listCategory
+          // ignore: cast_nullable_to_non_nullable
+          : listCategory as List<DataCategory>?,
+      newListCategory: newListCategory == const $CopyWithPlaceholder()
+          ? _value.newListCategory
+          // ignore: cast_nullable_to_non_nullable
+          : newListCategory as List<DataCategory>?,
       currentTab:
           currentTab == const $CopyWithPlaceholder() || currentTab == null
               ? _value.currentTab
@@ -153,7 +190,7 @@ class _$CategoryStateCWProxyImpl implements _$CategoryStateCWProxy {
       userInfoLogin: userInfoLogin == const $CopyWithPlaceholder()
           ? _value.userInfoLogin
           // ignore: cast_nullable_to_non_nullable
-          : userInfoLogin as UserInfoLogin?,
+          : userInfoLogin as UserState?,
     );
   }
 }

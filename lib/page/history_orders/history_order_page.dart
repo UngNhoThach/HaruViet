@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:haruviet/component/error/not_found_v2.dart';
+import 'package:haruviet/component/loading/loading.dart';
+import 'package:haruviet/data/reponsitory/cart_orders/models/cart_order_status_response/data_status_order.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/context.dart';
 import 'package:haruviet/page/history_orders/tab/widgets/history_order_tab_params.dart';
@@ -35,8 +38,7 @@ class _HistoryOrderPageState extends State<HistoryOrderPage>
   void initState() {
     super.initState();
     bloc = HistoryOrderBloc()..getData();
-    _tabController = TabController(
-        length: widget.params.listStatusOrder.length, vsync: this);
+
     _pageController = PageController();
   }
 
@@ -52,7 +54,20 @@ class _HistoryOrderPageState extends State<HistoryOrderPage>
     return BlocProvider(
       create: (context) => bloc,
       child: BlocListener<HistoryOrderBloc, HistoryOrderState>(
-        listener: (context, state) {},
+        // _tabController.addListener(() {
+        //   setState(() {});
+        // });
+        //    listenWhen: (previous, current) => previous.tab != current.tab,
+        listener: (context, state) {
+          if (state.listStatusOrder != null &&
+              state.listStatusOrder!.isNotEmpty) {
+            _tabController = TabController(
+              length: state.listStatusOrder!.length,
+              vsync: this,
+            );
+            // Lắng nghe sự thay đổi của TabController
+          }
+        },
         child: BlocBuilder<HistoryOrderBloc, HistoryOrderState>(
           builder: (context, state) {
             return Scaffold(
@@ -67,40 +82,44 @@ class _HistoryOrderPageState extends State<HistoryOrderPage>
                       child: BackButton(color: colorWhite),
                     ),
                     title: const Text('Đơn đã mua')),
-                body: Column(children: [
-                  _tabBar(
-                    context,
-                  ),
-                  Expanded(
-                    child: ColoredBox(
-                      color: const Color(0xFFECECEE),
-                      child: PageView.builder(
-                        controller: _pageController,
-                        onPageChanged: (value) {
-                          setState(() {
-                            _tabController.index = value;
-                          });
-                          bloc.onChangeTab(value + 1);
-                        },
-                        itemCount: _tabController.length,
-                        itemBuilder: (c, i) {
-                          return BlocProvider(
-                            key: ObjectKey(state.tab),
-                            create: (context) => HistoryOrderTabBloc(
-                              tab: i + 1,
+                body: state.isLoading
+                    ? const LoadingLogo()
+                    : (state.listStatusOrder == null ||
+                            state.listStatusOrder!.isEmpty)
+                        ? const DidntFoundV2()
+                        : Column(children: [
+                            _tabBar(context,
+                                listStatusOrder: state.listStatusOrder!),
+                            Expanded(
+                              child: ColoredBox(
+                                color: const Color(0xFFECECEE),
+                                child: PageView.builder(
+                                  controller: _pageController,
+                                  onPageChanged: (value) {
+                                    setState(() {
+                                      _tabController.index = value;
+                                    });
+                                    bloc.onChangeTab(value + 1);
+                                  },
+                                  itemCount: _tabController.length,
+                                  itemBuilder: (c, i) {
+                                    return BlocProvider(
+                                      key: ObjectKey(state.tab),
+                                      create: (context) => HistoryOrderTabBloc(
+                                        tab: i + 1,
+                                      ),
+                                      child: HistoryOrderTab(
+                                        params: HistoryOrderTabParams(
+                                            status: state.tab,
+                                            onReload: () {},
+                                            idUser: state.idUser),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
                             ),
-                            child: HistoryOrderTab(
-                              params: HistoryOrderTabParams(
-                                  status: state.tab,
-                                  onReload: () {},
-                                  idUser: state.idUser),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                ])
+                          ])
                 //  const NotActivePage(
                 //     isAppBar: false,
                 //   ),
@@ -111,16 +130,15 @@ class _HistoryOrderPageState extends State<HistoryOrderPage>
     );
   }
 
-  Widget _tabBar(
-    BuildContext context,
-  ) {
+  Widget _tabBar(BuildContext context,
+      {required List<DataStatusOrder> listStatusOrder}) {
     return Container(
       color: context.colorScheme.background,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: TabBar(
           indicatorColor: Theme.of(context).primaryColorLight,
-          isScrollable: true, // Thêm dòng này
+          isScrollable: true,
           onTap: (value) async {
             _pageController.jumpToPage(value);
             bloc.onChangeTab(value + 1);
@@ -132,7 +150,7 @@ class _HistoryOrderPageState extends State<HistoryOrderPage>
               color: context.colorScheme.primary,
             ),
           ),
-          tabs: widget.params.listStatusOrder
+          tabs: listStatusOrder
               .map(
                 (e) => Tab(
                   child: Padding(
@@ -140,11 +158,11 @@ class _HistoryOrderPageState extends State<HistoryOrderPage>
                     child: Text(
                       e.name ?? '',
                       style: textTheme.bodyMedium?.copyWith(
-                        color: _tabController.index ==
-                                widget.params.listStatusOrder.indexOf(e)
-                            ? context
-                                .appColorScheme.colorExtendedTextFieldCursor
-                            : context.appColorScheme.colorIconInactive,
+                        color:
+                            _tabController.index == listStatusOrder.indexOf(e)
+                                ? context
+                                    .appColorScheme.colorExtendedTextFieldCursor
+                                : context.appColorScheme.colorIconInactive,
                         fontSize: 14,
                       ),
                       textAlign: TextAlign.center,

@@ -8,12 +8,12 @@ typedef ApiErrorCallback = Function(
 class RestClient {
   static const kTimeout = 20000;
   static const kEnableLog = kDebugMode;
-  static const kAccessToken = 'access_token';
+  static const kAccessToken = 'token';
   static const kDeviceId = "x-device-id";
   static const kDeviceType = "x-device-type";
+  static const kAuthorization = "Authorization";
 
   static List<int>? sslCert;
-
   static Dio dio = Dio(BaseOptions(
     // baseUrl: baseUrl,
     connectTimeout: const Duration(milliseconds: kTimeout),
@@ -21,6 +21,7 @@ class RestClient {
     // headers: _headers,
     responseType: ResponseType.json,
   ));
+
   late Map<String, dynamic> _headers;
 
   void init(
@@ -28,6 +29,7 @@ class RestClient {
     String? deviceId,
     String? userAgent,
     String? accessToken,
+    String? authorization,
     ApiErrorCallback? errorCallback,
   }) {
     _headers = {
@@ -35,6 +37,7 @@ class RestClient {
       kAccessToken: '$accessToken',
       kDeviceId: deviceId,
       kDeviceType: "2",
+      kAuthorization: 'Bearer $authorization',
     };
 
     dio = Dio(BaseOptions(

@@ -7,7 +7,8 @@ part 'main_screen_state.g.dart';
 
 @CopyWith()
 class MainScreenState extends BaseState {
-  final UserInfoLogin? dataUser;
+  final UserState? dataUser;
+  final bool isLogin;
   final String employeeId;
   final String organizationId;
   final String jobPositionId;
@@ -26,6 +27,7 @@ class MainScreenState extends BaseState {
   const MainScreenState({
     ViewState viewState = ViewState.loaded,
     this.dataUser,
+    this.isLogin = false,
     this.accessToken,
     this.totalItemInCart,
     this.hideBottomBar = false,

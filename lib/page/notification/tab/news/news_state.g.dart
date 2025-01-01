@@ -17,7 +17,7 @@ abstract class _$NewsStateCWProxy {
 
   NewsState isLoading(bool isLoading);
 
-  NewsState userInfoLogin(UserInfoLogin? userInfoLogin);
+  NewsState userInfoLogin(UserState? userInfoLogin);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `NewsState(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -31,7 +31,7 @@ abstract class _$NewsStateCWProxy {
     bool? isSubmitSuccess,
     List<NewsResponse>? listNews,
     bool? isLoading,
-    UserInfoLogin? userInfoLogin,
+    UserState? userInfoLogin,
   });
 }
 
@@ -58,7 +58,7 @@ class _$NewsStateCWProxyImpl implements _$NewsStateCWProxy {
   NewsState isLoading(bool isLoading) => this(isLoading: isLoading);
 
   @override
-  NewsState userInfoLogin(UserInfoLogin? userInfoLogin) =>
+  NewsState userInfoLogin(UserState? userInfoLogin) =>
       this(userInfoLogin: userInfoLogin);
 
   @override
@@ -102,7 +102,7 @@ class _$NewsStateCWProxyImpl implements _$NewsStateCWProxy {
       userInfoLogin: userInfoLogin == const $CopyWithPlaceholder()
           ? _value.userInfoLogin
           // ignore: cast_nullable_to_non_nullable
-          : userInfoLogin as UserInfoLogin?,
+          : userInfoLogin as UserState?,
     );
   }
 }

@@ -9,7 +9,7 @@ part 'filter_product_state.g.dart';
 
 @CopyWith()
 class FilterProductState extends BaseState {
-  final UserInfoLogin? userInfoLogin;
+  final UserState? userInfoLogin;
   final bool isLoading;
   final List<AtributesCategoryResponse> atributesCategoryData;
   final List<AtributesValue> attributesSelected;

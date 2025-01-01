@@ -1,7 +1,7 @@
 import 'package:haruviet/api/services/customers/customers_services.dart';
 import 'package:haruviet/api/services/customers/models/register_request.dart';
 import 'package:haruviet/api/services/customers/models/update_password_phone_number_request/update_password_phone_number_request.dart';
-import 'package:haruviet/api/services/customers/models/update_user_info_request/update_user_info_request.dart';
+import 'package:haruviet/data/data_local/user_state.dart';
 import 'package:haruviet/data/reponsitory/customers/models/user_update_info_response/user_update_info_response.dart';
 import 'package:haruviet/data/reponsitory/normal_response/normal_response.dart';
 import 'package:flutter/foundation.dart';
@@ -83,8 +83,7 @@ class CustomersRepository {
   }
 
   Future<UserUpdateInfoResponse> updateInfoRP(
-      {required UpdateUserInfoRequest request,
-      required String authorization}) async {
+      {required UserState request, required String authorization}) async {
     try {
       final response = await _customerService.updateInfoSV(
           request: request, authorization: authorization);

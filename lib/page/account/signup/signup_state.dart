@@ -25,7 +25,7 @@ class SignupState extends BaseState {
   final String? message;
   final int? timeout;
   final bool isLoading;
-  final UserInfoLogin? dataUser;
+  final UserState? dataUser;
   final DataLogin? dataLogin;
   final NormalError? errors;
 

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:haruviet/data/data_local/setting_app_state.dart';
 import 'package:haruviet/data/data_local/user_state.dart';
 import 'package:haruviet/data/reponsitory/address/model/list_address/data_list_address.dart';
 import 'package:haruviet/data/reponsitory/payment/payment_data.dart';
@@ -8,6 +9,22 @@ class Preference {
   static const kUserInfo = "user_info";
   static const kAddressShipping = "address_shipping";
   static const kPayment = "payment";
+  static const appConfig = "appconfig";
+
+  // app config
+  static setAppConfig(SettingAppState appconfigData) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString(appConfig, jsonEncode(appconfigData.toJson()));
+  }
+
+  static Future<SettingAppState?> getAppConfig() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final appconfigDataJson = prefs.getString(appConfig);
+    if (appconfigDataJson != null) {
+      return SettingAppState.fromJson(json.decode(appconfigDataJson));
+    }
+    return null;
+  }
 
   // payment
   static setPayment(PaymentData paymentData) async {
@@ -39,25 +56,22 @@ class Preference {
   }
 
 // lưu thông tin người dùng vào bộ nhớ cục bộ
-  static setUserInfo(UserInfoLogin user) async {
+  static setUserInfo(UserState user) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString(kUserInfo, jsonEncode(user.toJson()));
   }
 
 // lấy thông  tin user từ bộ nhớ cục bộ
-  static Future<UserInfoLogin?> getUserInfo() async {
+  static Future<UserState?> getUserInfo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final userJson = prefs.getString(kUserInfo);
-    if (userJson != null) return UserInfoLogin.fromJson(json.decode(userJson));
+    if (userJson != null) return UserState.fromJson(json.decode(userJson));
     return null;
   }
 
-  // Hàm cập nhật thông tin người dùng
   static Future<void> updateUserInfo(Map<String, dynamic> updates) async {
-    // Lấy thông tin người dùng hiện tại
-    UserInfoLogin? currentUser = await getUserInfo();
+    UserState? currentUser = await getUserInfo();
 
-    // Kiểm tra nếu người dùng tồn tại
     if (currentUser != null) {
       // Tạo một bản sao của thông tin người dùng hiện tại dưới dạng Map
       Map<String, dynamic> currentUserMap = currentUser.toJson();
@@ -66,11 +80,24 @@ class Preference {
       updates.forEach((key, value) {
         currentUserMap[key] = value;
       });
-      // Chuyển lại Map thành đối tượng UserInfoLogin
-      UserInfoLogin updatedUser = UserInfoLogin.fromJson(currentUserMap);
+      // Chuyển lại Map thành đối tượng UserState
+      UserState updatedUser = UserState.fromJson(currentUserMap);
 
-      // Lưu thông tin người dùng đã cập nhật vào bộ nhớ cục bộ
       await setUserInfo(updatedUser);
+    }
+  }
+
+  // To clear data but keep appConfig
+  static Future<void> clearDataButKeepAppConfig() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final appConfigData = prefs.getString(appConfig);
+
+    // Clear all data
+    await prefs.clear();
+
+    // Restore the app config data
+    if (appConfigData != null) {
+      await prefs.setString(appConfig, appConfigData);
     }
   }
 }

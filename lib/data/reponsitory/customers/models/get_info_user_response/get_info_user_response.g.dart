@@ -8,12 +8,12 @@ part of 'get_info_user_response.dart';
 
 GetInfoUserResponse _$GetInfoUserResponseFromJson(Map<String, dynamic> json) =>
     GetInfoUserResponse(
-      status: json['status'] as int?,
+      status: (json['status'] as num?)?.toInt(),
       isStatus: json['is_status'] as bool?,
       message: json['message'] as String?,
       data: json['data'] == null
           ? null
-          : Data.fromJson(json['data'] as Map<String, dynamic>),
+          : DataCustomer.fromJson(json['data'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$GetInfoUserResponseToJson(

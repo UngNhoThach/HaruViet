@@ -2,7 +2,6 @@ import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:haruviet/base/base_bloc.dart';
 import 'package:haruviet/data/enum.dart';
 import 'package:haruviet/data/reponsitory/customers/models/address_user_response.dart';
-import 'package:haruviet/data/reponsitory/customers/models/user_update_info_response/data_user_update_info.dart';
 import 'package:haruviet/data/data_local/user_state.dart';
 import 'package:haruviet/helper/base_status_response.dart';
 
@@ -10,50 +9,51 @@ part 'update_profile_state.g.dart';
 
 @CopyWith()
 class UpdateProfileState extends BaseState {
-  final DataUserUpdateInfo? userInfo;
   final bool isLoading;
   final bool isSubmitSuccess;
-  final String? address;
   final String? message;
   final BaseStatusResponse baseStatusResponse;
-  final String? address1;
-  final String? address2;
-  final String? address3;
-  final String? address1ID;
-  final String? address2ID;
-  final String? address3ID;
+  final String? house;
+  final String? ward;
+  final String? district;
+  final String? province;
+  final String? street;
+  final String? idProvince;
+  final String? idDistrict;
+  final String? idWard;
   final String? firstName;
   final String? lastName;
   final String? userName;
   final String? email;
-
+  final String? addressId;
   final String? name;
   final String? phone;
   final AddressUser addressUserData;
   final int? typeSex;
   final String? sex;
   final DateTime? birthDay;
-  final DataUserUpdateInfo? dataUpdate;
+  final UserState? userInfo;
 
-  final UserInfoLogin? userInfoLogin;
+  final UserState? userInfoLogin;
   const UpdateProfileState({
     ViewState viewState = ViewState.loaded,
     String errorMsg = '',
     this.userInfo,
+    this.addressId,
+    this.house,
+    this.district,
+    this.province,
+    this.idWard,
+    this.idDistrict,
+    this.idProvince,
+    this.street,
+    this.ward,
     this.email,
     this.baseStatusResponse = BaseStatusResponse.initial,
-    this.dataUpdate,
     this.userName,
     this.firstName,
     this.lastName,
     this.message,
-    this.address,
-    this.address1,
-    this.address1ID,
-    this.address2,
-    this.address2ID,
-    this.address3,
-    this.address3ID,
     this.addressUserData = const AddressUser(),
     this.isLoading = false,
     this.typeSex,

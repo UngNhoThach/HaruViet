@@ -89,11 +89,11 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
         listener: (context, state) {
           if (state.baseStatusResponse == BaseStatusResponse.susccess ||
               state.isSubmitSuccess) {
-            CustomSnackBar.showTop(context, '${state.message}');
+            CustomSnackBar.showTop(context, '${state.message}', null);
             widget.params.onReload.call();
             context.justBack();
           } else if (state.baseStatusResponse == BaseStatusResponse.failure) {
-            CustomSnackBar.showTop(context, '${state.message}');
+            CustomSnackBar.showTop(context, '${state.message}', null);
           }
         },
         child: BlocBuilder<UpdateProfileBloc, UpdateProfileState>(
@@ -101,17 +101,15 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
             return Scaffold(
               appBar: AppBar(
                 leading: BackButton(
-                  color: colorBlack,
                   onPressed: () {
                     context.justBack();
                   },
                 ),
                 elevation: 0.0,
-                backgroundColor: colorTransparent,
                 title: Text(
                   'Thông tin tài khoản',
-                  style: textTheme.titleMedium?.copyWith(
-                      color: colorBlack, fontWeight: FontWeight.bold),
+                  style: textTheme.titleMedium
+                      ?.copyWith(fontWeight: FontWeight.bold),
                 ),
               ),
               //LoadingScaffold
@@ -129,43 +127,42 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                             children: [
                               Row(
                                 children: [
-                                  state.userInfo?.avatar == null ||
-                                          state.userInfo?.avatar == ''
-                                      ? CircleAvatar(
-                                          radius: 38.r,
-                                          backgroundColor: colorBlueGray02,
-                                          child: CircleAvatar(
-                                              radius: 40.r,
-                                              backgroundColor: colorBlueGray02,
-                                              child: AspectRatio(
-                                                aspectRatio: 1,
-                                                child: Container(),
-                                              )),
-                                        )
-                                      : CircleAvatar(
-                                          radius: 38.r,
-                                          backgroundColor: Colors.white70,
-                                          child: CircleAvatar(
-                                              radius: 40.r,
-                                              child: AspectRatio(
-                                                aspectRatio: 1,
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color: Colors
-                                                              .grey.shade400,
-                                                          width: 2.w),
-                                                      shape: BoxShape.circle,
-                                                      image: DecorationImage(
-                                                          image: NetworkImage(
-                                                              state.userInfo
-                                                                      ?.avatar ??
-                                                                  ''),
-                                                          fit: BoxFit.contain)),
-                                                ),
-                                              )),
-                                        ),
-                                  spaceW16,
+                                  // state.userInfo?.avatar == null ||
+                                  //         state.userInfo?.avatar == ''
+                                  //     ? CircleAvatar(
+                                  //         radius: 38.r,
+                                  //         backgroundColor: colorBlueGray02,
+                                  //         child: CircleAvatar(
+                                  //             radius: 40.r,
+                                  //             backgroundColor: colorBlueGray02,
+                                  //             child: AspectRatio(
+                                  //               aspectRatio: 1,
+                                  //               child: Container(),
+                                  //             )),
+                                  //       )
+                                  //     :
+                                  Align(
+                                    alignment: Alignment.topCenter,
+                                    child: CircleAvatar(
+                                      radius: 56.r,
+                                      backgroundColor: Colors.white70,
+                                      child: CircleAvatar(
+                                          radius: 40.r,
+                                          child: AspectRatio(
+                                            aspectRatio: 1,
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  image: DecorationImage(
+                                                      image: NetworkImage(state
+                                                              .userInfoLogin
+                                                              ?.avatar ??
+                                                          ''),
+                                                      fit: BoxFit.contain)),
+                                            ),
+                                          )),
+                                    ),
+                                  ),
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment:
@@ -174,7 +171,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                         Row(
                                           children: [
                                             Text(
-                                              state.name ?? '',
+                                              state.userInfo?.name ?? '',
                                               // textTheme.bodyMedium
                                               style: textTheme.bodyMedium
                                                   ?.copyWith(
@@ -300,12 +297,12 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                   Column(
                                     children: [
                                       FormAddressInput(
-                                        key: ObjectKey(state.address1),
+                                        key: ObjectKey(state.idDistrict),
                                         isDisplayTitle: false,
                                         title: 'Địa chỉ',
-                                        initialText: state.address1 == null
+                                        initialText: state.district == null
                                             ? null
-                                            : '${state.address3 ?? ''}, ${state.address2 ?? ''}, ${state.address1 ?? ''}',
+                                            : '${state.house ?? ''}, ${state.ward ?? ''}, ${state.district ?? ''}, ${state.province ?? ''}',
                                         onChanged: (value) {
                                           bloc.onChangeTemporaryResidenceAddressUser(
                                               temporaryResidenceAddress: value);
@@ -470,7 +467,7 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
       onTap: () async {
         Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (builder) => const HomePage()),
+            MaterialPageRoute(builder: (builder) => const HaruViet()),
             (route) => false);
       },
       child: Container(

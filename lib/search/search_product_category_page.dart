@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:haruviet/component/input/search_bar.dart';
 import 'package:haruviet/component/shimer/image_product_shimer.dart';
-import 'package:haruviet/data/data_local/user_bloc.dart';
+import 'package:haruviet/data/data_local/setting_app_bloc.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_search_default_response/search_category.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_search_default_response/search_product.dart';
 import 'package:haruviet/database_local/suggestion_data_search/models/suggestion_data_search_model.dart';
@@ -42,7 +42,7 @@ class _SearchScaffoldState extends State<SearchScaffold> {
     });
     blocSearchProductCategory = SearchProductCategoryBloc()..getData();
 
-    domain = context.read<UserBloc>().state.subDomain ?? '';
+    domain = context.read<SettingAppBloc>().state.xUrl ?? '';
   }
 
   @override
@@ -60,6 +60,7 @@ class _SearchScaffoldState extends State<SearchScaffold> {
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(
+              titleSpacing: 0,
               centerTitle: true,
               elevation: 0,
               title: AppSearchBar(
@@ -219,10 +220,10 @@ class _SearchScaffoldState extends State<SearchScaffold> {
                 imageUrl: '$domain${data.image}',
                 width: 40,
                 height: 40,
-                placeholder: (context, url) => const ImageProductShimer(
-                  width: 40,
-                  height: 40,
-                ),
+                // placeholder: (context, url) => const ImageProductShimer(
+                //   width: 40,
+                //   height: 40,
+                // ),
                 errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
             ),
@@ -259,6 +260,8 @@ class _SearchScaffoldState extends State<SearchScaffold> {
                   ),
                   const SizedBox(height: 4),
                   Text(
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     data.name ?? '',
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                           color: colorBlackTileItem,

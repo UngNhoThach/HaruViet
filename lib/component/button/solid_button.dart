@@ -17,10 +17,10 @@ class AppSolidButton extends StatelessWidget {
     this.disabledTextColor = colorWhite,
     this.color,
     this.disabledColor,
-    this.splashColor = colorPrimary,
-    this.focusColor = colorPrimary,
-    this.hoverColor = colorPrimary,
-    this.highlightColor = colorPrimary,
+    this.splashColor, // = colorPrimary,
+    this.focusColor, // = colorPrimary,
+    this.hoverColor, // = colorPrimary,
+    this.highlightColor, //= colorPrimary,
     this.colorBrightness,
     this.elevation = _defaultElevation,
     this.focusElevation,
@@ -69,7 +69,7 @@ class AppSolidButton extends StatelessWidget {
     return AppSolidButton._(
       key: key,
       onPressed: onPressed,
-      color: color ?? Colors.green,
+      color: color ?? colorMain,
       onLongPress: onLongPress,
       onHighlightChanged: onHighlightChanged,
       focusNode: focusNode,
@@ -129,7 +129,7 @@ class AppSolidButton extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(radius)),
       ),
-      color: color ?? Colors.green,
+      color: color ?? colorMain,
       disabledColor: disabledColor,
       onPressed: onPressed,
       onLongPress: onLongPress,
@@ -240,9 +240,10 @@ class AppSolidButton extends StatelessWidget {
       textTheme: textTheme,
       textColor: textColor,
       disabledTextColor: disabledTextColor,
-      color: enabled
-          ? Theme.of(context).primaryColor
-          : Theme.of(context).primaryColor.withOpacity(0.5),
+      color: color,
+      // enabled
+      //     ? Theme.of(context).primaryColor
+      //     : Theme.of(context).primaryColor.withOpacity(0.5),
       disabledColor:
           disabledColor ?? Theme.of(context).primaryColor.withOpacity(0.5),
       focusColor: focusColor,

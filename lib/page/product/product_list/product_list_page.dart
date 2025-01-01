@@ -1,9 +1,10 @@
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:haruviet/component/error/not_found.dart';
 import 'package:haruviet/component/error/not_found_v2.dart';
 import 'package:haruviet/component/header/header_item.dart';
 import 'package:haruviet/component/input/search_barv2.dart';
 import 'package:haruviet/component/status/status_header_item.dart';
-import 'package:haruviet/data/data_local/user_bloc.dart';
+import 'package:haruviet/data/data_local/setting_app_bloc.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_list_product/data_product_list.dart';
 import 'package:haruviet/database_local/product/cart_provider_v2.dart';
 import 'package:haruviet/gen/assets.gen.dart';
@@ -11,7 +12,7 @@ import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/const.dart';
 import 'package:haruviet/helper/spaces.dart';
 import 'package:haruviet/page/cart/models/cart_page_params.dart';
-import 'package:haruviet/page/home/home_page.dart';
+import 'package:haruviet/page/home/widgets/scroll_to_top_widget.dart';
 import 'package:haruviet/page/product/product_list/product_list_bloc.dart';
 import 'package:haruviet/page/product/product_list/product_list_state.dart';
 import 'package:haruviet/page/product/widgets/item_products_widget.dart';
@@ -41,6 +42,7 @@ class _ProductListPageState extends State<ProductListPage> {
   // variables and functions
   final PagingController<int, DataProduct> _pagingController =
       PagingController(firstPageKey: startPage, invisibleItemsThreshold: 3);
+  final ScrollController _scrollController = ScrollController();
 
   late String domain;
   FocusNode focusNode = FocusNode();
@@ -48,9 +50,22 @@ class _ProductListPageState extends State<ProductListPage> {
   late double childAspectRatio;
   final ItemProductWidget itemProductWidgets = ItemProductWidget();
   bool checkIsChangeListItem = false;
+  double _previousScrollPosition = 0;
+
+  late double _scrollThreshold; // Ngưỡng cuộn 200px
+
   @override
   void initState() {
     super.initState();
+
+    // build widget first
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final screenHeight = MediaQuery.of(context).size.height;
+      setState(() {
+        _scrollThreshold =
+            screenHeight; // Gán chiều cao màn hình vào _scrollThreshold
+      });
+    });
 
     bloc = ProductListBloc(widget.params)..getData();
     _pagingController.addPageRequestListener((pageKey) {
@@ -58,12 +73,47 @@ class _ProductListPageState extends State<ProductListPage> {
         bloc.onFetch(page: pageKey);
       }
     });
-    domain = context.read<UserBloc>().state.subDomain ?? '';
+    _onScroll();
+
+    domain = context.read<SettingAppBloc>().state.xUrl ?? '';
+  }
+
+  void _onScroll() {
+    _scrollController.addListener(() {
+      if (bloc.canLoadMore &&
+          _scrollController.position.pixels - _previousScrollPosition >=
+              _scrollThreshold * 2) {
+        bool isFetchingData = false;
+        if (!isFetchingData) {
+          // if ((_pagingController.itemList?.length ?? 0) >= totalItemsLoaded &&
+          //     !bloc.state.isLoading) {
+          final nextPageKey = _pagingController.nextPageKey;
+          if (nextPageKey != startPage) {
+            isFetchingData = true; // Set the flag to true
+            _pagingController.notifyPageRequestListeners(nextPageKey!);
+
+            // Listen to the bloc's state to reset the fetching flag
+            bloc.stream.listen((state) {
+              if (!state.isLoading) {
+                isFetchingData =
+                    false; // Reset the flag when loading is complete
+              }
+            });
+            //}
+          }
+        }
+        // Người dùng đã cuộn ít nhất 200px kể từ lần tải trước
+        _previousScrollPosition = _scrollController
+            .position.pixels; // Cập nhật lại vị trí cuộn trước đó
+      }
+    });
   }
 
   @override
   void dispose() {
     _pagingController.dispose();
+    _scrollController.dispose();
+
     super.dispose();
   }
 
@@ -76,6 +126,12 @@ class _ProductListPageState extends State<ProductListPage> {
         ),
       ],
       child: Scaffold(
+        floatingActionButton: ScrollToTopButton(
+          showOffset: 200,
+          scrollController: _scrollController,
+          backgroundColor: colorGray04.withOpacity(0.3),
+          iconColor: colorWhite,
+        ),
         appBar: _appbarSearch(context),
         body: MultiBlocListener(
           listeners: [
@@ -101,6 +157,7 @@ class _ProductListPageState extends State<ProductListPage> {
                   previous.currentTab != current.currentTab,
               listener: (context, state) {
                 bloc.onFetch(page: startPage);
+
                 _pagingController.refresh();
               },
             ),
@@ -109,6 +166,8 @@ class _ProductListPageState extends State<ProductListPage> {
             builder: (context, state) {
               return RefreshIndicator(
                   onRefresh: () async {
+                    _previousScrollPosition = 0;
+
                     _pagingController.refresh();
                     bloc.onFetch(page: startPage);
                   },
@@ -183,32 +242,53 @@ class _ProductListPageState extends State<ProductListPage> {
             ? _empty(context)
             : Expanded(
                 child: checkIsChangeListItem
-                    ? Padding(
+                    ? MasonryGridView.count(
+                        physics: const BouncingScrollPhysics(),
+                        controller: _scrollController,
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 8),
-                        child: PagedGridView<int, DataProduct>(
-                          pagingController: _pagingController,
-                          showNewPageProgressIndicatorAsGridChild: false,
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  mainAxisSpacing: 0,
-                                  crossAxisSpacing: 0,
-                                  childAspectRatio: childAspectRatio),
-                          builderDelegate:
-                              PagedChildBuilderDelegate<DataProduct>(
-                            noItemsFoundIndicatorBuilder: _empty,
-                            itemBuilder: (context, item, index) {
-                              return AnimatedProductGridItem(
-                                index: index,
-                                child: _itemGridView(context,
-                                    index: index, data: item, domain: domain),
-                              );
-                            },
-                          ),
-                        ),
+                            vertical: 20, horizontal: 12),
+                        shrinkWrap: true,
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 12,
+                        crossAxisSpacing: 6,
+                        itemCount: _pagingController.itemList?.length ?? 0,
+                        itemBuilder: (context, index) {
+                          final item = _pagingController.itemList?[index];
+                          return _itemGridView(
+                            context,
+                            index: index,
+                            data: item!,
+                            domain: domain,
+                          );
+                        },
                       )
+                    //  Padding(
+                    //     padding: const EdgeInsets.symmetric(
+                    //         horizontal: 8, vertical: 8),
+                    //     child: PagedGridView<int, DataProduct>(
+                    //       pagingController: _pagingController,
+                    //       showNewPageProgressIndicatorAsGridChild: false,
+                    //       gridDelegate:
+                    //           SliverGridDelegateWithFixedCrossAxisCount(
+                    //               crossAxisCount: 2,
+                    //               mainAxisSpacing: 0,
+                    //               crossAxisSpacing: 0,
+                    //               childAspectRatio: childAspectRatio),
+                    //       builderDelegate:
+                    //           PagedChildBuilderDelegate<DataProduct>(
+                    //         noItemsFoundIndicatorBuilder: _empty,
+                    //         itemBuilder: (context, item, index) {
+                    //           return AnimatedProductGridItem(
+                    //             index: index,
+                    //             child: _itemGridView(context,
+                    //                 index: index, data: item, domain: domain),
+                    //           );
+                    //         },
+                    //       ),
+                    //     ),
+                    //   )
                     : PagedListView.separated(
+                        scrollController: _scrollController,
                         scrollDirection: Axis.vertical,
                         keyboardDismissBehavior:
                             ScrollViewKeyboardDismissBehavior.onDrag,

@@ -1,6 +1,5 @@
+import 'package:haruviet/data/data_local/user_state.dart';
 import 'package:json_annotation/json_annotation.dart';
-
-import 'user_login.dart';
 
 part 'data_login.g.dart';
 
@@ -13,7 +12,7 @@ class DataLogin {
   List<String>? scopes;
   @JsonKey(name: 'expires_at')
   String? expiresAt;
-  UserLogin? user;
+  UserState? user;
 
   DataLogin({
     this.accessToken,

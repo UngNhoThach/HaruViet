@@ -74,12 +74,9 @@ class CategoryBloc extends BaseBloc<CategoryState> {
       var newDataList =
           List<DataCategory>.from(category.parseDataCategory() ?? []);
 
-      final listCategory = List<DataCategory>.from(state.listCategory ?? [])
-        ..addAll(newDataList);
-
-      final maxLoadMore = ((category.total ?? 0) / state.limit).floor();
-
-      if (isINT(((category.total ?? 0) / state.limit))) {
+      final loadingCount = ((category.total ?? 0) / state.limit);
+      final maxLoadMore = loadingCount.floor();
+      if (isINT(loadingCount)) {
         canLoadMore = page < maxLoadMore;
       } else {
         canLoadMore = page <= maxLoadMore;
@@ -88,9 +85,9 @@ class CategoryBloc extends BaseBloc<CategoryState> {
 
       emit(state.copyWith(
         currentPage: page,
-        listCategory: listCategory,
+        listCategory: newDataList,
         newListCategory: newDataList,
-        canLoadMore: canLoadMore,
+        canLoadMore: false,
       ));
     } catch (error, statckTrace) {
       if (kDebugMode) {

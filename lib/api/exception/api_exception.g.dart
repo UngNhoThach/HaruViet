@@ -7,8 +7,8 @@ part of 'api_exception.dart';
 // **************************************************************************
 
 ApiException _$ApiExceptionFromJson(Map<String, dynamic> json) => ApiException(
-      statusCode: json['statusCode'] as int,
-      result: json['result'] as int,
+      statusCode: (json['statusCode'] as num).toInt(),
+      result: (json['result'] as num).toInt(),
       message: json['message'] as String,
     );
 

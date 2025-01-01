@@ -9,7 +9,7 @@ part of 'search_price.dart';
 SearchPrice _$SearchPriceFromJson(Map<String, dynamic> json) => SearchPrice(
       searchpriceStr: json['price_str'] as String?,
       finalSearchPriceStr: json['final_price_str'] as String?,
-      promotionPercent: json['promotion_percent'] as int?,
+      promotionPercent: (json['promotion_percent'] as num?)?.toInt(),
       price: json['price'] as String?,
     );
 

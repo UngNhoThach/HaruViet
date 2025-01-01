@@ -13,9 +13,7 @@ class AddressBloc extends BaseBloc<AddressState> {
       isLoading: true,
     ));
     final userInfoLogin = await Preference.getUserInfo();
-    final data = await _addressRepository.getListAddressRP(
-      authorization: userInfoLogin?.accessToken ?? '',
-    );
+    final data = await _addressRepository.getListAddressRP();
 
 //  check if isShipping == true ? check box and select address shipping :  get all list addresses
     isShipping

@@ -23,6 +23,7 @@ class RowContent extends StatefulWidget {
     this.sizeWidght,
     this.isPaddingTop = false,
     this.isBorderRadius = true,
+    this.checkIspaddingTile = false,
     this.iconMore,
     this.customTitleBar = false,
   });
@@ -45,6 +46,7 @@ class RowContent extends StatefulWidget {
   final bool isBorderRadius;
   final Widget? iconMore;
   final bool customTitleBar;
+  final bool checkIspaddingTile;
   @override
   State<RowContent> createState() => _RowContentState();
 }
@@ -126,48 +128,49 @@ class _RowContentState extends State<RowContent> with TickerProviderStateMixin {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (widget.title != null) ...[
-              Column(
-                children: [
-                  GestureDetector(
-                    onTap: widget.isDisplayExpanded
-                        ? () {
-                            onClick();
-                          }
-                        : null,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: Text(
-                              widget.title!,
-                              style: widget.styleTitle ??
-                                  textTheme.titleMedium?.copyWith(
-                                    color: context.appColorScheme
-                                        .colorExtendedTextTitleMedium,
-                                    fontSize: 16,
-                                  ),
-                            ),
+              GestureDetector(
+                onTap: widget.isDisplayExpanded
+                    ? () {
+                        onClick();
+                      }
+                    : null,
+                child: Container(
+                  padding: widget.checkIspaddingTile
+                      ? const EdgeInsets.symmetric(vertical: 16)
+                      : null,
+                  color: widget.checkIspaddingTile ? colorBlueGray01 : null,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Text(
+                            widget.title!,
+                            style: widget.styleTitle ??
+                                textTheme.titleSmall?.copyWith(
+                                  color: context.appColorScheme
+                                      .colorExtendedTextTitleMedium,
+                                ),
                           ),
                         ),
-                        if (widget.iconMore != null) ...[
-                          spaceW8,
-                          widget.iconMore!,
-                        ],
-                        widget.isDisplayExpanded
-                            ? (isExpanded
-                                ? const Icon(CupertinoIcons.chevron_down,
-                                    size: 16)
-                                : const Icon(CupertinoIcons.chevron_down,
-                                    size: 16))
-                            : space0,
-                        spaceW16,
+                      ),
+                      if (widget.iconMore != null) ...[
+                        spaceW8,
+                        widget.iconMore!,
                       ],
-                    ),
+                      widget.isDisplayExpanded
+                          ? (isExpanded
+                              ? const Icon(CupertinoIcons.chevron_down,
+                                  size: 20)
+                              : const Icon(CupertinoIcons.chevron_down,
+                                  size: 20))
+                          : space0,
+                      spaceW16,
+                    ],
                   ),
-                  isExpanded && widget.isDisplayExpanded ? spaceH6 : space0,
-                ],
+                ),
               ),
+              isExpanded && widget.isDisplayExpanded ? spaceH6 : space0,
             ],
             SizeTransition(
               sizeFactor: animation,

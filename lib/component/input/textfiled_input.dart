@@ -60,6 +60,7 @@ class _TextFiledInputState extends State<TextFiledInput> {
               )
             : null,
         hintText: widget.hintext,
+        hintStyle: textTheme.bodyMedium,
         focusedBorder: const UnderlineInputBorder(
           borderSide: BorderSide(
             color: Colors.blueAccent,

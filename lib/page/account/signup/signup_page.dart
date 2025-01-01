@@ -188,7 +188,7 @@ class _SignUpPageState
       onTap: () async {
         Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (builder) => const HomePage()),
+            MaterialPageRoute(builder: (builder) => const HaruViet()),
             (route) => false);
       },
       child: Container(
@@ -240,213 +240,218 @@ class _SignUpPageState
                   username: state.emailChange ?? ''));
         }
       },
-      child: Scaffold(
-        appBar: AppBar(
-          leading: BackButton(
-            color: colorBlack,
-            onPressed: () {
-              context.justBack();
-            },
+      child: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: Scaffold(
+          appBar: AppBar(
+            leading: BackButton(
+              color: colorBlack,
+              onPressed: () {
+                context.justBack();
+              },
+            ),
+            centerTitle: true,
+            elevation: 0.0,
+            backgroundColor: colorTransparent,
+            title: Text(
+              'Đăng ký',
+              style: textTheme.titleMedium
+                  ?.copyWith(color: colorBlack, fontWeight: FontWeight.bold),
+            ),
           ),
-          centerTitle: true,
-          elevation: 0.0,
-          backgroundColor: colorTransparent,
-          title: Text(
-            'Đăng ký',
-            style: textTheme.titleMedium
-                ?.copyWith(color: colorBlack, fontWeight: FontWeight.bold),
-          ),
-        ),
-        body: LoadingScaffold(
-          isLoading: state.isLoading,
-          child: Center(
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 16.w,
-              ),
-              child: Form(
-                key: _formkey,
-                autovalidateMode: autovalidateMode,
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset('assets/images/logo_2.png',
-                          height: 120.r, width: 120.r, fit: BoxFit.cover),
-                      spaceH20,
-                      BlocSelector<SignupBloc, SignupState, NormalError>(
-                        selector: (state) {
-                          return state.errors == null
-                              ? NormalError(email: null, phone: null)
-                              : state.errors!;
-                        },
-                        builder: (context, errors) {
-                          return Column(
-                            children: [
-                              TextFiledInput(
-                                validator: _validationName,
-                                keyboardType: TextInputType.name,
-                                icon: const Icon(
-                                  Icons.person,
+          body: LoadingScaffold(
+            isLoading: state.isLoading,
+            child: Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 16.w,
+                ),
+                child: Form(
+                  key: _formkey,
+                  autovalidateMode: autovalidateMode,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset('assets/logo/logo.png',
+                            height: 120.r, width: 120.r, fit: BoxFit.cover),
+                        spaceH20,
+                        BlocSelector<SignupBloc, SignupState, NormalError>(
+                          selector: (state) {
+                            return state.errors == null
+                                ? NormalError(email: null, phone: null)
+                                : state.errors!;
+                          },
+                          builder: (context, errors) {
+                            return Column(
+                              children: [
+                                TextFiledInput(
+                                  validator: _validationName,
+                                  keyboardType: TextInputType.name,
+                                  icon: const Icon(
+                                    Icons.person,
+                                  ),
+                                  hintext: 'Họ và tên',
+                                  onChanged: (name) {
+                                    bloc.onChangeUserName(name);
+                                  },
+                                  isClear: true,
                                 ),
-                                hintext: 'Họ và tên',
-                                onChanged: (name) {
-                                  bloc.onChangeUserName(name);
-                                },
-                                isClear: true,
-                              ),
-                              spaceH12,
-                              TextFiledInput(
-                                validator: (input) {
-                                  if (errors.phone == null &&
-                                      errors.email == null) {
-                                    return _validationEmail(input);
-                                  } else if (errors.email != null) {
+                                spaceH12,
+                                TextFiledInput(
+                                  validator: (input) {
+                                    if (errors.phone == null &&
+                                        errors.email == null) {
+                                      return _validationEmail(input);
+                                    } else if (errors.email != null) {
+                                      return _validationEmailSever(
+                                          input, errors.email);
+                                    }
                                     return _validationEmailSever(
-                                        input, errors.email);
-                                  }
-                                  return _validationEmailSever(
-                                      input, errors.phone);
-                                },
-                                keyboardType: TextInputType.emailAddress,
-                                icon: const Icon(
-                                  Icons.email_outlined,
+                                        input, errors.phone);
+                                  },
+                                  keyboardType: TextInputType.emailAddress,
+                                  icon: const Icon(
+                                    Icons.email_outlined,
+                                  ),
+                                  hintext: 'Email hoặc số điện thoại',
+                                  onChanged: (email) {
+                                    bloc.checkTextValidator(email);
+                                  },
+                                  isClear: true,
                                 ),
-                                hintext: 'Email hoặc số điện thoại',
-                                onChanged: (email) {
-                                  bloc.checkTextValidator(email);
-                                },
-                                isClear: true,
+                                spaceH12,
+                                PasswordInputV2(
+                                  validator: (password) {
+                                    if (password == null || password.isEmpty) {
+                                      return "Mật khẩu không được để trống";
+                                    } else if (password.length < 6) {
+                                      return "Mật khẩu phải có ít nhất 6 ký tự";
+                                    }
+                                    return null;
+                                  },
+                                  hintText: 'Mật khẩu',
+                                  onChanged: (password) {
+                                    bloc.onChangePassword(password);
+                                  },
+                                  isClear: true,
+                                ),
+                                spaceH12,
+                                PasswordInputV2(
+                                  validator: (rePassword) {
+                                    final password = state.passwordChange;
+                                    if (rePassword != password) {
+                                      return "Mật khẩu không trùng khớp";
+                                    }
+                                    return null;
+                                  },
+                                  hintText: 'Nhập lại mật khẩu',
+                                  onChanged: (rePassword) {
+                                    bloc.onChangeRePassword(rePassword);
+                                  },
+                                  isClear: true,
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                        spaceH20,
+                        _button(context, state),
+                        spaceH16,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            // GestureDetector(
+                            //   onTap: () {
+                            //     bloc.signSocial(2);
+                            //   },
+                            //   child: Container(
+                            //     decoration: BoxDecoration(
+                            //         border: Border.all(
+                            //             color: Theme.of(context).primaryColor),
+                            //         borderRadius: BorderRadius.circular(12.r)),
+                            //     padding: const EdgeInsets.all(8.0),
+                            //     child: Image.asset('assets/images/facebook.png',
+                            //         height: 30.r, width: 30.r, fit: BoxFit.cover),
+                            //   ),
+                            // ),
+                            // spaceW30,
+                            GestureDetector(
+                              onTap: () {
+                                bloc.signSocial(1);
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Theme.of(context).primaryColor),
+                                    borderRadius: BorderRadius.circular(12.r)),
+                                padding: const EdgeInsets.all(8.0),
+                                child: Image.asset('assets/images/google.png',
+                                    height: 30.r,
+                                    width: 30.r,
+                                    fit: BoxFit.cover),
                               ),
-                              spaceH12,
-                              PasswordInputV2(
-                                validator: (password) {
-                                  if (password == null || password.isEmpty) {
-                                    return "Mật khẩu không được để trống";
-                                  } else if (password.length < 6) {
-                                    return "Mật khẩu phải có ít nhất 6 ký tự";
-                                  }
-                                  return null;
-                                },
-                                hintText: 'Mật khẩu',
-                                onChanged: (password) {
-                                  bloc.onChangePassword(password);
-                                },
-                                isClear: true,
-                              ),
-                              spaceH12,
-                              PasswordInputV2(
-                                validator: (rePassword) {
-                                  final password = state.passwordChange;
-                                  if (rePassword != password) {
-                                    return "Mật khẩu không trùng khớp";
-                                  }
-                                  return null;
-                                },
-                                hintText: 'Nhập lại mật khẩu',
-                                onChanged: (rePassword) {
-                                  bloc.onChangeRePassword(rePassword);
-                                },
-                                isClear: true,
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-                      spaceH20,
-                      _button(context, state),
-                      spaceH16,
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              bloc.signSocial(2);
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: Theme.of(context).primaryColor),
-                                  borderRadius: BorderRadius.circular(12.r)),
-                              padding: const EdgeInsets.all(8.0),
-                              child: Image.asset('assets/images/facebook.png',
-                                  height: 30.r, width: 30.r, fit: BoxFit.cover),
                             ),
-                          ),
-                          spaceW30,
-                          GestureDetector(
-                            onTap: () {
-                              bloc.signSocial(1);
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: Theme.of(context).primaryColor),
-                                  borderRadius: BorderRadius.circular(12.r)),
-                              padding: const EdgeInsets.all(8.0),
-                              child: Image.asset('assets/images/google.png',
-                                  height: 30.r, width: 30.r, fit: BoxFit.cover),
+                          ],
+                        ),
+                        spaceH16,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: 1,
+                              width: 50,
+                              color: Colors.grey, // Màu của đường kẻ
                             ),
-                          ),
-                        ],
-                      ),
-                      spaceH16,
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            height: 1,
-                            width: 50,
-                            color: Colors.grey, // Màu của đường kẻ
-                          ),
-                          const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16.0),
-                            child: Text(
-                              "Hoặc đăng nhập bằng",
+                            const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16.0),
+                              child: Text(
+                                "Hoặc đăng nhập bằng",
+                                style: TextStyle(
+                                  color: colorGray04,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              height: 1,
+                              width: 50,
+                              color: Colors.grey,
+                            ),
+                          ],
+                        ),
+                        spaceH16,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              "Đã có tài khoản ?",
                               style: TextStyle(
                                 color: colorGray04,
                                 fontSize: 14,
                               ),
                             ),
-                          ),
-                          Container(
-                            height: 1,
-                            width: 50,
-                            color: Colors.grey,
-                          ),
-                        ],
-                      ),
-                      spaceH16,
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            "Đã có tài khoản ?",
-                            style: TextStyle(
-                              color: colorGray04,
-                              fontSize: 14,
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              context.justBack();
-                            },
-                            child: const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 12),
-                              child: Text(
-                                " Đăng nhập",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  color: colorPrimary,
-                                  fontSize: 14,
+                            GestureDetector(
+                              onTap: () {
+                                context.justBack();
+                              },
+                              child: const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 12),
+                                child: Text(
+                                  " Đăng nhập",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    color: colorPrimary,
+                                    fontSize: 14,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      spaceH30,
-                    ],
+                          ],
+                        ),
+                        spaceH30,
+                      ],
+                    ),
                   ),
                 ),
               ),

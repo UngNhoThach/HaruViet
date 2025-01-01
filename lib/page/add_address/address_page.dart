@@ -207,7 +207,7 @@ class _AddressPageState extends State<AddressPage> {
                                                           children: [
                                                             Expanded(
                                                               child: Text(
-                                                                '${item.address3 ?? ''}, ${item.address2 ?? ''},${item.address1 ?? ''}',
+                                                                '${item.house ?? ''}, ${item.ward ?? ''}, ${item.district ?? ''},${item.province ?? ''}',
                                                                 maxLines: 2,
                                                                 overflow:
                                                                     TextOverflow

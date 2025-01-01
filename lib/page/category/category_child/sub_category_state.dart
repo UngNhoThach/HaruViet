@@ -15,7 +15,7 @@ part 'sub_category_state.g.dart';
 @CopyWith()
 class SubCategoryState extends BaseState {
   final bool isSubmitSuccess;
-  final UserInfoLogin? userInfoLogin;
+  final UserState? userInfoLogin;
   final bool isLoading;
   final bool isLoadingProduct;
   final Map<AtributesCategoryResponse, AtributesValue>? filteredCategories;
@@ -38,7 +38,7 @@ class SubCategoryState extends BaseState {
   final Map<String, String> filterValues;
   final Map<String, String> filterValuesName;
   final Map<String, String> filterValuesID;
-
+  final bool hasLoadedRecommendations;
   final bool checkResetFilter;
   final bool checkIsChangeListItem;
   final bool checkFilterProductList;
@@ -47,6 +47,7 @@ class SubCategoryState extends BaseState {
     ViewState viewState = ViewState.loaded,
     String errorMsg = '',
     this.nameCategory,
+    this.hasLoadedRecommendations = false,
     this.filteredCategories,
     this.isFilter = false,
     this.checkResetFilter = false,

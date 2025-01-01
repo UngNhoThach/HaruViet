@@ -11,7 +11,7 @@ part 'product_list_state.g.dart';
 @CopyWith()
 class ProductListState extends BaseState {
   final bool isSubmitSuccess;
-  final UserInfoLogin? userInfoLogin;
+  final UserState? userInfoLogin;
   final bool isLoading;
   final bool canLoadMore;
   final int currentPage;

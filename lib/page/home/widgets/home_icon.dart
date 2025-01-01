@@ -1,6 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:haruviet/component/shimer/image_product_shimer.dart';
 import 'package:haruviet/helper/colors.dart';
@@ -132,10 +130,10 @@ class ChildCategory extends StatelessWidget {
                       imageUrl: assetImageString,
                       width: 38.w,
                       height: 38.h,
-                      placeholder: (context, url) => ImageProductShimer(
-                        width: 38.w,
-                        height: 38.h,
-                      ), // Use the custom shimmer component
+                      // placeholder: (context, url) => ImageProductShimer(
+                      //   width: 38.w,
+                      //   height: 38.h,
+                      // ), // Use the custom shimmer component
                       errorWidget: (context, url, error) =>
                           const Icon(Icons.error),
                     ),

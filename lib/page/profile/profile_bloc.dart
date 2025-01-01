@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:haruviet/base/base_bloc.dart';
 import 'package:haruviet/data/enum.dart';
 import 'package:haruviet/data/local/user_preferences.dart';
+import 'package:haruviet/data/reponsitory/cart_orders/cart_order_repository.dart';
 import 'package:haruviet/database_local/product/cart_provider_v2.dart';
 import 'package:haruviet/page/profile/profile_state.dart';
 import 'package:haruviet/service/clearedStoredData.dart';
@@ -13,6 +14,7 @@ class ProfileBloc extends BaseBloc<ProfileState> {
   final BuildContext context;
 
   ProfileBloc(this.context) : super(const ProfileState());
+  final CartOrderRepository _cartOrderRepository = CartOrderRepository();
 
   getData() async {
     emit(state.copyWith(
@@ -20,8 +22,16 @@ class ProfileBloc extends BaseBloc<ProfileState> {
     ));
     try {
       final userInfoLogin = await Preference.getUserInfo();
+      final paymentData = await Preference.getPayment();
+      final order = await _cartOrderRepository.getStatusOrderRP();
 
-      emit(state.copyWith(userInfoLogin: userInfoLogin));
+      emit(state.copyWith(
+        listStatusOrder: order.parseDataStatusOrder(),
+        userInfoLogin: userInfoLogin,
+        isLoginSuccess: userInfoLogin != null ? userInfoLogin.isLogin : false,
+        indexShippingMethod:
+            paymentData != null ? paymentData.indexShippingMethod : 0,
+      ));
     } catch (error, statckTrace) {
       if (kDebugMode) {
         print("$error + $statckTrace");

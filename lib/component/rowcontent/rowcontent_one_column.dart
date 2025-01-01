@@ -154,8 +154,8 @@ class _RowContentOneColumnState extends State<RowContentOneColumn>
       child: Padding(
         padding: widget.padding ??
             EdgeInsets.only(
-              left: widget.isPaddingTop ? 4 : 16,
-              right: widget.isPaddingTop ? 4 : 16,
+              left: widget.isPaddingTop ? 0 : 16,
+              right: widget.isPaddingTop ? 0 : 16,
               top: widget.isPaddingTop ? 8 : 0,
               bottom: 16,
             ),
@@ -163,58 +163,52 @@ class _RowContentOneColumnState extends State<RowContentOneColumn>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (widget.title != null) ...[
-              Column(
-                children: [
-                  GestureDetector(
-                    onTap: widget.isDisplayExpanded
-                        ? () {
-                            onClick();
-                          }
-                        : null,
-                    child: Container(
-                      padding: widget.checkIspaddingTile
-                          ? const EdgeInsets.symmetric(vertical: 16)
-                          : null,
-                      color: widget.checkIspaddingTile ? colorGray02 : null,
-                      child: Row(
-                        // /Users/ungnhothach/Desktop/developer/code/app/flutter/eco/eco_basic/haruviet/build/app/outputs/flutter-apk
-                        children: [
-                          Expanded(
-                            child: widget.isRowTitle
-                                ? widget.widgetTile!
-                                : Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 16),
-                                    child: Text(
-                                      widget.title!,
-                                      style: widget.styleTitle ??
-                                          textTheme.titleMedium?.copyWith(
-                                            color: context.appColorScheme
-                                                .colorExtendedTextTitleMedium,
-                                            fontSize: 16,
-                                          ),
-                                    ),
-                                  ),
-                          ),
-                          if (widget.iconMore != null) ...[
-                            spaceW8,
-                            widget.iconMore!,
-                          ],
-                          widget.isDisplayExpanded
-                              ? (isExpanded
-                                  ? const Icon(CupertinoIcons.chevron_up,
-                                      size: 16)
-                                  : const Icon(CupertinoIcons.chevron_down,
-                                      size: 16))
-                              : space0,
-                          spaceW16,
-                        ],
+              GestureDetector(
+                onTap: widget.isDisplayExpanded
+                    ? () {
+                        onClick();
+                      }
+                    : null,
+                child: Container(
+                  padding: widget.checkIspaddingTile
+                      ? const EdgeInsets.symmetric(vertical: 12)
+                      : null,
+                  color: widget.checkIspaddingTile ? colorBlueGray01 : null,
+                  child: Row(
+                    // /Users/ungnhothach/Desktop/developer/code/app/flutter/eco/eco_basic/haruviet/build/app/outputs/flutter-apk
+                    children: [
+                      Expanded(
+                        child: widget.isRowTitle
+                            ? widget.widgetTile!
+                            : Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                child: Text(
+                                  widget.title!,
+                                  style: widget.styleTitle ??
+                                      textTheme.titleSmall?.copyWith(
+                                        color: context.appColorScheme
+                                            .colorExtendedTextTitleMedium,
+                                      ),
+                                ),
+                              ),
                       ),
-                    ),
+                      if (widget.iconMore != null) ...[
+                        spaceW8,
+                        widget.iconMore!,
+                      ],
+                      widget.isDisplayExpanded
+                          ? (isExpanded
+                              ? const Icon(CupertinoIcons.chevron_up, size: 18)
+                              : const Icon(CupertinoIcons.chevron_down,
+                                  size: 18))
+                          : space0,
+                      spaceW16,
+                    ],
                   ),
-                  isExpanded && widget.isDisplayExpanded ? space0 : space0,
-                ],
+                ),
               ),
+              isExpanded && widget.isDisplayExpanded ? space0 : space0,
             ],
             SizeTransition(
               sizeFactor: animation,
@@ -250,10 +244,9 @@ class _RowContentOneColumnState extends State<RowContentOneColumn>
                                       (entry.value ?? '').isNotEmpty
                                           ? entry.value
                                           : '',
-                                      style: textTheme.bodySmall?.copyWith(
-                                        color: context.appColorScheme
-                                            .colorExtendedTextBodySmall,
-                                        height: 1.4,
+                                      style: textTheme.bodyMedium?.copyWith(
+                                        color: colorGray05,
+                                        fontWeight: FontWeight.w400,
                                       ),
                                       maxLines: checkItemExpanded[index]
                                           ? null
@@ -281,11 +274,12 @@ class _RowContentOneColumnState extends State<RowContentOneColumn>
                                               checkItemExpanded[index] = false;
                                             });
                                           },
-                                          child: const Text(
+                                          child: Text(
                                             'Thu gọn',
                                             style: TextStyle(
                                               fontWeight: FontWeight.w500,
-                                              color: colorPrimary,
+                                              color: Theme.of(context)
+                                                  .primaryColorLight,
                                               fontSize: 14,
                                             ),
                                           ),

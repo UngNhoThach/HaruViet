@@ -7,7 +7,7 @@ part of 'list_address.dart';
 // **************************************************************************
 
 ListAddress _$ListAddressFromJson(Map<String, dynamic> json) => ListAddress(
-      status: json['status'] as int?,
+      status: (json['status'] as num?)?.toInt(),
       isStatus: json['is_status'] as bool?,
       message: json['message'] as String?,
       data: (json['data'] as List<dynamic>?)

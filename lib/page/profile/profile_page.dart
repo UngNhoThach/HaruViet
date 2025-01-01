@@ -1,16 +1,19 @@
 import 'package:haruviet/component/loading_scaffold.dart';
 import 'package:haruviet/component/popup/alert/alert_cofirm.dart';
+import 'package:haruviet/component/snackbar/snackbar_bottom.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/context.dart';
 import 'package:haruviet/helper/dialog.dart';
 import 'package:haruviet/helper/spaces.dart';
 import 'package:haruviet/page/account/update_profile/widgets/update_profile_params.dart';
 import 'package:haruviet/page/add_address/add_address/widgets/address_params.dart';
-import 'package:haruviet/page/profile/models/list_profile_selection.dart';
+import 'package:haruviet/page/cart/payment_method/widgets/payment_method_params.dart';
+import 'package:haruviet/page/history_orders/widget/history_order_params.dart';
 import 'package:haruviet/page/profile/profile_bloc.dart';
 import 'package:haruviet/page/profile/profile_state.dart';
 import 'package:haruviet/page/profile/widgets/order_item.dart';
 import 'package:haruviet/page/account/signin/widgets/signin_params.dart';
+import 'package:haruviet/page/view_data_web/widgets/view_data_web_params.dart';
 import 'package:haruviet/resources/routes.dart';
 import 'package:haruviet/service/clearedStoredData.dart';
 import 'package:haruviet/theme/typography.dart';
@@ -18,7 +21,6 @@ import 'package:haruviet/utils/commons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -32,8 +34,6 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   late ProfileBloc bloc;
 
-  // variables and functions
-  List<ListProfileSection> listSection = [];
   Color? previousPrimaryColorColor;
 
   @override
@@ -50,166 +50,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
     if (primaryColorCover != previousPrimaryColorColor) {
       previousPrimaryColorColor = primaryColorCover;
-      createListItem(previousPrimaryColorColor!);
+      //     createListItem(previousPrimaryColorColor!);
     }
-  }
-
-  void createListItem(Color primaryColor) {
-    listSection.add(createSection(
-      "báo",
-      const Image(
-        image: AssetImage('assets/icons/ic_notification.png'),
-        width: 20,
-        height: 20,
-        color: colorGray03,
-      ),
-      Colors.blue.shade800,
-      onTap: () {
-        routeService.pushNamed(
-          Routes.notificationPage,
-        );
-      },
-    ));
-    listSection.add(createSection(
-      "Phương thức thanh toán",
-      const Image(
-        image: AssetImage('assets/icons/ic_payment.png'),
-        width: 20,
-        height: 20,
-        color: colorGray03,
-      ),
-      Colors.teal.shade800,
-      onTap: () {
-        routeService.pushNamed(
-          Routes.paymentMethodPage,
-        );
-      },
-    ));
-    listSection.add(createSection(
-      "Về chúng tôi",
-      const Image(
-        image: AssetImage('assets/icons/ic_about_us.png'),
-        width: 20,
-        height: 20,
-        color: colorGray03,
-      ),
-      Colors.black.withOpacity(0.8),
-      onTap: () {
-        routeService.pushNamed(
-          Routes.aboutPage,
-        );
-      },
-    ));
-    listSection.add(createSection(
-      "Chính sách đổi trả",
-      const Icon(
-        Icons.repeat_rounded,
-        color: colorGray03,
-      ),
-      colorGray03,
-      onTap: () {
-        routeService.pushNamed(
-          Routes.notificationPage,
-        );
-      },
-    ));
-    listSection.add(createSection(
-      "Hỏi đáp",
-      const Icon(
-        Icons.question_mark,
-        color: colorGray03,
-      ),
-      colorGray03,
-      onTap: () {
-        routeService.pushNamed(
-          Routes.notificationPage,
-        );
-      },
-    ));
-    listSection.add(createSection(
-      "Hỗ trợ",
-      const Icon(
-        Icons.support_agent_rounded,
-        color: colorGray03,
-      ),
-      colorGray03,
-      onTap: () {
-        routeService.pushNamed(Routes.supportPage);
-      },
-    ));
-
-    listSection.add(createSection(
-      "Địa chỉ của tôi",
-      const Icon(
-        Icons.location_on_rounded,
-        color: colorGray03,
-      ),
-      primaryColor.withOpacity(0.7),
-      onTap: () {
-        routeService.pushNamed(Routes.addressPage,
-            arguments: AddressParams(
-              isShipping: false,
-              idAddressShipping: '',
-              returnAddress: (dataAddress) {},
-            ));
-      },
-    ));
-    listSection.add(createSection(
-      "Lịch sử mua hàng",
-      const Icon(
-        Icons.history,
-        color: colorGray03,
-      ),
-      colorGray03,
-      onTap: () {
-        routeService.pushNamed(
-          Routes.paymentMethodPage,
-        );
-      },
-    ));
-
-    listSection.add(createSection(
-      "Đổi mật khẩu",
-      const Icon(
-        Icons.change_circle_outlined,
-        color: colorGray03,
-      ),
-      primaryColor.withOpacity(0.7),
-      onTap: () {
-        routeService.pushNamed(Routes.forgetPassWordPage);
-      },
-    ));
-
-    listSection.add(createSection(
-      "Đăng xuất",
-      const Image(
-        image: AssetImage('assets/icons/ic_logout.png'),
-        width: 20,
-        height: 20,
-        color: colorGray03,
-      ),
-      primaryColor.withOpacity(0.7),
-      onTap: () {
-        showConfirmActionSheet(
-          context,
-          message: 'Anh/chị có chắc muốn đăng xuất?',
-          confirmButtonLabel: 'Đồng ý',
-          onConfirm: () {
-            bloc.onLogout();
-          },
-        );
-      },
-    ));
-  }
-
-  createSection(String title, Widget icon, Color color,
-      {required void Function() onTap}) {
-    return ListProfileSection(
-      title: title,
-      icon: icon,
-      color: color,
-      onTap: onTap,
-    );
   }
 
   @override
@@ -239,8 +81,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           spaceH4,
-                          state.userInfoLogin?.isLogin == false ||
-                                  state.userInfoLogin == null
+                          (!state.isLoginSuccess && state.isLoading == false)
                               ? SizedBox(
                                   width:
                                       MediaQuery.of(context).size.width * 0.5,
@@ -250,9 +91,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      const Icon(
+                                      Icon(
                                         Icons.person_add_alt_rounded,
-                                        color: tesst,
+                                        color: Theme.of(context).primaryColor,
                                       ),
                                       GestureDetector(
                                         onTap: () {
@@ -271,7 +112,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 .textTheme
                                                 .bodyMedium
                                                 ?.copyWith(
-                                                    color: tesst,
+                                                    color: Theme.of(context)
+                                                        .primaryColor,
                                                     fontWeight:
                                                         FontWeight.w500),
                                           ),
@@ -301,7 +143,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 .textTheme
                                                 .bodyMedium
                                                 ?.copyWith(
-                                                    color: tesst,
+                                                    color: Theme.of(context)
+                                                        .primaryColor,
                                                     fontWeight:
                                                         FontWeight.w500),
                                           ),
@@ -315,152 +158,163 @@ class _ProfilePageState extends State<ProfilePage> {
                                   state.userInfoLogin == null)
                               ? spaceH16
                               : spaceH16,
-                          Stack(
-                            children: <Widget>[
-                              Card(
-                                margin: const EdgeInsets.only(
-                                  top: 50,
-                                ),
-                                color: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(16.r))),
-                                child: Column(
+                          state.isLoading == false
+                              ? Stack(
                                   children: <Widget>[
-                                    Container(
-                                      margin: EdgeInsets.only(
-                                          left: 8.w,
-                                          top: 8.h,
-                                          right: 8.w,
-                                          bottom: 8.h),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                    Card(
+                                      margin: const EdgeInsets.only(
+                                        top: 50,
+                                      ),
+                                      color: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(16.r))),
+                                      child: Column(
                                         children: <Widget>[
-                                          IconButton(
-                                            icon: const Icon(Icons.settings),
-                                            iconSize: 24.r,
-                                            color: colorGray04,
-                                            onPressed: () {},
-                                          ),
-                                          state.userInfoLogin?.isLogin ==
-                                                      false ||
-                                                  state.userInfoLogin == null
-                                              ? space0
-                                              : IconButton(
-                                                  icon: const Icon(Icons.edit),
-                                                  color: colorGray04,
+                                          Container(
+                                            margin: EdgeInsets.only(
+                                                left: 8.w,
+                                                top: 8.h,
+                                                right: 8.w,
+                                                bottom: 8.h),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: <Widget>[
+                                                IconButton(
+                                                  icon: const Icon(
+                                                      Icons.settings),
                                                   iconSize: 24.r,
-                                                  onPressed: () {
-                                                    routeService.pushNamed(
-                                                        Routes.updateProfile,
-                                                        arguments:
-                                                            UpdateProfileParams(
-                                                      onReload: () {
-                                                        bloc.getData();
-                                                      },
-                                                    ));
-                                                  },
+                                                  color: colorGray04,
+                                                  onPressed: () {},
+                                                ),
+                                                state.userInfoLogin?.isLogin ==
+                                                            false ||
+                                                        state.userInfoLogin ==
+                                                            null
+                                                    ? space0
+                                                    : IconButton(
+                                                        icon: const Icon(
+                                                            Icons.edit),
+                                                        color: colorGray04,
+                                                        iconSize: 24.r,
+                                                        onPressed: () {
+                                                          routeService.pushNamed(
+                                                              Routes
+                                                                  .updateProfile,
+                                                              arguments:
+                                                                  UpdateProfileParams(
+                                                            onReload: () {
+                                                              bloc.getData();
+                                                            },
+                                                          ));
+                                                        },
+                                                      )
+                                              ],
+                                            ),
+                                          ),
+                                          spaceH16,
+                                          Text(
+                                            state.userInfoLogin?.name ?? '',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium
+                                                ?.copyWith(
+                                                  color: Theme.of(context)
+                                                      .primaryColor,
+                                                ),
+                                          ),
+                                          state.isLoginSuccess
+                                              ? spaceH12
+                                              : space0,
+                                          Text(
+                                            state.userInfoLogin?.email ?? '',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium
+                                                ?.copyWith(
+                                                  color: Theme.of(context)
+                                                      .primaryColor,
+                                                ),
+                                          ),
+                                          bloc.state.isLoginSuccess
+                                              ? spaceH12
+                                              : space0,
+                                          bloc.state.isLoginSuccess
+                                              ? Container(
+                                                  height: 1.h,
+                                                  width: double.infinity,
+                                                  color: Colors.grey.shade300,
                                                 )
+                                              : space0,
+                                          bloc.state.isLoginSuccess
+                                              ? Column(
+                                                  children: [
+                                                    Padding(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 16.w),
+                                                      child:
+                                                          _orderHeader(context),
+                                                    ),
+                                                    spaceH16,
+                                                    _orderItem(context),
+                                                  ],
+                                                )
+                                              : space0,
+                                          Container(
+                                            height: 1.h,
+                                            width: double.infinity,
+                                            color: Colors.grey.shade300,
+                                          ),
+                                          _buildListView(context),
                                         ],
                                       ),
                                     ),
-                                    spaceH16,
-                                    (state.userInfoLogin?.isLogin == false ||
-                                            state.userInfoLogin == null)
-                                        ? space0
-                                        : spaceH2,
-                                    Text(
-                                      state.userInfoLogin?.name ?? '',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium
-                                          ?.copyWith(
-                                            color: colorPrimary,
+                                    state.userInfoLogin?.avatar == null ||
+                                            state.userInfoLogin?.avatar == ""
+                                        ? Align(
+                                            alignment: Alignment.topCenter,
+                                            child: CircleAvatar(
+                                              radius: 56.r,
+                                              backgroundColor: colorBlueGray02,
+                                              child: CircleAvatar(
+                                                  radius: 40.r,
+                                                  backgroundColor:
+                                                      colorBlueGray02,
+                                                  child: AspectRatio(
+                                                    aspectRatio: 1,
+                                                    child: Container(),
+                                                  )),
+                                            ))
+                                        : Align(
+                                            alignment: Alignment.topCenter,
+                                            child: CircleAvatar(
+                                              radius: 56.r,
+                                              backgroundColor: Colors.white70,
+                                              child: CircleAvatar(
+                                                  radius: 40.r,
+                                                  child: AspectRatio(
+                                                    aspectRatio: 1,
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                          shape:
+                                                              BoxShape.circle,
+                                                          image: DecorationImage(
+                                                              image: NetworkImage(state
+                                                                      .userInfoLogin
+                                                                      ?.avatar ??
+                                                                  ''),
+                                                              fit: BoxFit
+                                                                  .contain)),
+                                                    ),
+                                                  )),
+                                            ),
                                           ),
-                                    ),
-                                    (state.userInfoLogin?.isLogin == false ||
-                                            state.userInfoLogin == null)
-                                        ? space0
-                                        : spaceH12,
-                                    Text(
-                                      state.userInfoLogin?.email ?? '',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium
-                                          ?.copyWith(
-                                            color: colorPrimary,
-                                          ),
-                                    ),
-                                    spaceH16,
-                                    Container(
-                                      height: 1.h,
-                                      width: double.infinity,
-                                      color: Colors.grey.shade300,
-                                    ),
-                                    Column(
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 16.w),
-                                          child: _orderHeader(context),
-                                        ),
-                                        spaceH16,
-                                        _orderItem(context),
-                                      ],
-                                    ),
-                                    Container(
-                                      height: 1.h,
-                                      width: double.infinity,
-                                      color: Colors.grey.shade300,
-                                    ),
-                                    _buildListView(state),
                                   ],
-                                ),
-                              ),
-                              state.userInfoLogin?.avatar == null ||
-                                      state.userInfoLogin?.avatar == ""
-                                  ? Align(
-                                      alignment: Alignment.topCenter,
-                                      child: CircleAvatar(
-                                        radius: 56.r,
-                                        backgroundColor: colorBlueGray02,
-                                        child: CircleAvatar(
-                                            radius: 40.r,
-                                            backgroundColor: colorBlueGray02,
-                                            child: AspectRatio(
-                                              aspectRatio: 1,
-                                              child: Container(),
-                                            )),
-                                      ))
-                                  : Align(
-                                      alignment: Alignment.topCenter,
-                                      child: CircleAvatar(
-                                        radius: 56.r,
-                                        backgroundColor: Colors.white70,
-                                        child: CircleAvatar(
-                                            radius: 40.r,
-                                            child: AspectRatio(
-                                              aspectRatio: 1,
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        color: Colors
-                                                            .grey.shade400,
-                                                        width: 2.w),
-                                                    shape: BoxShape.circle,
-                                                    image: DecorationImage(
-                                                        image: NetworkImage(
-                                                            state.userInfoLogin
-                                                                    ?.avatar ??
-                                                                ''),
-                                                        fit: BoxFit.contain)),
-                                              ),
-                                            )),
-                                      ),
-                                    ),
-                            ],
-                          ),
+                                )
+                              : space0,
                           spaceH72,
                         ],
                       ),
@@ -490,9 +344,13 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           InkWell(
             onTap: () {
-              routeService.pushNamed(
-                Routes.ordersPage,
-              );
+              bloc.state.isLoginSuccess
+                  ? routeService.pushNamed(Routes.historyOrderPage,
+                      arguments: HistoryOrderParams(
+                          onReload: () {},
+                          listStatusOrder: bloc.state.listStatusOrder))
+                  : routeService.pushNamed(Routes.login,
+                      arguments: SignInParams(typeDirec: 1));
             },
             child: Row(
               children: [
@@ -512,21 +370,152 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  ListView _buildListView(ProfileState state) {
-    return ListView.builder(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemBuilder: (context, index) {
-        return // _itemListProfile();
-            _item(context,
-                onTap: listSection[index].onTap,
-                child: listSection[index].icon,
-                title: listSection[index].title);
-      },
-      itemCount:
-          (state.userInfoLogin?.isLogin == false || state.userInfoLogin == null)
-              ? listSection.length - 4
-              : listSection.length,
+  Widget _buildListView(BuildContext context) {
+    final int indexShippingMethod = bloc.state.indexShippingMethod;
+
+    final bool isLogin = bloc.state.isLoginSuccess;
+
+    return Container(
+      width: 1.sw - 32.w,
+      decoration: BoxDecoration(
+        color: colorWhite,
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      child: Column(
+        children: [
+          isLogin
+              ? _item(
+                  context,
+                  onTap: () {
+                    routeService.pushNamed(Routes.paymentMethodPage,
+                        arguments: PaymentMethodParams(
+                          indexShippingMethod: indexShippingMethod,
+                          shippingMethodFuc:
+                              (valueShippingMethod, indexShippingMethod) {},
+                        ));
+                  },
+                  child: const Image(
+                    image: AssetImage('assets/icons/ic_payment.png'),
+                    width: 20,
+                    height: 20,
+                    color: colorGray03,
+                  ),
+                  title: "Phương thức thanh toán",
+                )
+              : space0,
+          _item(
+            context,
+            onTap: () {
+              routeService.pushNamed(Routes.viewDataWeb,
+                  arguments: ViewDataWebPageParams(
+                      title: 'Về chúng tôi',
+                      url: "https://dev.sni.vn/about.html"));
+            },
+            child: const Image(
+              image: AssetImage('assets/icons/ic_about_us.png'),
+              width: 20,
+              height: 20,
+              color: colorGray03,
+            ),
+            title: "Về chúng tôi",
+          ),
+          _item(
+            context,
+            onTap: () {
+              CustomSnackBar.showTop(
+                  context, 'Chức năng đang được phát triển', null);
+            },
+            child: const Icon(
+              Icons.repeat_rounded,
+              color: colorGray03,
+            ),
+            title: "Chính sách đổi trả",
+          ),
+          _item(
+            context,
+            onTap: () {
+              routeService.pushNamed(Routes.supportPage);
+            },
+            child: const Icon(
+              Icons.support_agent_rounded,
+              color: colorGray03,
+            ),
+            title: "Hỗ trợ",
+          ),
+          isLogin
+              ? _item(
+                  context,
+                  onTap: () {
+                    routeService.pushNamed(Routes.addressPage,
+                        arguments: AddressParams(
+                          isShipping: false,
+                          idAddressShipping: '',
+                          returnAddress: (dataAddress) {},
+                        ));
+                  },
+                  child: const Icon(
+                    Icons.location_on_rounded,
+                    color: colorGray03,
+                  ),
+                  title: "Địa chỉ của tôi",
+                )
+              : space0,
+          isLogin
+              ? _item(
+                  context,
+                  onTap: () {
+                    bloc.state.isLoginSuccess
+                        ? routeService.pushNamed(Routes.historyOrderPage,
+                            arguments: HistoryOrderParams(
+                                onReload: () {},
+                                listStatusOrder: bloc.state.listStatusOrder))
+                        : routeService.pushNamed(Routes.login,
+                            arguments: SignInParams(typeDirec: 1));
+                  },
+                  child: const Icon(
+                    Icons.history,
+                    color: colorGray03,
+                  ),
+                  title: "Lịch sử mua hàng",
+                )
+              : space0,
+          isLogin
+              ? _item(
+                  context,
+                  onTap: () {
+                    routeService.pushNamed(Routes.forgetPassWordPage);
+                  },
+                  child: const Icon(
+                    Icons.change_circle_outlined,
+                    color: colorGray03,
+                  ),
+                  title: "Đổi mật khẩu",
+                )
+              : space0,
+          isLogin
+              ? _item(
+                  context,
+                  onTap: () {
+                    showConfirmActionSheet(
+                      context,
+                      message: 'Anh/chị có chắc muốn đăng xuất?',
+                      confirmButtonLabel: 'Đồng ý',
+                      onConfirm: () {
+                        bloc.onLogout();
+                      },
+                    );
+                  },
+                  child: const Image(
+                    image: AssetImage('assets/icons/ic_logout.png'),
+                    width: 20,
+                    height: 20,
+                    color: colorGray03,
+                  ),
+                  title: "Đăng xuất",
+                )
+              : space0
+        ],
+      ),
     );
   }
 

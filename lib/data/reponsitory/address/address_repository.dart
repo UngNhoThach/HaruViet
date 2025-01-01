@@ -7,11 +7,9 @@ import 'model/list_address/data_list_address.dart';
 
 class AddressRepository {
   final _addressService = AddressService();
-  Future<DataAddress> addAddressRP(
-      {required DataListAddress request, required String authorization}) async {
+  Future<DataAddress> addAddressRP({required DataListAddress request}) async {
     try {
-      final response = await _addressService.addAddressSV(
-          request: request, authorization: authorization);
+      final response = await _addressService.addAddressSV(request: request);
       final result = DataAddress.fromJson(response.data);
       return result;
     } catch (error, statckTrace) {
@@ -22,10 +20,9 @@ class AddressRepository {
     return DataAddress();
   }
 
-  Future<ListAddress> getListAddressRP({required String authorization}) async {
+  Future<ListAddress> getListAddressRP() async {
     try {
-      final response =
-          await _addressService.getListAddressSV(authorization: authorization);
+      final response = await _addressService.getListAddressSV();
       final result = ListAddress.fromJson(response.data);
       return result;
     } catch (error, statckTrace) {
@@ -36,11 +33,10 @@ class AddressRepository {
     return ListAddress();
   }
 
-  Future<ListAddress> deleteAddressSVRP(
-      {required String authorization, required String idAddress}) async {
+  Future<ListAddress> deleteAddressSVRP({required String idAddress}) async {
     try {
-      final response = await _addressService.deleteAddressSV(
-          authorization: authorization, idAddress: idAddress);
+      final response =
+          await _addressService.deleteAddressSV(idAddress: idAddress);
       final result = ListAddress.fromJson(response.data);
       return result;
     } catch (error, statckTrace) {
@@ -53,12 +49,10 @@ class AddressRepository {
 
   //
   Future<DataAddress> editAddressRP(
-      {required DataListAddress request,
-      required String authorization,
-      required String idAddress}) async {
+      {required DataListAddress request, required String idAddress}) async {
     try {
       final response = await _addressService.editAddressSV(
-          request: request, authorization: authorization, idAddress: idAddress);
+          request: request, idAddress: idAddress);
       final result = DataAddress.fromJson(response.data);
       return result;
     } catch (error, statckTrace) {

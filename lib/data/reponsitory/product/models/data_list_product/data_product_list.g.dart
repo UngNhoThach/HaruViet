@@ -8,7 +8,28 @@ part of 'data_product_list.dart';
 
 DataProduct _$DataProductFromJson(Map<String, dynamic> json) => DataProduct(
       id: json['id'] as String?,
+      promotiondetails: (json['promotiondetails'] as List<dynamic>?)
+          ?.map((e) => e == null
+              ? null
+              : Promotiondetail.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      attributes: (json['attributes'] as List<dynamic>?)
+          ?.map((e) => e == null
+              ? null
+              : AttributesProductDetail.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      promotionPrice: json['promotion_price'] == null
+          ? null
+          : ProductPromotionPriceList.fromJson(
+              json['promotion_price'] as Map<String, dynamic>),
+      discountDetail: (json['discountDetail'] as num?)?.toInt() ?? 0,
+      totalPriceItem: (json['totalPriceItem'] as num?)?.toDouble(),
+      totalQuantity: (json['totalQuantity'] as num?)?.toInt(),
       sku: json['sku'] as String?,
+      options: (json['options'] as List<dynamic>?)
+          ?.map((e) =>
+              e == null ? null : Option.fromJson(e as Map<String, dynamic>))
+          .toList(),
       image: json['image'] as String?,
       brand: json['brand'] == null
           ? null
@@ -20,16 +41,16 @@ DataProduct _$DataProductFromJson(Map<String, dynamic> json) => DataProduct(
           ? null
           : Price.fromJson(json['price'] as Map<String, dynamic>),
       cost: json['cost'] as String?,
-      stock: json['stock'] as int?,
-      sold: json['sold'] as int?,
-      minimum: json['minimum'] as int?,
+      stock: (json['stock'] as num?)?.toInt(),
+      sold: (json['sold'] as num?)?.toInt(),
+      minimum: (json['minimum'] as num?)?.toInt(),
       weightClass: json['weight_class'],
       weight: json['weight'] as String?,
-      kind: json['kind'] as int?,
+      kind: (json['kind'] as num?)?.toInt(),
       taxId: json['tax_id'] as String?,
-      approve: json['approve'] as int?,
-      sort: json['sort'] as int?,
-      view: json['view'] as int?,
+      approve: (json['approve'] as num?)?.toInt(),
+      sort: (json['sort'] as num?)?.toInt(),
+      view: (json['view'] as num?)?.toInt(),
       dateLastview: json['date_lastview'] as String?,
       dateAvailable: json['date_available'],
       descriptions: json['descriptions'] == null
@@ -42,16 +63,13 @@ DataProduct _$DataProductFromJson(Map<String, dynamic> json) => DataProduct(
       images: (json['images'] as List<dynamic>?)
           ?.map((e) => ImagesProduct.fromJson(e as Map<String, dynamic>))
           .toList(),
-      promotionPrice: json['promotion_price'] == null
+      discount: json['discount'] == null
           ? null
           : ProductPromotionPriceList.fromJson(
-              json['promotion_price'] as Map<String, dynamic>),
+              json['discount'] as Map<String, dynamic>),
       reviews: json['reviews'] == null
           ? null
-          : ProductReview.fromJson(json['reviews'] as Map<String, dynamic>),
-      promotionDetails: (json['promotiondetails'] as List<dynamic>?)
-          ?.map((e) => ProductMotionDetails.fromJson(e as Map<String, dynamic>))
-          .toList(),
+          : ReviewsResponse.fromJson(json['reviews'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$DataProductToJson(DataProduct instance) =>
@@ -61,6 +79,7 @@ Map<String, dynamic> _$DataProductToJson(DataProduct instance) =>
       'image': instance.image,
       'brand': instance.brand,
       'supplier': instance.supplier,
+      'totalQuantity': instance.totalQuantity,
       'price': instance.price,
       'cost': instance.cost,
       'stock': instance.stock,
@@ -73,12 +92,17 @@ Map<String, dynamic> _$DataProductToJson(DataProduct instance) =>
       'approve': instance.approve,
       'sort': instance.sort,
       'view': instance.view,
+      'totalPriceItem': instance.totalPriceItem,
       'date_lastview': instance.dateLastview,
       'date_available': instance.dateAvailable,
       'descriptions': instance.descriptions,
       'categories': instance.categories,
       'images': instance.images,
-      'promotion_price': instance.promotionPrice,
-      'promotiondetails': instance.promotionDetails,
+      'discount': instance.discount,
       'reviews': instance.reviews,
+      'options': instance.options,
+      'discountDetail': instance.discountDetail,
+      'promotion_price': instance.promotionPrice,
+      'attributes': instance.attributes,
+      'promotiondetails': instance.promotiondetails,
     };

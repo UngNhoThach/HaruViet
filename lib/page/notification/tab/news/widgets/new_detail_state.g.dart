@@ -15,7 +15,7 @@ abstract class _$NewDetailStateCWProxy {
 
   NewDetailState isLoading(bool isLoading);
 
-  NewDetailState userInfoLogin(UserInfoLogin? userInfoLogin);
+  NewDetailState userInfoLogin(UserState? userInfoLogin);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `NewDetailState(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -28,7 +28,7 @@ abstract class _$NewDetailStateCWProxy {
     String? errorMsg,
     bool? isSubmitSuccess,
     bool? isLoading,
-    UserInfoLogin? userInfoLogin,
+    UserState? userInfoLogin,
   });
 }
 
@@ -52,7 +52,7 @@ class _$NewDetailStateCWProxyImpl implements _$NewDetailStateCWProxy {
   NewDetailState isLoading(bool isLoading) => this(isLoading: isLoading);
 
   @override
-  NewDetailState userInfoLogin(UserInfoLogin? userInfoLogin) =>
+  NewDetailState userInfoLogin(UserState? userInfoLogin) =>
       this(userInfoLogin: userInfoLogin);
 
   @override
@@ -91,7 +91,7 @@ class _$NewDetailStateCWProxyImpl implements _$NewDetailStateCWProxy {
       userInfoLogin: userInfoLogin == const $CopyWithPlaceholder()
           ? _value.userInfoLogin
           // ignore: cast_nullable_to_non_nullable
-          : userInfoLogin as UserInfoLogin?,
+          : userInfoLogin as UserState?,
     );
   }
 }

@@ -9,6 +9,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'attributes_product_detail/attributes_product_detail.dart';
 import 'option_product_detail.dart';
 import 'promotiondetail_product_detail.dart';
+import 'reviews_response/reviews_response.dart';
 
 part 'data_product_detail_response.g.dart';
 
@@ -45,16 +46,19 @@ class DataProductDetailResponse {
   dynamic dateAvailable;
   ProductDescription? descriptions;
   List<Category>? categories;
+  @JsonKey(name: 'discount')
+  ProductPromotionPriceList? discount;
   List<ImagesProduct>? images;
   @JsonKey(name: 'promotion_price')
   ProductPromotionPriceList? promotionPrice;
   List<Promotiondetail?>? promotiondetails;
-  dynamic reviews;
+  ReviewsResponse? reviews;
   List<Option?>? options;
   List<AttributesProductDetail?>? attributes;
 
   DataProductDetailResponse({
     this.id,
+    this.discount,
     this.totalPriceItem,
     this.discountDetail = 0,
     this.totalQuantity,

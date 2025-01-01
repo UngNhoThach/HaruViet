@@ -15,14 +15,20 @@ class DataListAddress {
   String? firstNameKana;
   @JsonKey(name: 'last_name_kana')
   String? lastNameKana;
-  String? postcode;
-  String? address1;
-  String? address2;
-  String? address3;
-  @JsonKey(name: 'id_address')
-  String? idAddress;
-  String? country;
+  String? house;
+  String? street;
+  String? ward;
+  String? district;
+  String? province;
+  dynamic postcode;
+  @JsonKey(name: 'id_province')
+  int? idProvince;
+  @JsonKey(name: 'id_district')
+  int? idDistrict;
+  @JsonKey(name: 'id_ward')
+  int? idWard;
   String? phone;
+  String? country;
   @JsonKey(name: 'created_at')
   DateTime? createdAt;
   @JsonKey(name: 'updated_at')
@@ -31,27 +37,32 @@ class DataListAddress {
   bool isShipping;
 
   DataListAddress({
-    this.id,
     this.isDefault = false,
     this.isShipping = false,
+    this.id,
     this.customerId,
     this.firstName,
-    this.idAddress,
     this.lastName,
     this.firstNameKana,
     this.lastNameKana,
+    this.house,
+    this.street,
+    this.ward,
+    this.district,
+    this.province,
     this.postcode,
-    this.address1,
-    this.address2,
-    this.address3,
-    this.country,
+    this.idProvince,
+    this.idDistrict,
+    this.idWard,
     this.phone,
+    this.country,
     this.createdAt,
     this.updatedAt,
   });
 
-  factory DataListAddress.fromJson(Map<String, dynamic> json) =>
-      _$DataListAddressFromJson(json);
+  factory DataListAddress.fromJson(Map<String, dynamic> json) {
+    return _$DataListAddressFromJson(json);
+  }
 
   Map<String, dynamic> toJson() => _$DataListAddressToJson(this);
 
@@ -62,36 +73,44 @@ class DataListAddress {
     String? lastName,
     String? firstNameKana,
     String? lastNameKana,
-    String? postcode,
-    String? address1,
-    String? address2,
-    String? address3,
-    String? idAddress,
-    String? country,
+    String? house,
+    String? street,
+    String? ward,
+    String? district,
+    String? province,
+    dynamic postcode,
+    int? idProvince,
+    int? idDistrict,
+    int? idWard,
     String? phone,
+    String? country,
     DateTime? createdAt,
     DateTime? updatedAt,
     bool? isDefault,
     bool? isShipping,
   }) {
     return DataListAddress(
-      isShipping: isShipping ?? this.isShipping,
-      address1: address1 ?? this.address1,
-      address2: address2 ?? this.address2,
-      address3: address3 ?? this.address3,
       country: country ?? this.country,
       createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
       customerId: customerId ?? this.customerId,
+      district: district ?? this.district,
       firstName: firstName ?? this.firstName,
       firstNameKana: firstNameKana ?? this.firstNameKana,
+      house: house ?? this.house,
       id: id ?? this.id,
-      idAddress: idAddress ?? this.idAddress,
+      idDistrict: idDistrict ?? this.idDistrict,
+      idProvince: idProvince ?? this.idProvince,
+      idWard: idWard ?? this.idWard,
       isDefault: isDefault ?? this.isDefault,
+      isShipping: isShipping ?? this.isShipping,
       lastName: lastName ?? this.lastName,
       lastNameKana: lastNameKana ?? this.lastNameKana,
       phone: phone ?? this.phone,
       postcode: postcode ?? this.postcode,
+      province: province ?? this.province,
+      street: street ?? this.street,
+      updatedAt: updatedAt ?? this.updatedAt,
+      ward: ward ?? this.ward,
     );
   }
 }

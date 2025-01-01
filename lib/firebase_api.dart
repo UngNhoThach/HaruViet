@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
@@ -9,6 +11,11 @@ class FireBaseApi {
       sound: true,
       badge: true,
     );
+  }
+
+  Future settingNotification() async {
+    final firebaseMessaging = FirebaseMessaging.instance;
+    await firebaseMessaging.requestPermission();
   }
 
   void connectNotrifc() async {

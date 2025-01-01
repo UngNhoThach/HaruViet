@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:haruviet/helper/colors.dart';
+import 'package:haruviet/theme/typography.dart';
 
 class PasswordInputV2 extends StatefulWidget {
   const PasswordInputV2({
@@ -54,6 +55,7 @@ class _PasswordInputState extends State<PasswordInputV2> {
         prefixIconConstraints: const BoxConstraints(
           minWidth: 0,
         ),
+        hintStyle: textTheme.bodyMedium,
         hintText: widget.hintText,
         focusedBorder: const UnderlineInputBorder(
           borderSide: BorderSide(

@@ -9,12 +9,12 @@ part of 'user_update_info_response.dart';
 UserUpdateInfoResponse _$UserUpdateInfoResponseFromJson(
         Map<String, dynamic> json) =>
     UserUpdateInfoResponse(
-      status: json['status'] as int?,
+      status: (json['status'] as num?)?.toInt(),
       isStatus: json['is_status'] as bool?,
       message: json['message'] as String?,
       data: json['data'] == null
           ? null
-          : DataUserUpdateInfo.fromJson(json['data'] as Map<String, dynamic>),
+          : UserState.fromJson(json['data'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$UserUpdateInfoResponseToJson(

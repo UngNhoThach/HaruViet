@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:haruviet/component/error/not_found_item.dart';
 import 'package:haruviet/component/shimer/shimer.dart';
-import 'package:haruviet/data/data_local/user_bloc.dart';
+import 'package:haruviet/data/data_local/setting_app_bloc.dart';
 import 'package:haruviet/data/reponsitory/cart_orders/models/cart_order_response/data_cart_response.dart';
 import 'package:haruviet/gen/assets.gen.dart';
 import 'package:haruviet/helper/colors.dart';
@@ -53,7 +53,7 @@ class _HistoryOrderTabState extends State<HistoryOrderTab> {
   @override
   void initState() {
     super.initState();
-    domain = context.read<UserBloc>().state.subDomain ?? '';
+    domain = context.read<SettingAppBloc>().state.xUrl ?? '';
 
     bloc = context.read<HistoryOrderTabBloc>()
       ..getData(
@@ -208,7 +208,7 @@ class _HistoryOrderTabState extends State<HistoryOrderTab> {
                         margin: const EdgeInsets.symmetric(vertical: 8.0),
                         padding: const EdgeInsets.all(12.0),
                         decoration: BoxDecoration(
-                          color: previousPrimaryColorColor.withOpacity(0.04),
+                          color: previousPrimaryColorColor.withOpacity(0.01),
                           borderRadius:
                               BorderRadius.circular(8.0), // Tạo bo góc cho item
                         ),

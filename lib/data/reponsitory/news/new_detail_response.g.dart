@@ -128,7 +128,7 @@ extension $NewDetailResponseCopyWith on NewDetailResponse {
 
 NewDetailResponse _$NewDetailResponseFromJson(Map<String, dynamic> json) =>
     NewDetailResponse(
-      id: json['Id'] as int?,
+      id: (json['Id'] as num?)?.toInt(),
       amount: json['Amount'] as String?,
       code: json['Code'] as String?,
       image: json['Image'] as String?,

@@ -1,6 +1,5 @@
+import 'package:haruviet/data/data_local/user_state.dart';
 import 'package:json_annotation/json_annotation.dart';
-
-import 'data_user_update_info.dart';
 
 part 'user_update_info_response.g.dart';
 
@@ -10,7 +9,7 @@ class UserUpdateInfoResponse {
   @JsonKey(name: 'is_status')
   bool? isStatus;
   String? message;
-  DataUserUpdateInfo? data;
+  UserState? data;
 
   UserUpdateInfoResponse({
     this.status,

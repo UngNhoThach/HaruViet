@@ -5,7 +5,6 @@ import 'package:haruviet/api/services/cart_orders/models/remove_item_from_cart_r
 import 'package:haruviet/base/base_bloc.dart';
 import 'package:haruviet/data/local/user_preferences.dart';
 import 'package:haruviet/data/reponsitory/cart_orders/cart_order_repository.dart';
-import 'package:haruviet/data/reponsitory/cart_orders/models/get_cart_order_response/attributes.dart';
 import 'package:haruviet/data/reponsitory/cart_orders/models/get_cart_order_response/get_cart_order_response.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_list_product/data_product_list.dart';
 import 'package:haruviet/data/reponsitory/product/models/product_response.dart';
@@ -42,79 +41,13 @@ class CartBloc extends BaseBloc<CartState> {
     // count tax and weight
     double weight = 0.0;
     var tax = 0;
-
-// check price, gift product
-    // if (productsList.isEmpty) {
-    //   cart.resetTotalPrice();
-    // } else {
-    // final List<CartCheckPrice> cartCheckPrice = [];
-
-    // use for check first time get listAttributeCheckPrice
-    // List<AttributeCheckPrice?> listAttributeCheckPrice =
-    //     List.from(state.attributeCheckPrice);
-    // for (var i = 0; i < productsList.length; i++) {
-    //   // define attribute price for check
-    //   AttributeCheckPrice? attributeCheckPrice;
-    //   attributeCheckPrice ??= AttributeCheckPrice(options: []);
-    //   // check if element have options empty or null
-    //   if (listAttributeCheckPrice.length != productsList.length) {
-    //     if (productsList[i].options == null ||
-    //         productsList[i].options!.isEmpty) {
-    //       // add the attribute into list attribute if options is empty
-    //       listAttributeCheckPrice.add(null);
-    //     } else {
-    //       for (var option in productsList[i].options!) {
-    //         // check if values of option are empty or null
-    //         if (option!.values == null || option.values!.isEmpty) {
-    //         } else {
-    //           for (var value in option.values!) {
-    //             if (value.isSelected == true) {
-    //               attributeCheckPrice.options?.add(value.id);
-    //               print('${(value.id)}');
-    //             }
-    //           }
-    //         }
-    //       }
-    //       // add the attribute into list attribute if isselected is true
-    //       listAttributeCheckPrice.add(attributeCheckPrice);
-    //     }
-    //   } else {}
-
-    //   // convertToKilogram
-    //   weight = coutWeightToDouble(
-    //       productsList[i].weight, productsList[i].totalQuantity);
-    //   weight = convertToKilogram(
-    //       unit: productsList[i].weightClass ?? '',
-    //       value: coutWeightToDouble(
-    //           productsList[i].weight, productsList[i].totalQuantity));
-    //   // tax = productsList[i].taxId;
-    //   // after handle options and values, and it into cartCheckPrice
-    //   cartCheckPrice.add(CartCheckPrice(
-    //       productId: productsList[i].id,
-    //       qty: productsList[i].totalQuantity,
-    //       attribute: listAttributeCheckPrice[i]));
-    // }
-    // emit(
-    //   state.copyWith(attributeCheckPrice: listAttributeCheckPrice),
-    // );
-
-    // final checkOrderPriceResponse =
-    //     await _cartOrderRepository.checkOrderPriceRP(
-    //         request: CheckOrderPriceRequest(
-    //             customerType: "",
-    //             customerUsageCount: "",
-    //             inputCoupon: "",
-    //             paymentMethod: "",
-    //             cart: cartCheckPrice));
-
     // start get user order from server
     List<DataProduct> listGiftProduct = [];
 
     final listItemsCartOrder = await _cartOrderRepository.getCartOrderRP();
     // end get user order from server
-
+    int totalItem = 0;
     var discountOrder = 0;
-    var totalItem = 0;
     var discountDetail = 0;
     var isFreeShipping = false;
     double totalPriceItem = 0.0;
@@ -122,12 +55,11 @@ class CartBloc extends BaseBloc<CartState> {
     // start check is free shipping
     isFreeShipping = listItemsCartOrder
             .firstWhere(
-                (element) => element.attributes != null
-                    ? element.attributes?.freeShipping == false
-                    : false,
+                (element) =>
+                    element != null ? element.freeShipping == false : false,
                 orElse: () => GetCartOrderResponse(
-                    attributes: AttributesGetCartOrder(freeShipping: true)))
-            .attributes!
+                      freeShipping: true,
+                    ))
             .freeShipping ==
         true;
     // end check is free shipping
@@ -141,14 +73,14 @@ class CartBloc extends BaseBloc<CartState> {
 
         if (element.attributes == null) {
         } else {
-          discountOrder += element.attributes?.discountOrder ?? 0;
-          discountDetail += element.attributes?.discountDetail ?? 0;
-          if (element.attributes!.gift == null) {
+          discountOrder += element.discount ?? 0;
+          discountDetail += element.discount ?? 0;
+          if (element.gift == null) {
           } else {
             // add gift
 
-            final itemGift = await onGetGift(
-                idProduct: element.attributes?.gift?.giftId ?? '');
+            final itemGift =
+                await onGetGift(idProduct: element.gift?.giftId ?? '');
             listGiftProduct.add(itemGift);
           }
         }
@@ -219,8 +151,11 @@ class CartBloc extends BaseBloc<CartState> {
     ));
     if (response.success == null || !response.success!) {
       emit(state.copyWith(
-          message: 'Sản phẩm không còn đủ số lượng',
-          isUpdateDone: !state.isUpdateDone));
+        message: response.message,
+        isUpdateDone: !state.isUpdateDone,
+        isNextPage: true,
+      ));
+
       print(response);
     } else {
       getData();
@@ -343,7 +278,7 @@ class CartBloc extends BaseBloc<CartState> {
           //     //           cart.addTotalPrice((totalPriceItem));
           //   }
           // }
-          //   getDefaultPrice();
+          //  getDefaultPrice();
           return element.copy(
             totalQuantity: value,
           );

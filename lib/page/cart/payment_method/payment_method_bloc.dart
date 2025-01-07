@@ -11,25 +11,29 @@ class PaymentMethodBloc extends BaseBloc<PaymentMethodState> {
     emit(state.copyWith(
       isLoading: true,
     ));
-    List<String> methodNames = [
-      'Thanh toán khi nhận hàng (COD)',
-      'Thẻ ATM nội địa/Internet Banking (Hỗ trợ Internet Banking)',
-      'Thanh toán bằng Momo',
-    ];
 
-    emit(state.copyWith(
-      methodNames: methodNames,
-      indexShippingMethod: params.indexShippingMethod,
-      valueShipping: methodNames[params.indexShippingMethod!],
-    ));
+    if (params.dataPayment == null) {
+    } else {
+      int indexShippingMethod = params.dataPayment!
+          .indexWhere((element) => element.key == params.keyPaymentMethod);
+      emit(state.copyWith(
+        valueShipping: params.valueShipping,
+        keyPaymentMethod: params.keyPaymentMethod,
+        dataPayment: params.dataPayment,
+        indexShippingMethod: indexShippingMethod,
+      ));
+    }
     emit(state.copyWith(
       isLoading: false,
     ));
   }
 
   onChangeShippingMethod(
-      {required int indexShippingMethod, required String valueShipping}) {
+      {required int indexShippingMethod,
+      required String valueShipping,
+      required String keyPaymentMethod}) {
     emit(state.copyWith(
+        keyPaymentMethod: keyPaymentMethod,
         indexShippingMethod: indexShippingMethod,
         valueShipping: valueShipping));
   }

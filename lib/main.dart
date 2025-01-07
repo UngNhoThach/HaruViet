@@ -65,6 +65,9 @@ import 'page/account/reset_password/reset_password_page.dart';
 import 'page/account/reset_password/widgets/reset_password_params.dart';
 import 'page/add_address/add_address/widgets/add_address_params.dart';
 import 'page/add_address/add_address/widgets/address_params.dart';
+import 'page/brands/brands_list_page.dart';
+import 'page/cart/cart_order_voucher/cart_order_voucher_page.dart';
+import 'page/cart/cart_order_voucher/widgets/cart_order_voucher_params.dart';
 import 'page/cart/payment_method/widgets/payment_method_params.dart';
 import 'page/history_orders/tab/order_detail/order_detail_page.dart';
 import 'page/history_orders/tab/widgets/order_detail_params.dart';
@@ -367,6 +370,13 @@ class _HaruVietState extends State<HaruViet> {
         );
 
       // CART
+      case Routes.cartOrderVoucherPage:
+        return MaterialPageRoute(
+          settings: const RouteSettings(name: Routes.cartOrderVoucherPage),
+          builder: (_) => CartOrderVoucherPage(
+            params: settings.arguments! as CartOrderVoucherParams,
+          ),
+        );
       case Routes.cartPage:
         return MaterialPageRoute(
           settings: const RouteSettings(name: Routes.cartPage),
@@ -417,6 +427,14 @@ class _HaruVietState extends State<HaruViet> {
         return MaterialPageRoute(
           settings: const RouteSettings(name: Routes.supportPage),
           builder: (_) => const SupportPage(),
+        );
+
+      // BRANDS
+
+      case Routes.brandsListPage:
+        return MaterialPageRoute(
+          settings: const RouteSettings(name: Routes.brandsListPage),
+          builder: (_) => const BrandsListPage(),
         );
 
       default:

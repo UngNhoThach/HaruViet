@@ -382,11 +382,12 @@ class CartModelProduct {
       price: product.price != null
           ? Price(
               totalQuantity: product.qty,
-              price: product.price,
+              // missing here
+              //  price: product.price,
               priceStr: '',
               exchangeRate: 0,
               currency: '',
-              discountDetail: product.attributes?.discountDetail)
+              discountDetail: product.discount)
           : Price(
               totalQuantity: 0,
               price: 0,

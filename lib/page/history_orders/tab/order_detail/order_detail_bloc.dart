@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:haruviet/data/enum.dart';
 import 'package:haruviet/data/local/user_preferences.dart';
 import 'package:haruviet/data/reponsitory/cart_orders/cart_order_repository.dart';
-import 'package:haruviet/data/reponsitory/product/product_repository.dart';
 import 'package:haruviet/helper/const.dart';
 import 'package:haruviet/page/history_orders/tab/widgets/order_detail_params.dart';
 
@@ -13,7 +12,6 @@ class OrderDetailBloc extends Cubit<OrderDetailState> {
   final OrderDetailParams params;
 
   final CartOrderRepository _cartOrderRepository = CartOrderRepository();
-  final ProductRepository _productRepository = ProductRepository();
 
   //
   OrderDetailBloc({required this.params}) : super(const OrderDetailState());

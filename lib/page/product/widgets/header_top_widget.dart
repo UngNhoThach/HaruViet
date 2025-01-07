@@ -15,9 +15,11 @@ class TopCategoriesHeader extends StatelessWidget {
   final Color? backgroundColor;
   final bool isViewMore;
   final Color? colorText;
+  final EdgeInsetsGeometry? padding;
 
   const TopCategoriesHeader({
     Key? key,
+    this.padding,
     this.backgroundColor,
     this.colorText,
     required this.title,
@@ -30,7 +32,7 @@ class TopCategoriesHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
+      padding: padding ?? const EdgeInsets.symmetric(horizontal: 12),
       decoration: isBorder
           ? BoxDecoration(
               color: backgroundColor ?? colorBlueGray01, boxShadow: shadowE1)

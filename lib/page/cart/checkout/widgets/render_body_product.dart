@@ -138,15 +138,15 @@ class _ProductListWidgetViewMoreState extends State<ProductListWidgetViewMore> {
                             //
                             ),
                         //      if (item.price.discountDetail != 0) ...[
-                        if (item.attributes?.discountDetail != 0) ...[
-                          spaceH4,
-                          Text(
-                            '- ${defaultCurrencyVNDFormatter.formatString((item.attributes?.discountDetail).toString())}',
-                            style: textTheme.bodyMedium?.copyWith(
-                              color: colorGray03,
-                            ),
-                          ),
-                        ]
+                        // if (item.attributes?.discountDetail != 0) ...[
+                        //   spaceH4,
+                        //   Text(
+                        //     '- ${defaultCurrencyVNDFormatter.formatString((item.attributes?.discountDetail).toString())}',
+                        //     style: textTheme.bodyMedium?.copyWith(
+                        //       color: colorGray03,
+                        //     ),
+                        //   ),
+                        // ]
                       ],
                     ),
                   ]),

@@ -3,11 +3,11 @@ import 'package:haruviet/component/loading/loading.dart';
 import 'package:haruviet/component/snackbar/snackbar_bottom.dart';
 import 'package:haruviet/data/data_local/setting_app_bloc.dart';
 import 'package:haruviet/data/reponsitory/address/model/list_address/data_list_address.dart';
-import 'package:haruviet/data/reponsitory/cart_orders/models/get_cart_order_response/get_cart_order_response.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/const.dart';
 import 'package:haruviet/helper/spaces.dart';
 import 'package:haruviet/page/add_address/add_address/widgets/address_params.dart';
+import 'package:haruviet/page/cart/cart_order_voucher/widgets/cart_order_voucher_params.dart';
 import 'package:haruviet/page/cart/checkout/checkout_bloc.dart';
 import 'package:haruviet/page/cart/checkout/checkout_state.dart';
 import 'package:haruviet/page/cart/checkout/widgets/checkout_params.dart';
@@ -39,7 +39,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
 
   late CheckOutBloc bloc;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
-  final FocusNode _focusNodeVoucher = FocusNode();
+  // final FocusNode _focusNodeVoucher = FocusNode();
   final FocusNode _focusNodeNote = FocusNode();
 
   final TextStyle styleSubTitle = const TextStyle(
@@ -66,7 +66,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
   @override
   void dispose() {
     _focusNodeNote.dispose();
-    _focusNodeVoucher.dispose();
+    // _focusNodeVoucher.dispose();
     super.dispose();
   }
 
@@ -101,68 +101,135 @@ class _CheckOutPageState extends State<CheckOutPage> {
                 body: Builder(builder: (context) {
                   return state.isLoading
                       ? const LoadingLogo()
-                      : SingleChildScrollView(
+                      : CustomScrollView(
                           physics: const BouncingScrollPhysics(),
-                          child: Column(
-                            children: <Widget>[
-                              standardCheckOutMethod(
-                                  indexShippingMethod:
-                                      state.indexShippingMethod,
-                                  valueShippingMethod:
-                                      state.valueShippingMethod!),
-                              const Divider(
-                                color: colorGray02,
-                                height: 1,
-                                thickness: 10,
-                              ),
-                              _selectedAddressWidget(
-                                  idAddressShipping: state.idAddressShipping!,
-                                  addressShipping: state.addressShipping!),
-                              const Divider(
-                                color: colorGray02,
-                                height: 1,
-                                thickness: 10,
-                              ),
-                              standardDelivery(
-                                state: state,
-                              ),
+                          slivers: [
+                              SliverList(
+                                  delegate: SliverChildListDelegate([
+                                standardCheckOutMethod(
+                                  subtitleWidget:
+                                      state.valueShippingMethod ?? '',
+                                  titleWidget: 'Phương thức thanh toán',
+                                  onTap: () {
+                                    routeService.pushNamed(
+                                        Routes.paymentMethodPage,
+                                        arguments: PaymentMethodParams(
+                                          valueShipping:
+                                              bloc.state.valueShippingMethod,
+                                          dataPayment: bloc.state
+                                                  .paymentResponse?.data ??
+                                              [],
+                                          keyPaymentMethod:
+                                              state.keyPaymentMethod ?? '',
+                                          shippingMethodFuc:
+                                              (valueShippingMethod,
+                                                  keyPaymentMethod) {
+                                            bloc.onChangeValueShippingMethod(
+                                                keyPaymentMethod:
+                                                    keyPaymentMethod ?? '',
+                                                valueShippingMethod:
+                                                    valueShippingMethod!);
+                                          },
+                                        ));
+                                  },
+                                ),
+                                const Divider(
+                                  color: colorGray02,
+                                  height: 1,
+                                  thickness: 10,
+                                ),
+                                standardCheckOutMethod(
+                                  colorBackground:
+                                      colorRadioSelectedBlueBr.withOpacity(0.3),
+                                  subWidget: RichText(
+                                    text: TextSpan(children: [
+                                      TextSpan(
+                                          style: styleSubPrice,
+                                          text: state.codeSelected == ''
+                                              ? ''
+                                              : 'code: ${state.codeSelected.substring(1, 6)}'),
+                                      TextSpan(
+                                          text: state.discoutTotal == 0
+                                              ? ''
+                                              : ' (- ${defaultCurrencyVNDFormatter.formatString(state.discoutTotal.toString())})',
+                                          style: styleSubPrice)
+                                    ]),
+                                  ),
+                                  subtitleWidget: ' ',
+                                  titleWidget: 'Áp dụng voucher',
+                                  onTap: () {
+                                    routeService.pushNamed(
+                                        Routes.cartOrderVoucherPage,
+                                        arguments: CartOrderVoucherParams(
+                                          voucherMethodFuc: (
+                                              {required codeSelected,
+                                              required discountAmount,
+                                              required totalPrice}) {
+                                            bloc.onVoucherMethodChange(
+                                                codeSelected: codeSelected,
+                                                discountAmount: discountAmount,
+                                                totalPrice: totalPrice);
+                                          },
+                                          codeSelected: state.codeSelected,
+                                          discountAmount: state.discoutTotal,
+                                          totalPrice: (state.totalPrice ?? 0) +
+                                              (state.dataFeeShipping?.value ??
+                                                  0),
+                                        ));
+                                  },
+                                ),
+                                const Divider(
+                                  color: colorGray02,
+                                  height: 1,
+                                  thickness: 10,
+                                ),
+                                _selectedAddressWidget(
+                                    idAddressShipping: state.idAddressShipping!,
+                                    addressShipping: state.addressShipping!),
+                                const Divider(
+                                  color: colorGray02,
+                                  height: 1,
+                                  thickness: 10,
+                                ),
+                                standardDelivery(
+                                  state: state,
+                                ),
 
-                              const Divider(
-                                color: colorGray02,
-                                height: 1,
-                                thickness: 10,
-                              ),
-                              ProductListWidgetViewMore(
-                                productList: state.productsList,
-                                domain: domain,
-                                styleSubPrice: styleSubTitle,
-                                styleSubTitle: styleSubTitle,
-                              ),
+                                const Divider(
+                                  color: colorGray02,
+                                  height: 1,
+                                  thickness: 10,
+                                ),
+                                ProductListWidgetViewMore(
+                                  productList: state.productsList,
+                                  domain: domain,
+                                  styleSubPrice: styleSubTitle,
+                                  styleSubTitle: styleSubTitle,
+                                ),
 
-                              // renderBody(context,
-                              //     productList: state.productsList),
-                              // _checkoutWidget(context,
-                              //     productList: state.productsList),
-                              const Divider(
-                                color: colorGray02,
-                                height: 1,
-                                thickness: 10,
-                              ),
-                              _standardNote(context),
-                              const Divider(
-                                color: colorGray02,
-                                height: 1,
-                                thickness: 10,
-                              ),
-                              standardFinal(
-                                total: state.totalPrice ?? 0,
-                                fee: 1000,
-                                // state.shipmentResponse?.fee?.fee ?? 0
-                              ),
-                              spaceH100,
-                            ],
-                          ),
-                        );
+                                // renderBody(context,
+                                //     productList: state.productsList),
+                                // _checkoutWidget(context,
+                                //     productList: state.productsList),
+                                const Divider(
+                                  color: colorGray02,
+                                  height: 1,
+                                  thickness: 10,
+                                ),
+                                _standardNote(context),
+                                const Divider(
+                                  color: colorGray02,
+                                  height: 1,
+                                  thickness: 10,
+                                ),
+                                standardFinal(
+                                  total: state.totalPrice ?? 0,
+                                  fee: state.dataFeeShipping?.value ?? 0,
+                                  // state.shipmentResponse?.fee?.fee ?? 0
+                                ),
+                                spaceH100
+                              ]))
+                            ]);
                 }),
               );
             },
@@ -264,24 +331,14 @@ class _CheckOutPageState extends State<CheckOutPage> {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
-        // routeService.pushNamed(Routes.shipmentPage,
-        //     arguments: ShipmentParams(
-        //       selectedShipment: state.selectedShipment,
-        //       selectShipmentFunc: (selectedShipment) {
-        //         bloc.onChangeSelectedShipment(
-        //             selectedShipment: selectedShipment!);
-        //       },
-        //       titleSelected: state.titleSelected ?? '',
-        //       weight: widget.params.weight,
-        //       shippingAddress: state.shippingAddress,
-        //       totalPrice: state.totalPrice ?? 0,
-        //       shipmentResponse: state.shipmentResponse!,
-        //       shipmenFunc: (shipmentResponse, titleSelected) {
-        //         bloc.onChangeShipmentMethod(
-        //             titleSelected: titleSelected,
-        //             shipmentResponse: shipmentResponse!);
-        //       },
-        //     ));
+        // checkShippingFreeResponse
+        routeService.pushNamed(Routes.shipmentPage,
+            arguments: ShipmentParams(
+                selectedItemShipment: state.dataFeeShipping!,
+                selectShipmentFunc: (dataPayment) {
+                  bloc.onChangeShippingMethod(dataPayment: dataPayment!);
+                },
+                data: state.checkShippingFreeResponse?.data ?? []));
       },
       child: Container(
         decoration:
@@ -308,20 +365,17 @@ class _CheckOutPageState extends State<CheckOutPage> {
                           Text("Phương thức vận chuyển nhấn để chọn",
                               style: styleSubTitle),
                           spaceH6,
-                          Text(state.titleSelected ?? '', style: styleTitle),
+                          Text(state.dataFeeShipping?.title ?? '',
+                              style: styleTitle),
                           spaceH6,
                           RichText(
                             text: TextSpan(children: [
+                              TextSpan(style: styleSubPrice),
                               TextSpan(
-                                  //   text: "17 tháng 2 - 2024  |  ",
-                                  style: styleSubPrice),
-                              TextSpan(
-                                  text: "100",
-                                  // defaultCurrencyVNDFormatter.formatString(
-                                  //     state.shipmentResponse?.fee?.fee
-                                  //             .toString() ??
-                                  //         "0"
-                                  //            ),
+                                  text:
+                                      defaultCurrencyVNDFormatter.formatString(
+                                          (state.dataFeeShipping?.value)
+                                              .toString()),
                                   style: styleSubPrice)
                             ]),
                           ),
@@ -345,23 +399,19 @@ class _CheckOutPageState extends State<CheckOutPage> {
     );
   }
 
-  standardCheckOutMethod(
-      {required String valueShippingMethod, required int indexShippingMethod}) {
+  standardCheckOutMethod({
+    // breaking here
+    required void Function()? onTap,
+    Color? colorBackground,
+    required String titleWidget,
+    Widget? subWidget,
+    required String subtitleWidget,
+  }) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () {
-        routeService.pushNamed(Routes.paymentMethodPage,
-            arguments: PaymentMethodParams(
-              indexShippingMethod: indexShippingMethod,
-              shippingMethodFuc: (valueShippingMethod, indexShippingMethod) {
-                bloc.onChangeValueShippingMethod(
-                    indexShippingMethod: indexShippingMethod!,
-                    valueShippingMethod: valueShippingMethod!);
-              },
-            ));
-      },
+      onTap: onTap,
       child: Container(
-        decoration: const BoxDecoration(color: colorWhite),
+        decoration: BoxDecoration(color: colorBackground ?? colorWhite),
         child: Row(
           children: [
             Expanded(
@@ -377,16 +427,23 @@ class _CheckOutPageState extends State<CheckOutPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            Text("Phương thức thanh toán", style: styleTitle),
+                            Text(titleWidget,
+                                style: colorBackground != null
+                                    ? styleSubTitle
+                                    : styleTitle),
+                            // Text("Phương thức thanh toán", style: styleTitle),
                             spaceH6,
-                            Text(
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              valueShippingMethod,
-                              style: textTheme.bodyMedium?.copyWith(
-                                color: colorSuccess03,
-                              ),
-                            )
+                            subWidget ??
+                                Text(
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  subtitleWidget, //   valueShippingMethod,
+                                  style: colorBackground != null
+                                      ? styleTitle
+                                      : textTheme.bodyMedium?.copyWith(
+                                          color: colorSuccess03,
+                                        ),
+                                )
                           ],
                         ),
                       ),
@@ -461,50 +518,50 @@ class _CheckOutPageState extends State<CheckOutPage> {
   }
 
 // Voucher
-  standardVoucher() {
-    return Row(
-      children: [
-        Expanded(
-          child: Container(
-            decoration: const BoxDecoration(color: colorWhite),
-            //
-            child: CustomTextInput(
-              onChanged: (p0) {},
-              focusNode: _focusNodeVoucher,
-              isNotLabelText: true,
-              isNotValidate: true,
-              isCheckPadding: true,
-              prefixIcon: const Icon(
-                Icons.discount,
-                color: colorGray03,
-              ),
-              padding: const EdgeInsets.only(
-                  bottom: 12, top: 8, left: 16, right: 16),
-              hintTextString: 'Nhập mã giảm giá/ đổi quà',
-              inputType: InputType.Default,
-              enableBorder: false,
-              cornerRadius: 0,
-              maxLength: 24,
-              textColor: colorBlack,
-            ),
-          ),
-        ),
-        spaceW6,
-        InkWell(
-          onTap: () {
-            routeService.pushNamed(
-              Routes.voucherPage,
-            );
-          },
-          child: const Icon(
-            Icons.navigate_next,
-            color: colorGray05,
-          ),
-        ),
-        spaceW16,
-      ],
-    );
-  }
+  // standardVoucher() {
+  //   return Row(
+  //     children: [
+  //       Expanded(
+  //         child: Container(
+  //           decoration: const BoxDecoration(color: colorWhite),
+  //           //
+  //           child: CustomTextInput(
+  //             onChanged: (p0) {},
+  //             focusNode: _focusNodeVoucher,
+  //             isNotLabelText: true,
+  //             isNotValidate: true,
+  //             isCheckPadding: true,
+  //             prefixIcon: const Icon(
+  //               Icons.discount,
+  //               color: colorGray03,
+  //             ),
+  //             padding: const EdgeInsets.only(
+  //                 bottom: 12, top: 8, left: 16, right: 16),
+  //             hintTextString: 'Nhập mã giảm giá/ đổi quà',
+  //             inputType: InputType.Default,
+  //             enableBorder: false,
+  //             cornerRadius: 0,
+  //             maxLength: 24,
+  //             textColor: colorBlack,
+  //           ),
+  //         ),
+  //       ),
+  //       spaceW6,
+  //       InkWell(
+  //         onTap: () {
+  //           routeService.pushNamed(
+  //             Routes.voucherPage,
+  //           );
+  //         },
+  //         child: const Icon(
+  //           Icons.navigate_next,
+  //           color: colorGray05,
+  //         ),
+  //       ),
+  //       spaceW16,
+  //     ],
+  //   );
+  // }
 
 // note
   Widget _standardNote(BuildContext context) {
@@ -593,8 +650,9 @@ class _CheckOutPageState extends State<CheckOutPage> {
           spaceH20,
           GestureDetector(
             onTap: () {
-              bloc.onGetShippingMethods();
-              //  CustomSnackBar.showTop(context, 'Chức năng đang được phát triển');
+              // bloc.onGetShippingMethods();
+              CustomSnackBar.showTop(
+                  context, 'Chức năng đang được phát triển', null);
             },
             child: Container(
               height: 38.h,

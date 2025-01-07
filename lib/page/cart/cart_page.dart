@@ -233,7 +233,7 @@ class _CartPageState extends State<CartPage> {
                       backgroundColor: colorMain,
                     )
                   : null,
-              resizeToAvoidBottomInset: false,
+              resizeToAvoidBottomInset: true,
               backgroundColor: Colors.grey.shade100,
               body: (state.isLoading &&
                       (state.totalItem == 0 || state.totalItem == null))
@@ -244,6 +244,7 @@ class _CartPageState extends State<CartPage> {
                         return !(state.totalItem == 0 ||
                                 state.totalItem == null)
                             ? Column(
+                                //  physics: const BouncingScrollPhysics(),
                                 children: [
                                   Expanded(
                                     child: RefreshIndicator(
@@ -251,6 +252,7 @@ class _CartPageState extends State<CartPage> {
                                         await bloc.getData();
                                       },
                                       child: CustomScrollView(
+                                        //
                                         slivers: [
                                           SliverList(
                                             delegate: SliverChildListDelegate(

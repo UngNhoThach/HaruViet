@@ -1,9 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:haruviet/component/shimer/image_product_shimer.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_list_product/data_product_list.dart';
 import 'package:haruviet/database_local/products_recommendation/products_recommendation_database.dart';
 import 'package:haruviet/helper/colors.dart';

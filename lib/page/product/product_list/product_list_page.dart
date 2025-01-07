@@ -262,31 +262,6 @@ class _ProductListPageState extends State<ProductListPage> {
                           );
                         },
                       )
-                    //  Padding(
-                    //     padding: const EdgeInsets.symmetric(
-                    //         horizontal: 8, vertical: 8),
-                    //     child: PagedGridView<int, DataProduct>(
-                    //       pagingController: _pagingController,
-                    //       showNewPageProgressIndicatorAsGridChild: false,
-                    //       gridDelegate:
-                    //           SliverGridDelegateWithFixedCrossAxisCount(
-                    //               crossAxisCount: 2,
-                    //               mainAxisSpacing: 0,
-                    //               crossAxisSpacing: 0,
-                    //               childAspectRatio: childAspectRatio),
-                    //       builderDelegate:
-                    //           PagedChildBuilderDelegate<DataProduct>(
-                    //         noItemsFoundIndicatorBuilder: _empty,
-                    //         itemBuilder: (context, item, index) {
-                    //           return AnimatedProductGridItem(
-                    //             index: index,
-                    //             child: _itemGridView(context,
-                    //                 index: index, data: item, domain: domain),
-                    //           );
-                    //         },
-                    //       ),
-                    //     ),
-                    //   )
                     : PagedListView.separated(
                         scrollController: _scrollController,
                         scrollDirection: Axis.vertical,

@@ -278,11 +278,12 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
                                             border:
                                                 Border.all(color: colorGray02)),
                                         child: RadioListSelect(
-                                          isVertical: true,
-                                          items: const [
+                                          itemsTypeDataPayment: [],
+                                          itemsTypeString: const [
                                             'Nam',
                                             'Nữ',
                                           ],
+                                          isVertical: true,
                                           currentIndex: state.typeSex,
                                           onSelectedIndex: (index) {
                                             if (index != null) {

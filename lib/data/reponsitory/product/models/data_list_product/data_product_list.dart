@@ -53,7 +53,8 @@ class DataProduct {
   @JsonKey(name: 'promotion_price')
   ProductPromotionPriceList? promotionPrice;
   List<AttributesProductDetail?>? attributes;
-  @JsonKey(name: 'promotiondetails')
+
+  @JsonKey(name: 'promotiondetails', fromJson: _parsePromotionDetails)
   List<Promotiondetail?>? promotiondetails;
 
   DataProduct({
@@ -95,4 +96,21 @@ class DataProduct {
   }
 
   Map<String, dynamic> toJson() => _$DataProductToJson(this);
+
+  /// Hàm từ JSON -> List<Promotiondetail?>
+  static List<Promotiondetail?>? _parsePromotionDetails(dynamic json) {
+    if (json == null) {
+      return null;
+    } else if (json is List) {
+      if (json.isEmpty ||
+          (json.length == 1 && json.first is List && json.first.isEmpty)) {
+        return [];
+      }
+      return json
+          .where((element) => element is Map<String, dynamic>)
+          .map((e) => Promotiondetail.fromJson(e as Map<String, dynamic>))
+          .toList();
+    }
+    throw FormatException('Invalid format for promotiondetails: $json');
+  }
 }

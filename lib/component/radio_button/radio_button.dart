@@ -1,3 +1,4 @@
+import 'package:haruviet/data/reponsitory/shipment/payment_response/data_payment.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/context.dart';
 import 'package:haruviet/helper/spaces.dart';
@@ -8,13 +9,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class RadioListSelect extends StatelessWidget {
   const RadioListSelect({
     super.key,
-    required this.items,
+    required this.itemsTypeDataPayment,
+    required this.itemsTypeString,
     required this.onSelectedIndex,
     this.currentIndex,
     this.isVertical = false,
     this.enabled = true,
   });
-  final List<String> items;
+  final List<DataPayment> itemsTypeDataPayment;
+  final List<String> itemsTypeString;
   final int? currentIndex;
   final ValueChanged<int?> onSelectedIndex;
   final bool isVertical;
@@ -23,11 +26,21 @@ class RadioListSelect extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final childrens = <Widget>[];
-    items.asMap().forEach((key, value) {
-      childrens.add(isVertical
-          ? Expanded(child: _radioButton(context, key, value))
-          : _radioButton(context, key, value));
-    });
+    // use 2 types of data itemsTypeString or itemsTypeDataPayment
+    itemsTypeString.isEmpty
+        ? itemsTypeDataPayment.asMap().forEach((key, value) {
+            childrens.add(isVertical
+                ? Expanded(child: _radioButton(context, key, value.title ?? ''))
+                : Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: _radioButton(context, key, value.title ?? ''),
+                  ));
+          })
+        : itemsTypeString.asMap().forEach((key, value) {
+            childrens.add(isVertical
+                ? Expanded(child: _radioButton(context, key, value))
+                : _radioButton(context, key, value));
+          });
     return isVertical ? Row(children: childrens) : Column(children: childrens);
   }
 

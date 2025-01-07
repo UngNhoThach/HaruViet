@@ -11,6 +11,7 @@ import 'package:haruviet/helper/const.dart';
 import 'package:haruviet/helper/date_time.dart';
 import 'package:haruviet/helper/spaces.dart';
 import 'package:haruviet/page/history_orders/tab/widgets/order_detail_params.dart';
+import 'package:haruviet/page/product/product_list/widgets/product_list_page_params.dart';
 import 'package:haruviet/resources/routes.dart';
 import 'package:haruviet/theme/typography.dart';
 import 'package:haruviet/utils/commons.dart';
@@ -391,6 +392,10 @@ class _HistoryOrderTabState extends State<HistoryOrderTab> {
     BuildContext context,
   ) {
     return DidntFoundItem(
+      onPressed: () {
+        routeService.pushNamed(Routes.productListPage,
+            arguments: ProductListPageParams());
+      },
       widget: Column(
         children: [
           spaceH100,

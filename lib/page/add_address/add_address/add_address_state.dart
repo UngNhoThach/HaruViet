@@ -9,6 +9,7 @@ part 'add_address_state.g.dart';
 @CopyWith()
 class AddNewAddressState extends BaseState {
   final bool isLoading;
+  final bool notSetDefaultAddress;
   final UserState? userInfoLogin;
   final bool isSubmitSuccess;
   final bool textBtnswitchState;
@@ -37,6 +38,7 @@ class AddNewAddressState extends BaseState {
     ViewState viewState = ViewState.loaded,
     String errorMsg = '',
     this.createdAt,
+    this.notSetDefaultAddress = false,
     this.updatedAt,
     this.dataListAddress,
     this.userInfoLogin,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 enum CurrentTab {
-  hot('topsale'),
+  hot('flashsale'),
   topsale('topsale'),
   latest('latest'),
   priceLow('pricelowtohigh'),

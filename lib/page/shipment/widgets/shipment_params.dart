@@ -1,22 +1,12 @@
-import 'package:haruviet/data/reponsitory/shipment/models/shipment_response/shipment_response.dart';
+import '../../../data/reponsitory/shipment/payment_response/data_payment.dart';
 
 class ShipmentParams {
   ShipmentParams({
-    required this.shipmentResponse,
-    this.shipmenFunc,
-    required this.shippingAddress,
-    required this.totalPrice,
-    required this.titleSelected,
-    required this.weight,
-    required this.selectedShipment,
+    this.data,
     this.selectShipmentFunc,
+    required this.selectedItemShipment,
   });
-  final ShipmentResponse shipmentResponse;
-  final void Function(ShipmentResponse?, String)? shipmenFunc;
-  final List<String> shippingAddress;
-  final int totalPrice;
-  final double weight;
-  final int selectedShipment;
-  final String titleSelected;
-  final void Function(int?)? selectShipmentFunc;
+  final List<DataPayment>? data;
+  final DataPayment selectedItemShipment;
+  final void Function(DataPayment? dataPayment)? selectShipmentFunc;
 }

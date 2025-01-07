@@ -49,4 +49,13 @@ class AddressService extends BaseService {
 
     return response;
   }
+
+  // set default address
+  Future<Response> setDefaultAddress({required DataListAddress request}) async {
+    final response = await post(
+      AddressApi.setAddressDefault,
+      data: request.toJson(),
+    );
+    return response;
+  }
 }

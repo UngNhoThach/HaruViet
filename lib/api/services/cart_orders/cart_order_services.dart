@@ -7,6 +7,7 @@ import 'package:haruviet/api/services/cart_orders/models/create_order_request/cr
 import 'package:haruviet/api/services/headers_request/headers_request.dart';
 import 'package:haruviet/base/base_service.dart';
 import 'models/check_order_price_request/check_order_price_request.dart';
+import 'models/check_shipping_fee/check_shipping_fee_request.dart';
 import 'models/remove_item_from_cart_request/remove_item_from_cart_request.dart';
 
 class CartOrderService extends BaseService {
@@ -103,6 +104,18 @@ class CartOrderService extends BaseService {
   }) async {
     final response = await post(
       CartApi.createOrder,
+      data: request.toJson(),
+      // headers: apiHeaders.appMobileHeaders
+    );
+    return response;
+  }
+
+  // checkShippingFee
+  Future<Response> checkShippingFee({
+    required CheckShippingFeeRequest request,
+  }) async {
+    final response = await post(
+      CartApi.checkShippingFee,
       data: request.toJson(),
       // headers: apiHeaders.appMobileHeaders
     );

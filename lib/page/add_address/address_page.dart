@@ -236,6 +236,11 @@ class _AddressPageState extends State<AddressPage> {
                                                   Routes.addnewaddressPage,
                                                   arguments:
                                                       AddNewAddressParams(
+                                                    isDefaultAddress:
+                                                        (state.addressDefaultId ==
+                                                                item.id)
+                                                            ? true
+                                                            : false,
                                                     dataListAddress: item,
                                                     isUpdate: true,
                                                     onReload: () {

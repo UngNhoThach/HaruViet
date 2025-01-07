@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:haruviet/component/shimer/image_product_shimer.dart';
+import 'package:haruviet/component/snackbar/snackbar_bottom.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/shadows.dart';
 import 'package:flutter/material.dart';
@@ -104,8 +104,11 @@ class ChildCategory extends StatelessWidget {
     return GestureDetector(
       onTap: onTap ??
           () {
-            Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => destinationWidget));
+            destinationWidget == null
+                ? CustomSnackBar.showTop(
+                    context, 'Chức năng đang được phát triển', null)
+                : Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => destinationWidget));
           },
       child: Stack(
         clipBehavior: Clip.none,

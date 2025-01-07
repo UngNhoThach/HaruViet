@@ -54,10 +54,6 @@ class _HistoryOrderPageState extends State<HistoryOrderPage>
     return BlocProvider(
       create: (context) => bloc,
       child: BlocListener<HistoryOrderBloc, HistoryOrderState>(
-        // _tabController.addListener(() {
-        //   setState(() {});
-        // });
-        //    listenWhen: (previous, current) => previous.tab != current.tab,
         listener: (context, state) {
           if (state.listStatusOrder != null &&
               state.listStatusOrder!.isNotEmpty) {
@@ -65,7 +61,6 @@ class _HistoryOrderPageState extends State<HistoryOrderPage>
               length: state.listStatusOrder!.length,
               vsync: this,
             );
-            // Lắng nghe sự thay đổi của TabController
           }
         },
         child: BlocBuilder<HistoryOrderBloc, HistoryOrderState>(
@@ -159,10 +154,11 @@ class _HistoryOrderPageState extends State<HistoryOrderPage>
                       e.name ?? '',
                       style: textTheme.bodyMedium?.copyWith(
                         color:
-                            _tabController.index == listStatusOrder.indexOf(e)
-                                ? context
-                                    .appColorScheme.colorExtendedTextFieldCursor
-                                : context.appColorScheme.colorIconInactive,
+                            context.appColorScheme.colorExtendedTextFieldCursor,
+                        // _tabController.index == listStatusOrder.indexOf(e)
+                        //     ? context
+                        //         .appColorScheme.colorExtendedTextFieldCursor
+                        //     : context.appColorScheme.colorIconInactive,
                         fontSize: 14,
                       ),
                       textAlign: TextAlign.center,

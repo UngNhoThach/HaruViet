@@ -53,13 +53,11 @@ class _QrCodePagePageState extends State<QrCodePage> {
         backgroundColor: Theme.of(context).primaryColor,
       ),
       extendBodyBehindAppBar: true,
-      body: Container(
-        child: Column(
-          children: <Widget>[
-            Expanded(flex: 10, child: _createQRCode(context)),
-            // : Expanded(flex: 10, child: _buildQrView(context)),
-          ],
-        ),
+      body: Column(
+        children: <Widget>[
+          Expanded(flex: 10, child: _createQRCode(context)),
+          // : Expanded(flex: 10, child: _buildQrView(context)),
+        ],
       ),
     );
   }

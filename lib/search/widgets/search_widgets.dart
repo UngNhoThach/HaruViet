@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:haruviet/component/shimer/image_product_shimer.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_search_default_response/search_category.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_search_default_response/search_product.dart';
 import 'package:haruviet/database_local/suggestion_data_search/models/suggestion_data_search_model.dart';

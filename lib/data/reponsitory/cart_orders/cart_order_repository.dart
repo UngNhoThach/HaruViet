@@ -4,12 +4,14 @@ import 'package:flutter/foundation.dart';
 import 'package:haruviet/api/services/cart_orders/cart_order_services.dart';
 import 'package:haruviet/api/services/cart_orders/models/add_products_request/add_products_request.dart';
 import 'package:haruviet/api/services/cart_orders/models/check_order_price_request/check_order_price_request.dart';
+import 'package:haruviet/api/services/cart_orders/models/check_shipping_fee/check_shipping_fee_request.dart';
 import 'package:haruviet/api/services/cart_orders/models/create_order_request/create_order_request.dart';
 import 'package:haruviet/api/services/cart_orders/models/remove_item_from_cart_request/remove_item_from_cart_request.dart';
 import 'package:haruviet/api/services/headers_request/headers_request.dart';
 import 'package:haruviet/base/base_service.dart';
 import 'package:haruviet/data/reponsitory/cart_orders/models/create_orders_response/create_orders_response.dart';
 import 'package:haruviet/data/reponsitory/respone_general.dart';
+import 'package:haruviet/data/reponsitory/shipment/payment_response/payment_response.dart';
 
 import 'models/check_order_price_response/check_order_price_response.dart';
 import 'models/get_cart_order_response/get_cart_order_response.dart';
@@ -157,5 +159,22 @@ class CartOrderRepository extends BaseService {
       }
     }
     return CreateOrdersResponse();
+  }
+
+// checkShippingFee
+  Future<PaymentResponse> checkShippingFeeRP({
+    required CheckShippingFeeRequest request,
+  }) async {
+    try {
+      final response =
+          await _cartOrderService.checkShippingFee(request: request);
+      final result = PaymentResponse.fromJson(response.data);
+      return result;
+    } catch (error, statckTrace) {
+      if (kDebugMode) {
+        print("$error + $statckTrace");
+      }
+    }
+    return PaymentResponse();
   }
 }

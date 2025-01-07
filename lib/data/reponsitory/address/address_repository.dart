@@ -62,4 +62,21 @@ class AddressRepository {
     }
     return DataAddress();
   }
+
+  // set default address
+  Future<DataAddress> setDefaultAddressRP(
+      {required DataListAddress request}) async {
+    try {
+      final response = await _addressService.setDefaultAddress(
+        request: request,
+      );
+      final result = DataAddress.fromJson(response.data);
+      return result;
+    } catch (error, statckTrace) {
+      if (kDebugMode) {
+        print("$error + $statckTrace");
+      }
+    }
+    return DataAddress();
+  }
 }

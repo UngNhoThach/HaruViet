@@ -1,7 +1,8 @@
 import 'package:haruviet/component/button/bottom_bar_button.dart';
 import 'package:haruviet/component/button/solid_button.dart';
+import 'package:haruviet/component/error/not_found_v2.dart';
 import 'package:haruviet/component/loading/loading.dart';
-import 'package:haruviet/data/reponsitory/shipment/models/shipment_response/shipment_response.dart';
+import 'package:haruviet/data/reponsitory/shipment/payment_response/data_payment.dart';
 import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/const.dart';
 import 'package:haruviet/helper/spaces.dart';
@@ -35,7 +36,7 @@ class _ShipmentPageState extends State<ShipmentPage> {
   final TextStyle? styleTitle = textTheme.bodyLarge
       ?.copyWith(color: colorBlack, fontWeight: FontWeight.bold);
 
-  final TextStyle? styleSubPrice = textTheme.bodyMedium?.copyWith(
+  final TextStyle? styleSubPrice = textTheme.titleMedium?.copyWith(
     color: colorSuccess03,
   );
 
@@ -69,9 +70,8 @@ class _ShipmentPageState extends State<ShipmentPage> {
                 leading: IconButton(
                     icon: const Icon(Icons.arrow_back, color: colorWhite),
                     onPressed: () {
-                      widget.params.selectShipmentFunc!(state.selectedShipment);
-                      widget.params.shipmenFunc!(
-                          state.shipmentResponse!, state.titleSelected!);
+                      widget.params
+                          .selectShipmentFunc!(state.selectedItemShipment);
                       Navigator.of(context).pop();
                     }),
                 backgroundColor: Theme.of(context).primaryColor,
@@ -86,14 +86,15 @@ class _ShipmentPageState extends State<ShipmentPage> {
               body: Builder(builder: (context) {
                 return state.isLoading
                     ? const LoadingLogo()
-                    : Column(
-                        children: [
-                          SingleChildScrollView(
+                    : state.listShipmentData == null ||
+                            state.listShipmentData!.isEmpty
+                        ? const DidntFoundV2()
+                        : SingleChildScrollView(
                             physics: const BouncingScrollPhysics(),
                             child: ListView.separated(
                                 shrinkWrap: true,
                                 physics: const BouncingScrollPhysics(),
-                                itemCount: state.listShipmentResponse.length,
+                                itemCount: state.listShipmentData!.length,
                                 separatorBuilder: (context, index) =>
                                     const Divider(
                                       color: colorGray02,
@@ -101,34 +102,30 @@ class _ShipmentPageState extends State<ShipmentPage> {
                                       thickness: 10,
                                     ),
                                 itemBuilder: (context, index) {
-                                  final item =
-                                      state.listShipmentResponse[index];
+                                  final item = state.listShipmentData![index];
                                   return standardDelivery(
-                                      titleDeliver:
-                                          state.titleDeliverOption[index],
-                                      index: index,
-                                      selectedShipment:
-                                          state.selectedShipment ?? 0,
-                                      shipmentResponse: item);
+                                      selectedItemShipment: item,
+                                      isSelected: item.key ==
+                                          state.selectedItemShipment?.key);
                                 }),
-                          ),
-                        ],
-                      );
+                          );
               }),
-              bottomNavigationBar: BottomBarButton(
-                button1: AppSolidButton.medium(
-                  context: context,
-                  'Xác nhận',
-                  textStyle: textTheme.bodyLarge,
-                  color: Theme.of(context).primaryColor,
-                  onPressed: () {
-                    widget.params.selectShipmentFunc!(state.selectedShipment);
-                    widget.params.shipmenFunc!(
-                        state.shipmentResponse!, state.titleSelected!);
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ),
+              bottomNavigationBar: state.listShipmentData == null ||
+                      state.listShipmentData!.isEmpty
+                  ? null
+                  : BottomBarButton(
+                      button1: AppSolidButton.medium(
+                        context: context,
+                        'Xác nhận',
+                        textStyle: textTheme.bodyLarge,
+                        color: Theme.of(context).primaryColor,
+                        onPressed: () {
+                          widget.params
+                              .selectShipmentFunc!(state.selectedItemShipment);
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ),
             );
           },
         ),
@@ -137,86 +134,53 @@ class _ShipmentPageState extends State<ShipmentPage> {
   }
 
   standardDelivery(
-      {required int index,
-      required int selectedShipment,
-      required ShipmentResponse shipmentResponse,
-      required String titleDeliver}) {
+      {required bool isSelected, required DataPayment selectedItemShipment}) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
-        bloc.onSelect(
-            titleSelected: titleDeliver,
-            selectedShipment: index,
-            shipmentResponse: shipmentResponse);
+        bloc.onSelect(selectedItemShipment: selectedItemShipment);
       },
       child: Container(
         decoration: BoxDecoration(
-            color: selectedShipment == index
+            color: isSelected
                 ? colorRadioSelectedBlueBr.withOpacity(0.3)
                 : colorWhite),
         child: Row(
           children: [
             Radio(
-              value: selectedShipment,
-              groupValue: selectedShipment,
+              value: isSelected,
+              groupValue: isSelected,
               onChanged: (isChecked) {
-                bloc.onSelect(
-                    titleSelected: titleDeliver,
-                    selectedShipment: isChecked!,
-                    shipmentResponse: shipmentResponse);
+                bloc.onSelect(selectedItemShipment: selectedItemShipment);
               },
-              activeColor:
-                  (selectedShipment == index) ? colorSuccess03 : colorGray03,
+              activeColor: isSelected ? colorSuccess03 : colorGray03,
             ),
             Expanded(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  spaceH8,
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      if (shipmentResponse.fee?.extFees != null &&
-                          shipmentResponse.fee!.extFees!.isNotEmpty) ...[
-                        spaceH6,
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: shipmentResponse.fee!.extFees!
-                              .map(
-                                (e) => Text(
-                                  "${e.title}  ${e.display ?? '0 đ'}",
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  //   softWrap: true,
-                                  style: styleSubTitle,
-                                ),
-                              )
-                              .toList(),
-                        ),
-                      ],
-                      if (shipmentResponse.fee?.insuranceFee != null) ...[
-                        Text(
-                            "Phí bảo hiểm ${shipmentResponse.fee?.insuranceFee}",
-                            style: styleSubTitle),
-                        const Divider()
-                      ],
-                      Text(
-                        titleDeliver,
-                        style: styleTitle,
-                      ),
-                      spaceH4,
-                      RichText(
-                        text: TextSpan(children: [
-                          TextSpan(
-                              text: "17 tháng 2 - 2024  |  ",
-                              style: styleSubPrice),
-                          TextSpan(
-                              text: defaultCurrencyVNDFormatter.formatString(
-                                  shipmentResponse.fee?.fee.toString() ?? "0"),
-                              style: styleSubPrice)
-                        ]),
-                      ),
-                    ],
+                  spaceH12,
+                  // Text(
+                  //   " '0 đ'}",
+                  //   maxLines: 2,
+                  //   overflow: TextOverflow.ellipsis,
+                  //   style: styleSubTitle,
+                  // ),
+                  //     Text("Phí bảo hiểm ", style: styleSubTitle),
+                  Text(
+                    selectedItemShipment.title ?? '',
+                    style: styleTitle,
+                  ),
+                  spaceH12,
+                  RichText(
+                    text: TextSpan(children: [
+                      // TextSpan(text: "", style: styleSubPrice),
+                      TextSpan(
+                          text: defaultCurrencyVNDFormatter.formatString(
+                              selectedItemShipment.value.toString()),
+                          style: styleSubPrice)
+                    ]),
                   ),
                   spaceH16,
                 ],

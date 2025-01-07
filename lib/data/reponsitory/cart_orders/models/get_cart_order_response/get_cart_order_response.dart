@@ -1,7 +1,9 @@
+import 'package:haruviet/data/reponsitory/cart_orders/models/check_order_price_response/gift_check_order_price_response.dart';
 import 'package:haruviet/data/reponsitory/cart_orders/models/create_orders_response/int_or_string_converter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import 'attributes.dart';
+import 'attributes_get_cart_order/attributes_get_cart_order.dart';
+import 'option_cart_order.dart';
 
 part 'get_cart_order_response.g.dart';
 
@@ -13,20 +15,35 @@ class GetCartOrderResponse {
   String? id;
   String? image;
   String? name;
-
+  // new addition
+  int? weight;
+  int? totalWeight;
+  List<String?>? categoryId;
+  List<dynamic>? promotions;
+  @JsonKey(name: 'free_shipping')
+  bool? freeShipping;
+  int? discount;
+  GiftCheckOrderPriceResponse? gift;
 // get type data int or string
   @IntOrStringConverter()
   int? qty;
-  int? price;
+  num? price;
   int? tax;
   int? storeId;
-  List<String?>? options;
+  List<OptionCartOrder?>? options;
   List<dynamic>? conditions;
-  AttributesGetCartOrder? attributes;
+  List<AttributesGetCartOrder?>? attributes;
   int? subtotal;
-  int? total;
-
+  num? total;
+// promotions
   GetCartOrderResponse({
+    this.weight,
+    this.totalWeight,
+    this.categoryId,
+    this.promotions,
+    this.freeShipping,
+    this.discount,
+    this.gift,
     this.rowId,
     this.image,
     this.success,

@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:haruviet/api/rest_clien_ghtk.dart';
 import 'package:haruviet/api/rest_client.dart';
 import 'package:haruviet/data/data_local/setting_app_state.dart';
 import 'package:haruviet/data/local/user_preferences.dart';
@@ -18,9 +17,6 @@ class SettingAppBloc extends Cubit<SettingAppState> {
         RestClient().init(appconfig.xUrl ?? "",
             accessToken: appconfig.xApiKey,
             authorization: userInfo?.accessToken);
-        RestClientGHTK().init(
-          "https://services.giaohangtietkiem.vn",
-        );
       }
     } catch (error, stackTrace) {
       log("$error $stackTrace");

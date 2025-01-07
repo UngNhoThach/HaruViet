@@ -1,10 +1,9 @@
 import 'package:haruviet/base/base_bloc.dart';
-import 'package:haruviet/data/data_local/user_state.dart';
 import 'package:haruviet/data/enum.dart';
 import 'package:haruviet/data/local/user_preferences.dart';
 import 'package:haruviet/data/reponsitory/address/address_repository.dart';
+import 'package:haruviet/data/reponsitory/address/model/address/data_address.dart';
 import 'package:haruviet/data/reponsitory/address/model/list_address/data_list_address.dart';
-import 'package:haruviet/data/reponsitory/customers/customers_repository.dart';
 import 'package:haruviet/data/reponsitory/customers/models/address_response.dart';
 import 'package:haruviet/page/add_address/add_address/add_address_state.dart';
 import 'package:haruviet/page/add_address/add_address/widgets/add_address_params.dart';
@@ -12,7 +11,6 @@ import 'package:flutter/foundation.dart';
 
 class AddNewAddressBloc extends BaseBloc<AddNewAddressState> {
   final AddressRepository _addressRepository = AddressRepository();
-  final CustomersRepository _customersRepository = CustomersRepository();
   AddNewAddressBloc() : super(const AddNewAddressState());
   getData(AddNewAddressParams params) async {
     emit(state.copyWith(
@@ -23,6 +21,8 @@ class AddNewAddressBloc extends BaseBloc<AddNewAddressState> {
 
     if (params.isUpdate) {
       emit(state.copyWith(
+        notSetDefaultAddress: params.isDefaultAddress,
+        textBtnswitchState: params.isDefaultAddress,
         dataListAddress: params.dataListAddress,
         name: params.dataListAddress?.firstName ?? '',
         phone: params.dataListAddress?.phone ?? '',
@@ -148,8 +148,8 @@ class AddNewAddressBloc extends BaseBloc<AddNewAddressState> {
             ));
       if (verifyResponse.status == 200 && verifyResponse.isStatus == true) {
         // set default address
-        if (state.textBtnswitchState) {
-          await updateAddressDefault(id: verifyResponse.data?.id ?? '');
+        if (state.textBtnswitchState! && !state.notSetDefaultAddress) {
+          await updateAddressDefault(dataAddress: verifyResponse);
         }
         emit(state.copyWith(
             message: verifyResponse.message, isSubmitSuccess: true));
@@ -171,53 +171,27 @@ class AddNewAddressBloc extends BaseBloc<AddNewAddressState> {
     }
   }
 
-  updateAddressDefault({required String id}) async {
-    var updateAddressDefaultResponse = await _customersRepository.updateInfoRP(
-        request: UserState(
-          addressId: id,
-          agencyId: state.userInfoLogin?.agencyId ?? '',
-          agencyName: state.userInfoLogin?.agencyName ?? '',
-          avatar: state.userInfoLogin?.avatar ?? '',
-          idProvince: state.idProvince,
-          idDistrict: state.idDistrict,
-          idWard: state.idWard,
-          birthday: state.userInfoLogin?.birthday ?? '',
-          company: state.userInfoLogin?.company ?? '',
-          country: state.userInfoLogin?.country ?? '',
-          firstName: state.name,
-          firstNameKana: state.userInfoLogin?.firstNameKana ?? '',
-          lastName: (state.userInfoLogin?.lastName == '' ||
-                  state.userInfoLogin?.lastName == null)
-              ? state.name
-              : state.userInfoLogin?.lastName,
-          lastNameKana: state.userInfoLogin?.lastNameKana ?? '',
-          name: state.userInfoLogin?.birthday ?? '',
-          pathologicaldetail: state.userInfoLogin?.pathologicaldetail,
-          phone: state.phone ?? '',
-          postcode: state.userInfoLogin?.postcode ?? '',
-          provider: state.userInfoLogin?.provider ?? '',
-          providerId: state.userInfoLogin?.providerId ?? '',
-          sex: state.userInfoLogin?.sex ?? 0,
-          userId: state.userInfoLogin?.userId ?? '',
-          userName: (state.userInfoLogin?.userName == '' ||
-                  state.userInfoLogin?.userName == null)
-              ? state.name
-              : state.userInfoLogin?.userName,
-        ),
-        authorization: state.accessToken ?? '');
-
-    Preference.updateUserInfo({
-      'address_id': updateAddressDefaultResponse.data?.addressId ?? '',
-      'phone': updateAddressDefaultResponse.data?.phone ?? '',
-      'first_name': updateAddressDefaultResponse.data?.firstName ?? '',
-      'id_province': updateAddressDefaultResponse.data?.idProvince ?? '',
-      'id_district': updateAddressDefaultResponse.data?.idDistrict ?? '',
-      'id_ward': updateAddressDefaultResponse.data?.idWard ?? '',
-      'ward': updateAddressDefaultResponse.data?.ward ?? '',
-      'district': updateAddressDefaultResponse.data?.district ?? '',
-      'province': updateAddressDefaultResponse.data?.province ?? '',
-      'house': updateAddressDefaultResponse.data?.house ?? '',
-    });
+  updateAddressDefault({required DataAddress dataAddress}) async {
+    final updateAddressDefaultResponse =
+        await _addressRepository.setDefaultAddressRP(
+            request: DataListAddress(
+      addressId: dataAddress.data?.id ?? '',
+    ));
+    if (updateAddressDefaultResponse.isStatus != null &&
+        updateAddressDefaultResponse.isStatus!) {
+      Preference.updateUserInfo({
+        'address_id': dataAddress.data?.id ?? '',
+        'phone': dataAddress.data?.phone ?? '',
+        'first_name': dataAddress.data?.firstName ?? '',
+        'id_province': dataAddress.data?.idProvince.toString() ?? '',
+        'id_district': dataAddress.data?.idDistrict.toString() ?? '',
+        'id_ward': dataAddress.data?.idWard.toString() ?? '',
+        'ward': dataAddress.data?.ward ?? '',
+        'district': dataAddress.data?.district ?? '',
+        'province': dataAddress.data?.province ?? '',
+        'house': dataAddress.data?.house ?? '',
+      });
+    } else {}
   }
 
   onDelete() async {

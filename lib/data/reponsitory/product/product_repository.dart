@@ -25,21 +25,6 @@ class ProductRepository {
   }
   //   List<DataProduct>? data;
 
-  Future<GeneralResponse> getProductFlashSaleRP(
-      {required GetListProductRequest request}) async {
-    try {
-      final response =
-          await _productService.getProductFlashSaleSV(request: request);
-      final result = GeneralResponse.fromJson(response.data);
-      return result;
-    } catch (error, statckTrace) {
-      if (kDebugMode) {
-        print("$error + $statckTrace");
-      }
-    }
-    return GeneralResponse();
-  }
-
   Future<DataProduct> getProductDetailsRP({required String idProduct}) async {
     try {
       final response = await _productService.getProductDetailsSV(

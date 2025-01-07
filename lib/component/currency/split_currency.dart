@@ -7,3 +7,10 @@ Map<String, dynamic> splitCurrencyString(String currency) {
     'decimalPart': double.parse(decimalPart),
   };
 }
+
+int splitLetterString({required String valueInput}) {
+  List<String> parts = valueInput.split('.');
+  int wholePart = int.parse(parts[0]);
+
+  return wholePart;
+}

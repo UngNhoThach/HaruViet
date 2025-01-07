@@ -29,8 +29,8 @@ class ProfileBloc extends BaseBloc<ProfileState> {
         listStatusOrder: order.parseDataStatusOrder(),
         userInfoLogin: userInfoLogin,
         isLoginSuccess: userInfoLogin != null ? userInfoLogin.isLogin : false,
-        indexShippingMethod:
-            paymentData != null ? paymentData.indexShippingMethod : 0,
+        indexShippingMethod: 0,
+        //    paymentData != null ? paymentData.keyPaymentMethod : 0,
       ));
     } catch (error, statckTrace) {
       if (kDebugMode) {

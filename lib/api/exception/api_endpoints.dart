@@ -27,7 +27,6 @@ class ProductApi {
       "/api/v1/shop/product?page[size]={size}&page[number]={totalproduct}";
   static const getProductDetails = "/api/v1/shop/product/{idProduct}";
   static const searchDefault = "/suggestions?q={keyword}";
-  static const productFlashsale = "/api/v1/shop/product/flashsale";
 }
 
 class AddressApi {
@@ -36,6 +35,7 @@ class AddressApi {
   static const getListAddress = "/api/v1/customer/address";
   static const deleteAddress = "/api/v1/customer/address_delete/{idAddress}";
   static const getAddressId = "/api/v1/customer/address_edit/{idAddress}";
+  static const setAddressDefault = "/api/v1/customer/set_addressdefault";
 }
 
 class CategoryApi {
@@ -47,9 +47,12 @@ class CategoryApi {
 }
 
 class BrandApi {
-  static const getListBrand = "/api/v1/shop/brand?type=khudc";
+  static const getListBrand =
+      "/api/v1/shop/brand?lang=en&page[size]={pageSize}&page[number]={pageNumber}";
+
   static const getTopBrand =
-      "/api/v1/shop/brand?lang=en&type=topbrand&page[size]=10";
+      "/api/v1/shop/brand?lang=en&type=topbrand&page[size]={pageSize}";
+
   static const getDetailBrand =
       "/api/v1/shop/brand/9ca4f2f5-0367-4d43-b154-de43b63abba0";
 }
@@ -75,6 +78,7 @@ class CartApi {
   static const removeItemInCart = "/api/v1/shop/cart/removeditem";
   static const addCartOrder = "/api/v1/shop/cart/add";
   static const updateCartOrder = "/api/v1/shop/cart/update";
+  static const checkShippingFee = "/api/v1/shop/orders/checkshipping";
 }
 
 class ShippingApi {

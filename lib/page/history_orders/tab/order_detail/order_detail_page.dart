@@ -11,6 +11,7 @@ import 'package:haruviet/helper/colors.dart';
 import 'package:haruviet/helper/const.dart';
 import 'package:haruviet/helper/spaces.dart';
 import 'package:haruviet/page/history_orders/tab/widgets/order_detail_params.dart';
+import 'package:haruviet/page/product/product_list/widgets/product_list_page_params.dart';
 import 'package:haruviet/page/review/write_review/widgets/write_review_params.dart';
 import 'package:haruviet/resources/routes.dart';
 import 'package:haruviet/theme/typography.dart';
@@ -254,6 +255,10 @@ class _OrderDetailState extends State<OrderDetailPage> {
 
   Widget _didFoundItem(BuildContext context) {
     return DidntFoundItem(
+      onPressed: () {
+        routeService.pushNamed(Routes.productListPage,
+            arguments: ProductListPageParams());
+      },
       widget: Column(
         children: [
           spaceH100,

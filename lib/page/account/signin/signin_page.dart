@@ -302,7 +302,7 @@ class _SignInPageState
       String imagePath, String buttonName, double size, Function() onTap) {
     return InkWell(
       onTap: onTap,
-      child: Container(
+      child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.4,
         height: 56,
         child: Card(
@@ -335,7 +335,7 @@ class _SignInPageState
   }
 
   Widget textItem(String name, bool obsecureText) {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width - 70,
       height: 55,
       child: TextFormField(

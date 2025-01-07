@@ -35,8 +35,11 @@ class DataListAddress {
   DateTime? updatedAt;
   bool isDefault;
   bool isShipping;
+  @JsonKey(name: 'address_id')
+  String? addressId;
 
   DataListAddress({
+    this.addressId,
     this.isDefault = false,
     this.isShipping = false,
     this.id,

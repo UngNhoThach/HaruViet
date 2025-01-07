@@ -4,7 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:haruviet/component/error/not_found.dart';
+import 'package:haruviet/component/error/not_found_item.dart';
+import 'package:haruviet/component/loading/loading.dart';
+import 'package:haruviet/component/loading_scaffold.dart';
 import 'package:haruviet/connection.dart';
+import 'package:haruviet/connection/widgets/connection_widget.dart';
 import 'package:haruviet/data/data_local/setting_app_bloc.dart';
 import 'package:haruviet/data/reponsitory/product/models/data_list_product/data_product_list.dart';
 import 'package:haruviet/database_local/product/models/count_model.dart';
@@ -18,18 +22,19 @@ import 'package:haruviet/page/home/home_bloc.dart';
 import 'package:haruviet/page/home/home_state.dart';
 import 'package:haruviet/page/product/widgets/header_top_widget.dart';
 import 'package:haruviet/page/home/widgets/card_widget.dart';
-import 'package:haruviet/page/home/widgets/home_icon.dart';
 import 'package:haruviet/page/home/widgets/scroll_to_top_widget.dart';
 import 'package:haruviet/page/product/widgets/item_products_widget.dart';
 import 'package:haruviet/page/product/widgets/widget_products_one_row_loading.dart';
 import 'package:haruviet/qr/qr_page.dart';
 import 'package:haruviet/resources/routes.dart';
 import 'package:haruviet/theme/typography.dart';
-import 'package:haruviet/utils/commons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:haruviet/utils/commons.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'widgets/brand_widget.dart';
+import 'widgets/home_icon.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -53,8 +58,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   bool isQR = false;
   final PagingController<int, DataProduct> _pagingController =
       PagingController(firstPageKey: startPage, invisibleItemsThreshold: 3);
+  final PagingController<int, DataProduct> _pagingControllerFlashDeals =
+      PagingController(firstPageKey: startPage, invisibleItemsThreshold: 3);
   final ScrollController _scrollController = ScrollController();
-  bool isLoading = true;
 
   FocusNode focusNode = FocusNode();
   final ItemProductWidget itemProductWidgets = ItemProductWidget();
@@ -86,9 +92,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     } else {}
 
     bloc = HomeBloc()..getData();
+    // _pagingControllerFlashDeals
     _pagingController.addPageRequestListener((pageKey) {
       if (pageKey != startPage) {
         bloc.onFetch(page: pageKey);
+      }
+    });
+
+    _pagingControllerFlashDeals.addPageRequestListener((pageKey) {
+      if (pageKey != startPage) {
+        bloc.onGetProductsFlashsale(page: pageKey);
       }
     });
     // handle scroll
@@ -107,7 +120,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           if (nextPageKey != startPage) {
             isFetchingData = true; // Set the flag to true
             _pagingController.notifyPageRequestListeners(nextPageKey!);
-
             // Listen to the bloc's state to reset the fetching flag
             bloc.stream.listen((state) {
               if (!state.isLoading) {
@@ -125,7 +137,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     });
   }
 
-  void connectionChanged(dynamic hasConnection) {
+  connectionChanged(dynamic hasConnection) {
     setState(() {
       isOffline = !hasConnection;
     });
@@ -133,9 +145,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   void dispose() {
+    _pagingControllerFlashDeals.dispose();
     _pagingController.dispose();
     _scrollController.dispose();
-
     _counterModel.dispose();
     super.dispose();
   }
@@ -144,13 +156,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    // void _scrollListener() {
-    //   if (_scrollController.position.extentAfter < 900) {
-    //     if (bloc.state.canLoadMore) {
-    //     }
-    //   }
-    // }
-
     return MultiBlocProvider(
       key: ObjectKey(isOffline),
       providers: [
@@ -167,10 +172,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ),
         floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
         body: isOffline
-            ? const Center(
-                child: Text(
-                'Kiểm tra kết nối!',
-              ))
+            ? ConnectionWidget(
+                onPressed: () {
+                  bloc.getData();
+                },
+              )
             : MultiBlocListener(
                 listeners: [
                   BlocListener<HomeBloc, HomeState>(
@@ -191,16 +197,49 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       }
                     },
                   ),
+                  BlocListener<HomeBloc, HomeState>(
+                    listenWhen: (previous, current) =>
+                        previous.newDataListProductFlashDeal !=
+                        current.newDataListProductFlashDeal,
+                    listener: (context, state) {
+                      if (state.currentPageProductFlashDeal == startPage) {
+                        _pagingControllerFlashDeals.refresh();
+                      }
+                      // get data products flash deals
+                      if (state.canLoadMoreProductFlashDeal) {
+                        _pagingControllerFlashDeals.appendPage(
+                          state.newDataListProductFlashDeal,
+                          state.currentPageProductFlashDeal + 1,
+                        );
+                      } else {
+                        _pagingControllerFlashDeals
+                            .appendLastPage(state.newDataListProductFlashDeal);
+                      }
+                    },
+                  ),
+
+                  //
+                  //  isOffline
                 ],
                 child: BlocBuilder<HomeBloc, HomeState>(
                   builder: (context, state) {
-                    return RefreshIndicator(
-                        onRefresh: () async {
-                          _pagingController.refresh();
-                          _previousScrollPosition = 0;
-                          bloc.onFetch(page: startPage);
-                        },
-                        child: _body(context, state: state));
+                    return (state.isLoadingBrands &&
+                            state.isLoading &&
+                            !state.isPendingLoading)
+                        ? const LoadingLogo()
+                        : LoadingScaffold(
+                            isLoading: state.isPendingLoading,
+                            child: Builder(builder: (context) {
+                              return RefreshIndicator(
+                                  onRefresh: () async {
+                                    _pagingController.refresh();
+                                    _pagingControllerFlashDeals.refresh();
+                                    _previousScrollPosition = 0;
+                                    bloc.onReset();
+                                  },
+                                  child: _body(context, state: state));
+                            }),
+                          );
                   },
                 ),
               ),
@@ -227,8 +266,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget _flashDealsWidget() {
     return WidgetProductOneRowLoading(
       height: 280,
-      gradientColor: colorMainCover, // Custom color if needed
-      pagingController: _pagingController,
+      gradientColor: colorMainCover,
+      pagingController: _pagingControllerFlashDeals,
       itemBuilder: (context, item, index) {
         return itemProductWidgets.itemGridView(
           height: 260,
@@ -238,7 +277,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           domain: domain,
         );
       },
-      noItemsFoundIndicatorBuilder: _empty,
+      noItemsFoundIndicatorBuilder: bloc.state.isPendingLoading ? _empty : null,
     );
   }
 
@@ -255,14 +294,83 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             const SizedBox(
               height: 20,
             ),
-            Padding(
+            Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+              color: colorBlueGray01,
               child: _recommendedProductListView(context, state, _counterModel),
             ),
-            Padding(
+            Container(
+              color: colorBlueGray01,
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 30),
               child: _homeIcon(context, bloc: bloc),
             ),
+
+            // start top brands
+            state.listTopBrands == null || state.listTopBrands!.isEmpty
+                ? space0
+                : Column(
+                    children: [
+                      TopCategoriesHeader(
+                          onPressed: () {
+                            routeService.pushNamed(
+                              Routes.brandsListPage,
+                            );
+                          },
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                          ),
+                          backgroundColor: colorMainCover,
+                          colorText: colorWhite,
+                          isBorder: true,
+                          title: "Thương hiệu",
+                          isTimer: false),
+                      Container(
+                        padding:
+                            const EdgeInsets.only(right: 16, left: 16, top: 20),
+                        color: colorBlueGray01,
+                        child: Column(
+                          children: List.generate(
+                            (state.listTopBrands!.length / 4).ceil(),
+                            (rowIndex) {
+                              final rowItems = state.listTopBrands!
+                                  .skip(rowIndex * 4)
+                                  .take(4)
+                                  .toList();
+                              return Padding(
+                                padding: EdgeInsets.only(bottom: 24.h),
+                                child: SizedBox(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 80,
+                                  child: Wrap(
+                                    alignment: WrapAlignment.spaceBetween,
+                                    children: List.generate(
+                                      rowItems.length,
+                                      (index) {
+                                        final item = rowItems[index];
+                                        return BrandWidget(
+                                          onTap: () {
+                                            bloc.onChangeViewMember();
+                                          },
+                                          assetImageString:
+                                              '$domain${item?.image ?? ''}',
+                                          itemString: item?.name ?? '',
+                                          destinationWidget: null,
+                                          notifyNumber: "0",
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+            // end top brands
+
             Column(
               children: [
                 const TopCategoriesHeader(
@@ -280,46 +388,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             spaceH10,
           ]),
         ),
-
-        _buildPagedSliverGrid(), // Thay thế phần grid bằng SliverGrid hoặc PagedSliverGrid
+        _buildPagedSliverGrid(),
       ],
     );
   }
-
-  // Widget _buildSliverAppBar(HomeState state) {
-  //   return SliverAppBar(
-  //     backgroundColor: colorBlueGray01,
-  //     expandedHeight: 196.h,
-  //     flexibleSpace: FlexibleSpaceBar(
-  //       background: Stack(
-  //         fit: StackFit.expand,
-  //         children: <Widget>[
-  //           // Align(
-  //           //   alignment: Alignment.bottomLeft,
-  //           //   child: Padding(
-  //           //     padding: const EdgeInsets.only(left: 16, bottom: 0),
-  //           //     child: TweenAnimationBuilder<double>(
-  //           //       tween: Tween<double>(begin: 1.0, end: 0.0),
-  //           //       duration: const Duration(milliseconds: 500),
-  //           //       builder: (context, value, child) {
-  //           //         return Transform.scale(scale: 1 + value, child: child);
-  //           //       },
-  //           //     ),
-  //           //   ),
-  //           // ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  // Widget _buildHeader() {
-  //   return Column(
-  //     children: [
-
-  //     ],
-  //   );
-  // }
 
   Widget _buildPagedSliverGrid() {
     return SliverToBoxAdapter(
@@ -424,12 +496,11 @@ Widget _homeIcon(BuildContext context, {required HomeBloc bloc}) {
   return AnimatedSwitcher(
     duration: const Duration(milliseconds: 400),
     transitionBuilder: (Widget child, Animation<double> animation) {
-      // Bạn có thể tùy chỉnh transition ở đây
       return FadeTransition(opacity: animation, child: child);
     },
     child: bloc.state.isViewMemberCard
         ? Column(
-            key: ValueKey(1), // Mỗi widget cần có một key khác nhau
+            key: ValueKey(1),
             children: [
               GestureDetector(
                 onTap: () => bloc.onChangeViewMember(),
@@ -449,7 +520,7 @@ Widget _homeIcon(BuildContext context, {required HomeBloc bloc}) {
             ],
           )
         : Column(
-            key: ValueKey(2), // Key khác cho widget khác
+            key: ValueKey(2),
             children: [
               SizedBox(
                 width: MediaQuery.of(context).size.width,
@@ -469,7 +540,8 @@ Widget _homeIcon(BuildContext context, {required HomeBloc bloc}) {
                     const HomePageIcon(
                       assetImageString: 'assets/images/recruitment.png',
                       itemString: "Hàng mới về",
-                      destinationWidget: QrCodePage(),
+                      destinationWidget: null,
+                      //       destinationWidget: QrCodePage(),
                       notifyNumber: "0",
                     ),
                     const HomePageIcon(
@@ -481,47 +553,6 @@ Widget _homeIcon(BuildContext context, {required HomeBloc bloc}) {
                     const HomePageIcon(
                       assetImageString: 'assets/images/education.png',
                       itemString: "Bảng giá",
-                      destinationWidget: null,
-                      notifyNumber: "0",
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 24,
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width,
-                height: 80,
-                child: Wrap(
-                  alignment: WrapAlignment.spaceBetween,
-                  children: [
-                    HomePageIcon(
-                      assetImageString: 'assets/images/user_information.png',
-                      itemString: "Tra cứu đơn hàng",
-                      onTap: () {
-                        routeService.pushNamed(
-                          Routes.ordersPage,
-                        );
-                      },
-                      destinationWidget: null, // OrdersPage(),
-                      notifyNumber: "0",
-                    ),
-                    const HomePageIcon(
-                      assetImageString: 'assets/images/recruitment.png',
-                      itemString: "Mua 1 tặng 1",
-                      destinationWidget: null,
-                      notifyNumber: "0",
-                    ),
-                    const HomePageIcon(
-                      assetImageString: 'assets/images/maneuver.png',
-                      itemString: "Cẩm nang",
-                      destinationWidget: null,
-                      notifyNumber: "0",
-                    ),
-                    const HomePageIcon(
-                      assetImageString: 'assets/images/education.png',
-                      itemString: "Thông báo",
                       destinationWidget: null,
                       notifyNumber: "0",
                     ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:haruviet/api/services/cart_orders/models/check_shipping_fee/check_shipping_fee_request.dart';
 import 'package:haruviet/api/services/cart_orders/models/create_order_request/create_order_request.dart';
 import 'package:haruviet/api/services/cart_orders/models/create_order_request/data_order.dart';
 import 'package:haruviet/api/services/cart_orders/models/create_order_request/data_total.dart';
@@ -10,6 +11,7 @@ import 'package:haruviet/data/reponsitory/address/model/list_address/data_list_a
 import 'package:haruviet/data/reponsitory/cart_orders/cart_order_repository.dart';
 import 'package:haruviet/data/reponsitory/cart_orders/models/get_cart_order_response/get_cart_order_response.dart';
 import 'package:haruviet/data/reponsitory/payment/payment_data.dart';
+import 'package:haruviet/data/reponsitory/shipment/payment_response/data_payment.dart';
 import 'package:haruviet/data/reponsitory/shipment/shipping_repository.dart';
 import 'package:haruviet/database_local/product/cart_provider_v2.dart';
 import 'package:haruviet/database_local/product/models/cart_model_v2.dart';
@@ -42,9 +44,8 @@ class CheckOutBloc extends BaseBloc<CheckOutState> {
     ));
 
     // start get all products from the local store
-    List<CartModelProduct> productsListRecommendations;
-    productsListRecommendations = await CartProviderV2().getData();
-
+    // List<CartModelProduct> productsListRecommendations;
+    // productsListRecommendations = await CartProviderV2().getData();
     // end get all products from the local store
 
     final cart = Provider.of<CartProviderV2>(context, listen: false);
@@ -64,8 +65,6 @@ class CheckOutBloc extends BaseBloc<CheckOutState> {
       (element) => element.id == userInfoLogin?.addressId,
       orElse: () => DataListAddress(),
     );
-
-    // fee shipping method
 
     List<String> shippingAddress = List.from(state.shippingAddress);
     if (addressShipping != null) {
@@ -109,75 +108,47 @@ class CheckOutBloc extends BaseBloc<CheckOutState> {
         }
       }
     }
-
-    // final shipmentResponse = await _shipmentRepository.shipmentFeeRP(
-    //     request: ShipmentRequest(
-    //   address: shippingAddress[3],
-    //   deliverOption: "none", // xteam or none
-    //   ward: shippingAddress[2],
-    //   district: shippingAddress[1],
-    //   pickDistrict: "Quận 1",
-    //   pickProvince: "Hồ Chí Minh",
-    //   province: shippingAddress[0],
-    //   tags: [
-    //     1,
-    //   ],
-    //   transport: "road", //  or road or fly => fee
-    //   value: totalPrice,
-    //   weight: params.weight.toInt(),
-    // ));
-    // if (shipmentResponse.success == true) {
-    //   emit(state.copyWith(
-    //     shipmentResponse: shipmentResponse,
-    //     // shippingFee: shipmentResponse.fee,
-    //   ));
-    // }
+    // check shipping fee
+    await onCheckShippingFee(addressId: userInfoLogin?.addressId ?? '');
+    // fee shipping method
 
     // end fee shipping method
-
-    emit(state.copyWith(
-      userInfoLogin: userInfoLogin,
-      discoutTotal: params.discountOrder,
-      titleSelected: 'Giao hàng tiêu chuẩn (đường bộ)',
-      selectedShipment:
-          state.selectedShipment != 0 ? state.selectedShipment : 0,
-      shippingAddress: shippingAddress,
-      productsList: productsList,
-      totalPrice: totalPrice,
-      listAddresses: dataListAddress.data,
-      idAddressShipping: addressShipping != null
-          ? addressShipping.id
-          : addressShippingDefault?.id,
-      indexShippingMethod:
-          paymentData != null ? paymentData.indexShippingMethod : 0,
-      addressShipping: addressShipping ?? addressShippingDefault,
-      valueShippingMethod: paymentData != null
-          ? paymentData.paymentMethod ?? state.valueShippingMethod
-          : 'Thanh toán khi nhận hàng (COD)',
-    ));
-    emit(state.copyWith(
-      isLoading: false,
-    ));
-  }
-
-  // start get shipping methods
-  onGetShippingMethods() async {
-    emit(state.copyWith(isLoading: true));
-    final shippingResponse = await _shippingRepository.shippingMethods();
-    emit(state.copyWith(isLoading: false, shippingResponse: shippingResponse));
-  }
-  // end get shipping methods
-
-  // start get payment methods
-  onGetPaymentMethods() async {
-    emit(state.copyWith(isLoading: true));
     final paymentResponse = await _shippingRepository.paymentMethods();
     emit(state.copyWith(
-      paymentResponse: paymentResponse,
+        // checkShippingFreeResponse
+        userInfoLogin: userInfoLogin,
+        discoutTotal: params.discountOrder,
+        dataFeeShipping: state.checkShippingFreeResponse!.data![0],
+        selectedShipment:
+            state.selectedShipment != 0 ? state.selectedShipment : 0,
+        shippingAddress: shippingAddress,
+        paymentResponse: paymentResponse,
+        productsList: productsList,
+        totalPrice: totalPrice,
+        listAddresses: dataListAddress.data,
+        idAddressShipping: addressShipping != null
+            ? addressShipping.id
+            : addressShippingDefault?.id,
+        keyPaymentMethod: paymentData != null
+            ? paymentData.keyPaymentMethod
+            : paymentResponse.data![0].key,
+        addressShipping: addressShipping ?? addressShippingDefault,
+        valueShippingMethod: paymentData != null
+            ? paymentData.paymentMethod
+            : paymentResponse.data![0].title
+        // state.valueShippingMethod,
+        ));
+
+    emit(state.copyWith(
       isLoading: false,
     ));
   }
-  // end get payment methods
+
+  onChangeShippingMethod({required DataPayment dataPayment}) {
+    emit(state.copyWith(
+      dataFeeShipping: dataPayment,
+    ));
+  }
 
   // start get items detail to create a new order
   onGetItemsDetail({required List<ItemDetail> itemsDetail}) {
@@ -215,7 +186,7 @@ class CheckOutBloc extends BaseBloc<CheckOutState> {
           request: CreateOrderRequest(
               dataOrder: DataOrder(
                 subtotal: state.totalPrice,
-                shipping: state.shippingResponse?.shippingStandard?.value ?? 0,
+                shipping: 0,
                 discount: state.discoutTotal,
                 tax: 10,
                 received: 0, // unknown
@@ -258,13 +229,25 @@ class CheckOutBloc extends BaseBloc<CheckOutState> {
   }
   // end create order
 
-  // start get data from local storage
-
-  // end get data from local storage
+  // start checkShippingFee
+  onCheckShippingFee({required String addressId}) async {
+    final userInfoLogin = state.userInfoLogin;
+    final checkShippingFreeResponse =
+        await _cartOrderRepository.checkShippingFeeRP(
+            request: CheckShippingFeeRequest(
+      iud: userInfoLogin?.id ?? '',
+      addressId: addressId,
+      paymentMethod: state.keyPaymentMethod,
+    ));
+    emit(state.copyWith(checkShippingFreeResponse: checkShippingFreeResponse));
+  }
+  // end checkShippingFee
 
   onChangeSelectedShipment({required int selectedShipment}) {
     emit(state.copyWith(selectedShipment: selectedShipment));
   }
+
+  onReFetchData() {}
 
   // onChangeShipmentMethod(
   //     {required ShipmentResponse shipmentResponse,
@@ -280,15 +263,15 @@ class CheckOutBloc extends BaseBloc<CheckOutState> {
   }
 
   onChangeValueShippingMethod(
-      {required String valueShippingMethod, required int indexShippingMethod}) {
+      {required String valueShippingMethod, required String keyPaymentMethod}) {
     emit(state.copyWith(
-      indexShippingMethod: indexShippingMethod,
+      keyPaymentMethod: keyPaymentMethod,
       valueShippingMethod: valueShippingMethod,
     ));
     onUpdatePaymentMethod(
         paymentData: PaymentData(
             paymentMethod: valueShippingMethod,
-            indexShippingMethod: indexShippingMethod));
+            keyPaymentMethod: keyPaymentMethod));
   }
 
 // indexShippingMethod
@@ -298,5 +281,16 @@ class CheckOutBloc extends BaseBloc<CheckOutState> {
     await Preference.setPayment(
       paymentData,
     );
+  }
+
+  // voucherMethodFuc
+  onVoucherMethodChange(
+      {required String codeSelected,
+      required int discountAmount,
+      required int totalPrice}) {
+    emit(state.copyWith(
+        codeSelected: codeSelected,
+        discoutTotal: discountAmount,
+        totalPrice: totalPrice));
   }
 }

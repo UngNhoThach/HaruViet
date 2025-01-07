@@ -39,8 +39,8 @@ class CreditCardsPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(top: 16.0),
               child: Text(
-                '$cardNumber',
-                style: TextStyle(
+                cardNumber,
+                style: const TextStyle(
                     color: Colors.white,
                     fontSize: 18,
                     fontFamily: 'CourrierPrime'),
@@ -48,11 +48,15 @@ class CreditCardsPage extends StatelessWidget {
             ),
             Row(
               children: [
-                Image.asset(
-                  color: colorWhite,
-                  'assets/images/qr_png.png',
-                  height: 80,
-                  width: 80,
+                Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(width: 5, color: Colors.black45)),
+                  child: Image.asset(
+                    color: colorWhite,
+                    'assets/images/qr_png.png',
+                    height: 80,
+                    width: 80,
+                  ),
                 ),
                 const SizedBox(
                   width: 30,

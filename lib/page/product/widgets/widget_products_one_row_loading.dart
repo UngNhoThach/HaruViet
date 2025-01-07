@@ -38,6 +38,7 @@ class WidgetProductOneRowLoading extends StatelessWidget {
         ),
       ),
       child: PagedListView.separated(
+        addAutomaticKeepAlives: false,
         padding: padding,
         scrollDirection: scrollDirection,
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,

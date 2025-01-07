@@ -12,6 +12,7 @@ import 'package:haruviet/search/search_product_category_state.dart';
 
 class SearchProductCategoryBloc extends BaseBloc<SearchProductCategoryState> {
   SearchProductCategoryBloc() : super(const SearchProductCategoryState());
+
   final ProductRepository _productRepository = ProductRepository();
   final SuggestionDataSearchDatabase searchDatabase =
       SuggestionDataSearchDatabase();

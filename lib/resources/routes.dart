@@ -59,9 +59,12 @@ class Routes {
   static const productDetailPage = "productDetailPage";
   static const productListPage = "productListPage";
 
+  // BRANDS
+  static const brandsListPage = "BrandsListPage";
   // orders
   static const ordersPage = "ordersPage";
   static const historyOrderPage = "historyOrderPage";
   static const historyOrderTab = "historyOrderTab";
   static const shipmentPage = "shipmentPage";
+  static const cartOrderVoucherPage = "cartOrderVoucherPage";
 }
